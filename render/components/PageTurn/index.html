@@ -1,0 +1,47 @@
+<style>
+.scene-{{sceneId}} .pt-root{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 35%,rgba(255,255,255,0.06),transparent 42%),linear-gradient(135deg,#090b13 0%,#121826 48%,#05070d 100%);font-family:Inter,Segoe UI,Arial,sans-serif}
+.scene-{{sceneId}} .pt-stage{position:absolute;inset:0;perspective:2200px;perspective-origin:50% 50%;transform-style:preserve-3d}
+.scene-{{sceneId}} .pt-backdrop,.scene-{{sceneId}} .pt-sheet,.scene-{{sceneId}} .pt-face,.scene-{{sceneId}} .pt-media,.scene-{{sceneId}} .pt-overlay{position:absolute;inset:0}
+.scene-{{sceneId}} .pt-backdrop{background:linear-gradient(135deg,rgba(15,22,38,0.96) 0%,rgba(10,13,24,0.85) 50%,rgba(0,0,0,0.9) 100%);overflow:hidden}
+.scene-{{sceneId}} .pt-backdrop::before,.scene-{{sceneId}} .pt-face::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 20% 18%,rgba(255,255,255,0.09) 0 2px,transparent 3px),radial-gradient(circle at 72% 66%,rgba(255,255,255,0.05) 0 1px,transparent 2px),linear-gradient(135deg,rgba(255,255,255,0.04),transparent 40%,rgba(0,0,0,0.05));background-size:140px 140px,110px 110px,100% 100%;mix-blend-mode:soft-light;pointer-events:none}
+.scene-{{sceneId}} .pt-sheet-wrap{position:absolute;inset:4.5% 4%;transform-style:preserve-3d}
+.scene-{{sceneId}} .pt-sheet{border-radius:16px;overflow:visible;transform-style:preserve-3d;box-shadow:0 28px 64px rgba(0,0,0,0.35);will-change:transform,filter}
+.scene-{{sceneId}} .pt-face{border-radius:16px;overflow:hidden;backface-visibility:hidden;transform-style:preserve-3d;background:var(--pt-paper,#f5f1e8)}
+.scene-{{sceneId}} .pt-front{z-index:2}
+.scene-{{sceneId}} .pt-back{transform:rotateY(180deg)}
+.scene-{{sceneId}} .pt-media{background-size:cover;background-position:center center;filter:saturate(0.95)}
+.scene-{{sceneId}} .pt-front .pt-media{background-image:linear-gradient(135deg,rgba(27,38,59,0.96) 0%,rgba(10,18,32,0.92) 45%,rgba(5,8,15,0.95) 100%)}
+.scene-{{sceneId}} .pt-back .pt-media,.scene-{{sceneId}} .pt-backdrop .pt-media{background-image:linear-gradient(135deg,rgba(6,78,126,0.85) 0%,rgba(26,59,140,0.78) 44%,rgba(102,32,156,0.78) 100%)}
+.scene-{{sceneId}} .pt-overlay{padding:8% 8.5% 9%;background:linear-gradient(180deg,rgba(255,255,255,0.02) 0%,rgba(255,255,255,0.02) 36%,rgba(0,0,0,0.50) 100%)}
+.scene-{{sceneId}} .pt-spine{position:absolute;top:4%;bottom:4%;width:20px;border-radius:20px;background:linear-gradient(90deg,rgba(0,0,0,0.38),rgba(255,255,255,0.14),rgba(0,0,0,0.22));filter:blur(1px);pointer-events:none}
+.scene-{{sceneId}} .pt-root[data-direction="left-to-right"] .pt-spine{left:0}
+.scene-{{sceneId}} .pt-root[data-direction="right-to-left"] .pt-spine{right:0}
+.scene-{{sceneId}} .pt-sweep,.scene-{{sceneId}} .pt-back-glow,.scene-{{sceneId}} .pt-cast{position:absolute;pointer-events:none}
+.scene-{{sceneId}} .pt-sweep{inset:-6% -18%;background:linear-gradient(90deg,rgba(255,255,255,0) 0%,rgba(255,255,255,0.03) 28%,rgba(0,0,0,0.26) 50%,rgba(255,255,255,0.13) 72%,rgba(255,255,255,0) 100%);mix-blend-mode:multiply;opacity:0}
+.scene-{{sceneId}} .pt-back-glow{inset:0;background:linear-gradient(90deg,rgba(255,255,255,0.18),rgba(255,255,255,0) 32%,rgba(0,0,0,0.12) 78%,rgba(0,0,0,0.18));opacity:0}
+.scene-{{sceneId}} .pt-cast{left:8%;right:8%;bottom:4%;height:14%;border-radius:999px;background:radial-gradient(circle at 50% 50%,rgba(0,0,0,0.48),rgba(0,0,0,0));opacity:0.18;filter:blur(18px)}
+</style>
+<div class="pt-root" data-scene-component="PageTurn" data-direction="{{direction}}" data-outgoing-src="{{outgoingSrc}}" data-incoming-src="{{incomingSrc}}" data-front-label="{{frontLabel}}" data-back-label="{{backLabel}}" data-front-subtitle="{{frontSubtitle}}" data-back-subtitle="{{backSubtitle}}" style="--pt-paper: {{paperTint}}; --pt-accent: {{accentColor}};">
+  <div class="pt-stage">
+    <div class="pt-backdrop">
+      <div class="pt-media"></div>
+      <div class="pt-overlay"></div>
+    </div>
+    <div class="pt-sheet-wrap">
+      <div class="pt-sheet">
+        <div class="pt-face pt-front">
+          <div class="pt-media"></div>
+          <div class="pt-overlay"></div>
+          <div class="pt-spine"></div>
+          <div class="pt-sweep"></div>
+        </div>
+        <div class="pt-face pt-back">
+          <div class="pt-media"></div>
+          <div class="pt-overlay"></div>
+          <div class="pt-back-glow"></div>
+        </div>
+      </div>
+    </div>
+    <div class="pt-cast"></div>
+  </div>
+</div>

@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "smoke-data-chart-donut",
+    "title": "Smoke DataChart Donut"
+  },
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "chart-donut",
+      "duration": 4,
+      "component": "DataChart",
+      "props": {
+        "chartType": "donut",
+        "title": "Usage Mix",
+        "subtitle": "Donut smoke test using the first series only, per component contract.",
+        "labels": "[\"Search\",\"Chat\",\"Workflow\",\"Analytics\"]",
+        "series": "[{\"name\":\"Requests\",\"values\":[42,31,18,9],\"color\":\"#2563eb\"}]",
+        "unit": "%",
+        "showLegend": true,
+        "theme": "light",
+        "animateOnEnter": true
+      }
+    }
+  ]
+}

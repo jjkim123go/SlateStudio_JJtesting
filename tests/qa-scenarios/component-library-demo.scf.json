@@ -1,0 +1,141 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "Slate Component Library Demo",
+    "purpose": "Demonstrate the 8 new HyperFrames components in a narrative flow.",
+    "narrative_arc": "Open with the system → prove the win → show how to use it → social proof → ask",
+    "notes_for_future_agents": "CompareSlider.leftSrc/rightSrc and CalloutPin.baseSrc are intentionally empty in this demo to exercise the components' fallback rendering. In a production SCF, populate these with real asset paths (e.g., assets/before.png, assets/dashboard.png) generated via foundry_image_gen."
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "duration": 3,
+      "component": "BrandIntro",
+      "props": {
+        "logoSrc": "",
+        "companyName": "Slate",
+        "tagline": "Agentic video production",
+        "primaryColor": "#7c3aed"
+      }
+    },
+    {
+      "id": "title",
+      "duration": 4,
+      "component": "TitleCard",
+      "props": {
+        "title": "Eight new ways to tell your story",
+        "subtitle": "A guided tour of the v1 component library",
+        "background": "#0f172a"
+      }
+    },
+    {
+      "id": "architecture",
+      "duration": 10,
+      "component": "ArchitectureDiagram",
+      "props": {
+        "title": "The Slate production pipeline",
+        "markerId": "demo",
+        "boxesSvg": "<g class=\"ad-box\" transform=\"translate(120,400)\"><rect width=\"260\" height=\"160\" rx=\"16\" fill=\"#1e293b\" stroke=\"#38bdf8\" stroke-width=\"2\"/><text x=\"130\" y=\"70\" text-anchor=\"middle\" fill=\"#FFFFFF\" font-size=\"28\" font-weight=\"700\" font-family=\"Inter\">Ingest</text><text x=\"130\" y=\"110\" text-anchor=\"middle\" fill=\"rgba(255,255,255,0.6)\" font-size=\"18\" font-family=\"Inter\">user prompt</text></g><g class=\"ad-box\" transform=\"translate(540,400)\"><rect width=\"260\" height=\"160\" rx=\"16\" fill=\"#1e293b\" stroke=\"#a78bfa\" stroke-width=\"2\"/><text x=\"130\" y=\"70\" text-anchor=\"middle\" fill=\"#FFFFFF\" font-size=\"28\" font-weight=\"700\" font-family=\"Inter\">Plan</text><text x=\"130\" y=\"110\" text-anchor=\"middle\" fill=\"rgba(255,255,255,0.6)\" font-size=\"18\" font-family=\"Inter\">script + scenes</text></g><g class=\"ad-box\" transform=\"translate(960,400)\"><rect width=\"260\" height=\"160\" rx=\"16\" fill=\"#1e293b\" stroke=\"#22c55e\" stroke-width=\"2\"/><text x=\"130\" y=\"70\" text-anchor=\"middle\" fill=\"#FFFFFF\" font-size=\"28\" font-weight=\"700\" font-family=\"Inter\">Generate</text><text x=\"130\" y=\"110\" text-anchor=\"middle\" fill=\"rgba(255,255,255,0.6)\" font-size=\"18\" font-family=\"Inter\">images, voice</text></g><g class=\"ad-box\" transform=\"translate(1380,400)\"><rect width=\"260\" height=\"160\" rx=\"16\" fill=\"#1e293b\" stroke=\"#f59e0b\" stroke-width=\"2\"/><text x=\"130\" y=\"70\" text-anchor=\"middle\" fill=\"#FFFFFF\" font-size=\"28\" font-weight=\"700\" font-family=\"Inter\">Compose</text><text x=\"130\" y=\"110\" text-anchor=\"middle\" fill=\"rgba(255,255,255,0.6)\" font-size=\"18\" font-family=\"Inter\">SCF → MP4</text></g><g class=\"ad-box\" transform=\"translate(750,720)\"><rect width=\"260\" height=\"160\" rx=\"16\" fill=\"#1e293b\" stroke=\"#ef4444\" stroke-width=\"2\"/><text x=\"130\" y=\"70\" text-anchor=\"middle\" fill=\"#FFFFFF\" font-size=\"28\" font-weight=\"700\" font-family=\"Inter\">Review</text><text x=\"130\" y=\"110\" text-anchor=\"middle\" fill=\"rgba(255,255,255,0.6)\" font-size=\"18\" font-family=\"Inter\">VI signals</text></g>",
+        "arrowsSvg": "<path class=\"ad-arrow\" d=\"M 380 480 L 540 480\" stroke=\"#38bdf8\" stroke-width=\"3\" fill=\"none\" marker-end=\"url(#ad-arrow-demo)\"/><path class=\"ad-arrow\" d=\"M 800 480 L 960 480\" stroke=\"#a78bfa\" stroke-width=\"3\" fill=\"none\" marker-end=\"url(#ad-arrow-demo)\"/><path class=\"ad-arrow\" d=\"M 1220 480 L 1380 480\" stroke=\"#22c55e\" stroke-width=\"3\" fill=\"none\" marker-end=\"url(#ad-arrow-demo)\"/><path class=\"ad-arrow\" d=\"M 1510 560 Q 1300 700 1010 720\" stroke=\"#f59e0b\" stroke-width=\"3\" fill=\"none\" marker-end=\"url(#ad-arrow-demo)\"/><path class=\"ad-arrow\" d=\"M 800 760 Q 600 660 380 560\" stroke=\"#ef4444\" stroke-width=\"3\" stroke-dasharray=\"8 8\" fill=\"none\" marker-end=\"url(#ad-arrow-demo)\"/><text class=\"ad-arrow-label\" x=\"600\" y=\"680\" text-anchor=\"middle\" fill=\"#94a3b8\" font-size=\"18\" font-family=\"Inter\">retry on fail</text>"
+      }
+    },
+    {
+      "id": "metric",
+      "duration": 6,
+      "component": "MetricsCard",
+      "props": {
+        "label": "Render speed (frames/sec)",
+        "value": 24.5,
+        "prevValue": 4.6,
+        "unit": "fps",
+        "deltaText": "+5.3×",
+        "sparklinePoints": "0,108 80,98 160,90 240,75 320,68 400,52 480,55 560,40 640,30"
+      }
+    },
+    {
+      "id": "terminal",
+      "duration": 9,
+      "component": "TerminalScene",
+      "props": {
+        "titlebar": "user@workstation: ~/projects/slate",
+        "linesHtml": "<div class=\"ts-line\" data-kind=\"cmd\" data-duration=\"0.7\" style=\"opacity:0;display:flex;gap:14px;margin-bottom:10px\"><span style=\"color:#22c55e;font-weight:700\">$</span><span class=\"ts-cmd-text\" data-text=\"slate render component-library-demo.scf.json\">slate render component-library-demo.scf.json</span></div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:rgba(201,209,217,0.85);margin-bottom:4px;white-space:pre\">[Slate] Reading SCF: component-library-demo.scf.json</div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:rgba(201,209,217,0.85);margin-bottom:4px;white-space:pre\">[Slate] Compiling SCF → HyperFrames HTML…</div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:rgba(201,209,217,0.85);margin-bottom:14px;white-space:pre\">[Slate] Composition: 11 scenes, 78s @ 1920x1080</div><div class=\"ts-line\" data-kind=\"pause\" data-duration=\"0.5\" style=\"display:none\"></div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:#38bdf8;margin-bottom:4px;white-space:pre\">[Slate] Rendering via @hyperframes/producer (quality=standard, fps=30)</div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:rgba(201,209,217,0.85);margin-bottom:14px;white-space:pre\">[Slate] capturing     100%  frame 2340/2340</div><div class=\"ts-line\" data-kind=\"pause\" data-duration=\"0.4\" style=\"display:none\"></div><div class=\"ts-line\" data-kind=\"pill\" data-duration=\"0.5\" style=\"opacity:0;display:inline-flex;align-items:center;gap:8px;margin:6px 0;padding:6px 16px;background:rgba(34,197,94,0.18);border:1px solid #22c55e;border-radius:999px;color:#22c55e;font-size:22px\"><span>✓</span><span>render complete · output/component-library-demo.mp4</span></div>"
+      }
+    },
+    {
+      "id": "steps",
+      "duration": 9,
+      "component": "StepByStep",
+      "props": {
+        "title": "Get started in four steps",
+        "stepsHtml": "<li class=\"sbs-step\" style=\"opacity:0;display:flex;align-items:center;gap:28px;font-size:38px;color:#FFFFFF;font-weight:500\"><span class=\"sbs-check\" style=\"width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#0f172a;flex-shrink:0\">✓</span><span>Install the Slate CLI</span></li><li class=\"sbs-step\" style=\"opacity:0;display:flex;align-items:center;gap:28px;font-size:38px;color:#FFFFFF;font-weight:500\"><span class=\"sbs-check\" style=\"width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#0f172a;flex-shrink:0\">✓</span><span>Describe the video you want</span></li><li class=\"sbs-step\" style=\"opacity:0;display:flex;align-items:center;gap:28px;font-size:38px;color:#FFFFFF;font-weight:500\"><span class=\"sbs-check\" style=\"width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#0f172a;flex-shrink:0\">✓</span><span>Approve the script and scene plan</span></li><li class=\"sbs-step\" style=\"opacity:0;display:flex;align-items:center;gap:28px;font-size:38px;color:#FFFFFF;font-weight:500\"><span class=\"sbs-check\" style=\"width:56px;height:56px;border-radius:50%;background:#22c55e;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#0f172a;flex-shrink:0\">✓</span><span>Ship the rendered MP4</span></li>"
+      }
+    },
+    {
+      "id": "compare",
+      "duration": 8,
+      "component": "CompareSlider",
+      "props": {
+        "leftSrc": "",
+        "rightSrc": "",
+        "leftBg": "#7f1d1d",
+        "rightBg": "#14532d",
+        "leftLabel": "Manual production · 3 days",
+        "rightLabel": "Slate · 4 minutes",
+        "title": "Same script. Different timeline."
+      }
+    },
+    {
+      "id": "quote",
+      "duration": 8,
+      "component": "Quote",
+      "props": {
+        "text": "Slate cut our internal video production time from days to minutes — and the brand stayed perfect every single render.",
+        "author": "Priya Krishnan",
+        "role": "Director of Engineering, Contoso",
+        "photoSrc": "",
+        "accentColor": "#7c3aed"
+      }
+    },
+    {
+      "id": "callout",
+      "duration": 6,
+      "component": "CalloutPin",
+      "props": {
+        "baseSrc": "",
+        "x": 70,
+        "y": 32,
+        "labelX": 35,
+        "labelY": 55,
+        "label": "Cost tracker, live",
+        "detail": "Every Foundry call is logged to output/cost_log.jsonl with model, tokens, and dollars."
+      }
+    },
+    {
+      "id": "cta",
+      "duration": 7,
+      "component": "CTABlock",
+      "props": {
+        "eyebrow": "Ready to ship?",
+        "title": "Try Slate today",
+        "body": "Generate your first explainer in under five minutes. No credit card, no setup fee.",
+        "ctaText": "Start free trial",
+        "contact": "slate@contoso.com  ·  aka.ms/slate",
+        "accentColor": "#7c3aed"
+      }
+    },
+    {
+      "id": "outro",
+      "duration": 3,
+      "component": "BrandOutro",
+      "props": {
+        "logoSrc": "",
+        "companyName": "Slate",
+        "cta": "Built with HyperFrames",
+        "contact": "github.com/microsoft/slate",
+        "primaryColor": "#7c3aed"
+      }
+    }
+  ]
+}

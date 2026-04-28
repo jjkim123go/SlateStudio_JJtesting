@@ -1,0 +1,65 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "SplitScreen Smoke Test",
+    "purpose": "Verify SplitScreen component renders horizontal + vertical with labels, captions, and divider variants."
+  },
+  "scenes": [
+    {
+      "id": "horiz-default",
+      "duration": 5,
+      "component": "SplitScreen",
+      "props": {
+        "leftSrc": "",
+        "rightSrc": "",
+        "leftLabel": "Before",
+        "rightLabel": "After",
+        "leftCaption": "Legacy dashboard with manual data entry",
+        "rightCaption": "AI-powered dashboard with real-time insights",
+        "orientation": "horizontal",
+        "ratio": 0.5,
+        "divider": "thin",
+        "theme": "dark",
+        "enterStyle": "simultaneous"
+      }
+    },
+    {
+      "id": "vert-sequential",
+      "duration": 5,
+      "component": "SplitScreen",
+      "props": {
+        "leftSrc": "",
+        "rightSrc": "",
+        "leftLabel": "Design",
+        "rightLabel": "Code",
+        "leftCaption": "",
+        "rightCaption": "",
+        "orientation": "vertical",
+        "ratio": 0.6,
+        "divider": "gradient",
+        "theme": "light",
+        "enterStyle": "sequential"
+      }
+    },
+    {
+      "id": "horiz-no-divider",
+      "duration": 4,
+      "component": "SplitScreen",
+      "props": {
+        "leftSrc": "",
+        "rightSrc": "",
+        "leftLabel": "",
+        "rightLabel": "",
+        "leftCaption": "Cloud deployment",
+        "rightCaption": "Edge deployment",
+        "orientation": "horizontal",
+        "ratio": 0.65,
+        "divider": "none",
+        "theme": "dark",
+        "enterStyle": "simultaneous"
+      }
+    }
+  ]
+}

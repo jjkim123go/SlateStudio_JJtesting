@@ -1,0 +1,63 @@
+# Contoso Corporate Brand Package
+# This is an example brand package demonstrating all available fields.
+# In production, each organization creates their own brand package.
+
+identity:
+  name: "Contoso Corporate"
+  org: "Contoso Ltd."
+  version: "2.3"
+  locked: true  # Cannot be modified by individual users
+
+visual_language:
+  color_palette:
+    primary: ["#0078D4", "#106EBE"]
+    accent: ["#FFB900", "#E74856"]
+    background: "#FFFFFF"
+    text: "#323130"
+  locked_elements:
+    logo:
+      file: "assets/contoso-logo.svg"
+      position: "top-right"
+      min_margin_px: 24
+      required: true
+    legal_disclaimer:
+      text: "© 2026 Contoso Ltd. Confidential."
+      position: "bottom-center"
+      font_size: 12
+      required_for: ["external"]
+    # Optional: pre-rendered intro/outro videos. When absent, BrandIntro/BrandOutro
+    # components generate the intro/outro dynamically from brand package props.
+    intro_template: "assets/contoso-intro.mp4"
+    outro_template: "assets/contoso-outro.mp4"
+
+typography:
+  headings:
+    font: "Segoe UI"
+    weight: 600
+  body:
+    font: "Segoe UI"
+    weight: 400
+
+audio:
+  approved_voices:
+    - name: "Corporate Narrator"
+      model: "gpt-4o-mini-tts"
+      style: "professional, warm, moderate pace"
+    - name: "Executive Voice"
+      model: "gpt-4o-mini-tts"
+      style: "authoritative, clear, measured"
+  music_library:
+    source: "config/org/brand-packages/contoso-corporate/music/"
+    fallback: "assets/music/library/MANIFEST.yaml"
+
+compliance:
+  content_classification: "Internal"
+  rai_screening: true
+  pii_scan: true
+  export_watermark: true
+  approval_chain:
+    - role: "creator"
+    - role: "manager"
+      required_for: ["external", "confidential"]
+    - role: "legal"
+      required_for: ["external"]

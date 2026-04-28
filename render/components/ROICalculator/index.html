@@ -1,0 +1,168 @@
+<!--
+  ROICalculator — structured ROI narrative with formula token highlighting.
+  Props consumed: title, inputsJson, formulaJson, resultJson, stepsJson,
+                  sensitivityJson, disclaimer
+  Class prefix: roi-
+  Provenance: proposal §3.5, CONTRACT §3.1/§3.3 Pattern B, rubber-duck #4
+-->
+<style>
+.scene-{{sceneId}} .roi-root{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#0f172a 0%,#1a1043 50%,#0f172a 100%);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  overflow:hidden;
+}
+.scene-{{sceneId}} .roi-inner{
+  width:88%;max-width:1600px;
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;
+  align-items:start;
+}
+/* title spans full width */
+.scene-{{sceneId}} .roi-title{
+  grid-column:1/-1;
+  margin:0;font-size:40px;font-weight:700;color:#FFFFFF;
+  line-height:1.2;opacity:0;
+}
+/* inputs table (left column) */
+.scene-{{sceneId}} .roi-inputs{
+  display:flex;flex-direction:column;gap:8px;
+}
+.scene-{{sceneId}} .roi-input-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);
+  border-radius:8px;opacity:0;
+}
+.scene-{{sceneId}} .roi-input-label{
+  font-size:16px;font-weight:500;color:rgba(255,255,255,0.7);
+}
+.scene-{{sceneId}} .roi-input-val{
+  font-size:20px;font-weight:700;color:#FFFFFF;
+  font-variant-numeric:tabular-nums;
+}
+.scene-{{sceneId}} .roi-input-unit{
+  font-size:14px;font-weight:500;color:rgba(255,255,255,0.45);margin-left:6px;
+}
+.scene-{{sceneId}} .roi-input-src{
+  font-size:11px;font-weight:500;color:rgba(255,255,255,0.3);
+  margin-left:8px;font-style:italic;
+}
+/* formula bar */
+.scene-{{sceneId}} .roi-formula-bar{
+  grid-column:1/-1;
+  padding:16px 24px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:10px;
+  font-size:22px;font-weight:500;color:rgba(255,255,255,0.85);
+  font-family:'JetBrains Mono','Fira Code',Consolas,monospace;
+  letter-spacing:0.02em;
+  opacity:0;overflow:hidden;white-space:nowrap;
+}
+.scene-{{sceneId}} .roi-tok{
+  display:inline;padding:2px 6px;border-radius:4px;
+  transition:background-color 0.15s ease;
+}
+.scene-{{sceneId}} .roi-tok.roi-tok-highlight{
+  background:rgba(56,189,248,0.25);color:#38bdf8;
+}
+/* steps (right column, below result) */
+.scene-{{sceneId}} .roi-steps{
+  display:flex;flex-direction:column;gap:8px;
+}
+.scene-{{sceneId}} .roi-step{
+  display:flex;align-items:baseline;gap:12px;
+  padding:8px 16px;
+  background:rgba(255,255,255,0.03);border-radius:6px;
+  opacity:0;
+}
+.scene-{{sceneId}} .roi-step-desc{
+  font-size:15px;font-weight:400;color:rgba(255,255,255,0.7);flex:1;
+}
+.scene-{{sceneId}} .roi-step-val{
+  font-size:17px;font-weight:700;color:#FFFFFF;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+/* result card */
+.scene-{{sceneId}} .roi-result{
+  grid-column:1/-1;
+  display:flex;align-items:center;justify-content:center;gap:16px;
+  padding:28px 40px;
+  background:linear-gradient(135deg,rgba(34,197,94,0.12) 0%,rgba(56,189,248,0.08) 100%);
+  border:2px solid rgba(34,197,94,0.3);border-radius:14px;
+  opacity:0;transform:scale(0.85);
+}
+.scene-{{sceneId}} .roi-result-value{
+  font-size:64px;font-weight:800;color:#22c55e;
+  font-variant-numeric:tabular-nums;line-height:1;
+}
+.scene-{{sceneId}} .roi-result-unit{
+  font-size:24px;font-weight:600;color:rgba(34,197,94,0.7);margin-left:8px;
+}
+.scene-{{sceneId}} .roi-result-label{
+  font-size:22px;font-weight:500;color:rgba(255,255,255,0.6);
+}
+/* sensitivity bars */
+.scene-{{sceneId}} .roi-sensitivity{
+  grid-column:1/-1;
+  display:flex;flex-direction:column;gap:10px;
+}
+.scene-{{sceneId}} .roi-sens-row{
+  display:flex;align-items:center;gap:14px;opacity:0;
+}
+.scene-{{sceneId}} .roi-sens-label{
+  min-width:120px;font-size:14px;font-weight:500;
+  color:rgba(255,255,255,0.6);text-align:right;
+}
+.scene-{{sceneId}} .roi-sens-track{
+  flex:1;height:10px;background:rgba(255,255,255,0.06);
+  border-radius:5px;overflow:hidden;position:relative;
+}
+.scene-{{sceneId}} .roi-sens-fill{
+  position:absolute;left:0;top:0;height:100%;
+  background:linear-gradient(90deg,#38bdf8,#22c55e);
+  border-radius:5px;width:0%;
+}
+.scene-{{sceneId}} .roi-sens-range{
+  min-width:140px;font-size:13px;font-weight:500;
+  color:rgba(255,255,255,0.5);font-variant-numeric:tabular-nums;
+}
+/* disclaimer */
+.scene-{{sceneId}} .roi-disclaimer{
+  grid-column:1/-1;
+  font-size:13px;font-weight:400;color:rgba(255,255,255,0.35);
+  font-style:italic;margin-top:8px;opacity:0;
+}
+.scene-{{sceneId}} .roi-disclaimer:empty{display:none}
+</style>
+<div class="roi-root" data-scene-component="ROICalculator">
+  <div class="roi-inner">
+    <h2 class="roi-title">{{title}}</h2>
+    <!-- inputs (built by animation.js from data island) -->
+    <div class="roi-inputs"></div>
+    <!-- steps (built by animation.js) -->
+    <div class="roi-steps"></div>
+    <!-- formula bar (built by animation.js for token spans) -->
+    <div class="roi-formula-bar"></div>
+    <!-- result card -->
+    <div class="roi-result">
+      <div>
+        <span class="roi-result-value" data-target="0">0</span>
+        <span class="roi-result-unit"></span>
+      </div>
+      <div class="roi-result-label"></div>
+    </div>
+    <!-- sensitivity (built by animation.js) -->
+    <div class="roi-sensitivity"></div>
+    <!-- disclaimer -->
+    <div class="roi-disclaimer">{{disclaimer}}</div>
+  </div>
+  <!-- data islands -->
+  <script type="application/json" id="roi-inputs-{{sceneId}}">{{{inputsJson}}}</script>
+  <script type="application/json" id="roi-formula-{{sceneId}}">{{{formulaJson}}}</script>
+  <script type="application/json" id="roi-result-{{sceneId}}">{{{resultJson}}}</script>
+  <script type="application/json" id="roi-steps-{{sceneId}}">{{{stepsJson}}}</script>
+  <script type="application/json" id="roi-sens-{{sceneId}}">{{{sensitivityJson}}}</script>
+</div>

@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "Disclaimer Smoke — modal-card with auto-dismiss",
+    "description": "Single Disclaimer scene with modal-card placement, legal severity, regulated audience, title, durationSec auto-dismiss, and mustAcknowledge chip.",
+    "author": "Slate QA — PR5 Lane B"
+  },
+  "scenes": [
+    {
+      "id": "dcl-modal-smoke",
+      "component": "Disclaimer",
+      "duration": 12,
+      "props": {
+        "text": "By viewing this content you acknowledge that all data shown is **simulated** and does not reflect actual financial positions.\nThis material is intended for *regulated audiences* only.",
+        "title": "Important Notice",
+        "placement": "modal-card",
+        "severity": "legal",
+        "audience": "regulated",
+        "durationSec": 8,
+        "mustAcknowledge": true,
+        "revealStartSec": 0.2,
+        "revealDurationSec": 0.5,
+        "acknowledgeChipStartSec": 1.4
+      }
+    }
+  ]
+}

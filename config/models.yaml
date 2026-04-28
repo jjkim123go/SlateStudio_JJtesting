@@ -1,0 +1,76 @@
+# Slate Model Registry — Single source of truth for model costs and config.
+# Tools read pricing from here instead of hardcoding constants.
+# Update this file when models or pricing change — no code changes needed.
+
+image_models:
+  gpt-image-2:
+    deployment: gpt-image-2
+    provider: openai
+    cost_per_image: 0.04
+    unit: image
+    api_version: "2025-04-01-preview"
+    best_for: "all image generation — 4K, faces, scenes, creative, text-in-image"
+    sizes: ["1024x1024", "1024x1536", "1536x1024"]
+    quality_levels: ["low", "medium", "high"]
+
+tts_models:
+  gpt-4o-mini-tts:
+    deployment: gpt-4o-mini-tts
+    provider: openai
+    cost_per_second: 0.001
+    unit: second
+    voices:
+      coral: { style: "professional, warm, moderate pace" }
+      echo: { style: "professional, clear, authoritative" }
+      shimmer: { style: "warm, conversational, friendly" }
+      onyx: { style: "deep, engaging, versatile" }
+      nova: { style: "measured, clear, narration-quality" }
+      fable: { style: "relaxed, storytelling, informative" }
+
+video_models:
+  sora-2:
+    deployment: sora
+    provider: openai-sdk
+    cost_per_second: 0.20
+    unit: second
+    reference_resolution: "1920x1080"
+    valid_durations: [4, 8, 12]
+    max_resolution: "1280x720"
+
+transcription_models:
+  gpt-4o-transcribe:
+    deployment: gpt-4o-transcribe
+    provider: openai
+    cost_per_minute: 0.006
+    unit: minute
+    api_version: "2025-04-01-preview"
+    capabilities:
+      word_timestamps: true
+      response_format: verbose_json
+      max_file_size_mb: 25
+      supported_formats: ["wav", "mp3", "flac", "ogg", "m4a"]
+    rate_limits:
+      requests_per_minute: 100
+      tokens_per_minute: 1000
+    notes: "Primary transcription path. Native word-level timestamps — no alignment model needed."
+
+fallback_costs:
+  pillow-slide: 0.0
+  silence-fallback: 0.0
+  ffmpeg-test-pattern: 0.0
+
+analysis_services:
+  video-indexer:
+    # Azure resource identity is loaded from config/azure.yaml (not here).
+    # This section holds pricing/limits only.
+    cost_per_minute: 0.09        # Standard Video indexing
+    cost_per_minute_advanced: 0.15  # Advanced Video (faces, emotions)
+    unit: minute
+    limits:
+      max_file_size_gb: 30
+      max_duration_hours: 4
+      max_resolution: "3840x2160"
+      rate_limit_uploads_per_sec: 10
+    trial:
+      free_minutes: 2400
+      requires_azure: false

@@ -1,0 +1,82 @@
+<!-- SplitScreen — two content regions side-by-side with independent media, labels, and captions
+     Props: leftSrc, rightSrc, leftLabel, rightLabel, leftCaption, rightCaption,
+            orientation, ratio, divider, theme, enterStyle -->
+<style>
+.scene-{{sceneId}} .ss-root { position:absolute;inset:0;display:flex;overflow:hidden;font-family:Inter,-apple-system,'Helvetica Neue',sans-serif; }
+.scene-{{sceneId}} .ss-root[data-theme="light"],
+.scene-{{sceneId}} .ss-root[data-theme=""] { background:#f0f0f0; }
+.scene-{{sceneId}} .ss-root[data-theme="dark"] { background:#111; }
+
+/* Orientation */
+.scene-{{sceneId}} .ss-root[data-orientation="horizontal"],
+.scene-{{sceneId}} .ss-root[data-orientation=""] { flex-direction:row; }
+.scene-{{sceneId}} .ss-root[data-orientation="vertical"] { flex-direction:column; }
+
+/* Side panels */
+.scene-{{sceneId}} .ss-side { position:relative;overflow:hidden;min-width:0;min-height:0; }
+.scene-{{sceneId}} .ss-left { flex:0 0 50%; }
+.scene-{{sceneId}} .ss-right { flex:1 1 0; }
+
+/* Divider base */
+.scene-{{sceneId}} .ss-divider { flex-shrink:0;opacity:0;z-index:2; }
+.scene-{{sceneId}} .ss-root[data-theme="light"] .ss-divider,
+.scene-{{sceneId}} .ss-root[data-theme=""] .ss-divider { background:rgba(0,0,0,0.15); }
+.scene-{{sceneId}} .ss-root[data-theme="dark"] .ss-divider { background:rgba(255,255,255,0.2); }
+
+/* Divider sizing (flex-basis along main axis) */
+.scene-{{sceneId}} .ss-divider[data-divider="none"] { flex-basis:0; }
+.scene-{{sceneId}} .ss-divider[data-divider="thin"],
+.scene-{{sceneId}} .ss-divider[data-divider=""],
+.scene-{{sceneId}} .ss-divider:not([data-divider]) { flex-basis:2px; }
+.scene-{{sceneId}} .ss-divider[data-divider="thick"] { flex-basis:6px; }
+.scene-{{sceneId}} .ss-divider[data-divider="gradient"] { flex-basis:4px; }
+
+/* Gradient divider overrides background */
+.scene-{{sceneId}} .ss-root[data-orientation="horizontal"] .ss-divider[data-divider="gradient"],
+.scene-{{sceneId}} .ss-root[data-orientation=""] .ss-divider[data-divider="gradient"] { background:linear-gradient(to bottom,transparent 5%,rgba(255,255,255,0.5) 50%,transparent 95%); }
+.scene-{{sceneId}} .ss-root[data-orientation="vertical"] .ss-divider[data-divider="gradient"] { background:linear-gradient(to right,transparent 5%,rgba(255,255,255,0.5) 50%,transparent 95%); }
+
+/* Media fill */
+.scene-{{sceneId}} .ss-media { width:100%;height:100%;object-fit:cover;display:block; }
+.scene-{{sceneId}} .ss-vid { display:none;position:absolute;inset:0; }
+
+/* Labels */
+.scene-{{sceneId}} .ss-label { position:absolute;top:24px;padding:8px 20px;border-radius:6px;font-size:16px;font-weight:600;letter-spacing:0.03em;opacity:0;z-index:3; }
+.scene-{{sceneId}} .ss-left-label { left:24px; }
+.scene-{{sceneId}} .ss-right-label { right:24px; }
+.scene-{{sceneId}} .ss-root[data-theme="light"] .ss-label,
+.scene-{{sceneId}} .ss-root[data-theme=""] .ss-label { background:rgba(0,0,0,0.75);color:#fff; }
+.scene-{{sceneId}} .ss-root[data-theme="dark"] .ss-label { background:rgba(255,255,255,0.9);color:#111; }
+
+/* Captions */
+.scene-{{sceneId}} .ss-caption { position:absolute;bottom:0;left:0;right:0;padding:20px 24px;font-size:15px;line-height:1.5;opacity:0;z-index:3; }
+.scene-{{sceneId}} .ss-root[data-theme="light"] .ss-caption,
+.scene-{{sceneId}} .ss-root[data-theme=""] .ss-caption { background:linear-gradient(transparent,rgba(0,0,0,0.6));color:#fff; }
+.scene-{{sceneId}} .ss-root[data-theme="dark"] .ss-caption { background:linear-gradient(transparent,rgba(0,0,0,0.8));color:#eee; }
+
+/* Vertical orientation label/caption position adjustments */
+.scene-{{sceneId}} .ss-root[data-orientation="vertical"] .ss-left-label { left:24px; }
+.scene-{{sceneId}} .ss-root[data-orientation="vertical"] .ss-right-label { right:24px; }
+</style>
+
+<div class="ss-root" data-scene-component="SplitScreen"
+  data-orientation="{{orientation}}" data-theme="{{theme}}" data-enter="{{enterStyle}}"
+  style="position:absolute;inset:0;display:flex;overflow:hidden;font-family:Inter,-apple-system,'Helvetica Neue',sans-serif">
+
+  <!-- Left / Top side -->
+  <div class="ss-side ss-left" style="position:relative;overflow:hidden;min-width:0;min-height:0;flex-basis:calc({{ratio}} * 100%)">
+    <img class="ss-img ss-media" src="{{leftSrc}}" onerror="this.style.display='none'" />
+    <div class="ss-label ss-left-label">{{leftLabel}}</div>
+    <div class="ss-caption ss-left-caption">{{leftCaption}}</div>
+  </div>
+
+  <!-- Divider -->
+  <div class="ss-divider" data-divider="{{divider}}"></div>
+
+  <!-- Right / Bottom side -->
+  <div class="ss-side ss-right" style="position:relative;overflow:hidden;min-width:0;min-height:0">
+    <img class="ss-img ss-media" src="{{rightSrc}}" onerror="this.style.display='none'" />
+    <div class="ss-label ss-right-label">{{rightLabel}}</div>
+    <div class="ss-caption ss-right-caption">{{rightCaption}}</div>
+  </div>
+</div>

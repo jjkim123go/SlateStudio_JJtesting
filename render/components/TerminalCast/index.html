@@ -1,0 +1,185 @@
+<!--
+  TerminalCast — polished stage-grade terminal recording with titlebar,
+  optional event branding strip, command sequence with badges/output,
+  optional zoom moments, and optional speaker note.
+  Provenance: proposal §3.8. Class prefix: tc- (NOT ts- — TerminalScene reserved).
+  Size: M. Data-island IDs:
+    tc-commands-{{sceneId}}
+    tc-zooms-{{sceneId}}
+    tc-branding-{{sceneId}}
+  Preprocessed props expected from ORCH lane: commandsJson, zoomMomentsJson,
+  sessionBrandingJson.
+-->
+<style>
+.scene-{{sceneId}} .tc-root{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:#0a0e14;
+  padding:56px 64px;
+  font-family:'SF Mono','Monaco','Consolas','Cascadia Code',monospace;
+  overflow:hidden;
+  /* Defaults — overridden per shellTheme by animation.js */
+  --tc-bg:#012456;
+  --tc-fg:#f0f0f0;
+  --tc-accent:#4cc2ff;
+  --tc-muted:rgba(240,240,240,0.55);
+  --tc-out:#dcdcdc;
+  --tc-titlebar:rgba(0,0,0,0.30);
+}
+.scene-{{sceneId}} .tc-branding{
+  position:absolute;top:0;left:0;right:0;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:0.22em;
+  text-transform:uppercase;
+  color:#ffffff;
+  background:#0078d4;
+  clip-path:inset(0 100% 0 0);
+  z-index:5;
+}
+.scene-{{sceneId}} .tc-branding[data-empty="1"]{display:none}
+.scene-{{sceneId}} .tc-window{
+  position:relative;
+  width:100%;max-width:1640px;height:100%;max-height:920px;
+  display:flex;flex-direction:column;
+  background:var(--tc-bg);
+  border-radius:14px;
+  box-shadow:0 36px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(255,255,255,0.05);
+  overflow:hidden;
+  transform:translateY(-12px);
+  opacity:0;
+}
+.scene-{{sceneId}} .tc-root[data-has-branding="1"] .tc-window{margin-top:42px}
+.scene-{{sceneId}} .tc-titlebar{
+  display:flex;align-items:center;
+  padding:12px 18px;
+  background:var(--tc-titlebar);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+}
+.scene-{{sceneId}} .tc-dots{display:flex;gap:8px;flex-shrink:0}
+.scene-{{sceneId}} .tc-dot{width:13px;height:13px;border-radius:50%}
+.scene-{{sceneId}} .tc-dot.tc-d1{background:#ff5f57}
+.scene-{{sceneId}} .tc-dot.tc-d2{background:#febc2e}
+.scene-{{sceneId}} .tc-dot.tc-d3{background:#28c840}
+.scene-{{sceneId}} .tc-title{
+  flex:1;text-align:center;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:15px;font-weight:500;
+  color:rgba(255,255,255,0.62);
+  letter-spacing:0.03em;
+}
+.scene-{{sceneId}} .tc-titlebar-spacer{width:60px;flex-shrink:0}
+.scene-{{sceneId}} .tc-pane{
+  flex:1;min-height:0;
+  padding:32px 40px;
+  font-size:24px;line-height:1.55;
+  color:var(--tc-fg);
+  overflow:hidden;
+  position:relative;
+  transform-origin:center center;
+}
+.scene-{{sceneId}} .tc-stack{
+  display:flex;flex-direction:column;gap:18px;
+}
+.scene-{{sceneId}} .tc-row{
+  position:relative;
+  display:flex;flex-direction:column;gap:6px;
+  padding:6px 8px;
+  border-radius:8px;
+  border-bottom:2px solid transparent;
+}
+.scene-{{sceneId}} .tc-row[data-active="1"]{
+  background:rgba(255,255,255,0.04);
+}
+.scene-{{sceneId}} .tc-row[data-focus="cmd"][data-active="1"]{
+  border-bottom-color:var(--tc-accent);
+  box-shadow:0 0 0 1px rgba(76,194,255,0.18) inset;
+}
+.scene-{{sceneId}} .tc-line{
+  display:flex;align-items:baseline;gap:10px;
+  position:relative;
+  white-space:pre-wrap;word-break:break-word;
+}
+.scene-{{sceneId}} .tc-prompt{
+  color:var(--tc-accent);font-weight:600;
+  flex-shrink:0;
+  opacity:0;
+}
+.scene-{{sceneId}} .tc-cmd{
+  color:var(--tc-fg);
+  white-space:pre-wrap;word-break:break-word;
+}
+.scene-{{sceneId}} .tc-caret{
+  display:inline-block;width:0.5ch;height:1.05em;
+  background:var(--tc-fg);vertical-align:text-bottom;
+  margin-left:2px;
+  animation:tc-caret-blink 1s steps(2,end) infinite;
+}
+.scene-{{sceneId}} .tc-caret[data-on="0"]{display:none}
+@keyframes tc-caret-blink{50%{opacity:0}}
+.scene-{{sceneId}} .tc-badge{
+  position:absolute;top:-4px;right:0;
+  padding:3px 10px;border-radius:999px;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.14em;
+  text-transform:uppercase;
+  background:var(--tc-accent);
+  color:#0a0e14;
+  opacity:0;
+}
+.scene-{{sceneId}} .tc-badge[data-empty="1"]{display:none}
+.scene-{{sceneId}} .tc-output{
+  display:flex;flex-direction:column;gap:2px;
+  padding-left:0;
+}
+.scene-{{sceneId}} .tc-out-line{
+  color:var(--tc-out);
+  opacity:0;
+  white-space:pre-wrap;
+  font-size:22px;
+  border-left:2px solid transparent;
+  padding-left:6px;
+}
+.scene-{{sceneId}} .tc-row[data-focus="out"][data-active="1"] .tc-out-line:last-child{
+  border-left-color:var(--tc-accent);
+  background:rgba(76,194,255,0.06);
+}
+.scene-{{sceneId}} .tc-speaker{
+  position:absolute;left:64px;right:64px;bottom:24px;
+  padding:14px 22px;
+  background:rgba(0,0,0,0.65);
+  border-left:4px solid var(--tc-accent);
+  border-radius:10px;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:20px;font-weight:500;color:#f8fafc;
+  opacity:0;
+  transform:translateY(40px);
+  z-index:6;
+}
+.scene-{{sceneId}} .tc-speaker[data-empty="1"]{display:none}
+</style>
+<div class="tc-root"
+     data-scene-component="TerminalCast"
+     data-shell-theme="{{shellTheme}}"
+     data-has-branding="0">
+  <div class="tc-branding"></div>
+  <div class="tc-window">
+    <div class="tc-titlebar">
+      <div class="tc-dots">
+        <div class="tc-dot tc-d1"></div>
+        <div class="tc-dot tc-d2"></div>
+        <div class="tc-dot tc-d3"></div>
+      </div>
+      <div class="tc-title">{{title}}</div>
+      <div class="tc-titlebar-spacer"></div>
+    </div>
+    <div class="tc-pane">
+      <div class="tc-stack"></div>
+    </div>
+    <div class="tc-speaker">{{speakerNote}}</div>
+  </div>
+  <script type="application/json" id="tc-commands-{{sceneId}}">{{{commandsJson}}}</script>
+  <script type="application/json" id="tc-zooms-{{sceneId}}">{{{zoomMomentsJson}}}</script>
+  <script type="application/json" id="tc-branding-{{sceneId}}">{{{sessionBrandingJson}}}</script>
+</div>

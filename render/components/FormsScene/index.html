@@ -1,0 +1,608 @@
+<!--
+  FormsScene — Wave A Chrome Shell (PR 8c — Productivity Surfaces)
+  Models the modern Microsoft Forms web chrome: home / template-gallery / builder / preview.
+  All selectors scoped: .scene-{{sceneId}} .fs-bg .fs-*
+
+  Variant + state on .fs-bg:
+    [data-variant] : home | gallery | builder | preview
+    [data-state]   : default | more-solutions | ai-reviewing
+    [data-side]    : 0 | 1   (mirrors hasSidePanel)
+
+  Slot HTML emitted by render/lib/forms-scene-transformer.mjs:
+    {{{suiteBarHtml}}}    — top suite bar (hidden on preview)
+    {{{bannerHtml}}}      — yellow notification banner (hidden on preview)
+    {{{bodyHtml}}}        — main canvas (variant-specific)
+    {{{sidePanelHtml}}}   — right side panel (only when state=more-solutions)
+--><!-- ============================================================================
+     DENSITY SPEC — measured from output/pr8c-references/forms/raw-01..04.png.
+     ============================================================================
+     Suite bar height:           48px       white surface, 14px text
+     Banner height:              36px       #FFFBEA tint, 13px text
+     Forms brand:                #7719AA    purple (avatar + filter pill border)
+     Home gradient:              lavender → light blue, scenario tile 280×340
+     Gallery card grid:          5 cols at 1920w, 248×170 image + 64px caption
+     Builder canvas max-width:   880px      centered
+     Builder hero:               1080×420   peach gradient + cream card 380w
+     Side panel width:           260px      right-anchored, white surface
+     Preview frame:              1280×680   centered on neutral bg
+     ============================================================================ --><style data-component="FormsScene">
+/* ---------- Theme tokens ---------- */
+.scene-{{sceneId}} .fs-bg {
+  --fs-bg: #faf8f6;
+  --fs-surface: #ffffff;
+  --fs-text: #242424;
+  --fs-text-secondary: #616161;
+  --fs-text-tertiary: #8a8886;
+  --fs-border: #e1dfdd;
+  --fs-divider: #ededeb;
+  --fs-banner-bg: #fffbe6;
+  --fs-banner-border: #f0e4b6;
+  --fs-brand: #7719AA;
+  --fs-brand-soft: #efe5f5;
+  --fs-builder-bg: #f6efe8;
+  --fs-preview-bg: #e9e1da;
+  --fs-home-grad: linear-gradient(180deg, #ECE4F6 0%, #DCEBFA 50%, #E8F1FA 100%);
+  --fs-shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --fs-shadow-md: 0 2px 6px rgba(0,0,0,0.10);
+  --fs-shadow-lg: 0 8px 24px rgba(0,0,0,0.16);
+  position: relative;
+  width: 1920px;
+  height: 1080px;
+  background: var(--fs-bg);
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: var(--fs-text);
+  overflow: hidden;
+}
+
+.scene-{{sceneId}} .fs-bg[data-variant="home"]     { background: var(--fs-home-grad); }
+.scene-{{sceneId}} .fs-bg[data-variant="gallery"]  { background: #ffffff; }
+.scene-{{sceneId}} .fs-bg[data-variant="builder"]  { background: var(--fs-builder-bg); }
+.scene-{{sceneId}} .fs-bg[data-variant="preview"]  { background: var(--fs-preview-bg); }
+
+/* ---------- Icons ---------- */
+.scene-{{sceneId}} .fs-bg .fs-icon-12 { width: 12px; height: 12px; flex: 0 0 12px; fill: currentColor; }
+.scene-{{sceneId}} .fs-bg .fs-icon-16 { width: 16px; height: 16px; flex: 0 0 16px; fill: currentColor; }
+.scene-{{sceneId}} .fs-bg .fs-icon-32 { width: 32px; height: 32px; flex: 0 0 32px; fill: currentColor; }
+
+/* ---------- Suite bar ---------- */
+.scene-{{sceneId}} .fs-bg .fs-suite {
+  display: flex; align-items: center;
+  height: 48px; padding: 0 12px;
+  background: var(--fs-surface);
+  border-bottom: 1px solid var(--fs-divider);
+  position: relative; z-index: 30;
+  gap: 6px;
+}
+.scene-{{sceneId}} .fs-bg .fs-suite-waffle {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--fs-text-secondary); border-radius: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-suite-brand {
+  display: flex; align-items: center; gap: 8px; padding-left: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-suite-logo {
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--fs-brand); color: #fff;
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-suite-title {
+  font-size: 14px; font-weight: 600; color: var(--fs-text);
+}
+.scene-{{sceneId}} .fs-bg .fs-suite-flex { flex: 1 1 auto; }
+.scene-{{sceneId}} .fs-bg .fs-suite-icon {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--fs-text-secondary); border-radius: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-avatar {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: #fff;
+  font-size: 13px; font-weight: 600;
+}
+
+/* ---------- Banner ---------- */
+.scene-{{sceneId}} .fs-bg .fs-banner {
+  display: flex; align-items: center;
+  height: 36px; padding: 0 16px; gap: 8px;
+  background: var(--fs-banner-bg);
+  border-bottom: 1px solid var(--fs-banner-border);
+  font-size: 13px; color: var(--fs-text);
+  position: relative; z-index: 25;
+}
+.scene-{{sceneId}} .fs-bg .fs-banner-info { color: #B58722; }
+.scene-{{sceneId}} .fs-bg .fs-banner-text { font-size: 13px; }
+.scene-{{sceneId}} .fs-bg .fs-banner-link { color: var(--fs-brand); text-decoration: none; margin-left: 4px; }
+.scene-{{sceneId}} .fs-bg .fs-banner-flex { flex: 1 1 auto; }
+.scene-{{sceneId}} .fs-bg .fs-banner-close {
+  width: 24px; height: 24px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--fs-text-secondary); border-radius: 4px;
+}
+
+/* ---------- Body wrapper ---------- */
+.scene-{{sceneId}} .fs-bg .fs-canvas {
+  position: relative;
+  width: 100%;
+  height: calc(1080px - 48px - 36px);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fs-bg[data-variant="preview"] .fs-canvas {
+  height: 1080px;
+}
+.scene-{{sceneId}} .fs-bg[data-show-banner="0"] .fs-canvas {
+  height: calc(1080px - 48px);
+}
+
+/* ============================================================================
+   VARIANT: HOME
+   ============================================================================ */
+.scene-{{sceneId}} .fs-bg .fs-home {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  padding: 24px 64px;
+  box-sizing: border-box;
+}
+.scene-{{sceneId}} .fs-bg .fs-home-logo {
+  width: 56px; height: 56px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--fs-brand); color: #fff;
+  border-radius: 6px;
+  box-shadow: var(--fs-shadow-sm);
+}
+.scene-{{sceneId}} .fs-bg .fs-home-center {
+  flex: 1 1 auto;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding-top: 80px;
+}
+.scene-{{sceneId}} .fs-bg .fs-home-title {
+  margin: 0;
+  font-size: 32px; font-weight: 600; color: var(--fs-text);
+}
+.scene-{{sceneId}} .fs-bg .fs-home-subtitle {
+  margin-top: 12px;
+  font-size: 18px; color: var(--fs-text-secondary);
+}
+.scene-{{sceneId}} .fs-bg .fs-home-prompt {
+  margin-top: 80px;
+  font-size: 16px; color: var(--fs-text-secondary);
+}
+.scene-{{sceneId}} .fs-bg .fs-home-grid {
+  margin-top: 24px;
+  display: grid; grid-template-columns: repeat(4, 280px);
+  gap: 24px;
+}
+.scene-{{sceneId}} .fs-bg .fs-scenario {
+  position: relative;
+  height: 340px; border-radius: 12px;
+  padding: 28px;
+  color: #fff;
+  box-shadow: var(--fs-shadow-md);
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .fs-bg .fs-scenario-title {
+  font-size: 28px; font-weight: 700; line-height: 1.15;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.18);
+}
+.scene-{{sceneId}} .fs-bg .fs-scenario-blurb {
+  margin-top: 14px;
+  font-size: 13px; line-height: 1.45;
+  color: rgba(255,255,255,0.92);
+  max-width: 220px;
+}
+.scene-{{sceneId}} .fs-bg .fs-scenario-mock {
+  position: absolute; left: 28px; right: 28px; bottom: 28px;
+  height: 130px;
+}
+.scene-{{sceneId}} .fs-bg .fs-scenario-mock-card {
+  position: absolute; bottom: 0; right: 0;
+  width: 130px; height: 130px;
+  background: #fff; border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.20);
+}
+.scene-{{sceneId}} .fs-bg .fs-scenario-mock-card-back {
+  right: 50px; bottom: 18px;
+  background: rgba(255,255,255,0.85);
+  z-index: -1;
+}
+
+/* ============================================================================
+   VARIANT: GALLERY
+   ============================================================================ */
+.scene-{{sceneId}} .fs-bg .fs-gallery {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-header {
+  display: flex; align-items: center;
+  height: 64px; padding: 0 32px; gap: 12px;
+  background: #f4eef8;
+  border-bottom: 1px solid var(--fs-divider);
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-back {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(119,25,170,0.08); border: none; cursor: pointer;
+  color: var(--fs-brand);
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-back-label {
+  font-size: 14px; color: var(--fs-text);
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-flex { flex: 1 1 auto; }
+.scene-{{sceneId}} .fs-bg .fs-gallery-headline {
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-title {
+  font-size: 24px; font-weight: 600; color: var(--fs-brand);
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-preview {
+  font-size: 11px; padding: 2px 8px;
+  background: var(--fs-brand-soft); color: var(--fs-brand);
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-controls {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 16px 32px 24px;
+  background: #f4eef8;
+  border-bottom: 1px solid var(--fs-divider);
+  gap: 16px;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-pills {
+  display: flex; gap: 28px;
+}
+.scene-{{sceneId}} .fs-bg .fs-pill {
+  font-size: 14px; color: var(--fs-text);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-search {
+  display: inline-flex; align-items: center;
+  width: 540px; height: 36px;
+  background: #fff; border-radius: 18px;
+  box-shadow: var(--fs-shadow-sm);
+  padding: 0 4px 0 12px;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-filter {
+  font-size: 13px; color: var(--fs-text);
+  display: inline-flex; align-items: center; gap: 4px;
+  background: transparent; border: none; cursor: pointer;
+  padding: 4px 8px; border-right: 1px solid var(--fs-divider);
+}
+.scene-{{sceneId}} .fs-bg .fs-search-caret { fill: currentColor; }
+.scene-{{sceneId}} .fs-bg .fs-gallery-search-input {
+  flex: 1 1 auto;
+  font-size: 14px; color: var(--fs-text-tertiary);
+  padding-left: 12px;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-search-btn {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--fs-text); color: #fff;
+  border: none; cursor: pointer;
+}
+.scene-{{sceneId}} .fs-bg .fs-gallery-grid {
+  flex: 1 1 auto;
+  padding: 24px 64px;
+  display: grid; grid-template-columns: repeat(5, 1fr);
+  gap: 24px;
+  overflow: hidden;
+  background: #fff;
+}
+.scene-{{sceneId}} .fs-bg .fs-tmpl {
+  display: flex; flex-direction: column;
+  background: #fff;
+  border: 1px solid var(--fs-divider);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--fs-shadow-sm);
+}
+.scene-{{sceneId}} .fs-bg .fs-tmpl-img {
+  width: 100%; height: 170px;
+}
+.scene-{{sceneId}} .fs-bg .fs-tmpl-title {
+  padding: 14px 16px;
+  font-size: 14px; color: var(--fs-text);
+  line-height: 1.35;
+}
+
+/* ============================================================================
+   VARIANT: BUILDER
+   ============================================================================ */
+.scene-{{sceneId}} .fs-bg .fs-builder {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .fs-bg .fs-builder-flex { flex: 1 1 auto; }
+.scene-{{sceneId}} .fs-bg .fs-builder-titlebar {
+  display: flex; align-items: center;
+  height: 36px; padding: 0 16px; gap: 8px;
+  background: var(--fs-builder-bg);
+}
+.scene-{{sceneId}} .fs-bg .fs-builder-name {
+  font-size: 14px; font-weight: 600; color: var(--fs-text);
+}
+.scene-{{sceneId}} .fs-bg .fs-builder-saved-dot { color: var(--fs-text-tertiary); }
+.scene-{{sceneId}} .fs-bg .fs-builder-saved {
+  font-size: 13px; color: var(--fs-text-secondary);
+}
+.scene-{{sceneId}} .fs-bg .fs-builder-toolbar {
+  display: flex; align-items: center;
+  height: 56px; padding: 0 24px; gap: 12px;
+  background: var(--fs-builder-bg);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+.scene-{{sceneId}} .fs-bg .fs-btn {
+  height: 36px; padding: 0 16px;
+  background: transparent; border: 1px solid transparent;
+  border-radius: 18px;
+  font-size: 14px; color: var(--fs-text); cursor: pointer;
+}
+.scene-{{sceneId}} .fs-bg .fs-btn-primary {
+  background: #6E4231; color: #fff;
+  border-color: #6E4231;
+}
+.scene-{{sceneId}} .fs-bg .fs-builder-canvas {
+  flex: 1 1 auto;
+  padding: 24px 0 0;
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 18px;
+}
+.scene-{{sceneId}} .fs-bg .fs-ai-banner {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px; padding: 0 18px;
+  background: linear-gradient(90deg, #EFE5F5 0%, #E5EBF7 100%);
+  border-radius: 18px;
+  font-size: 14px; color: var(--fs-text);
+  box-shadow: var(--fs-shadow-sm);
+}
+.scene-{{sceneId}} .fs-bg .fs-ai-icon { color: var(--fs-brand); }
+.scene-{{sceneId}} .fs-bg .fs-hero {
+  width: 1080px; height: 360px;
+  border-radius: 12px;
+  position: relative;
+  box-shadow: var(--fs-shadow-md);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fs-bg .fs-hero-card {
+  position: absolute;
+  right: 80px; top: 50%;
+  transform: translateY(-50%);
+  width: 360px; min-height: 240px;
+  background: #fbf3e8;
+  padding: 28px 24px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+.scene-{{sceneId}} .fs-bg .fs-hero-title {
+  font-size: 24px; font-weight: 600; color: #6E4231;
+  line-height: 1.2;
+}
+.scene-{{sceneId}} .fs-bg .fs-hero-spacer { flex: 1 1 auto; min-height: 24px; }
+.scene-{{sceneId}} .fs-bg .fs-hero-sub {
+  font-size: 13px; color: #6E4231;
+}
+.scene-{{sceneId}} .fs-bg .fs-section {
+  width: 1080px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: var(--fs-shadow-sm);
+  margin-top: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-section-header {
+  display: flex; align-items: center;
+  height: 40px; padding: 0 24px;
+  background: #f3f2f1;
+  border-radius: 4px 4px 0 0;
+}
+.scene-{{sceneId}} .fs-bg .fs-section-label {
+  font-size: 13px; color: var(--fs-text-secondary);
+}
+.scene-{{sceneId}} .fs-bg .fs-section-more { color: var(--fs-text-secondary); }
+.scene-{{sceneId}} .fs-bg .fs-section-body { padding: 28px 32px; }
+.scene-{{sceneId}} .fs-bg .fs-section-title {
+  font-size: 22px; font-weight: 600; color: var(--fs-text);
+  margin-bottom: 24px;
+}
+.scene-{{sceneId}} .fs-bg .fs-q-prompt {
+  font-size: 15px; color: var(--fs-text); margin-bottom: 14px;
+}
+.scene-{{sceneId}} .fs-bg .fs-q-req { color: #C50F1F; }
+.scene-{{sceneId}} .fs-bg .fs-q-opts { display: flex; flex-direction: column; gap: 12px; }
+.scene-{{sceneId}} .fs-bg .fs-opt {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 4px 0;
+}
+.scene-{{sceneId}} .fs-bg .fs-opt-radio {
+  width: 18px; height: 18px;
+  border: 1.5px solid var(--fs-text-tertiary);
+  border-radius: 50%;
+}
+.scene-{{sceneId}} .fs-bg .fs-opt-text {
+  font-size: 14px; color: var(--fs-text);
+}
+
+/* ---------- Side panel ---------- */
+.scene-{{sceneId}} .fs-bg .fs-side {
+  position: absolute;
+  top: 84px; left: 24px;
+  width: 280px; max-height: 920px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: var(--fs-shadow-lg);
+  padding: 20px 16px 16px;
+  z-index: 25;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fs-bg .fs-side-close {
+  position: absolute; top: 12px; right: 12px;
+  width: 24px; height: 24px;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--fs-text-secondary);
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .fs-bg .fs-side-section-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 4px;
+  font-size: 13px; font-weight: 600; color: var(--fs-text);
+}
+.scene-{{sceneId}} .fs-bg .fs-side-caret { fill: currentColor; }
+.scene-{{sceneId}} .fs-bg .fs-side-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding-top: 8px;
+}
+.scene-{{sceneId}} .fs-bg .fs-side-item {
+  display: flex; flex-direction: column; gap: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-side-thumb {
+  width: 100%; height: 60px; border-radius: 4px;
+}
+.scene-{{sceneId}} .fs-bg .fs-side-title {
+  font-size: 11px; line-height: 1.3; color: var(--fs-text-secondary);
+}
+
+/* ============================================================================
+   VARIANT: PREVIEW
+   ============================================================================ */
+.scene-{{sceneId}} .fs-bg .fs-preview {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-flex { flex: 1 1 auto; }
+.scene-{{sceneId}} .fs-bg .fs-preview-topbar {
+  display: flex; align-items: center;
+  height: 64px; padding: 0 32px; gap: 12px;
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 14px;
+  background: #fff; border: 1px solid var(--fs-divider); border-radius: 16px;
+  font-size: 13px; color: var(--fs-text); cursor: pointer;
+  box-shadow: var(--fs-shadow-sm);
+}
+.scene-{{sceneId}} .fs-bg .fs-device {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 12px;
+  background: transparent; border: none; cursor: pointer;
+  font-size: 13px; color: var(--fs-text-secondary);
+  border-bottom: 2px solid transparent;
+}
+.scene-{{sceneId}} .fs-bg .fs-device-on {
+  color: var(--fs-text);
+  border-bottom-color: var(--fs-text);
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-stage {
+  flex: 1 1 auto;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-pause {
+  position: absolute; top: 32px; left: 220px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: #fff; border: 1px solid var(--fs-divider);
+  cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fs-text-secondary);
+  box-shadow: var(--fs-shadow-sm);
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-frame {
+  position: relative;
+  width: 1280px; height: 600px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--fs-shadow-lg);
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-actions {
+  position: absolute; top: 16px; right: 16px;
+  display: inline-flex; gap: 6px;
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-shield,
+.scene-{{sceneId}} .fs-bg .fs-preview-more {
+  width: 32px; height: 32px;
+  background: #fff; border: 1px solid var(--fs-divider);
+  border-radius: 4px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fs-text-secondary);
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-card {
+  position: absolute;
+  right: 80px; top: 50%;
+  transform: translateY(-50%);
+  width: 380px; min-height: 360px;
+  background: #fbf3e8;
+  padding: 32px 28px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-title {
+  font-size: 26px; font-weight: 600; color: #6E4231; line-height: 1.2;
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-spacer { flex: 1 1 auto; min-height: 32px; }
+.scene-{{sceneId}} .fs-bg .fs-preview-sub {
+  font-size: 14px; color: #6E4231; margin-bottom: 24px;
+}
+.scene-{{sceneId}} .fs-bg .fs-preview-cta {
+  align-self: flex-start;
+  height: 36px; padding: 0 24px;
+  background: #6E4231; color: #fff;
+  border: none; border-radius: 4px; cursor: pointer;
+  font-size: 14px;
+}
+
+/* ---------- Initial states for animation (opacity 0; animation reveals) ---------- */
+.scene-{{sceneId}} .fs-bg .fs-suite,
+.scene-{{sceneId}} .fs-bg .fs-banner,
+.scene-{{sceneId}} .fs-bg .fs-home-logo,
+.scene-{{sceneId}} .fs-bg .fs-home-title,
+.scene-{{sceneId}} .fs-bg .fs-home-subtitle,
+.scene-{{sceneId}} .fs-bg .fs-home-prompt,
+.scene-{{sceneId}} .fs-bg .fs-gallery-header,
+.scene-{{sceneId}} .fs-bg .fs-gallery-controls,
+.scene-{{sceneId}} .fs-bg .fs-builder-titlebar,
+.scene-{{sceneId}} .fs-bg .fs-builder-toolbar,
+.scene-{{sceneId}} .fs-bg .fs-preview-topbar { opacity: 0; }
+
+.scene-{{sceneId}} .fs-bg .fs-scenario,
+.scene-{{sceneId}} .fs-bg .fs-tmpl,
+.scene-{{sceneId}} .fs-bg .fs-hero,
+.scene-{{sceneId}} .fs-bg .fs-section,
+.scene-{{sceneId}} .fs-bg .fs-ai-banner,
+.scene-{{sceneId}} .fs-bg .fs-preview-frame,
+.scene-{{sceneId}} .fs-bg .fs-side { opacity: 0; transform: translateY(8px); }
+
+.scene-{{sceneId}} .fs-bg .fs-preview-pause { opacity: 0; }
+</style>
+
+<div class="scene-{{sceneId}} fs-bg"
+     data-variant="{{variant}}"
+     data-state="{{state}}"
+     data-side="{{dataSide}}"
+     data-show-banner="{{showBanner}}">
+
+  {{{suiteBarHtml}}}
+  {{{bannerHtml}}}
+
+  <div class="fs-canvas">
+    {{{bodyHtml}}}
+    {{{sidePanelHtml}}}
+  </div>
+
+  <script type="application/json" data-region="forms-meta">{
+    "sceneId": "{{sceneId}}",
+    "variant": "{{variant}}",
+    "state": "{{state}}",
+    "hasSidePanel": {{hasSidePanel}}
+  }</script>
+</div>

@@ -1,0 +1,346 @@
+"""SCF Composer — Generates Slate Composition Format JSON from scenario data.
+
+This module bridges the gap between the agent's creative decisions (scenario JSON)
+and the HyperFrames renderer (SCF JSON). It applies brand packages, validates
+against the SCF schema, and generates complete composition documents.
+
+Usage:
+    from slate.core.scf_composer import SCFComposer
+
+    composer = SCFComposer(brand=brand_package)
+    scf = composer.from_scenario(scenario_data, asset_manifest)
+    composer.validate(scf)
+    composer.write(scf, "output/composition.json")
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any
+
+logger = logging.getLogger(__name__)
+
+# Default output profile
+DEFAULT_PROFILE = {"width": 1920, "height": 1080, "fps": 30, "codec": "h264", "quality": "high"}
+
+
+@dataclass
+class AssetManifest:
+    """Mapping of scene IDs to generated asset file paths.
+
+    Populated during the asset generation stage, then fed to SCFComposer.
+    """
+    scene_images: dict[str, str] = field(default_factory=dict)   # scene_id → image path
+    scene_narrations: dict[str, str] = field(default_factory=dict)  # scene_id → audio path
+    scene_videos: dict[str, str] = field(default_factory=dict)   # scene_id → video clip path
+    brand_intro_image: str = ""
+    brand_outro_image: str = ""
+    music_track: str = ""
+
+
+class SCFComposer:
+    """Generates SCF JSON documents from scenario data + assets.
+
+    SCF is the contract between the agent and the renderer. This composer:
+    - Maps scenario scenes to SCF scene objects
+    - Applies brand package styling (colors, fonts, logos)
+    - Assigns pre-built components (BrandIntro, BrandOutro, TitleCard)
+    - Embeds asset paths from the AssetManifest
+    - Validates the result against the SCF schema
+
+    Args:
+        brand: BrandPackage to apply (None for defaults)
+        pipeline: Pipeline type name (e.g., "animated-explainer")
+        output_profile: Override output profile (width/height/fps)
+    """
+
+    def __init__(
+        self,
+        brand: Any = None,
+        pipeline: str = "animated-explainer",
+        output_profile: dict[str, Any] | None = None,
+    ):
+        self.brand = brand
+        self.pipeline = pipeline
+        self.output_profile = output_profile or dict(DEFAULT_PROFILE)
+
+    def from_scenario(
+        self,
+        scenario: dict[str, Any],
+        assets: AssetManifest | None = None,
+    ) -> dict[str, Any]:
+        """Generate an SCF document from a scenario + asset manifest.
+
+        Args:
+            scenario: Scenario JSON with title, company, scenes, etc.
+            assets: Generated asset file paths (images, narrations, clips)
+
+        Returns:
+            Complete SCF JSON document (dict)
+        """
+        assets = assets or AssetManifest()
+        scenes: list[dict[str, Any]] = []
+
+        # Brand intro scene
+        brand_props = self._brand_props(scenario)
+        scenes.append({
+            "id": "brand-intro",
+            "duration": scenario.get("intro_duration", 4),
+            "component": "BrandIntro",
+            "props": {
+                **brand_props,
+                "logoSrc": assets.brand_intro_image or brand_props.get("logoSrc", ""),
+                "companyName": scenario.get("company", brand_props.get("companyName", "Slate")),
+                "tagline": scenario.get("tagline", ""),
+            },
+            "transition": "crossfade",
+        })
+
+        # Content scenes
+        for scene_data in scenario.get("scenes", []):
+            scene_id = scene_data["id"]
+            scene = self._build_scene(scene_data, assets, brand_props)
+            scenes.append(scene)
+
+        # Brand outro scene
+        scenes.append({
+            "id": "brand-outro",
+            "duration": scenario.get("outro_duration", 4),
+            "component": "BrandOutro",
+            "props": {
+                **brand_props,
+                "logoSrc": assets.brand_outro_image or brand_props.get("logoSrc", ""),
+                "companyName": scenario.get("company", brand_props.get("companyName", "Slate")),
+            },
+            "transition": "fadeOut",
+        })
+
+        # Assemble SCF
+        scf: dict[str, Any] = {
+            "version": "1.0",
+            "pipeline": self.pipeline,
+            "outputProfile": self.output_profile,
+            "scenes": scenes,
+        }
+
+        if self.brand and self.brand.name != "default":
+            scf["brandPackage"] = self.brand.name
+
+        # Music track
+        if assets.music_track:
+            scf["music"] = {
+                "src": assets.music_track,
+                "volume": 0.15,
+                "duck_on_narration": True,
+                "duck_level": 0.05,
+                "fade_in": 1,
+                "fade_out": 2,
+                "loop": True,
+            }
+
+        # Captions config from brand
+        scf["captions"] = self._caption_config()
+
+        # Metadata
+        source_components = {
+            scene.get("id"): scene.get("component")
+            for scene in scenario.get("scenes", [])
+            if scene.get("id") and scene.get("component")
+        }
+        scf["metadata"] = {
+            "title": scenario.get("title", "Untitled"),
+            "generated_by": "slate-scf-composer",
+            "scene_count": len(scenes),
+        }
+        if source_components:
+            scf["metadata"]["source_components"] = source_components
+
+        return scf
+
+    def _build_scene(
+        self,
+        scene_data: dict[str, Any],
+        assets: AssetManifest,
+        brand_props: dict[str, Any],
+    ) -> dict[str, Any]:
+        """Build a single SCF scene from scenario scene data."""
+        scene_id = scene_data["id"]
+        duration = scene_data.get("duration", 8)
+
+        component = scene_data.get("component")
+        if component:
+            scene: dict[str, Any] = {
+                "id": scene_id,
+                "duration": duration,
+                "component": component,
+                "props": scene_data.get("props", {}),
+                "transition": scene_data.get("transition", "crossfade"),
+            }
+            narration_path = assets.scene_narrations.get(scene_id, "")
+            if narration_path:
+                scene["narration"] = narration_path
+            return scene
+
+        # Check if this is a video clip scene
+        video_path = assets.scene_videos.get(scene_id)
+        if video_path:
+            return self._build_video_scene(scene_id, scene_data, video_path, assets, duration)
+
+        # Image + narration scene (default)
+        image_path = assets.scene_images.get(scene_id, "")
+        narration_path = assets.scene_narrations.get(scene_id, "")
+
+        layers: list[dict[str, Any]] = []
+
+        # Background image layer
+        if image_path:
+            layers.append({
+                "type": "image",
+                "src": image_path,
+            })
+
+        # Title overlay
+        title = scene_data.get("title", "")
+        if title:
+            layers.append({
+                "type": "text",
+                "content": title,
+                "style": "heading",
+                "animation": "fadeInUp",
+                "position": {"anchor": "top-center", "y": 0.1},
+            })
+
+        # Bullet points overlay
+        bullets = scene_data.get("bullet_points", [])
+        if bullets:
+            layers.append({
+                "type": "text",
+                "content": "\n".join(f"• {b}" for b in bullets),
+                "style": "body",
+                "animation": "fadeIn",
+                "position": {"anchor": "center-left", "x": 0.08, "y": 0.4},
+                "startTime": 1.5,
+            })
+
+        scene: dict[str, Any] = {
+            "id": scene_id,
+            "duration": duration,
+            "layers": layers,
+            "transition": scene_data.get("transition", "crossfade"),
+        }
+
+        if narration_path:
+            scene["narration"] = narration_path
+
+        return scene
+
+    def _build_video_scene(
+        self,
+        scene_id: str,
+        scene_data: dict[str, Any],
+        video_path: str,
+        assets: AssetManifest,
+        duration: float,
+    ) -> dict[str, Any]:
+        """Build a scene from a video clip."""
+        layers: list[dict[str, Any]] = [
+            {"type": "video", "src": video_path},
+        ]
+        scene: dict[str, Any] = {
+            "id": scene_id,
+            "duration": duration,
+            "layers": layers,
+            "transition": scene_data.get("transition", "crossfade"),
+        }
+        narration = assets.scene_narrations.get(scene_id)
+        if narration:
+            scene["narration"] = narration
+        return scene
+
+    def _brand_props(self, scenario: dict[str, Any]) -> dict[str, Any]:
+        """Extract brand-related props for component scenes."""
+        if self.brand:
+            return self.brand.to_scf_props()
+        # Fallback defaults from scenario
+        style = scenario.get("style", "tech-blue")
+        return {
+            "companyName": scenario.get("company", "Slate"),
+            "primaryColor": "#0078D4",
+            "accentColor": "#FFB900",
+            "backgroundColor": "#1A1A2E",
+            "textColor": "#FFFFFF",
+            "headingFont": "Inter",
+            "bodyFont": "Inter",
+        }
+
+    def _caption_config(self) -> dict[str, Any]:
+        """Generate caption config from brand package."""
+        config: dict[str, Any] = {
+            "style": "word-highlight",
+            "position": "bottom",
+            "fontSize": 24,
+            "maxWordsPerLine": 8,
+        }
+        if self.brand:
+            config["font"] = self.brand.body_font
+            config["color"] = self.brand.colors.text
+            config["highlightColor"] = self.brand.primary_color
+        return config
+
+    def validate(self, scf: dict[str, Any]) -> list[str]:
+        """Validate an SCF document. Returns list of error messages (empty = valid).
+
+        Performs structural validation without requiring jsonschema library.
+        """
+        errors: list[str] = []
+
+        if scf.get("version") != "1.0":
+            errors.append(f"Invalid version: {scf.get('version')} (expected '1.0')")
+
+        if "pipeline" not in scf:
+            errors.append("Missing required field: pipeline")
+
+        profile = scf.get("outputProfile", {})
+        for field_name in ("width", "height", "fps"):
+            if field_name not in profile:
+                errors.append(f"Missing outputProfile.{field_name}")
+
+        scenes = scf.get("scenes", [])
+        if not scenes:
+            errors.append("scenes array is empty")
+
+        seen_ids: set[str] = set()
+        for i, scene in enumerate(scenes):
+            sid = scene.get("id")
+            if not sid:
+                errors.append(f"Scene {i}: missing id")
+            elif sid in seen_ids:
+                errors.append(f"Scene {i}: duplicate id '{sid}'")
+            else:
+                seen_ids.add(sid)
+
+            if "duration" not in scene:
+                errors.append(f"Scene '{sid}': missing duration")
+            elif not (0.5 <= scene["duration"] <= 300):
+                errors.append(f"Scene '{sid}': duration {scene['duration']} out of range [0.5, 300]")
+
+            if not scene.get("component") and not scene.get("layers"):
+                errors.append(f"Scene '{sid}': must have either 'component' or 'layers'")
+
+        return errors
+
+    def write(self, scf: dict[str, Any], path: str | Path) -> Path:
+        """Write SCF JSON to file. Returns the written path."""
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(scf, f, indent=2)
+        logger.info("SCF written to %s (%d scenes)", path, len(scf.get("scenes", [])))
+        return path
+
+    def total_duration(self, scf: dict[str, Any]) -> float:
+        """Calculate total video duration from SCF."""
+        return sum(s.get("duration", 0) for s in scf.get("scenes", []))

@@ -1,0 +1,35 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "bookings-public-page-10s",
+      "duration": 10,
+      "component": "BookingsScene",
+      "props": {
+        "variant": "public-page",
+        "state": "default",
+        "orgName": "Contoso",
+        "serviceTitle": "30 minutes meeting",
+        "serviceBlurb": "Book time with me to discuss needs, explore solutions and collaborate efficiently.",
+        "monthLabel": "November 2026",
+        "selectedDate": "Tue, Nov 17",
+        "timeSlots": [
+          "9:00 AM",
+          "9:30 AM",
+          "10:00 AM",
+          "10:30 AM",
+          "11:00 AM",
+          "11:30 AM",
+          "1:00 PM",
+          "1:30 PM",
+          "2:00 PM",
+          "2:30 PM"
+        ],
+        "selectedSlot": "10:00 AM"
+      }
+    }
+  ]
+}

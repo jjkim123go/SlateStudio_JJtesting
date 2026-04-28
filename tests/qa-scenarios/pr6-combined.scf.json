@@ -1,0 +1,156 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — Combined smoke (one scene per component, no overlay composition)",
+    "purpose": "Render-gate proof: every PR 6 component renders end-to-end as a standalone scene. Per rubber-duck contract: no multi-component composition.",
+    "duration_target_seconds": 55
+  },
+  "scenes": [
+    {
+      "id": "c-event-opener",
+      "duration": 6,
+      "narrationStartSec": 0,
+      "component": "EventBranding",
+      "props": {
+        "style": "opener",
+        "eventName": "Microsoft Build 2026",
+        "series": "BRK Track",
+        "venue": "Seattle Convention Center",
+        "date": "May 6\u20138, 2026",
+        "sessionId": "BRK113",
+        "sponsorLockups": [
+          { "label": "Azure",         "logoSrc": "" },
+          { "label": "GitHub",        "logoSrc": "" },
+          { "label": "Visual Studio", "logoSrc": "" }
+        ]
+      }
+    },
+    {
+      "id": "c-presenter-bug",
+      "duration": 6,
+      "narrationStartSec": 0,
+      "component": "PresenterBug",
+      "props": {
+        "name": "Dr. Maya Patel",
+        "title": "Principal Engineer, Azure Container Apps",
+        "company": "Microsoft",
+        "pronouns": "she/her",
+        "placement": "bottom-left",
+        "social": [
+          { "label": "X",        "handle": "@mayapatel" },
+          { "label": "GitHub",   "handle": "mayapatel" },
+          { "label": "LinkedIn", "handle": "in/maya-patel-eng" }
+        ]
+      }
+    },
+    {
+      "id": "c-progress",
+      "duration": 5,
+      "narrationStartSec": 0,
+      "component": "ProgressBar",
+      "props": {
+        "style": "segmented",
+        "showNumbers": true,
+        "sections": [
+          { "id": "intro",   "label": "Introduction",       "shortLabel": "Intro",    "weight": 1 },
+          { "id": "concept", "label": "Core Concepts",      "shortLabel": "Concepts", "weight": 2 },
+          { "id": "demo",    "label": "Live Demo",          "shortLabel": "Demo",     "weight": 3 },
+          { "id": "qa",      "label": "Questions & Wrap-up","shortLabel": "Q&A",      "weight": 1 }
+        ],
+        "currentSectionId": "concept"
+      }
+    },
+    {
+      "id": "c-term",
+      "duration": 7,
+      "narrationStartSec": 0,
+      "component": "TerminologyCard",
+      "props": {
+        "term": "Idempotency",
+        "pronunciation": "eye-dem-POH-ten-see",
+        "definition": "Applying the operation multiple times yields the same result as applying it once.",
+        "analogy": "Like pressing an elevator call button repeatedly.",
+        "contextualExample": "PUT /users/42 with the same body is idempotent; POST /users is not.",
+        "doNotConfuseWith": [
+          { "label": "Pure functions",   "why": "Pure functions have no side effects." },
+          { "label": "Atomic operations","why": "Atomicity is all-or-nothing; idempotency is repeatability." }
+        ]
+      }
+    },
+    {
+      "id": "c-quiz",
+      "duration": 8,
+      "narrationStartSec": 0,
+      "component": "Quiz",
+      "props": {
+        "question": "Which HTTP verb is idempotent by spec?",
+        "options": [
+          { "id": "opt-post",   "label": "POST",   "explanation": "POST creates new resources — repeating creates duplicates." },
+          { "id": "opt-put",    "label": "PUT",    "explanation": "Correct — PUT replaces, so repeating is safe." },
+          { "id": "opt-patch",  "label": "PATCH",  "explanation": "PATCH is not guaranteed idempotent by spec." }
+        ],
+        "correctOptionId": "opt-put",
+        "mode": "single",
+        "revealAnswerAtSec": 4,
+        "scoreBadge": { "current": 4, "total": 5 }
+      }
+    },
+    {
+      "id": "c-terminal",
+      "duration": 12,
+      "narrationStartSec": 0,
+      "component": "TerminalCast",
+      "props": {
+        "title": "Deploying with az containerapp",
+        "shellTheme": "powershell",
+        "sessionBranding": { "event": "Microsoft Build 2026 — BRK113", "accentColor": "#0078D4" },
+        "commands": [
+          {
+            "prompt": "PS C:\\repo>",
+            "cmd": "az containerapp create --name web --image ghcr.io/contoso/web:1.0 --target-port 8080",
+            "output": [
+              "Creating Container App 'web'...",
+              "Provisioning revision 'web--xyz123'...",
+              "FQDN: web.kindforest-12345.eastus.azurecontainerapps.io"
+            ],
+            "focus": "out"
+          },
+          {
+            "prompt": "PS C:\\repo>",
+            "cmd": "az containerapp logs show --name web --follow",
+            "output": [
+              "[INFO] Listening on :8080",
+              "[INFO] GET /healthz 200 in 3ms"
+            ],
+            "focus": "out"
+          }
+        ],
+        "zoomMoments": [
+          { "commandIndex": 0, "scale": 1.35 }
+        ]
+      }
+    },
+    {
+      "id": "c-poll",
+      "duration": 8,
+      "narrationStartSec": 0,
+      "component": "AskTheAudience",
+      "props": {
+        "question": "Which deployment cadence does your team ship?",
+        "viz": "bars",
+        "pollState": "live",
+        "source": "Mentimeter",
+        "responseCount": 247,
+        "ctaNote": "Vote at menti.com \u2014 code 8421",
+        "results": [
+          { "label": "Multiple per day",  "pct": 18, "count": 44, "accent": "#10B981" },
+          { "label": "Daily",             "pct": 31, "count": 77, "accent": "#0078D4" },
+          { "label": "Weekly",            "pct": 36, "count": 89, "accent": "#7C3AED" },
+          { "label": "Monthly or slower", "pct": 15, "count": 37, "accent": "#F59E0B" }
+        ]
+      }
+    }
+  ]
+}

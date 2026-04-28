@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-app-fidelity",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "ppt-presenter-fullbleed-b1",
+      "duration": 5,
+      "component": "PowerPointScene",
+      "props": {
+        "mode": "present",
+        "filename": "",
+        "ribbonContentHtml": "",
+        "thumbnailsHtml": "",
+        "canvasHtml": "<div class=\"ppt-slide-fullbleed\" style=\"background:#1a365d;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-family:'Segoe UI',sans-serif\">\n  <div>\n    <div style=\"font-size:48px;font-weight:700;letter-spacing:-0.5px\">Q4 Business Review</div>\n    <div style=\"font-size:22px;color:rgba(255,255,255,0.8);margin-top:16px\">FY26 Strategy &amp; Execution</div>\n    <div style=\"margin-top:36px;font-size:15px;color:rgba(255,255,255,0.5)\">Product Engineering &bull; December 2025</div>\n  </div>\n</div>",
+        "notesText": "",
+        "statusPosition": ""
+      }
+    }
+  ]
+}

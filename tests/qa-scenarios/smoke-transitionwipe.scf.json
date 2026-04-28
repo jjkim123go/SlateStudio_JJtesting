@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "TransitionWipe smoke test",
+    "purpose": "Single-scene compile test for the TransitionWipe component."
+  },
+  "scenes": [
+    {
+      "id": "bridge",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "diagonal",
+        "color": "#0078D4",
+        "chapterNumber": "Chapter 02",
+        "chapterTitle": "Production Pipeline",
+        "style": "gradient"
+      }
+    }
+  ]
+}

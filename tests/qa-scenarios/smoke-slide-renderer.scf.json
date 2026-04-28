@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "smoke-slide-renderer",
+    "title": "Smoke SlideRenderer"
+  },
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "slide-renderer",
+      "duration": 4,
+      "component": "SlideRenderer",
+      "props": {
+        "layout": "title-bullets",
+        "eyebrow": "Platform update",
+        "title": "Why this matters",
+        "subtitle": "A lightweight smoke test for the narration-first slide component.",
+        "bullets": "[\"**Reusable** scene layout for explainer narration\",\"Supports theme, pagination, and image slots\",\"Built for GSAP-on-master sequencing\"]",
+        "accent": "#2563eb",
+        "theme": "dark",
+        "pageNumber": 5,
+        "pageTotal": 12
+      }
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "metadata": {
+    "id": "pr5-section-divider",
+    "title": "PR 5 — SectionDivider smoke (all three styles, all background modes, progress)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "sd-minimal",
+      "duration": 4,
+      "component": "SectionDivider",
+      "props": {
+        "style": "minimal",
+        "chapterNumber": "01",
+        "totalChapters": 3,
+        "title": "How data enters the platform",
+        "subtitle": "Edge SDK · Ingest API · Bronze lake",
+        "backgroundMode": "gradient",
+        "gradientStopsJson": "[\"#0a0e27\",\"#1a1f3a\"]",
+        "brandPrimary": "#0078d4"
+      }
+    },
+    {
+      "id": "sd-cinematic",
+      "duration": 5,
+      "component": "SectionDivider",
+      "props": {
+        "style": "cinematic",
+        "chapterNumber": "02",
+        "totalChapters": 3,
+        "title": "Where governance lives",
+        "subtitle": "Classification · encryption · audit",
+        "backgroundMode": "solid",
+        "backgroundColor": "#111827",
+        "brandPrimary": "#7c3aed",
+        "numeralScaleStartSec": 0.30,
+        "titleWipeStartSec": 0.80,
+        "subtitleFadeStartSec": 1.60,
+        "progressTickStartSec": 2.10
+      }
+    },
+    {
+      "id": "sd-brand-ribbon",
+      "duration": 4,
+      "component": "SectionDivider",
+      "props": {
+        "style": "brand-ribbon",
+        "chapterNumber": "03",
+        "totalChapters": 3,
+        "title": "What the audit trail proves",
+        "subtitle": "Every gate, every classification, every handoff.",
+        "backgroundMode": "gradient",
+        "gradientStopsJson": "[\"#0f172a\",\"#1e293b\",\"#0f172a\"]",
+        "brandPrimary": "#22c55e"
+      }
+    }
+  ]
+}

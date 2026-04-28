@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "WebcamOverlay smoke test",
+    "purpose": "Single-scene compile test for the WebcamOverlay component (image variant)."
+  },
+  "scenes": [
+    {
+      "id": "presenter",
+      "duration": 4,
+      "component": "WebcamOverlay",
+      "props": {
+        "src": "assets/presenter.png",
+        "position": "bottom-right",
+        "size": "md",
+        "shape": "circle",
+        "borderColor": "#7c3aed",
+        "presenterName": "Sam Rivera",
+        "presenterTitle": "Solutions Engineer"
+      }
+    }
+  ]
+}

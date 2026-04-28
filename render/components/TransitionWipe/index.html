@@ -1,0 +1,47 @@
+<!--
+  TransitionWipe — full-screen chapter bridge. Wipe enters from one direction,
+  optional chapter card fades in centered, then wipe exits in the opposite
+  direction. Designed to look intentional, not glitchy.
+
+  Props consumed:
+    direction       "left-to-right" | "right-to-left" | "top-to-bottom"
+                    | "bottom-to-top" | "diagonal"  (default left-to-right)
+    color           CSS color (default brand primary)
+    chapterNumber   number (optional, e.g. 2)
+    chapterTitle    string (optional, e.g. "Production Pipeline")
+    style           "solid" | "stripes" | "gradient"  (default solid)
+-->
+<style>
+.scene-{{sceneId}} .twp-bg{position:absolute;inset:0;background:#000;overflow:hidden;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+
+/* Wipe panel — covers the viewport. Variants set the fill, JS sets initial position. */
+.scene-{{sceneId}} .twp-wipe{position:absolute;inset:0;background:var(--twp-color, #0078D4);will-change:transform;transform:translateX(-100%)}
+
+.scene-{{sceneId}} .twp-wipe[data-style="solid"]{background:var(--twp-color, #0078D4)}
+.scene-{{sceneId}} .twp-wipe[data-style="gradient"]{background:linear-gradient(135deg, var(--twp-color, #0078D4) 0%, rgba(0,0,0,0.6) 100%)}
+.scene-{{sceneId}} .twp-wipe[data-style="stripes"]{background:repeating-linear-gradient(45deg, var(--twp-color, #0078D4) 0 32px, rgba(0,0,0,0.18) 32px 64px)}
+
+/* Diagonal variant uses an oversized rotated panel so the rotation
+   never reveals page background at the edges. */
+.scene-{{sceneId}} .twp-wipe[data-direction="diagonal"]{
+  width:200%;height:200%;left:-50%;top:-50%;
+  transform:rotate(-12deg) translateX(-120%);
+  transform-origin:center;
+}
+
+/* Chapter card — centered, fades in mid-wipe */
+.scene-{{sceneId}} .twp-card{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;color:#fff;opacity:0;z-index:2;padding:0 80px}
+.scene-{{sceneId}} .twp-num{margin:0;font-size:28px;font-weight:600;letter-spacing:0.16em;text-transform:uppercase;opacity:0.85}
+.scene-{{sceneId}} .twp-num:empty{display:none}
+.scene-{{sceneId}} .twp-title{margin:0;font-size:96px;font-weight:800;line-height:1.05;letter-spacing:-0.02em;text-shadow:0 4px 24px rgba(0,0,0,0.35)}
+.scene-{{sceneId}} .twp-title:empty{display:none}
+.scene-{{sceneId}} .twp-rule{width:120px;height:4px;background:rgba(255,255,255,0.85);border-radius:2px;opacity:0}
+</style>
+<div class="twp-bg" data-scene-component="TransitionWipe" style="--twp-color: {{color}}">
+  <div class="twp-wipe" data-direction="{{direction}}" data-style="{{style}}"></div>
+  <div class="twp-card">
+    <p class="twp-num">{{chapterNumber}}</p>
+    <div class="twp-rule"></div>
+    <p class="twp-title">{{chapterTitle}}</p>
+  </div>
+</div>

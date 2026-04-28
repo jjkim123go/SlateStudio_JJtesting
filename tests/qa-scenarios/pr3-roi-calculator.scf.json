@@ -1,0 +1,36 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr3-roi-calculator",
+    "title": "PR 3 Smoke — ROICalculator (full props, minimal props)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "roi-full",
+      "duration": 14,
+      "component": "ROICalculator",
+      "props": {
+        "title": "Annual ROI from automation",
+        "inputsJson": "[{\"id\":\"users\",\"label\":\"Active users\",\"value\":12000,\"source\":\"license-export\"},{\"id\":\"hoursSaved\",\"label\":\"Hours saved / user / month\",\"value\":3.5},{\"id\":\"hourlyRate\",\"label\":\"Avg hourly rate\",\"value\":45,\"unit\":\"USD\"},{\"id\":\"licenseCost\",\"label\":\"Annual license cost\",\"value\":264000,\"unit\":\"USD\"}]",
+        "formulaJson": "{\"template\":\"(users × hoursSaved × hourlyRate × 12) − licenseCost\",\"tokens\":[{\"id\":\"users\",\"kind\":\"input\"},{\"id\":\"hoursSaved\",\"kind\":\"input\"},{\"id\":\"hourlyRate\",\"kind\":\"input\"},{\"id\":\"licenseCost\",\"kind\":\"input\"},{\"id\":\"result\",\"kind\":\"output\"}]}",
+        "resultJson": "{\"value\":1656000,\"unit\":\"USD/yr\",\"label\":\"Annual ROI\"}",
+        "stepsJson": "[{\"description\":\"Monthly user-hours recovered\",\"value\":42000},{\"description\":\"Annual savings at $45/hr\",\"value\":22680000},{\"description\":\"Minus license cost\",\"value\":-264000},{\"description\":\"Net annual benefit\",\"value\":1656000}]",
+        "sensitivityJson": "[{\"inputId\":\"users\",\"range\":[8000,16000],\"impact\":[1056000,2256000]},{\"inputId\":\"hoursSaved\",\"range\":[2,5],\"impact\":[1116000,2196000]}]",
+        "disclaimer": "Estimates based on customer-reported data. Actual results may vary."
+      }
+    },
+    {
+      "id": "roi-minimal",
+      "duration": 10,
+      "component": "ROICalculator",
+      "props": {
+        "title": "Cost savings from cloud migration",
+        "inputsJson": "[{\"id\":\"servers\",\"label\":\"On-prem servers retired\",\"value\":48},{\"id\":\"costPerServer\",\"label\":\"Annual cost per server\",\"value\":18500,\"unit\":\"USD\"},{\"id\":\"cloudSpend\",\"label\":\"Annual cloud spend\",\"value\":412000,\"unit\":\"USD\"}]",
+        "formulaJson": "{\"template\":\"(servers × costPerServer) − cloudSpend\",\"tokens\":[{\"id\":\"servers\",\"kind\":\"input\"},{\"id\":\"costPerServer\",\"kind\":\"input\"},{\"id\":\"cloudSpend\",\"kind\":\"input\"}]}",
+        "resultJson": "{\"value\":476000,\"unit\":\"USD/yr\",\"label\":\"Annual savings\"}"
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+<!--
+  TypewriterDissolve — full-screen bridge transition. A grid of monospace
+  character cells dissolves outgoing "text" left-to-right with a blinking
+  cursor, then retypes incoming characters with a ~200ms offset. Evokes a
+  retro terminal feel.
+
+  Props consumed:
+    color         CSS color for the text characters (default brand primary)
+    cursorColor   CSS color for the blinking cursor (default #fff)
+    cols          number of columns in the character grid (default 40)
+    rows          number of rows in the character grid (default 22)
+    deleteOffset  ms offset between delete and retype waves (default 200)
+-->
+<style>
+.scene-{{sceneId}} .td-root{position:absolute;inset:0;background:#0a0a0a;overflow:hidden;display:flex;align-items:center;justify-content:center}
+
+.scene-{{sceneId}} .td-grid{display:grid;gap:0;font-family:'Cascadia Code','Fira Code','Courier New',monospace;line-height:1;will-change:contents}
+
+.scene-{{sceneId}} .td-cell{display:flex;align-items:center;justify-content:center;color:var(--td-color,#0078D4);opacity:0;will-change:opacity;font-weight:500}
+
+.scene-{{sceneId}} .td-cursor{position:absolute;background:var(--td-cursor-color,#fff);will-change:transform,opacity;opacity:0}
+</style>
+<div class="td-root" data-scene-component="TypewriterDissolve" style="--td-color: {{color}}; --td-cursor-color: {{cursorColor}}" data-cols="{{cols}}" data-rows="{{rows}}" data-delete-offset="{{deleteOffset}}">
+  <div class="td-grid"></div>
+  <div class="td-cursor"></div>
+</div>

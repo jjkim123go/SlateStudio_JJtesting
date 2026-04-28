@@ -1,0 +1,225 @@
+<style>
+  .scene-{{sceneId}} .pb-root {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    width: min(28vw, 540px);
+    max-width: calc(100% - 96px);
+    min-height: clamp(104px, 12vh, 138px);
+    padding: 14px 20px 14px 14px;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(10, 18, 36, 0.90), rgba(20, 30, 55, 0.82));
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    box-shadow: 0 20px 56px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+    color: #f8fafc;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+    will-change: transform;
+    --pb-accent: #6dc8ff;
+    --pb-muted: rgba(226, 232, 240, 0.72);
+    --pb-muted-2: rgba(226, 232, 240, 0.54);
+  }
+
+  .scene-{{sceneId}} .pb-root.pb-no-social {
+    min-height: clamp(96px, 10.5vh, 122px);
+    padding-bottom: 12px;
+    padding-top: 12px;
+  }
+
+  .scene-{{sceneId}} .pb-avatar {
+    position: relative;
+    width: 78px;
+    height: 78px;
+    flex: 0 0 78px;
+    opacity: 0;
+    transform: scale(0.88);
+    will-change: transform, opacity;
+  }
+
+  .scene-{{sceneId}} .pb-avatar-svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+
+  .scene-{{sceneId}} .pb-avatar-bg {
+    fill: #0f4f8c;
+  }
+
+  .scene-{{sceneId}} .pb-avatar-ring {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.22);
+    stroke-width: 1.5;
+  }
+
+  .scene-{{sceneId}} .pb-avatar-image {
+    opacity: 0;
+  }
+
+  .scene-{{sceneId}} .pb-avatar-initials {
+    fill: #ffffff;
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .scene-{{sceneId}} .pb-content {
+    min-width: 0;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .scene-{{sceneId}} .pb-name-wrap,
+  .scene-{{sceneId}} .pb-title-wrap {
+    overflow: hidden;
+    min-width: 0;
+  }
+
+  .scene-{{sceneId}} .pb-name,
+  .scene-{{sceneId}} .pb-title-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    will-change: transform, opacity;
+  }
+
+  .scene-{{sceneId}} .pb-name {
+    margin: 0;
+    font-size: clamp(25px, 2vw, 30px);
+    line-height: 1.06;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .scene-{{sceneId}} .pb-title-line {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 1.28;
+    color: var(--pb-muted);
+  }
+
+  .scene-{{sceneId}} .pb-title {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .scene-{{sceneId}} .pb-pronouns {
+    flex: 0 0 auto;
+    font-size: 14px;
+    color: var(--pb-muted-2);
+    white-space: nowrap;
+  }
+
+  .scene-{{sceneId}} .pb-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    will-change: transform, opacity;
+  }
+
+  .scene-{{sceneId}} .pb-company {
+    min-width: 0;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--pb-accent);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .scene-{{sceneId}} .pb-social-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    will-change: transform, opacity;
+  }
+
+  .scene-{{sceneId}} .pb-social-label {
+    flex: 0 0 auto;
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--pb-muted-2);
+  }
+
+  .scene-{{sceneId}} .pb-social-handle {
+    min-width: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+
+<div class="pb-root"
+     data-scene-component="PresenterBug"
+     data-name="{{name}}"
+     data-title="{{title}}"
+     data-photo-src="{{photoSrc}}"
+     data-company="{{company}}"
+     data-pronouns="{{pronouns}}">
+  <div class="pb-avatar" aria-hidden="true">
+    <svg class="pb-avatar-svg" viewBox="0 0 78 78" role="presentation" focusable="false">
+      <defs>
+        <clipPath id="pb-avatar-clip-{{sceneId}}">
+          <circle cx="39" cy="39" r="39"></circle>
+        </clipPath>
+      </defs>
+      <circle class="pb-avatar-bg" cx="39" cy="39" r="39"></circle>
+      <image class="pb-avatar-image"
+             href="{{photoSrc}}"
+             width="78"
+             height="78"
+             clip-path="url(#pb-avatar-clip-{{sceneId}})"
+             preserveAspectRatio="xMidYMid slice"></image>
+      <circle class="pb-avatar-ring" cx="39" cy="39" r="38.25"></circle>
+      <text class="pb-avatar-initials" x="39" y="46" text-anchor="middle">{{name}}</text>
+    </svg>
+  </div>
+
+  <div class="pb-content">
+    <div class="pb-name-wrap">
+      <div class="pb-name">{{name}}</div>
+    </div>
+
+    <div class="pb-title-wrap">
+      <div class="pb-title-line">
+        <span class="pb-title">{{title}}</span>
+        <span class="pb-pronouns">{{pronouns}}</span>
+      </div>
+    </div>
+
+    <div class="pb-meta">
+      <div class="pb-company">{{company}}</div>
+    </div>
+
+    <div class="pb-social-row">
+      <span class="pb-social-label"></span>
+      <span class="pb-social-handle"></span>
+    </div>
+  </div>
+
+  <script type="application/json" id="pb-social-{{sceneId}}">{{{socialJson}}}</script>
+</div>

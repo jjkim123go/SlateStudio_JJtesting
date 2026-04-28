@@ -1,0 +1,1019 @@
+<!--
+  PowerPointScene — Wave A Chrome Shell (PR 10c)
+  Dual-mode: .ppt-mode-edit (full editing chrome) / .ppt-mode-present (full-bleed slide view)
+  CSS prefix isolation: every selector starts with .ppt-
+  Filled-icon SVG manifest: all icons use filled Fluent weight (PR 10b lesson #1)
+  Density calibrated from refs/powerpoint/02-deck-title-slide.png (PR 10b lesson #2)
+  Named chrome regions with data-slot attributes for Wave B (PR 10b lesson #3)
+-->
+<style data-component="PowerPointScene">
+/* ============================================================================
+   DENSITY SPEC — PowerPoint for Web Chrome Shell
+   Measured from reference screenshots (refs/powerpoint/02-deck-title-slide.png,
+   03-deck-content-slide.png). All values in CSS px at 1920×800 viewport.
+
+   Region               | Height | Font-size | Padding       | Notes
+   ---------------------|--------|-----------|---------------|---------------------------
+   Titlebar             | 32px   | 12px      | 0 12px        | App icon 20px, AutoSave toggle
+   Ribbon tabs strip    | 32px   | 13px      | 6px 14px      | Active: semibold + 2px bottom accent
+   Ribbon content       | 96px   | 11px      | 4px 6px       | Large icon 32px, small 16px
+   Ribbon group label   | 16px   | 10px      | 2px 8px       | Border-top 1px #e1dfdd
+   Ribbon group divider | 96px   | —         | 0 6px         | 1px solid #d2d0ce, 64px tall
+   Thumbnail rail       | flex   | 12px      | 8px 0 8px 8px | Width: 200px total
+   Thumb number col     | —      | 12px      | 0 6px 0 0     | Right-aligned, grey #a19f9d
+   Thumb card           | 16:9   | —         | 0             | 2px border, 3px radius
+   Selected thumb bdr   | —      | —         | —             | 2px solid #C43E1C (PPT accent)
+   Canvas area bg       | flex   | —         | 20px          | #e8e6e3
+   Canvas (slide)       | 16:9   | —         | —             | White, drop-shadow 0 4px 24px
+   Notes pane           | 36px   | 13px      | 8px 16px      | "Click to add notes"
+   Status bar           | 24px   | 12px      | 0 12px        | Slide N of M, zoom, view toggles
+   Status view icons    | 20px   | —         | 2px           | Normal/Sorter/Reading/SlideShow
+
+   Thumbnail aspect ratio: 16:9
+   Canvas aspect ratio: 16:9 within available space
+   PowerPoint accent (brand): #C43E1C (orange-red)
+   File tab background: #B7472A (darker)
+   Share button: #C43E1C
+   Ribbon surface: #f9f9f9
+   Rail / Status bg: #f3f2f1
+   Canvas area bg: #e8e6e3
+   Font stack: Segoe UI, system-ui, sans-serif
+============================================================================ */
+
+/* ── Theme tokens ── */
+.ppt-root {
+  --ppt-bg: #f3f2f1;
+  --ppt-surface: #ffffff;
+  --ppt-surface-hover: #f5f5f5;
+  --ppt-surface-active: #ebebeb;
+  --ppt-divider: #e1dfdd;
+  --ppt-divider-light: #edebe9;
+  --ppt-divider-strong: #c8c6c4;
+  --ppt-text-primary: #242424;
+  --ppt-text-secondary: #616161;
+  --ppt-text-tertiary: #a19f9d;
+  --ppt-text-disabled: #c8c6c4;
+  --ppt-text-on-accent: #ffffff;
+  --ppt-accent: #C43E1C;
+  --ppt-accent-dark: #B7472A;
+  --ppt-accent-hover: #D4522F;
+  --ppt-accent-light: rgba(196,62,28,0.08);
+  --ppt-blue: #0078d4;
+  --ppt-green: #107c10;
+  --ppt-canvas-bg: #e8e6e3;
+  --ppt-rail-bg: #f3f2f1;
+  --ppt-ribbon-bg: #f9f9f9;
+  --ppt-ribbon-content-bg: #f3f2f1;
+  --ppt-statusbar-bg: #f3f2f1;
+  --ppt-titlebar-bg: #f3f2f1;
+  --ppt-shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --ppt-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  --ppt-shadow-lg: 0 4px 24px rgba(0,0,0,0.15);
+  --ppt-font: 'Segoe UI', 'Segoe UI Web (West European)', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ppt-bg);
+  color: var(--ppt-text-primary);
+  font-family: var(--ppt-font);
+  font-size: 13px;
+  line-height: 1.4;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ── Edit mode (default) — all chrome visible ── */
+.ppt-root.ppt-mode-edit .ppt-titlebar { display: flex; }
+.ppt-root.ppt-mode-edit .ppt-ribbon-tabs { display: flex; }
+.ppt-root.ppt-mode-edit .ppt-ribbon-content { display: flex; }
+.ppt-root.ppt-mode-edit .ppt-statusbar { display: flex; }
+.ppt-root.ppt-mode-edit .ppt-notespane { display: flex; }
+.ppt-root.ppt-mode-edit .ppt-thumbnailrail { display: flex; }
+
+/* ── Present mode — slide fills viewport, chrome hidden ── */
+.ppt-root.ppt-mode-present .ppt-titlebar,
+.ppt-root.ppt-mode-present .ppt-ribbon-tabs,
+.ppt-root.ppt-mode-present .ppt-ribbon-content,
+.ppt-root.ppt-mode-present .ppt-statusbar,
+.ppt-root.ppt-mode-present .ppt-notespane,
+.ppt-root.ppt-mode-present .ppt-thumbnailrail {
+  display: none !important;
+}
+.ppt-root.ppt-mode-present .ppt-workspace {
+  flex: 1; display: flex;
+}
+.ppt-root.ppt-mode-present .ppt-canvas-area {
+  flex: 1; display: flex; flex-direction: column;
+  padding: 0; background: #000;
+}
+.ppt-root.ppt-mode-present .ppt-canvas-wrap {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.ppt-root.ppt-mode-present .ppt-canvas {
+  width: 100%; height: 100%;
+  max-width: 100%; border-radius: 0; box-shadow: none;
+}
+
+/* ── Titlebar (32px) ── */
+.ppt-titlebar {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 8px 0 10px;
+  background: var(--ppt-titlebar-bg);
+  flex-shrink: 0;
+  gap: 0;
+  font-size: 12px;
+  color: var(--ppt-text-secondary);
+  border-bottom: 1px solid var(--ppt-divider-light);
+}
+.ppt-titlebar-left {
+  display: flex; align-items: center; gap: 6px; min-width: 0; flex-shrink: 0;
+}
+.ppt-titlebar-icon {
+  width: 20px; height: 20px; flex: 0 0 20px;
+}
+.ppt-titlebar-icon svg { width: 100%; height: 100%; }
+.ppt-titlebar-autosave {
+  display: flex; align-items: center; gap: 4px; font-size: 11px;
+  color: var(--ppt-text-tertiary); padding: 0 4px;
+}
+.ppt-titlebar-autosave-toggle {
+  width: 28px; height: 14px; border-radius: 7px;
+  background: var(--ppt-divider-strong); position: relative;
+  display: inline-block;
+}
+.ppt-titlebar-autosave-toggle.ppt-on {
+  background: var(--ppt-green);
+}
+.ppt-titlebar-autosave-toggle::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #fff; transition: left 0.15s;
+}
+.ppt-titlebar-autosave-toggle.ppt-on::after { left: 16px; }
+.ppt-titlebar-qat {
+  display: flex; align-items: center; gap: 2px; margin-left: 4px;
+}
+.ppt-titlebar-qat-btn {
+  width: 24px; height: 24px; display: inline-flex;
+  align-items: center; justify-content: center;
+  border-radius: 3px; color: var(--ppt-text-secondary);
+}
+.ppt-titlebar-qat-btn:hover { background: var(--ppt-surface-hover); }
+.ppt-titlebar-qat-btn svg { width: 14px; height: 14px; }
+.ppt-titlebar-center {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  min-width: 0; gap: 8px; overflow: hidden;
+}
+.ppt-titlebar-filename {
+  font-size: 12px; color: var(--ppt-text-secondary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  max-width: 400px;
+}
+.ppt-titlebar-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; color: var(--ppt-text-tertiary);
+  padding: 1px 6px; border-radius: 2px;
+  background: rgba(0,0,0,0.04);
+}
+.ppt-titlebar-badge svg { width: 12px; height: 12px; }
+.ppt-titlebar-right {
+  display: flex; align-items: center; gap: 2px; margin-left: auto; flex-shrink: 0;
+}
+.ppt-titlebar-btn {
+  width: 28px; height: 24px; display: inline-flex;
+  align-items: center; justify-content: center;
+  border-radius: 3px; color: var(--ppt-text-secondary); font-size: 11px;
+}
+.ppt-titlebar-btn:hover { background: var(--ppt-surface-hover); }
+.ppt-titlebar-btn svg { width: 14px; height: 14px; }
+.ppt-titlebar-btn-labeled {
+  padding: 0 10px; gap: 5px; width: auto; white-space: nowrap;
+  display: inline-flex; align-items: center; font-size: 12px;
+  height: 24px; border-radius: 3px; color: var(--ppt-text-secondary);
+}
+.ppt-titlebar-share {
+  background: var(--ppt-accent); color: var(--ppt-text-on-accent);
+  border-radius: 4px; padding: 0 14px; height: 24px;
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 600;
+}
+.ppt-titlebar-share svg { width: 14px; height: 14px; }
+.ppt-titlebar-profile {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: #8764b8; display: inline-flex;
+  align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 600; flex: 0 0 24px;
+}
+.ppt-titlebar-winctl {
+  display: flex; align-items: center; gap: 0; margin-left: 4px;
+}
+.ppt-titlebar-winctl-btn {
+  width: 32px; height: 28px; display: inline-flex;
+  align-items: center; justify-content: center;
+  color: var(--ppt-text-secondary);
+}
+.ppt-titlebar-winctl-btn:hover { background: var(--ppt-surface-hover); }
+.ppt-titlebar-winctl-btn.ppt-close:hover { background: #c42b1c; color: #fff; }
+.ppt-titlebar-winctl-btn svg { width: 12px; height: 12px; }
+
+/* ── Ribbon tabs strip (32px) ── */
+.ppt-ribbon-tabs {
+  display: flex;
+  align-items: stretch;
+  height: 32px;
+  min-height: 32px;
+  padding: 0 4px;
+  background: var(--ppt-surface);
+  border-bottom: 1px solid var(--ppt-divider);
+  flex-shrink: 0;
+  gap: 0;
+}
+.ppt-ribbon-tab {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 0 14px; font-size: 13px; color: var(--ppt-text-primary);
+  cursor: default; position: relative; white-space: nowrap;
+}
+.ppt-ribbon-tab:hover { background: var(--ppt-surface-hover); }
+.ppt-ribbon-tab-active {
+  font-weight: 600;
+}
+.ppt-ribbon-tab-active::after {
+  content: ''; position: absolute; bottom: 0; left: 10px; right: 10px;
+  height: 2px; background: var(--ppt-accent); border-radius: 1px 1px 0 0;
+}
+.ppt-ribbon-tab-file {
+  background: var(--ppt-accent-dark); color: var(--ppt-text-on-accent);
+  padding: 0 18px; border-radius: 3px 3px 0 0; margin-right: 2px;
+  font-weight: 600;
+}
+.ppt-ribbon-tab-file:hover { background: var(--ppt-accent); }
+
+/* ── Ribbon content area (96px) ── */
+.ppt-ribbon-content {
+  display: flex;
+  align-items: stretch;
+  height: 96px;
+  min-height: 96px;
+  padding: 2px 6px;
+  background: var(--ppt-ribbon-content-bg);
+  border-bottom: 1px solid var(--ppt-divider);
+  flex-shrink: 0;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.ppt-ribbon-content::-webkit-scrollbar { height: 0; }
+.ppt-ribbon-group {
+  display: flex; flex-direction: column; position: relative;
+  padding: 0 6px; min-width: 0;
+}
+.ppt-ribbon-group-body {
+  display: flex; align-items: flex-start; gap: 2px;
+  flex: 1; padding: 2px 0;
+}
+.ppt-ribbon-group-label {
+  font-size: 10px; color: var(--ppt-text-tertiary);
+  text-align: center; padding: 1px 4px 2px;
+  border-top: 1px solid var(--ppt-divider);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ppt-ribbon-sep {
+  width: 1px; background: var(--ppt-divider-strong);
+  margin: 8px 4px; align-self: stretch; flex-shrink: 0;
+  opacity: 0.6;
+}
+.ppt-ribbon-btn-lg {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: flex-start; gap: 2px;
+  padding: 4px 8px 2px; min-width: 48px; border-radius: 3px;
+  cursor: default;
+}
+.ppt-ribbon-btn-lg:hover { background: var(--ppt-surface-hover); }
+.ppt-ribbon-btn-lg svg { width: 32px; height: 32px; color: var(--ppt-text-primary); }
+.ppt-ribbon-btn-lg .ppt-ribbon-btn-text {
+  font-size: 11px; color: var(--ppt-text-primary); white-space: nowrap;
+  text-align: center; line-height: 1.2;
+}
+.ppt-ribbon-btn-sm {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 3px; cursor: default;
+}
+.ppt-ribbon-btn-sm:hover { background: var(--ppt-surface-hover); }
+.ppt-ribbon-btn-sm svg { width: 16px; height: 16px; color: var(--ppt-text-primary); }
+.ppt-ribbon-btn-md {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 6px; height: 24px; border-radius: 3px;
+  font-size: 11px; color: var(--ppt-text-primary); cursor: default;
+  white-space: nowrap;
+}
+.ppt-ribbon-btn-md:hover { background: var(--ppt-surface-hover); }
+.ppt-ribbon-btn-md svg { width: 16px; height: 16px; }
+.ppt-ribbon-dropdown {
+  display: inline-flex; align-items: center;
+  height: 24px; padding: 0 6px; border: 1px solid var(--ppt-divider);
+  border-radius: 3px; font-size: 11px; color: var(--ppt-text-primary);
+  background: var(--ppt-surface); gap: 3px; min-width: 40px; cursor: default;
+}
+.ppt-ribbon-dropdown svg { width: 10px; height: 10px; color: var(--ppt-text-tertiary); }
+.ppt-ribbon-font-dropdown { min-width: 120px; }
+.ppt-ribbon-size-dropdown { min-width: 40px; }
+.ppt-ribbon-row {
+  display: flex; gap: 1px; align-items: center;
+}
+.ppt-ribbon-col {
+  display: flex; flex-direction: column; gap: 1px;
+}
+
+/* ── Workspace ── */
+.ppt-workspace {
+  flex: 1; display: flex; overflow: hidden; min-height: 0;
+}
+
+/* ── Thumbnail rail (200px) ── */
+.ppt-thumbnailrail {
+  width: 200px; min-width: 200px;
+  background: var(--ppt-rail-bg);
+  border-right: 1px solid var(--ppt-divider);
+  padding: 8px 0 8px 0;
+  flex-shrink: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ppt-thumbnailrail::-webkit-scrollbar { width: 6px; }
+.ppt-thumbnailrail::-webkit-scrollbar-track { background: transparent; }
+.ppt-thumbnailrail::-webkit-scrollbar-thumb { background: var(--ppt-divider-strong); border-radius: 3px; }
+.ppt-thumb-row {
+  display: flex; align-items: flex-start; gap: 4px;
+  padding: 0 8px 0 4px;
+}
+.ppt-thumb-num {
+  font-size: 12px; color: var(--ppt-text-tertiary);
+  min-width: 16px; text-align: right; padding-top: 2px;
+  flex-shrink: 0; line-height: 1;
+}
+.ppt-thumb {
+  flex: 1; aspect-ratio: 16/9;
+  background: var(--ppt-surface);
+  border-radius: 3px;
+  border: 2px solid transparent;
+  box-shadow: var(--ppt-shadow-sm);
+  overflow: hidden;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.ppt-thumb-selected {
+  border-color: var(--ppt-accent);
+}
+.ppt-thumb-content {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 8px; color: var(--ppt-text-tertiary);
+  padding: 4px; text-align: center; overflow: hidden;
+}
+
+/* ── Canvas area ── */
+.ppt-canvas-area {
+  flex: 1; display: flex; flex-direction: column;
+  min-width: 0; min-height: 0; overflow: hidden;
+}
+.ppt-canvas-wrap {
+  flex: 1; display: flex; align-items: center; justify-content: center;
+  padding: 20px; background: var(--ppt-canvas-bg); min-height: 0;
+}
+.ppt-canvas {
+  background: var(--ppt-surface);
+  border-radius: 2px;
+  box-shadow: var(--ppt-shadow-lg);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  max-width: calc(100% - 0px);
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  /* Maintain 16:9 within available space */
+}
+/* Fill available space while keeping 16:9 */
+@supports (aspect-ratio: 16/9) {
+  .ppt-canvas {
+    width: 100%; height: auto;
+    max-height: 100%;
+  }
+}
+
+/* ── Notes pane ── */
+.ppt-notespane {
+  height: 36px; min-height: 36px;
+  border-top: 1px solid var(--ppt-divider);
+  padding: 8px 16px;
+  font-size: 13px;
+  color: var(--ppt-text-tertiary);
+  background: var(--ppt-surface);
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+
+/* ── Status bar (24px) ── */
+.ppt-statusbar {
+  height: 24px; min-height: 24px;
+  background: var(--ppt-statusbar-bg);
+  border-top: 1px solid var(--ppt-divider);
+  display: flex; align-items: center;
+  padding: 0 12px;
+  font-size: 12px;
+  color: var(--ppt-text-secondary);
+  flex-shrink: 0;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ppt-statusbar-left {
+  display: flex; align-items: center; gap: 12px; min-width: 0;
+}
+.ppt-statusbar-right {
+  display: flex; align-items: center; gap: 4px; flex-shrink: 0;
+}
+.ppt-statusbar-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 20px; border-radius: 2px;
+  color: var(--ppt-text-secondary); cursor: default;
+}
+.ppt-statusbar-btn:hover { background: var(--ppt-surface-hover); }
+.ppt-statusbar-btn svg { width: 16px; height: 16px; }
+.ppt-statusbar-btn-active {
+  color: var(--ppt-text-primary); font-weight: 600;
+}
+.ppt-statusbar-label {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; color: var(--ppt-text-secondary); cursor: default;
+}
+.ppt-statusbar-label svg { width: 14px; height: 14px; }
+.ppt-statusbar-zoom {
+  display: flex; align-items: center; gap: 6px; margin-left: 8px;
+}
+.ppt-statusbar-zoom-track {
+  width: 80px; height: 3px; background: var(--ppt-divider-strong);
+  border-radius: 2px; position: relative;
+}
+.ppt-statusbar-zoom-thumb {
+  position: absolute; top: -3px; left: 50%;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--ppt-text-secondary); transform: translateX(-50%);
+}
+.ppt-statusbar-zoom-val {
+  font-size: 11px; color: var(--ppt-text-secondary); min-width: 30px;
+  text-align: center;
+}
+.ppt-statusbar-sep {
+  width: 1px; height: 14px; background: var(--ppt-divider);
+  margin: 0 4px; flex-shrink: 0;
+}
+
+/* ── Slide layout helper classes (Wave B composes these inside data-slot="canvas") ── */
+.ppt-slide-title {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: absolute; inset: 0;
+  padding: 10% 12%; text-align: center;
+}
+.ppt-slide-title .ppt-slide-heading {
+  font-size: 36px; font-weight: 700; line-height: 1.2; margin-bottom: 12px;
+}
+.ppt-slide-title .ppt-slide-subtitle {
+  font-size: 18px; font-weight: 400; opacity: 0.85; line-height: 1.4;
+}
+.ppt-slide-titleContent {
+  display: flex; flex-direction: column;
+  position: absolute; inset: 0;
+  padding: 5% 6%;
+}
+.ppt-slide-titleContent .ppt-slide-heading {
+  font-size: 28px; font-weight: 700; line-height: 1.2; margin-bottom: 16px;
+}
+.ppt-slide-titleContent .ppt-slide-body {
+  flex: 1; font-size: 16px; line-height: 1.5;
+}
+.ppt-slide-twoContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  position: absolute; inset: 0;
+  padding: 5% 5%;
+  gap: 3%;
+}
+.ppt-slide-twoContent .ppt-slide-heading {
+  grid-column: 1 / -1;
+  font-size: 28px; font-weight: 700; line-height: 1.2;
+}
+.ppt-slide-blank {
+  position: absolute; inset: 0;
+}
+.ppt-slide-fullbleed {
+  position: absolute; inset: 0;
+  display: flex; align-items: stretch; justify-content: stretch;
+  overflow: hidden;
+}
+.ppt-slide-fullbleed > * {
+  flex: 1; min-width: 0; min-height: 0;
+}
+
+/* ── Icon utility ── */
+.ppt-icon { display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ppt-icon svg { width: 100%; height: 100%; fill: currentColor; }
+.ppt-icon-12 { width: 12px; height: 12px; }
+.ppt-icon-14 { width: 14px; height: 14px; }
+.ppt-icon-16 { width: 16px; height: 16px; }
+.ppt-icon-20 { width: 20px; height: 20px; }
+.ppt-icon-32 { width: 32px; height: 32px; }
+
+/* ── Ribbon button color hint for font-color / highlight ── */
+.ppt-color-bar {
+  display: block; width: 14px; height: 3px;
+  border-radius: 1px; margin-top: 1px;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SVG ICON MANIFEST — FILLED WEIGHT (Fluent UI System Icons style)
+     PR 10b lesson: outline weights scored 14/21. ALL icons here are FILLED.
+     Every icon uses viewBox="0 0 20 20" fill="currentColor".
+     Wave B references icons as: <svg><use href="#ppt-icon-X"/></svg>
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden">
+<defs>
+
+<!-- paste: filled clipboard with paper -->
+<symbol id="ppt-icon-paste" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M7.085 3A1.5 1.5 0 018.5 2h3a1.5 1.5 0 011.415 1H14.5A1.5 1.5 0 0116 4.5v12a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 014 16.5v-12A1.5 1.5 0 015.5 3h1.585zM8.5 3a.5.5 0 000 1h3a.5.5 0 000-1h-3z"/>
+</symbol>
+
+<!-- cut: filled scissors -->
+<symbol id="ppt-icon-cut" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M5.5 4a2.5 2.5 0 012.45 2.01L10 8.06l2.05-2.05A2.5 2.5 0 1114.5 9a2.48 2.48 0 01-1.55-.55L10.7 10.7l2.25 2.25A2.5 2.5 0 1114.5 16a2.5 2.5 0 01-2.45-2.01L10 11.94l-2.05 2.05A2.5 2.5 0 113 13.5a2.48 2.48 0 011.55.55L6.8 11.8l1.5-1.5-.3-.3-1.5 1.5L4.55 9.55A2.48 2.48 0 013 6.5 2.5 2.5 0 015.5 4zm0 1.5a1 1 0 100 2 1 1 0 000-2zm9 0a1 1 0 100 2 1 1 0 000-2zm-9 7a1 1 0 100 2 1 1 0 000-2zm9 0a1 1 0 100 2 1 1 0 000-2z"/>
+</symbol>
+
+<!-- copy: two overlapping filled rectangles -->
+<symbol id="ppt-icon-copy" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8 2a2 2 0 00-2 2v1H5a2 2 0 00-2 2v9a2 2 0 002 2h7a2 2 0 002-2v-1h1a2 2 0 002-2V4a2 2 0 00-2-2H8zm5 11V7a2 2 0 00-2-2H7V4a1 1 0 011-1h7a1 1 0 011 1v9a1 1 0 01-1 1h-1z"/>
+</symbol>
+
+<!-- format-painter: filled paint brush -->
+<symbol id="ppt-icon-format-painter" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M15 2H7a1 1 0 00-1 1v3a1 1 0 001 1h1v1.5a.5.5 0 00.5.5h1v7.5a1.5 1.5 0 003 0V9h1a.5.5 0 00.5-.5V7h1a1 1 0 001-1V3a1 1 0 00-1-1z"/>
+</symbol>
+
+<!-- bold: filled B letterform -->
+<symbol id="ppt-icon-bold" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M6 3.5A1.5 1.5 0 017.5 2h3a3.5 3.5 0 012.38 6.06A3.5 3.5 0 0111.5 15H7.5A1.5 1.5 0 016 13.5v-10zM9 9v3.5h2.5a1.5 1.5 0 000-3H9zm0-2h2a1.5 1.5 0 000-3H9v3z"/>
+</symbol>
+
+<!-- italic: filled I letterform -->
+<symbol id="ppt-icon-italic" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8 3a1 1 0 011-1h4a1 1 0 110 2h-1.28l-2.44 12H11a1 1 0 110 2H7a1 1 0 110-2h1.28l2.44-12H9a1 1 0 01-1-1z"/>
+</symbol>
+
+<!-- underline: filled U with line below -->
+<symbol id="ppt-icon-underline" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M6 3a1 1 0 012 0v6a2 2 0 104 0V3a1 1 0 112 0v6a4 4 0 11-8 0V3zm-1 13a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"/>
+</symbol>
+
+<!-- strikethrough: filled S with line -->
+<symbol id="ppt-icon-strikethrough" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M7.5 3A3.5 3.5 0 004 6.5a1 1 0 002 0A1.5 1.5 0 017.5 5h2A1.5 1.5 0 0111 6.5c0 .53-.2.87-.55 1.15-.2.16-.43.3-.7.43L9 8.5H3a1 1 0 000 2h6.25c.38.19.67.36.9.56.35.28.55.62.55 1.15v.29A1.5 1.5 0 019.2 14H7.5A1.5 1.5 0 016 12.5a1 1 0 00-2 0A3.5 3.5 0 007.5 16h1.7a3.5 3.5 0 003.5-3.5v-.29c0-.41-.08-.78-.22-1.12H17a1 1 0 100-2h-2.47A3.73 3.73 0 0013 6.5 3.5 3.5 0 009.5 3h-2z"/>
+</symbol>
+
+<!-- font-color: A with colored bar -->
+<symbol id="ppt-icon-font-color" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8.12 3.88a1 1 0 011.76 0l3.93 7.86a1 1 0 01-1.79.9L11.11 11H8.89l-.91 1.63a1 1 0 01-1.79-.9l3.93-7.86zM10 6.24L9.05 9h1.9L10 6.24z"/>
+  <rect fill="#C43E1C" x="4" y="14" width="12" height="3" rx="1"/>
+</symbol>
+
+<!-- highlight: marker with colored bar -->
+<symbol id="ppt-icon-highlight" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12.85 2.15a.5.5 0 01.7 0l4.3 4.3a.5.5 0 010 .7L9.5 15.5 4.5 16l.5-5 7.85-8.85zM6.21 11.79L5.5 14.5l2.71-.71-2-2z"/>
+  <rect fill="#FFFF00" x="3" y="15" width="14" height="3" rx="1"/>
+</symbol>
+
+<!-- align-left: 4 horizontal bars, left-aligned -->
+<symbol id="ppt-icon-align-left" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h10a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h8a1 1 0 110 2H3a1 1 0 01-1-1z"/>
+</symbol>
+
+<!-- align-center: 4 bars centered -->
+<symbol id="ppt-icon-align-center" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm3 4a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1zm-3 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm3 4a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z"/>
+</symbol>
+
+<!-- align-right: 4 bars right-aligned -->
+<symbol id="ppt-icon-align-right" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm4 4a1 1 0 011-1h10a1 1 0 110 2H7a1 1 0 01-1-1zm-4 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm6 4a1 1 0 011-1h6a1 1 0 110 2H9a1 1 0 01-1-1z"/>
+</symbol>
+
+<!-- align-justify: 4 equal bars -->
+<symbol id="ppt-icon-align-justify" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1zm0 4a1 1 0 011-1h14a1 1 0 110 2H3a1 1 0 01-1-1z"/>
+</symbol>
+
+<!-- bullets: 3 dots with lines -->
+<symbol id="ppt-icon-bullets" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4-2a1 1 0 100 2h10a1 1 0 100-2H7zM3 11.5a1.5 1.5 0 110-3 1.5 1.5 0 010 3zM7 9a1 1 0 000 2h10a1 1 0 100-2H7zM3 18a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4-2a1 1 0 100 2h10a1 1 0 100-2H7z"/>
+</symbol>
+
+<!-- numbering: 1,2,3 with lines -->
+<symbol id="ppt-icon-numbering" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4 2.5a.5.5 0 00-.82-.38L2 3.17V4h1V2.83l.18-.14A.5.5 0 004 2.5zM7 3a1 1 0 000 2h10a1 1 0 100-2H7zM2.5 7.5A.75.75 0 013.25 7H4v1.5H2.5v-.5h.75V7.5zm-.25 2h2a.25.25 0 010 .5H3.1l1.3 1.56a.5.5 0 01-.38.94H2.25a.25.25 0 010-.5H3.4l-1.3-1.56a.5.5 0 01.15-.94zM7 9a1 1 0 000 2h10a1 1 0 100-2H7zM2 14.5a1 1 0 011-1h1.5a.5.5 0 01.35.85L3.5 15.5h1a.5.5 0 010 1h-2a.5.5 0 01-.35-.85L3.5 14.5H3a0 0 0 00 0 0H2zM7 15a1 1 0 100 2h10a1 1 0 100-2H7z"/>
+</symbol>
+
+<!-- indent-inc: right arrow with lines -->
+<symbol id="ppt-icon-indent-inc" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 4.5a.5.5 0 01.5-.5H6a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5zm0 4a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5a.5.5 0 01-.5-.5zm0 4a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5a.5.5 0 01-.5-.5zm0 4a.5.5 0 01.5-.5H6a.5.5 0 010 1H2.5a.5.5 0 01-.5-.5zm8-7l4 3-4 3V9.5zm5 0H11v1h4v-1z"/>
+</symbol>
+
+<!-- indent-dec: left arrow with lines -->
+<symbol id="ppt-icon-indent-dec" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8 4.5a.5.5 0 01.5-.5h9a.5.5 0 010 1h-9a.5.5 0 01-.5-.5zm3 4a.5.5 0 01.5-.5h6a.5.5 0 010 1h-6a.5.5 0 01-.5-.5zm0 4a.5.5 0 01.5-.5h6a.5.5 0 010 1h-6a.5.5 0 01-.5-.5zm-3 4a.5.5 0 01.5-.5h9a.5.5 0 010 1h-9a.5.5 0 01-.5-.5zM7 9.5l-4 3 4 3V9.5z"/>
+</symbol>
+
+<!-- line-spacing: parallel lines with arrows between -->
+<symbol id="ppt-icon-line-spacing" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M7 4a1 1 0 011-1h9a1 1 0 110 2H8a1 1 0 01-1-1zm0 6a1 1 0 011-1h9a1 1 0 110 2H8a1 1 0 01-1-1zm0 6a1 1 0 011-1h9a1 1 0 110 2H8a1 1 0 01-1-1zM4 3l2 3H2l2-3zm0 14l-2-3h4l-2 3z"/>
+</symbol>
+
+<!-- new-slide: rectangle with plus -->
+<symbol id="ppt-icon-new-slide" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm6 3a1 1 0 011 1v2h2a1 1 0 110 2h-2v2a1 1 0 11-2 0v-2H7a1 1 0 110-2h2V7a1 1 0 011-1z"/>
+</symbol>
+
+<!-- layout: grid of rectangles -->
+<symbol id="ppt-icon-layout" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h14a1 1 0 001-1V4a1 1 0 00-1-1H3zm0 2h14v3H3V5zm0 5h6v5H3v-5zm8 0h6v5h-6v-5z"/>
+</symbol>
+
+<!-- reset: circular refresh arrow -->
+<symbol id="ppt-icon-reset" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 3a7 7 0 00-7 7h2a5 5 0 019.54-2.05l-2.04.55 5 1.5.5-5.25-2.04.55A7 7 0 0010 3zm7 7a5 5 0 01-9.54 2.05l2.04-.55-5-1.5-.5 5.25 2.04-.55A7 7 0 0017 10h-2z"/>
+</symbol>
+
+<!-- section: folder/section divider -->
+<symbol id="ppt-icon-section" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 5a2 2 0 012-2h4.586a1 1 0 01.707.293L10.586 4.586A1 1 0 0011.293 5H16a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V5z"/>
+</symbol>
+
+<!-- design-ideas: lightbulb filled -->
+<symbol id="ppt-icon-design-ideas" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 2a5.5 5.5 0 00-3 10.1V14a1.5 1.5 0 001.5 1.5h3A1.5 1.5 0 0013 14v-1.9A5.5 5.5 0 0010 2zm-1 14.5a.5.5 0 00.5.5h1a.5.5 0 00.5-.5v-.5H9v.5zM10 5a.75.75 0 01.75.75v2.75h2.75a.75.75 0 010 1.5h-2.75v2.25a.75.75 0 01-1.5 0V10H6.5a.75.75 0 010-1.5h2.75V5.75A.75.75 0 0110 5z"/>
+</symbol>
+
+<!-- transitions-icon: two overlapping slides -->
+<symbol id="ppt-icon-transitions" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 4a1 1 0 011-1h8a1 1 0 011 1v7a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm5 3a1 1 0 00-1 1v7a1 1 0 001 1h8a1 1 0 001-1V8a1 1 0 00-1-1H8z" opacity=".85"/>
+</symbol>
+
+<!-- animations-icon: star with motion lines -->
+<symbol id="ppt-icon-animations" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 1.5l2.18 4.41 4.87.71-3.52 3.43.83 4.85L10 12.65l-4.36 2.25.83-4.85L3 6.62l4.87-.71L10 1.5zM2 9a.5.5 0 010-1h2a.5.5 0 010 1H2zm14 0a.5.5 0 010-1h2a.5.5 0 010 1h-2z"/>
+</symbol>
+
+<!-- slideshow-from-start: play from 1 -->
+<symbol id="ppt-icon-slideshow-from-start" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 4a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V4zm5 2.5v7a.75.75 0 001.15.63l5.5-3.5a.75.75 0 000-1.26l-5.5-3.5A.75.75 0 008 6.5z"/>
+</symbol>
+
+<!-- slideshow-from-current: play triangle -->
+<symbol id="ppt-icon-slideshow-from-current" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M6.5 3.5a1.5 1.5 0 012.35-1.24l8 5.5a1.5 1.5 0 010 2.48l-8 5.5A1.5 1.5 0 016.5 14.5v-11z"/>
+</symbol>
+
+<!-- record: filled circle -->
+<symbol id="ppt-icon-record" viewBox="0 0 20 20">
+  <circle fill="currentColor" cx="10" cy="10" r="7"/>
+</symbol>
+
+<!-- share: share/send arrow -->
+<symbol id="ppt-icon-share" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M13.5 3a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm-8 4a2.5 2.5 0 100 5 2.5 2.5 0 000-5zm8 4a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM12.09 6.78l-5.22 2.44a.5.5 0 01-.42-.9l5.22-2.45a.5.5 0 01.42.9zm-5.22 5.44l5.22 2.44a.5.5 0 01-.42.9l-5.22-2.45a.5.5 0 01.42-.9z"/>
+</symbol>
+
+<!-- comments: filled speech bubble -->
+<symbol id="ppt-icon-comments" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 2a8 8 0 00-8 8c0 1.87.64 3.59 1.72 4.95L2.2 17.8a.5.5 0 00.6.6l2.85-1.52A7.97 7.97 0 0010 18a8 8 0 000-16z"/>
+</symbol>
+
+<!-- autosave: cloud with check -->
+<symbol id="ppt-icon-autosave" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M5.5 5A4.5 4.5 0 001 9.5c0 1.95 1.24 3.61 2.97 4.23A3.5 3.5 0 007 16h7.5a3.5 3.5 0 001.37-6.72A4.5 4.5 0 005.5 5zm3.85 7.85l3-3a.5.5 0 00-.7-.7L9 11.79l-1.15-1.14a.5.5 0 00-.7.7l1.5 1.5a.5.5 0 00.7 0z"/>
+</symbol>
+
+<!-- search: magnifying glass -->
+<symbol id="ppt-icon-search" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M13.5352 14.5961C12.4267 15.4751 11.0246 16 9.5 16C5.91015 16 3 13.0899 3 9.5C3 5.91015 5.91015 3 9.5 3C13.0899 3 16 5.91015 16 9.5C16 11.0247 15.475 12.4268 14.596 13.5353L18.0302 16.9697C18.3231 17.2626 18.3231 17.7374 18.0302 18.0303C17.764 18.2966 17.3473 18.3208 17.0537 18.1029L16.9696 18.0303L13.5352 14.5961ZM14.5 9.5C14.5 6.73858 12.2614 4.5 9.5 4.5C6.73858 4.5 4.5 6.73858 4.5 9.5C4.5 12.2614 6.73858 14.5 9.5 14.5C12.2614 14.5 14.5 12.2614 14.5 9.5Z"/>
+</symbol>
+
+<!-- format-shape: filled rounded rectangle -->
+<symbol id="ppt-icon-format-shape" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M5 3a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2V5a2 2 0 00-2-2H5z" opacity=".35"/>
+  <rect fill="currentColor" x="6" y="6" width="8" height="8" rx="1"/>
+</symbol>
+
+<!-- arrange: stacked layers -->
+<symbol id="ppt-icon-arrange" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 2l7 3.5-7 3.5L3 5.5 10 2zm-5.5 7L10 11.5 15.5 9l1.5.75L10 13.5 3 9.75 4.5 9zm0 3.5L10 15 15.5 12.5l1.5.75L10 17 3 13.25l1.5-.75z"/>
+</symbol>
+
+<!-- fill: paint bucket -->
+<symbol id="ppt-icon-fill" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M12.05 3.29L8.4 6.93l-.4-.4a1 1 0 00-1.42 0l-4.24 4.24a1 1 0 000 1.42l4.24 4.24a1 1 0 001.42 0l4.24-4.24a1 1 0 000-1.42l-.4-.4 3.64-3.64a1 1 0 000-1.42l-2.01-2.01a1 1 0 00-1.42 0zM16 13c1.1 0 2 1.34 2 2.5S17.1 18 16 18s-2-1.34-2-2.5S14.9 13 16 13z"/>
+</symbol>
+
+<!-- outline: bordered square with pen -->
+<symbol id="ppt-icon-outline" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H4zM4.5 4.5h11v11h-11v-11z"/>
+  <path fill="currentColor" d="M14 9l-3.5 3.5L9 11l1.5-1.5L14 6v3z"/>
+</symbol>
+
+<!-- effects: sparkle/star effect -->
+<symbol id="ppt-icon-effects" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M7.5 2a.5.5 0 01.5.5V5h2.5a.5.5 0 010 1H8v2.5a.5.5 0 01-1 0V6H4.5a.5.5 0 010-1H7V2.5a.5.5 0 01.5-.5zm6 6a.5.5 0 01.5.45V11h2.5a.5.5 0 010 1H14v2.5a.5.5 0 01-1 0V12h-2.5a.5.5 0 010-1H13V8.5a.5.5 0 01.5-.5zM5 13a.5.5 0 01.5.5V15h1.5a.5.5 0 010 1H5.5v1.5a.5.5 0 01-1 0V16H3a.5.5 0 010-1h1.5v-1.5A.5.5 0 015 13z"/>
+</symbol>
+
+<!-- normal-view: slide with sidebar -->
+<symbol id="ppt-icon-normal-view" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 4a1 1 0 011-1h14a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V4zm1.5 1v10h3V5h-3zm4.5 0v10h8V5H8z"/>
+</symbol>
+
+<!-- sorter-view: 4-slide grid -->
+<symbol id="ppt-icon-sorter-view" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 3h6v6H3V3zm8 0h6v6h-6V3zM3 11h6v6H3v-6zm8 0h6v6h-6v-6z"/>
+</symbol>
+
+<!-- reading-view: document/book -->
+<symbol id="ppt-icon-reading-view" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 3a.5.5 0 01.5.5V16.5a.5.5 0 01-.78.42A6.48 6.48 0 007 16c-1.03 0-2 .24-2.87.66A.5.5 0 013 16.25V4.5A.5.5 0 013.5 4C5.3 4 7.1 4.4 8.5 5.5A8.79 8.79 0 0110 3zm.5 13.42A.5.5 0 0010.5 16V3.5a.5.5 0 01.22-.42A8.79 8.79 0 0112.5 5.5C13.9 4.4 15.7 4 17.5 4a.5.5 0 01.5.5v11.75a.5.5 0 01-.63.48A6.48 6.48 0 0014 16c-1.03 0-2.43.32-3.5.92z"/>
+</symbol>
+
+<!-- slideshow-view: projection screen -->
+<symbol id="ppt-icon-slideshow-view" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 3a1 1 0 00-1 1v9a1 1 0 001 1h6.5v2H7.5a.5.5 0 000 1h5a.5.5 0 000-1H10.5v-2H17a1 1 0 001-1V4a1 1 0 00-1-1H3zm4.5 4.5a.75.75 0 011.15-.63l3.5 2.25a.75.75 0 010 1.26l-3.5 2.25A.75.75 0 017.5 12V7.5z"/>
+</symbol>
+
+<!-- save: floppy disk -->
+<symbol id="ppt-icon-save" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 4.5A1.5 1.5 0 014.5 3h9.586a1.5 1.5 0 011.06.44l1.914 1.914a1.5 1.5 0 01.44 1.06V15.5a1.5 1.5 0 01-1.5 1.5h-12A1.5 1.5 0 013 15.5v-11zM7 3.5v3.25c0 .138.112.25.25.25h5.5a.25.25 0 00.25-.25V3.5H7zM6 12v4.5h8V12a1 1 0 00-1-1H7a1 1 0 00-1 1z"/>
+</symbol>
+
+<!-- undo: curved arrow left -->
+<symbol id="ppt-icon-undo" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4.5 7H12a4 4 0 110 8H8.5a.75.75 0 010-1.5H12a2.5 2.5 0 000-5H4.5l2.15 2.15a.75.75 0 11-1.06 1.06l-3.5-3.5a.75.75 0 010-1.06l3.5-3.5a.75.75 0 011.06 1.06L4.5 7z"/>
+</symbol>
+
+<!-- redo: curved arrow right -->
+<symbol id="ppt-icon-redo" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M15.5 7H8a4 4 0 100 8h3.5a.75.75 0 010 1.5H8A5.5 5.5 0 018 5.5h7.5l-2.15-2.15a.75.75 0 111.06-1.06l3.5 3.5a.75.75 0 010 1.06l-3.5 3.5a.75.75 0 11-1.06-1.06L15.5 7z"/>
+</symbol>
+
+<!-- chevron-down: small dropdown arrow -->
+<symbol id="ppt-icon-chevron-down" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4.22 6.22a.75.75 0 011.06 0L10 10.94l4.72-4.72a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0L4.22 7.28a.75.75 0 010-1.06z"/>
+</symbol>
+
+<!-- minimize: window minimize -->
+<symbol id="ppt-icon-minimize" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4 10h12v1.5H4z"/>
+</symbol>
+
+<!-- maximize: window maximize -->
+<symbol id="ppt-icon-maximize" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M3 5.25C3 4.00736 4.00736 3 5.25 3H14.75C15.9926 3 17 4.00736 17 5.25V14.75C17 15.9926 15.9926 17 14.75 17H5.25C4.00736 17 3 15.9926 3 14.75V5.25ZM5.25 4.5C4.83579 4.5 4.5 4.83579 4.5 5.25V14.75C4.5 15.1642 4.83579 15.5 5.25 15.5H14.75C15.1642 15.5 15.5 15.1642 15.5 14.75V5.25C15.5 4.83579 15.1642 4.5 14.75 4.5H5.25Z"/>
+</symbol>
+
+<!-- close: window close X -->
+<symbol id="ppt-icon-close" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4.09 4.09a.75.75 0 011.06 0L10 8.94l4.85-4.85a.75.75 0 111.06 1.06L11.06 10l4.85 4.85a.75.75 0 11-1.06 1.06L10 11.06l-4.85 4.85a.75.75 0 01-1.06-1.06L8.94 10 4.09 5.15a.75.75 0 010-1.06z"/>
+</symbol>
+
+<!-- lock: padlock filled -->
+<symbol id="ppt-icon-lock" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 2a4 4 0 00-4 4v2H5a1 1 0 00-1 1v7a2 2 0 002 2h8a2 2 0 002-2V9a1 1 0 00-1-1h-1V6a4 4 0 00-4-4zm-2 4a2 2 0 114 0v2H8V6z"/>
+</symbol>
+
+<!-- present-in-teams: people/screen icon -->
+<symbol id="ppt-icon-present-teams" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v7a2 2 0 01-2 2h-4.5v1.5H14a.5.5 0 010 1H6a.5.5 0 010-1h2.5V14H4a2 2 0 01-2-2V5z"/>
+</symbol>
+
+<!-- accessibility: person with arms out -->
+<symbol id="ppt-icon-accessibility" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 4.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM5.5 6a.75.75 0 000 1.5h3V10l-2.28 4.57a.75.75 0 001.34.67L10 10.67l2.44 4.57a.75.75 0 001.34-.67L11.5 10V7.5h3a.75.75 0 000-1.5h-9z"/>
+</symbol>
+
+<!-- notes: notepad icon -->
+<symbol id="ppt-icon-notes" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M4 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H4zm2 3h8a.5.5 0 010 1H6a.5.5 0 010-1zm0 3h8a.5.5 0 010 1H6a.5.5 0 010-1zm0 3h5a.5.5 0 010 1H6a.5.5 0 010-1z"/>
+</symbol>
+
+<!-- drawing: pen/draw icon -->
+<symbol id="ppt-icon-drawing" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M14.85 2.15a.5.5 0 01.7 0l2.3 2.3a.5.5 0 010 .7L6.5 16.5 2 18l1.5-4.5 11.35-11.35zM4.12 14.17l-.62 1.87 1.87-.62-.003-.003-1.247-1.247z"/>
+</symbol>
+
+<!-- editing: cursor/edit icon -->
+<symbol id="ppt-icon-editing" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M13.59 2.56a1.91 1.91 0 012.7 2.7L6.97 14.58l-3.6.9.9-3.6 9.32-9.32zM2 17.25a.75.75 0 01.75-.75h14.5a.75.75 0 010 1.5H2.75a.75.75 0 01-.75-.75z"/>
+</symbol>
+
+<!-- dictate/voice: microphone -->
+<symbol id="ppt-icon-voice" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 2a3 3 0 00-3 3v4a3 3 0 006 0V5a3 3 0 00-3-3zM5 9a1 1 0 00-2 0 7 7 0 006 6.93V18a1 1 0 102 0v-2.07A7 7 0 0017 9a1 1 0 10-2 0 5 5 0 01-10 0z"/>
+</symbol>
+
+<!-- sensitivity: shield -->
+<symbol id="ppt-icon-sensitivity" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 1.5l7 3v5.5c0 4.14-2.88 7.34-7 8.5-4.12-1.16-7-4.36-7-8.5V4.5l7-3zm-.5 5a.5.5 0 011 0v4a.5.5 0 01-1 0v-4zm.5 7a.75.75 0 100-1.5.75.75 0 000 1.5z"/>
+</symbol>
+
+<!-- addins: puzzle piece -->
+<symbol id="ppt-icon-addins" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8.5 2A1.5 1.5 0 007 3.5V5H4.5A1.5 1.5 0 003 6.5V9h1.5A1.5 1.5 0 016 10.5 1.5 1.5 0 014.5 12H3v2.5A1.5 1.5 0 004.5 16H7v-1.5A1.5 1.5 0 018.5 13a1.5 1.5 0 011.5 1.5V16h2.5a1.5 1.5 0 001.5-1.5V12h1.5a1.5 1.5 0 000-3H14V6.5A1.5 1.5 0 0012.5 5H10V3.5A1.5 1.5 0 008.5 2z"/>
+</symbol>
+
+<!-- create-pdf: document with arrow -->
+<symbol id="ppt-icon-create-pdf" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414a1.5 1.5 0 00-.44-1.06L12.647 3.44A1.5 1.5 0 0011.586 3H6zm5 1.5V6a1 1 0 001 1h2.5L11 3.5zM7 11h6a.5.5 0 010 1H7a.5.5 0 010-1zm0 2h4a.5.5 0 010 1H7a.5.5 0 010-1z"/>
+</symbol>
+
+<!-- copilot: sparkle icon -->
+<symbol id="ppt-icon-copilot" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M10 2c.2 0 .38.12.46.3L12.3 7.7l5.4 1.84a.5.5 0 010 .94l-5.4 1.84-1.84 5.4a.5.5 0 01-.94 0l-1.84-5.4-5.4-1.84a.5.5 0 010-.94l5.4-1.84L9.54 2.3A.5.5 0 0110 2z"/>
+</symbol>
+
+<!-- zoom-in: magnifying glass with plus -->
+<symbol id="ppt-icon-zoom-in" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8.5 3a5.5 5.5 0 014.38 8.82l3.65 3.65a.75.75 0 01-1.06 1.06l-3.65-3.65A5.5 5.5 0 118.5 3zM8 6a.5.5 0 011 0v2h2a.5.5 0 010 1H9v2a.5.5 0 01-1 0V9H6a.5.5 0 010-1h2V6z"/>
+</symbol>
+
+<!-- zoom-out: magnifying glass with minus -->
+<symbol id="ppt-icon-zoom-out" viewBox="0 0 20 20">
+  <path fill="currentColor" d="M8.5 3a5.5 5.5 0 014.38 8.82l3.65 3.65a.75.75 0 01-1.06 1.06l-3.65-3.65A5.5 5.5 0 118.5 3zM6 8.5a.5.5 0 010-1h5a.5.5 0 010 1H6z"/>
+</symbol>
+
+</defs>
+</svg>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     PowerPointScene — Root container
+     Modes: .ppt-mode-edit (default) | .ppt-mode-present (full-bleed)
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="ppt-root ppt-mode-{{mode}}" data-scene-component="PowerPointScene">
+
+  <!-- ══════════════ TITLEBAR (32px) ══════════════ -->
+  <div class="ppt-titlebar">
+    <!-- Left: app icon + autosave + QAT -->
+    <div class="ppt-titlebar-left">
+      <!-- PowerPoint icon (orange P logo) -->
+      <div class="ppt-titlebar-icon">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="1" y="3" width="18" height="14" rx="2" fill="#C43E1C"/>
+          <text x="10" y="13" text-anchor="middle" font-size="10" font-weight="700" fill="#fff" font-family="Segoe UI,sans-serif">P</text>
+        </svg>
+      </div>
+      <!-- AutoSave toggle -->
+      <div class="ppt-titlebar-autosave">
+        <span class="ppt-titlebar-autosave-toggle ppt-on"></span>
+        <span>AutoSave</span>
+      </div>
+      <!-- Quick Access Toolbar -->
+      <div class="ppt-titlebar-qat">
+        <span class="ppt-titlebar-qat-btn"><svg><use href="#ppt-icon-save"/></svg></span>
+        <span class="ppt-titlebar-qat-btn"><svg><use href="#ppt-icon-undo"/></svg></span>
+        <span class="ppt-titlebar-qat-btn"><svg><use href="#ppt-icon-redo"/></svg></span>
+      </div>
+    </div>
+
+    <!-- Center: filename + badges -->
+    <div class="ppt-titlebar-center">
+      <span class="ppt-titlebar-filename" data-slot="filename">{{filename}}</span>
+      <span class="ppt-titlebar-badge">
+        <svg><use href="#ppt-icon-lock"/></svg>
+        Confidential
+      </span>
+      <span class="ppt-titlebar-badge" style="opacity:0.7">Last Modified: 01/15/2026</span>
+    </div>
+
+    <!-- Right: Search, Record, Present, Comments, Share, Profile, Window controls -->
+    <div class="ppt-titlebar-right">
+      <span class="ppt-titlebar-btn" title="Search"><svg><use href="#ppt-icon-search"/></svg></span>
+      <span class="ppt-titlebar-btn-labeled" title="Record">
+        <svg style="width:10px;height:10px;color:#d13438"><use href="#ppt-icon-record"/></svg>
+        <span>Record</span>
+      </span>
+      <span class="ppt-titlebar-btn-labeled" title="Present in Teams">
+        <svg style="width:14px;height:14px"><use href="#ppt-icon-present-teams"/></svg>
+        <span>Present in Teams</span>
+      </span>
+      <span class="ppt-titlebar-btn" title="Comments"><svg><use href="#ppt-icon-comments"/></svg></span>
+      <span class="ppt-titlebar-share" title="Share">
+        <svg><use href="#ppt-icon-share"/></svg>
+        Share
+      </span>
+      <span class="ppt-titlebar-profile" title="Profile">IB</span>
+      <span class="ppt-titlebar-winctl">
+        <span class="ppt-titlebar-winctl-btn" title="Minimize"><svg><use href="#ppt-icon-minimize"/></svg></span>
+        <span class="ppt-titlebar-winctl-btn" title="Maximize"><svg><use href="#ppt-icon-maximize"/></svg></span>
+        <span class="ppt-titlebar-winctl-btn ppt-close" title="Close"><svg><use href="#ppt-icon-close"/></svg></span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ══════════════ RIBBON TABS (32px) ══════════════ -->
+  <div class="ppt-ribbon-tabs">
+    <span class="ppt-ribbon-tab ppt-ribbon-tab-file">File</span>
+    <span class="ppt-ribbon-tab ppt-ribbon-tab-active">Home</span>
+    <span class="ppt-ribbon-tab">Insert</span>
+    <span class="ppt-ribbon-tab">Draw</span>
+    <span class="ppt-ribbon-tab">Design</span>
+    <span class="ppt-ribbon-tab">Transitions</span>
+    <span class="ppt-ribbon-tab">Animations</span>
+    <span class="ppt-ribbon-tab">Slide Show</span>
+    <span class="ppt-ribbon-tab">Record</span>
+    <span class="ppt-ribbon-tab">Review</span>
+    <span class="ppt-ribbon-tab">View</span>
+    <span class="ppt-ribbon-tab">Help</span>
+  </div>
+
+  <!-- ══════════════ RIBBON CONTENT (96px) — Default: Home tab ══════════════ -->
+  <div class="ppt-ribbon-content" data-slot="ribbon-content">{{{ribbonContentHtml}}}</div><!-- /ribbon-content -->
+
+  <!-- ══════════════ WORKSPACE ══════════════ -->
+  <div class="ppt-workspace">
+
+    <!-- ── Thumbnail Rail (200px) ── -->
+    <div class="ppt-thumbnailrail" data-slot="thumbnails">{{{thumbnailsHtml}}}</div>
+
+    <!-- ── Canvas Area ── -->
+    <div class="ppt-canvas-area">
+      <div class="ppt-canvas-wrap">
+        <!-- Slide canvas — Wave B fills via data-slot="canvas" -->
+        <div class="ppt-canvas" data-slot="canvas">{{{canvasHtml}}}</div>
+      </div>
+
+      <!-- Notes pane — Wave B fills via data-slot="notes" -->
+      <div class="ppt-notespane" data-slot="notes">{{notesText}}</div>
+    </div>
+
+  </div><!-- /workspace -->
+
+  <!-- ══════════════ STATUS BAR (24px) ══════════════ -->
+  <div class="ppt-statusbar">
+    <div class="ppt-statusbar-left">
+      <span class="ppt-statusbar-label" data-slot="status-position">{{statusPosition}}</span>
+      <span class="ppt-statusbar-sep"></span>
+      <span class="ppt-statusbar-label" title="Accessibility">
+        <svg style="width:14px;height:14px"><use href="#ppt-icon-accessibility"/></svg>
+        Accessibility: Investigate
+      </span>
+      <span class="ppt-statusbar-sep"></span>
+      <span class="ppt-statusbar-label" title="Language">English (US)</span>
+    </div>
+    <div class="ppt-statusbar-right">
+      <span class="ppt-statusbar-label" title="Notes">
+        <svg style="width:14px;height:14px"><use href="#ppt-icon-notes"/></svg>
+        Notes
+      </span>
+      <span class="ppt-statusbar-label" title="Comments">
+        <svg style="width:14px;height:14px"><use href="#ppt-icon-comments"/></svg>
+      </span>
+      <span class="ppt-statusbar-sep"></span>
+      <span class="ppt-statusbar-btn ppt-statusbar-btn-active" title="Normal View">
+        <svg><use href="#ppt-icon-normal-view"/></svg>
+      </span>
+      <span class="ppt-statusbar-btn" title="Slide Sorter">
+        <svg><use href="#ppt-icon-sorter-view"/></svg>
+      </span>
+      <span class="ppt-statusbar-btn" title="Reading View">
+        <svg><use href="#ppt-icon-reading-view"/></svg>
+      </span>
+      <span class="ppt-statusbar-btn" title="Slide Show">
+        <svg><use href="#ppt-icon-slideshow-view"/></svg>
+      </span>
+      <span class="ppt-statusbar-sep"></span>
+      <span class="ppt-statusbar-zoom">
+        <span class="ppt-statusbar-btn" title="Zoom Out"><svg style="width:14px;height:14px"><use href="#ppt-icon-zoom-out"/></svg></span>
+        <span class="ppt-statusbar-zoom-track">
+          <span class="ppt-statusbar-zoom-thumb" style="left:58%"></span>
+        </span>
+        <span class="ppt-statusbar-btn" title="Zoom In"><svg style="width:14px;height:14px"><use href="#ppt-icon-zoom-in"/></svg></span>
+        <span class="ppt-statusbar-zoom-val">58%</span>
+      </span>
+    </div>
+  </div>
+
+</div><!-- /ppt-root -->

@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "Disclaimer Smoke — full-width-footer",
+    "description": "Single Disclaimer scene with full-width-footer placement, financial severity, external audience, markdown text.",
+    "author": "Slate QA — PR5 Lane B"
+  },
+  "scenes": [
+    {
+      "id": "dcl-footer-smoke",
+      "component": "Disclaimer",
+      "duration": 10,
+      "props": {
+        "text": "Past performance is **not indicative** of future results.\nAll figures shown are *illustrative only* and do not represent actual customer outcomes.",
+        "placement": "full-width-footer",
+        "severity": "financial",
+        "audience": "external",
+        "revealStartSec": 0.2,
+        "revealDurationSec": 0.5
+      }
+    }
+  ]
+}

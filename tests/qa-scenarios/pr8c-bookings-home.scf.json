@@ -1,0 +1,42 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "bookings-home-10s",
+      "duration": 10,
+      "component": "BookingsScene",
+      "props": {
+        "variant": "home",
+        "state": "default",
+        "accountInitial": "I",
+        "welcomeName": "Alex Johnson",
+        "welcomeSubtitle": "Work smarter with Bookings and skip the back and forth.",
+        "getStartedLabel": "0/3 Get started",
+        "personalTitle": "Personal booking page",
+        "personalSubtitle": "Easily share your availability with your own booking page.",
+        "meetingCards": [
+          {
+            "title": "15 minutes meeting",
+            "description": "Happy to connect. Feel free to book time with me so we can delve into any subject of your choice.",
+            "visibility": "Public",
+            "duration": "15 min",
+            "iconColor": "#0078D4"
+          },
+          {
+            "title": "30 minutes meeting",
+            "description": "Book time with me to discuss needs, explore solutions and collaborate efficiently.",
+            "visibility": "Public",
+            "duration": "30 min",
+            "iconColor": "#C50F1F"
+          }
+        ],
+        "sharedTitle": "Shared booking pages",
+        "sharedSubtitle": "Invite your team and get people to book time with you and your team.",
+        "sharedCards": []
+      }
+    }
+  ]
+}

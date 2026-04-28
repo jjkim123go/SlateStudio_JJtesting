@@ -1,0 +1,80 @@
+<style>
+.scene-{{sceneId}} .pa-root{
+  --pa-particle-color:{{particleColor}};
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  background:transparent;
+}
+.scene-{{sceneId}} .pa-stage{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.scene-{{sceneId}} .pa-assembly{
+  position:relative;
+  width:min(60vw,960px);
+  height:min(34vh,360px);
+  max-width:80vw;
+  max-height:48vh;
+}
+.scene-{{sceneId}} .pa-particle-layer{
+  position:absolute;
+  inset:0;
+}
+.scene-{{sceneId}} .pa-particle{
+  position:absolute;
+  top:0;
+  left:0;
+  opacity:0;
+  background:var(--pa-particle-color, #ffffff);
+  border-radius:999px;
+  will-change:transform,opacity,filter;
+  transform-origin:center;
+  box-shadow:0 0 10px rgba(255,255,255,0.18);
+}
+.scene-{{sceneId}} .pa-final,
+.scene-{{sceneId}} .pa-fallback{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  opacity:0;
+}
+.scene-{{sceneId}} .pa-final{
+  object-fit:contain;
+  will-change:transform,opacity,filter;
+}
+.scene-{{sceneId}} .pa-fallback{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18), transparent 48%), linear-gradient(135deg, rgba(15,23,42,0.92), rgba(30,41,59,0.74));
+  box-shadow:0 24px 64px rgba(15,23,42,0.42);
+  color:#ffffff;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:clamp(44px,8vw,104px);
+  font-weight:900;
+  letter-spacing:0.34em;
+  text-indent:0.34em;
+  text-transform:uppercase;
+}
+</style>
+<div class="pa-root" data-scene-component="ParticleAssemble"
+  data-pa-image-src="{{assembledImageSrc}}"
+  data-pa-particle-count="{{particleCount}}"
+  data-pa-particle-color="{{particleColor}}"
+  data-pa-assembly-duration="{{assemblyDuration}}">
+  <div class="pa-stage">
+    <div class="pa-assembly">
+      <div class="pa-particle-layer"></div>
+      <img class="pa-final" src="{{assembledImageSrc}}" alt="" />
+      <div class="pa-fallback">SLATE</div>
+    </div>
+  </div>
+</div>

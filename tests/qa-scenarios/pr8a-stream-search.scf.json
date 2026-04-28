@@ -1,0 +1,101 @@
+{
+  "version": "1.0",
+  "pipeline": "stream-player-smoke",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "stream-search-results",
+      "duration": 12,
+      "component": "StreamScene",
+      "props": {
+        "variant": "searchResults",
+        "videoTitle": "Q1 All-Hands: Roadmap & Customer Wins",
+        "videoOwner": "Avery Chen",
+        "videoDate": "Apr 12, 2026",
+        "videoDuration": "12:34",
+
+        "chapters": [
+          { "title": "Welcome",        "startSec": 0 },
+          { "title": "Customer wins",  "startSec": 3 },
+          { "title": "Roadmap themes", "startSec": 6.5 },
+          { "title": "Q&A",            "startSec": 10 }
+        ],
+        "chaptersJson": "[{\"title\":\"Welcome\",\"startSec\":0},{\"title\":\"Customer wins\",\"startSec\":3},{\"title\":\"Roadmap themes\",\"startSec\":6.5},{\"title\":\"Q&A\",\"startSec\":10}]",
+
+        "speakers": [
+          { "id": "avery",  "name": "Avery Chen",  "color": "#E3008C" },
+          { "id": "jordan", "name": "Jordan Park", "color": "#5059C9" },
+          { "id": "sam",    "name": "Sam Rivera",  "color": "#0078D4" },
+          { "id": "maya",   "name": "Maya Lopez",  "color": "#107C10" },
+          { "id": "tariq",  "name": "Tariq Quinn", "color": "#8764B8" }
+        ],
+        "speakersJson": "[{\"id\":\"avery\",\"name\":\"Avery Chen\",\"color\":\"#E3008C\"},{\"id\":\"jordan\",\"name\":\"Jordan Park\",\"color\":\"#5059C9\"},{\"id\":\"sam\",\"name\":\"Sam Rivera\",\"color\":\"#0078D4\"},{\"id\":\"maya\",\"name\":\"Maya Lopez\",\"color\":\"#107C10\"},{\"id\":\"tariq\",\"name\":\"Tariq Quinn\",\"color\":\"#8764B8\"}]",
+
+        "transcriptSegments": [
+          {
+            "id": "s1", "speakerId": "avery", "startSec": 0.4,
+            "words": [
+              { "w": "Welcome ",   "t0": 0.4, "t1": 0.85 },
+              { "w": "to ",        "t0": 0.85, "t1": 1.05 },
+              { "w": "the ",       "t0": 1.05, "t1": 1.25 },
+              { "w": "all-hands.", "t0": 1.25, "t1": 1.85 }
+            ]
+          },
+          {
+            "id": "s2", "speakerId": "jordan", "startSec": 2.0,
+            "words": [
+              { "w": "Contoso ",   "t0": 2.0, "t1": 2.45 },
+              { "w": "shipped ",   "t0": 2.45, "t1": 2.90 },
+              { "w": "their ",     "t0": 2.90, "t1": 3.10 },
+              { "w": "rollout ",   "t0": 3.10, "t1": 3.55 },
+              { "w": "early.",     "t0": 3.55, "t1": 4.00 }
+            ]
+          },
+          {
+            "id": "s3", "speakerId": "sam", "startSec": 4.2,
+            "words": [
+              { "w": "Adoption ",  "t0": 4.2, "t1": 4.70 },
+              { "w": "is ",        "t0": 4.70, "t1": 4.85 },
+              { "w": "up ",        "t0": 4.85, "t1": 5.05 },
+              { "w": "thirty ",    "t0": 5.05, "t1": 5.45 },
+              { "w": "percent.",   "t0": 5.45, "t1": 6.00 }
+            ]
+          },
+          {
+            "id": "s4", "speakerId": "maya", "startSec": 6.2,
+            "words": [
+              { "w": "Our ",       "t0": 6.2, "t1": 6.40 },
+              { "w": "next ",      "t0": 6.40, "t1": 6.65 },
+              { "w": "rollout ",   "t0": 6.65, "t1": 7.10 },
+              { "w": "targets ",   "t0": 7.10, "t1": 7.55 },
+              { "w": "EMEA.",      "t0": 7.55, "t1": 8.05 }
+            ]
+          },
+          {
+            "id": "s5", "speakerId": "tariq", "startSec": 8.3,
+            "words": [
+              { "w": "Engineering ", "t0": 8.3, "t1": 8.85 },
+              { "w": "is ",          "t0": 8.85, "t1": 9.00 },
+              { "w": "ready ",       "t0": 9.00, "t1": 9.30 },
+              { "w": "for ",         "t0": 9.30, "t1": 9.45 },
+              { "w": "rollout ",     "t0": 9.45, "t1": 9.90 },
+              { "w": "next ",        "t0": 9.90, "t1": 10.15 },
+              { "w": "Tuesday.",     "t0": 10.15, "t1": 10.75 }
+            ]
+          },
+          {
+            "id": "s6", "speakerId": "jordan", "startSec": 10.9,
+            "words": [
+              { "w": "Marketing ", "t0": 10.9, "t1": 11.35 },
+              { "w": "lines ",     "t0": 11.35, "t1": 11.55 },
+              { "w": "up ",        "t0": 11.55, "t1": 11.70 },
+              { "w": "the ",       "t0": 11.70, "t1": 11.80 },
+              { "w": "rollout ",   "t0": 11.80, "t1": 11.95 }
+            ]
+          }
+        ],
+        "transcriptSegmentsJson": "[{\"id\":\"s1\",\"speakerId\":\"avery\",\"startSec\":0.4,\"words\":[{\"w\":\"Welcome \",\"t0\":0.4,\"t1\":0.85},{\"w\":\"to \",\"t0\":0.85,\"t1\":1.05},{\"w\":\"the \",\"t0\":1.05,\"t1\":1.25},{\"w\":\"all-hands.\",\"t0\":1.25,\"t1\":1.85}]},{\"id\":\"s2\",\"speakerId\":\"jordan\",\"startSec\":2.0,\"words\":[{\"w\":\"Contoso \",\"t0\":2.0,\"t1\":2.45},{\"w\":\"shipped \",\"t0\":2.45,\"t1\":2.9},{\"w\":\"their \",\"t0\":2.9,\"t1\":3.1},{\"w\":\"rollout \",\"t0\":3.1,\"t1\":3.55},{\"w\":\"early.\",\"t0\":3.55,\"t1\":4.0}]},{\"id\":\"s3\",\"speakerId\":\"sam\",\"startSec\":4.2,\"words\":[{\"w\":\"Adoption \",\"t0\":4.2,\"t1\":4.7},{\"w\":\"is \",\"t0\":4.7,\"t1\":4.85},{\"w\":\"up \",\"t0\":4.85,\"t1\":5.05},{\"w\":\"thirty \",\"t0\":5.05,\"t1\":5.45},{\"w\":\"percent.\",\"t0\":5.45,\"t1\":6.0}]},{\"id\":\"s4\",\"speakerId\":\"maya\",\"startSec\":6.2,\"words\":[{\"w\":\"Our \",\"t0\":6.2,\"t1\":6.4},{\"w\":\"next \",\"t0\":6.4,\"t1\":6.65},{\"w\":\"rollout \",\"t0\":6.65,\"t1\":7.1},{\"w\":\"targets \",\"t0\":7.1,\"t1\":7.55},{\"w\":\"EMEA.\",\"t0\":7.55,\"t1\":8.05}]},{\"id\":\"s5\",\"speakerId\":\"tariq\",\"startSec\":8.3,\"words\":[{\"w\":\"Engineering \",\"t0\":8.3,\"t1\":8.85},{\"w\":\"is \",\"t0\":8.85,\"t1\":9.0},{\"w\":\"ready \",\"t0\":9.0,\"t1\":9.3},{\"w\":\"for \",\"t0\":9.3,\"t1\":9.45},{\"w\":\"rollout \",\"t0\":9.45,\"t1\":9.9},{\"w\":\"next \",\"t0\":9.9,\"t1\":10.15},{\"w\":\"Tuesday.\",\"t0\":10.15,\"t1\":10.75}]},{\"id\":\"s6\",\"speakerId\":\"jordan\",\"startSec\":10.9,\"words\":[{\"w\":\"Marketing \",\"t0\":10.9,\"t1\":11.35},{\"w\":\"lines \",\"t0\":11.35,\"t1\":11.55},{\"w\":\"up \",\"t0\":11.55,\"t1\":11.7},{\"w\":\"the \",\"t0\":11.7,\"t1\":11.8},{\"w\":\"rollout \",\"t0\":11.8,\"t1\":11.95}]}]"
+      }
+    }
+  ]
+}

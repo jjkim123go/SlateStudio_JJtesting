@@ -1,0 +1,37 @@
+{
+  "outgoingImageSrc": {
+    "type": "string",
+    "default": "",
+    "description": "Image for the outgoing scene (solid color fallback if absent)."
+  },
+  "incomingImageSrc": {
+    "type": "string",
+    "default": "",
+    "description": "Image for the incoming scene (solid color fallback if absent)."
+  },
+  "outgoingColor": {
+    "type": "string",
+    "default": "#1a1a2e",
+    "description": "CSS color for the outgoing layer when no image is provided."
+  },
+  "incomingColor": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS color for the incoming layer when no image is provided."
+  },
+  "flashColor": {
+    "type": "string",
+    "default": "#ffffff",
+    "description": "CSS color for the midpoint flash."
+  },
+  "flashDuration": {
+    "type": "number",
+    "default": 0.06,
+    "description": "Duration of the midpoint flash in seconds."
+  },
+  "maxBlur": {
+    "type": "number",
+    "default": 20,
+    "description": "Peak Gaussian blur in pixels during the depth zoom."
+  }
+}

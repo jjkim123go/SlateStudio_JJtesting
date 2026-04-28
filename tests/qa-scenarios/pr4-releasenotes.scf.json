@@ -1,0 +1,89 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr4-releasenotes",
+    "title": "PR 4 Smoke — ReleaseNotes (full GA + hotfix tolerance)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "rn-ga-full",
+      "duration": 10,
+      "component": "ReleaseNotes",
+      "props": {
+        "version": "v2.4.0",
+        "releaseDate": "2026-04-12",
+        "channel": "GA",
+        "themeVariant": "cards",
+        "features": [
+          {
+            "title": "Approval routing policies",
+            "body": "Teams can now target finance and engineering approvers with reusable routing presets and audit-ready conditions.",
+            "pill": "Flagship"
+          },
+          {
+            "title": "Variance workspace upgrades",
+            "body": "Drill-through views load faster and preserve filter state across analyst handoffs for weekly reconciliation review."
+          },
+          {
+            "title": "Release dashboard subscriptions",
+            "body": "Program managers can schedule digest snapshots directly to Teams and email without rebuilding scene templates."
+          }
+        ],
+        "fixes": [
+          {
+            "title": "Resolved duplicate notification sends when rollouts retried after timeout.",
+            "severity": "high"
+          },
+          {
+            "title": "Fixed inconsistent totals in exported governance summaries.",
+            "severity": "med"
+          }
+        ],
+        "breakingChanges": [
+          {
+            "title": "Legacy approval-policy IDs are removed from the public publish payload.",
+            "mitigation": "Regenerate payload contracts from the v2.4 SDK package or map old IDs to the new policyKey field before rollout."
+          }
+        ],
+        "links": [
+          {
+            "label": "Full changelog",
+            "url": "https://contoso.example/releases/v2-4-0"
+          },
+          {
+            "label": "Migration guide",
+            "url": "https://contoso.example/docs/v2-4-migration"
+          }
+        ]
+      }
+    },
+    {
+      "id": "rn-hotfix",
+      "duration": 8,
+      "component": "ReleaseNotes",
+      "props": {
+        "version": "v2.4.1",
+        "releaseDate": "2026-04-19",
+        "channel": "Hotfix",
+        "themeVariant": "ticker",
+        "features": [],
+        "fixes": [
+          {
+            "title": "Patched webhook retries to avoid duplicate release approvals.",
+            "severity": "high"
+          },
+          {
+            "title": "Stabilized export jobs after transient storage throttling.",
+            "severity": "med"
+          },
+          {
+            "title": "Corrected broken release note deep links in Teams digest cards.",
+            "severity": "low"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr4-okrstatus",
+    "title": "PR 4 Smoke — OKRStatus (full props + minimal)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "okr-full",
+      "duration": 10,
+      "component": "OKRStatus",
+      "props": {
+        "objective": "Launch enterprise-ready self-serve onboarding across regulated customers",
+        "owner": "Maya Thompson",
+        "timeframe": "Q1 FY26",
+        "status": "at-risk",
+        "confidenceNote": "Core activation metrics are moving, but SOC review and migration readiness still determine whether the quarter lands green.",
+        "themeMode": "cards",
+        "keyResults": [
+          {
+            "id": "1",
+            "title": "Reduce median time-to-first-value from 14 days to 5 days",
+            "baseline": 14,
+            "current": 8,
+            "target": 5,
+            "unit": "days",
+            "progressPct": 75,
+            "status": "on-track",
+            "sparkline": [14, 13, 12, 10, 9, 8],
+            "commentary": "Activation playbooks and guided setup removed the biggest early friction points."
+          },
+          {
+            "id": "2",
+            "title": "Migrate 18 lighthouse customers to the new provisioning flow",
+            "baseline": 0,
+            "current": 9,
+            "target": 18,
+            "unit": "accounts",
+            "status": "at-risk",
+            "sparkline": [1, 2, 4, 5, 7, 9],
+            "commentary": "Security questionnaires are slowing the final approval wave for three banks."
+          },
+          {
+            "id": "3",
+            "title": "Lift weekly admin active usage from 42% to 70%",
+            "baseline": 42,
+            "current": 51,
+            "target": 70,
+            "unit": "%",
+            "progressPct": 32,
+            "status": "off-track"
+          },
+          {
+            "id": "4",
+            "title": "Cut onboarding support escalations from 28 to 10 per month",
+            "baseline": 28,
+            "current": 16,
+            "target": 10,
+            "unit": "tickets",
+            "progressPct": 67,
+            "status": "on-track",
+            "sparkline": [28, 24, 21, 19, 17, 16]
+          }
+        ]
+      }
+    },
+    {
+      "id": "okr-minimal",
+      "duration": 7,
+      "component": "OKRStatus",
+      "props": {
+        "objective": "Prove the compact OKR snapshot mode",
+        "owner": "Jordan Lee",
+        "timeframe": "Q2 FY26",
+        "themeMode": "stacked-bars",
+        "keyResults": [
+          {
+            "id": "A",
+            "title": "Publish weekly roadmap updates within 24 hours of leadership review",
+            "current": 4,
+            "target": 6,
+            "unit": "updates",
+            "status": "on-track"
+          }
+        ]
+      }
+    }
+  ]
+}

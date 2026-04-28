@@ -1,0 +1,18 @@
+{
+  "direction": {
+    "type": "string",
+    "enum": ["flip-left", "flip-right", "flip-up", "flip-down"],
+    "default": "flip-left",
+    "description": "Flip direction — horizontal (left/right) or vertical (up/down)"
+  },
+  "color": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS accent color for the edge frame visible at the flip midpoint"
+  },
+  "perspective": {
+    "type": "number",
+    "default": 1200,
+    "description": "CSS perspective value in pixels (higher = flatter, lower = more dramatic)"
+  }
+}

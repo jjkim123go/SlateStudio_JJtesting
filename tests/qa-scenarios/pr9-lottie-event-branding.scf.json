@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr9-lottie-event-branding",
+    "title": "PR 9 Lane B — EventBranding with Lottie theme-art background"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "eb-lottie-bg",
+      "duration": 6,
+      "component": "EventBranding",
+      "props": {
+        "eventName": "Ignite 2026",
+        "date": "Nov 18–22, 2026",
+        "venue": "Seattle, WA",
+        "series": "Microsoft Ignite",
+        "sessionId": "BRK-4200",
+        "themeArtLottieSrc": "../../render/vendor/lottie-web/samples/checkmark.json",
+        "style": "opener"
+      }
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "loop-kanban-12s",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "kanbanBoard",
+        "pageTitle": "Q3 Engineering Board",
+        "pageMeta": "Updated just now · 9 cards",
+        "attendees": ["Avery Chen", "Jordan Park", "Sam Rivera", "Maya Lopez", "Tariq Quinn"],
+        "columns": [
+          { "name": "Backlog",     "count": 4, "tag": "planning" },
+          { "name": "In Progress", "count": 3, "tag": "active"   },
+          { "name": "Done",        "count": 2, "tag": "done"     }
+        ],
+        "cards": [
+          { "col": 0, "title": "Schema migration rev 0042", "assignee": "Jordan Park", "due": "Mon",   "tag": "infra"    },
+          { "col": 0, "title": "Retry policy: ingest path", "assignee": "Avery Chen",  "due": "Tue",   "tag": "infra"    },
+          { "col": 0, "title": "On-call doc refresh",       "assignee": "Tariq Quinn", "due": "Thu",   "tag": "docs"     },
+          { "col": 0, "title": "Sev3 postmortem #6021",     "assignee": "Sam Rivera",  "due": "Wed",   "tag": "review"   },
+          { "col": 1, "title": "Failover drill rehearsal",  "assignee": "Maya Lopez",  "due": "Today", "tag": "ops"      },
+          { "col": 1, "title": "PR #4421 review",           "assignee": "Avery Chen",  "due": "Today", "tag": "review"   },
+          { "col": 1, "title": "Telemetry triage Q3",       "assignee": "Jordan Park", "due": "Fri",   "tag": "data"     },
+          { "col": 2, "title": "Capacity plan v2",          "assignee": "Tariq Quinn", "due": "—",     "tag": "planning" },
+          { "col": 2, "title": "Auth rotation runbook",     "assignee": "Sam Rivera",  "due": "—",     "tag": "security" }
+        ],
+        "newCard": { "col": 0, "title": "Demo dry-run", "assignee": "Maya Lopez", "due": "Fri", "tag": "planning" },
+        "copilotSuggestions": [
+          "Add 'Demo dry-run' as follow-up?",
+          "Promote Backlog candidates to In Progress",
+          "Notify owners of moved cards"
+        ],
+        "liveCursor": { "name": "Avery", "accentHex": "#0078D4" }
+      }
+    }
+  ]
+}

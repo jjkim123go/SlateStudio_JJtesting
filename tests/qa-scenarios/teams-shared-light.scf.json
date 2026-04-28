@@ -1,0 +1,82 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-recording",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "teams-shared-light",
+      "duration": 12,
+      "component": "TeamsScene",
+      "props": {
+        "theme": "light",
+        "view": "shared",
+        "user": { "name": "Megan Bowen", "initials": "MB", "avatarColor": "#5B5FC7" },
+        "topBar": {
+          "currentTab": "chat",
+          "search": { "placeholder": "Search" }
+        },
+        "rail": {
+          "items": [
+            { "key": "activity", "label": "Activity", "badge": 3 },
+            { "key": "chat", "label": "Chat", "active": true, "badge": 12 },
+            { "key": "teams", "label": "Teams" },
+            { "key": "calendar", "label": "Calendar" },
+            { "key": "calls", "label": "Calls" },
+            { "key": "files", "label": "Files" }
+          ]
+        },
+        "navigator": {
+          "title": "Chat",
+          "filter": "Recent",
+          "actions": ["filter", "compose"],
+          "items": [
+            {
+              "type": "chat",
+              "kind": "oneOnOne",
+              "name": "Adele Vance",
+              "avatarColor": "#0078D4",
+              "presence": "online",
+              "lastMessage": "Sounds good — let's ship it.",
+              "time": "10:42",
+              "active": true
+            },
+            {
+              "type": "chat",
+              "kind": "group",
+              "name": "Mark 8 Project Team",
+              "lastMessage": "Diego: Updated the spec",
+              "time": "10:30"
+            }
+          ]
+        },
+        "contentHeader": {
+          "kind": "chat",
+          "title": "Adele Vance",
+          "subtitle": "Available",
+          "avatarColor": "#0078D4",
+          "tabs": [
+            { "label": "Chat" },
+            { "label": "Shared", "active": true },
+            { "label": "Activity" }
+          ]
+        },
+        "shared": {
+          "tabs": [
+            { "label": "All", "active": true },
+            { "label": "Files" },
+            { "label": "Links" },
+            { "label": "Photos" }
+          ],
+          "files": [
+            { "name": "Mark8-Dashboard-v2.fig", "type": "figma", "modified": "Today, 10:42 AM", "modifiedBy": "Adele Vance", "size": "4.2 MB" },
+            { "name": "Deployment-Plan-Q2.docx", "type": "word", "modified": "Today, 9:14 AM", "modifiedBy": "Megan Bowen", "size": "182 KB" },
+            { "name": "Pricing-Model.xlsx", "type": "excel", "modified": "Yesterday", "modifiedBy": "Diego Siciliani", "size": "98 KB" },
+            { "name": "Launch-Deck.pptx", "type": "powerpoint", "modified": "Apr 14", "modifiedBy": "Lynne Robbins", "size": "12.4 MB" },
+            { "name": "Brand-Guidelines.pdf", "type": "pdf", "modified": "Apr 13", "modifiedBy": "Pradeep Gupta", "size": "6.1 MB" },
+            { "name": "Mark 8 Project Team › Design", "type": "channel", "modified": "Apr 13", "modifiedBy": "Shared channel", "size": "—" }
+          ]
+        }
+      }
+    }
+  ]
+}

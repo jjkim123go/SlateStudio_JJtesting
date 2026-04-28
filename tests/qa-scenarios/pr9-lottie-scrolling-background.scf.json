@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr9-lottie-scrolling-background",
+    "title": "PR 9 Lane B — ScrollingBackground with Lottie tile layer"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "sb-lottie-tile",
+      "duration": 8,
+      "component": "ScrollingBackground",
+      "props": {
+        "direction": "left",
+        "loopSec": 10,
+        "noise": false,
+        "safeContrastMode": false,
+        "gradientStopsJson": "[\"#020617\",\"#1e293b\",\"#020617\"]",
+        "layers": [
+          { "type": "gradient", "color": "#7c3aed", "opacity": 0.5 },
+          { "type": "lottie", "src": "../../render/vendor/lottie-web/samples/checkmark.json", "opacity": 0.8, "loop": true, "speed": 1 }
+        ],
+        "childHtml": "<h1 style=\"font-size:64px;font-weight:800;color:#fff;text-align:center;font-family:Inter,sans-serif;\">Lottie Tiles</h1>"
+      }
+    }
+  ]
+}

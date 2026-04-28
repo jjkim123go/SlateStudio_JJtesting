@@ -1,0 +1,28 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr2-data-flow",
+    "title": "PR2 Smoke — DataFlow"
+  },
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "df-linear",
+      "duration": 12,
+      "component": "DataFlow",
+      "props": {
+        "title": "Customer telemetry — ingest to insight",
+        "mode": "linear",
+        "stagesJson": "[{\"id\":\"edge\",\"label\":\"Edge SDK\",\"systemType\":\"client\",\"classification\":\"internal\"},{\"id\":\"ingest\",\"label\":\"Ingest API\",\"systemType\":\"service\",\"classification\":\"internal\",\"region\":\"EU\"},{\"id\":\"lake\",\"label\":\"Bronze lake\",\"systemType\":\"storage\",\"classification\":\"confidential\",\"region\":\"EU\"},{\"id\":\"warehouse\",\"label\":\"Warehouse\",\"systemType\":\"warehouse\",\"classification\":\"confidential\",\"region\":\"EU\"},{\"id\":\"bi\",\"label\":\"BI tools\",\"systemType\":\"consumer\",\"classification\":\"internal\"}]",
+        "edgesJson": "[{\"from\":\"edge\",\"to\":\"ingest\",\"dataType\":\"events\",\"protocol\":\"HTTPS\",\"encrypted\":true},{\"from\":\"ingest\",\"to\":\"lake\",\"dataType\":\"raw events\",\"protocol\":\"Kafka\",\"encrypted\":true,\"gatedBy\":\"schema validation\"},{\"from\":\"lake\",\"to\":\"warehouse\",\"dataType\":\"curated tables\",\"protocol\":\"internal\",\"encrypted\":true,\"gatedBy\":\"PII scrubber\"},{\"from\":\"warehouse\",\"to\":\"bi\",\"dataType\":\"aggregates\",\"protocol\":\"ODBC\",\"encrypted\":false}]",
+        "legendJson": "{\"classifications\":[{\"label\":\"Internal\"},{\"label\":\"Confidential\"}],\"encryptionStates\":[{\"label\":\"Encrypted\",\"color\":\"#22c55e\"},{\"label\":\"Unencrypted\",\"color\":\"#f59e0b\"}]}",
+        "calloutsJson": "[{\"targetId\":\"lake\",\"text\":\"Bronze lake retains raw events for 30 days, then auto-purges.\"}]"
+      }
+    }
+  ]
+}

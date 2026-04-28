@@ -1,0 +1,237 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "Slate Phase II — Component Showcase",
+    "purpose": "Demonstrates every new Phase-II component (CalloutBox, WebcamOverlay, TransitionWipe, DataChart, SlideRenderer, ScreenDemoFrame, SplitScreen) in a coherent narrative.",
+    "duration_target_seconds": 75
+  },
+  "scenes": [
+    {
+      "id": "intro-slide",
+      "duration": 5,
+      "component": "SlideRenderer",
+      "props": {
+        "layout": "title-only",
+        "eyebrow": "PHASE II",
+        "title": "Seven new ways to tell a story",
+        "accent": "#0078D4",
+        "theme": "dark",
+        "pageNumber": 1,
+        "pageTotal": 7
+      }
+    },
+    {
+      "id": "wipe-1",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "left-to-right",
+        "color": "#0078D4",
+        "chapterNumber": "01",
+        "chapterTitle": "Slides that breathe",
+        "style": "solid"
+      }
+    },
+    {
+      "id": "slide-bullets",
+      "duration": 7,
+      "component": "SlideRenderer",
+      "props": {
+        "layout": "title-bullets",
+        "eyebrow": "Slide-style narration",
+        "title": "Three things SlideRenderer unlocks",
+        "bullets": "[\"Keynote-style frames without launching PowerPoint\",\"Bullets stagger in to match voiceover pacing\",\"Page numbers wire automatically into long-form decks\"]",
+        "accent": "#0078D4",
+        "theme": "dark",
+        "pageNumber": 2,
+        "pageTotal": 7
+      }
+    },
+    {
+      "id": "wipe-2",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "right-to-left",
+        "color": "#14b8a6",
+        "chapterNumber": "02",
+        "chapterTitle": "Numbers that move",
+        "style": "solid"
+      }
+    },
+    {
+      "id": "chart-bar",
+      "duration": 7,
+      "component": "DataChart",
+      "props": {
+        "chartType": "bar",
+        "title": "Revenue by region (FY24)",
+        "subtitle": "Bars grow in sequence so the audience reads the trend, not the snapshot.",
+        "labels": "[\"Americas\",\"EMEA\",\"APAC\",\"LATAM\"]",
+        "series": "[{\"name\":\"Revenue\",\"values\":[42.1,31.8,24.7,8.4],\"color\":\"#14b8a6\"}]",
+        "unit": "$B",
+        "showLegend": false,
+        "showGridlines": true,
+        "theme": "dark",
+        "animateOnEnter": true
+      }
+    },
+    {
+      "id": "chart-donut",
+      "duration": 6,
+      "component": "DataChart",
+      "props": {
+        "chartType": "donut",
+        "title": "Where engineering hours went last quarter",
+        "labels": "[\"Platform\",\"Product\",\"Reliability\",\"Research\"]",
+        "series": "[{\"name\":\"Hours\",\"values\":[38,29,21,12],\"color\":\"#0078D4\"}]",
+        "unit": "%",
+        "showLegend": true,
+        "theme": "dark",
+        "animateOnEnter": true
+      }
+    },
+    {
+      "id": "wipe-3",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "diagonal",
+        "color": "#7c3aed",
+        "chapterNumber": "03",
+        "chapterTitle": "Demos that frame themselves",
+        "style": "solid"
+      }
+    },
+    {
+      "id": "demo-frame-browser",
+      "duration": 6,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "browser",
+        "urlBar": "https://contoso.com/dashboard",
+        "windowTitle": "Contoso — Operations",
+        "theme": "dark",
+        "shadow": "medium",
+        "cornerRadius": 12,
+        "scale": 0.85
+      }
+    },
+    {
+      "id": "demo-frame-phone",
+      "duration": 5,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "phone-portrait",
+        "theme": "dark",
+        "shadow": "large",
+        "cornerRadius": 32,
+        "scale": 0.6
+      }
+    },
+    {
+      "id": "wipe-4",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "top-to-bottom",
+        "color": "#ef4444",
+        "chapterNumber": "04",
+        "chapterTitle": "Two truths, one frame",
+        "style": "solid"
+      }
+    },
+    {
+      "id": "split-before-after",
+      "duration": 7,
+      "component": "SplitScreen",
+      "props": {
+        "leftSrc": "",
+        "rightSrc": "",
+        "leftLabel": "Before",
+        "rightLabel": "After",
+        "leftCaption": "Five clicks to checkout, manual data entry",
+        "rightCaption": "One click to checkout, AI-suggested fields",
+        "orientation": "horizontal",
+        "ratio": 0.5,
+        "divider": "thin",
+        "theme": "dark",
+        "enterStyle": "simultaneous"
+      }
+    },
+    {
+      "id": "wipe-5",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "left-to-right",
+        "color": "#f59e0b",
+        "chapterNumber": "05",
+        "chapterTitle": "Annotations that earn their pixels",
+        "style": "solid"
+      }
+    },
+    {
+      "id": "callout-box",
+      "duration": 6,
+      "component": "CalloutBox",
+      "props": {
+        "targetX": 35,
+        "targetY": 55,
+        "anchor": "right",
+        "icon": "ℹ",
+        "title": "Cosmos DB write path",
+        "body": "Writes route by partition key, replicate across four regions, and acknowledge within 10ms p99.",
+        "theme": "dark",
+        "enterDelay": 0.5,
+        "holdDuration": 4.5
+      }
+    },
+    {
+      "id": "wipe-6",
+      "duration": 3,
+      "component": "TransitionWipe",
+      "props": {
+        "direction": "right-to-left",
+        "color": "#0078D4",
+        "chapterNumber": "06",
+        "chapterTitle": "Humans on screen",
+        "style": "solid"
+      }
+    },
+    {
+      "id": "webcam-overlay",
+      "duration": 6,
+      "component": "WebcamOverlay",
+      "props": {
+        "src": "",
+        "position": "bottom-right",
+        "size": "medium",
+        "shape": "circle",
+        "borderColor": "#0078D4",
+        "presenterName": "Ada Lovelace",
+        "presenterTitle": "VP, Platform Engineering"
+      }
+    },
+    {
+      "id": "outro-slide",
+      "duration": 6,
+      "component": "SlideRenderer",
+      "props": {
+        "layout": "quote",
+        "eyebrow": "Phase II shipping today",
+        "title": "Seven components. One coherent grammar.",
+        "quoteText": "Slate's job is to free the director to think about the story, not the toolchain.",
+        "quoteAttribution": "— Slate Design Principles, P1 (Agent-as-Director)",
+        "accent": "#0078D4",
+        "theme": "dark",
+        "pageNumber": 7,
+        "pageTotal": 7
+      }
+    }
+  ]
+}

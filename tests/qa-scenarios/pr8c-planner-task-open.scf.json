@@ -1,0 +1,62 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "planner-task-open-10s",
+      "duration": 10,
+      "component": "PlannerScene",
+      "props": {
+        "variant": "board",
+        "state": "task-open",
+        "planName": "Livesite – Radar Controls",
+        "breadcrumb": "My plans",
+        "activeTab": "Board",
+        "groupBy": "Bucket",
+        "accountInitial": "A",
+        "buckets": [
+          {
+            "name": "No bucket",
+            "hasHelpIcon": true,
+            "tasks": [
+              {
+                "title": "Confirm runbook owners for Cosmos rollover",
+                "recurrence": true,
+                "priority": "important",
+                "assignees": [{ "name": "Priya Singh" }]
+              }
+            ]
+          },
+          {
+            "name": "In progress",
+            "tasks": [
+              {
+                "title": "Migrate ingestion pipeline to v3 schema",
+                "assignees": [{ "name": "Owen Tanaka" }]
+              }
+            ]
+          }
+        ],
+        "selectedTask": {
+          "title": "Confirm runbook owners for Cosmos rollover",
+          "createdMeta": "Created by Aisha Mansour · 2 days ago",
+          "status": "Not started",
+          "priority": "important",
+          "startDate": "Apr 22, 2026",
+          "dueDate": "Apr 28, 2026",
+          "repeat": "Weekly on Monday",
+          "bucket": "No bucket",
+          "checklistItems": [
+            { "text": "Identify primary on-call for each region", "done": true },
+            { "text": "Verify secondary on-call coverage", "done": false },
+            { "text": "Confirm runbook URLs are current", "done": false }
+          ],
+          "notes": "Coordinate with the SRE rotation lead before Friday so handoff hits the next on-call cycle.",
+          "showChat": true
+        }
+      }
+    }
+  ]
+}

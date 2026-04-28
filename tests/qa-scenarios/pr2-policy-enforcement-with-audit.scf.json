@@ -1,0 +1,37 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "PolicyEnforcement + AuditTrail Cross-Component Smoke — PR2 Lane B",
+    "description": "Scene 1: AuditTrail with id 'audit-q3' and event id 'evt-3'. Scene 2: PolicyEnforcement with auditRef 'audit-q3#evt-3'. Validates the visual cross-reference contract.",
+    "author": "Slate QA"
+  },
+  "scenes": [
+    {
+      "id": "audit-q3",
+      "component": "AuditTrail",
+      "duration": 8,
+      "props": {
+        "title": "Q3 Compliance Trail",
+        "eventsHtml": "<div class=\"at-event\" id=\"evt-0\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-09-01 08:00 UTC</span><span class=\"at-icon\">📝</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Erin Tanaka</span> created <span class=\"at-target\">PO-8821</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Created</span></div></div></div><div class=\"at-event\" id=\"evt-1\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-09-01 08:45 UTC</span><span class=\"at-icon\">🔍</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Contoso ValidateBot</span> checked <span class=\"at-target\">Budget ceiling</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Pass</span></div></div></div><div class=\"at-event\" id=\"evt-2\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-09-01 09:12 UTC</span><span class=\"at-icon\">👤</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Frank Oliveira</span> approved <span class=\"at-target\">PO-8821</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Approved</span><span class=\"at-corr\">corr-f301</span></div></div></div><div class=\"at-event\" id=\"evt-3\" data-highlighted=\"true\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-09-01 10:30 UTC</span><span class=\"at-icon\">⚠️</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Fabrikam PolicyEngine</span> triggered <span class=\"at-target\">Over-budget review</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"failure\">✗ Triggered</span><span class=\"at-corr\">corr-f302</span></div></div></div>",
+        "retentionNote": "Retained for 5 years per internal policy FP-204",
+        "exportRef": "AUD-2024Q3-PO8821"
+      }
+    },
+    {
+      "id": "policy-over-budget",
+      "component": "PolicyEnforcement",
+      "duration": 10,
+      "props": {
+        "title": "Purchase Order Budget Gate",
+        "layout": "funnel",
+        "requestHtml": "<div class=\"pe-request-label\">Incoming Request</div><div class=\"pe-request-body\"><span class=\"pe-actor\">Erin Tanaka</span> requests approval for <span class=\"pe-resource\">PO-8821 ($142,000)</span></div>",
+        "checksHtml": "<div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"pass\">✓</div><div><div class=\"pe-check-name\">Requestor Identity</div><div class=\"pe-check-detail\">Entra ID verified</div></div></div><div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"pass\">✓</div><div><div class=\"pe-check-name\">Manager Approval</div><div class=\"pe-check-detail\">Frank Oliveira approved</div></div></div><div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"fail\">✗</div><div><div class=\"pe-check-name\">Budget Ceiling</div><div class=\"pe-check-detail\">$142,000 exceeds Q3 limit of $100,000</div></div></div>",
+        "decisionHtml": "<div class=\"pe-decision-icon\">⚠️</div><div><div class=\"pe-decision-text\">Challenge</div><div class=\"pe-decision-reason\">Over-budget — requires VP-level exception approval</div></div>",
+        "ruleCitationHtml": "FP-204 · CTRL-BUD-01 v2",
+        "auditRefHtml": "<span class=\"pe-chip\">Logged in audit · evt-3</span>"
+      }
+    }
+  ]
+}

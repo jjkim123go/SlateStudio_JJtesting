@@ -1,0 +1,752 @@
+<!--
+  ============================================================================
+  EdgeBrowserScene — High-Fidelity Chrome Shell (Wave A, PR 10c)
+  ============================================================================
+
+  SLOT CONTRACT — Wave B agents fill these named regions:
+  ┌─────────────────────────┬────────────────────────────────────────────────┐
+  │ data-slot="tab-list"    │ Container for <div class="edge-tab"> children  │
+  │                         │ Each tab: favicon + title + close button.      │
+  │                         │ First tab marked .edge-tab--active by default. │
+  ├─────────────────────────┼────────────────────────────────────────────────┤
+  │ data-slot="tab-favicon" │ SVG/img element for the active tab's favicon.  │
+  │                         │ Defaults to globe icon (#edge-icon-globe).     │
+  ├─────────────────────────┼────────────────────────────────────────────────┤
+  │ data-slot="page-title"  │ Plain text: title shown in the active tab.     │
+  │                         │ Default: "New tab"                             │
+  ├─────────────────────────┼────────────────────────────────────────────────┤
+  │ data-slot="url"         │ Plain text or inline HTML for the URL bar.     │
+  │                         │ Default: "Search or enter web address"         │
+  ├─────────────────────────┼────────────────────────────────────────────────┤
+  │ data-slot="bookmarks"   │ Container for <a class="edge-bm-item"> items. │
+  │                         │ Each item: 16×16 favicon + truncated label.    │
+  ├─────────────────────────┼────────────────────────────────────────────────┤
+  │ data-slot="page-content"│ Full page body (HTML). Scrollable container.   │
+  │                         │ Default: empty white page.                     │
+  └─────────────────────────┴────────────────────────────────────────────────┘
+
+  VARIANT ATTRIBUTES on root .edge-bg:
+    data-show-bookmarks="true|false"  — toggle bookmarks bar visibility
+    data-url-focused="true|false"     — URL bar focus/unfocus visual state
+    data-tab-count="N"                — used for tab auto-sizing CSS
+
+  CHROME REGIONS (Wave A owns these):
+    .edge-titlebar    — integrated with tabstrip; window controls top-right
+    .edge-tabstrip    — tab row with active/inactive tabs + new-tab (+)
+    .edge-toolbar     — nav buttons + URL bar + star/extensions/profile/menu
+    .edge-bookmarksbar— favorites bar below toolbar
+    .edge-content     — page body slot
+============================================================================ -->
+
+<style data-component="EdgeBrowserScene">
+/* ============================================================================
+   DENSITY SPECIFICATION — measured from refs/edge/01-newtab-startpage.png
+   at 1920×1080 viewport. Wave B agents MUST use these values.
+   ============================================================================
+   TABSTRIP (integrated titlebar):
+     Total height .............. 36px
+     Tab pill height ........... 32px  (4px top inset from strip top)
+     Tab max-width ............. 240px (auto-shrinks to fit; min ~52px)
+     Tab font-size ............. 12px  (Segoe UI Regular)
+     Tab favicon ............... 16×16px
+     Tab close icon ............ 14×14px
+     Tab horizontal padding .... 10px each side
+     Tab gap ................... 2px between tabs
+     Tab border-radius (top) ... 8px
+     New-tab (+) button ........ 28×28px
+     Window controls ........... 46×36px each (minimize · maximize · close)
+
+   TOOLBAR:
+     Total height .............. 46px
+     Nav button size ........... 30×30px  (border-radius: 50%)
+     Nav icon size ............. 16×16px
+     Nav button gap ............ 4px
+     URL bar height ............ 34px
+     URL bar border-radius ..... 20px  (pill shape)
+     URL bar font-size ......... 14px  (Segoe UI Regular)
+     URL bar inner padding ..... 0 12px
+     URL bar search icon ....... 16×16px
+     Toolbar right buttons ..... 30×30px
+     Profile avatar ............ 28×28px circle
+     Toolbar horizontal pad .... 8px sides
+
+   BOOKMARKS BAR:
+     Total height .............. 32px
+     Sidebar toggle button ..... 28×28px
+     Bookmark item font-size ... 12px  (Segoe UI Regular)
+     Bookmark favicon .......... 16×16px
+     Bookmark item padding ..... 4px 8px
+     Bookmark item gap ......... 2px
+     Bookmark item max-width ... 180px (text truncated with ellipsis)
+     Bookmark border-radius .... 4px
+
+   CONTENT AREA:
+     Fills remaining height below bookmarks bar.
+     Default background: #ffffff
+     Default padding: 0 (Wave B controls internal padding)
+
+   CHROME COLORS (light theme):
+     Tabstrip background ....... #e8e8e8
+     Active tab fill ........... #ffffff
+     Inactive tab fill ......... transparent (hover: rgba(0,0,0,.04))
+     Toolbar background ........ #ffffff
+     URL bar fill .............. #f0f0f0  (focused: #ffffff + 1px #0078d4)
+     Bookmarks bar background .. #f7f7f7
+     Content background ........ #ffffff
+     Window chrome shadow ....... 0 8px 36px rgba(0,0,0,.28)
+     Text primary .............. #1a1a1a
+     Text secondary ............. #616161
+     Text placeholder ........... #8c8c8c
+     Accent ..................... #0078d4
+     Close-btn hover ............ #e81123
+     Divider .................... #e0e0e0
+   ============================================================================ */
+
+/* ── Reset (scoped to wrapper) ── */
+:root { --edge-accent: #0078d4; }
+
+/* ── Theme tokens ── */
+.edge-bg {
+  --edge-bg: #d4d4d4;
+  --edge-chrome: #e8e8e8;
+  --edge-surface: #ffffff;
+  --edge-surface-hover: rgba(0,0,0,.04);
+  --edge-surface-active: rgba(0,0,0,.07);
+  --edge-url-fill: #f0f0f0;
+  --edge-bm-bg: #f7f7f7;
+  --edge-divider: #e0e0e0;
+  --edge-text: #1a1a1a;
+  --edge-text-sec: #616161;
+  --edge-text-placeholder: #8c8c8c;
+  --edge-accent: #0078d4;
+  --edge-accent-hover: #106ebe;
+  --edge-close-hover: #e81123;
+  --edge-shadow: 0 8px 36px rgba(0,0,0,.28);
+  --edge-tab-radius: 8px;
+
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 40px;
+  background: var(--edge-bg);
+  font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--edge-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+/* ── Window frame ── */
+.edge-window {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: var(--edge-chrome);
+  border-radius: 8px;
+  box-shadow: var(--edge-shadow);
+  overflow: hidden;
+}
+
+/* ── Tabstrip (36px — integrated titlebar) ── */
+.edge-tabstrip {
+  display: flex;
+  align-items: flex-end;
+  flex: 0 0 36px;
+  height: 36px;
+  padding: 0 0 0 0;
+  background: var(--edge-chrome);
+  position: relative;
+  overflow: visible;
+}
+.edge-tabstrip-tabs {
+  display: flex;
+  align-items: flex-end;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 36px;
+  padding: 4px 0 0 8px;
+  gap: 2px;
+  overflow: hidden;
+}
+
+/* ── Individual tab pill ── */
+.edge-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 52px;
+  max-width: 240px;
+  flex: 1 1 200px;
+  height: 32px;
+  padding: 0 10px;
+  background: transparent;
+  border-radius: var(--edge-tab-radius) var(--edge-tab-radius) 0 0;
+  font-size: 12px;
+  color: var(--edge-text);
+  cursor: pointer;
+  box-sizing: border-box;
+  position: relative;
+  transition: background .12s;
+  border: 0;
+}
+.edge-tab:hover {
+  background: var(--edge-surface-hover);
+}
+.edge-tab--active {
+  background: var(--edge-surface) !important;
+  z-index: 2;
+}
+/* Active tab bottom connector — blends into toolbar below */
+.edge-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -1px;
+  height: 2px;
+  background: var(--edge-surface);
+  z-index: 3;
+}
+.edge-tab-favicon {
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.edge-tab-favicon svg { width: 16px; height: 16px; }
+.edge-tab-favicon img { width: 16px; height: 16px; object-fit: contain; }
+.edge-tab-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.edge-tab-close {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 20px; height: 20px;
+  flex: 0 0 20px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text-sec);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity .12s, background .12s;
+}
+.edge-tab-close svg { width: 10px; height: 10px; }
+.edge-tab:hover .edge-tab-close,
+.edge-tab--active .edge-tab-close { opacity: 1; }
+.edge-tab-close:hover { background: var(--edge-surface-active); color: var(--edge-text); }
+
+/* ── New-tab button ── */
+.edge-newtab-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  flex: 0 0 28px;
+  margin: 0 4px 4px 2px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text);
+  cursor: pointer;
+  align-self: flex-end;
+}
+.edge-newtab-btn svg { width: 12px; height: 12px; }
+.edge-newtab-btn:hover { background: var(--edge-surface-hover); }
+
+/* ── Window controls (right side of tabstrip) ── */
+.edge-wincontrols {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  height: 36px;
+  margin-left: auto;
+}
+.edge-winbtn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 46px; height: 36px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text);
+  cursor: pointer;
+}
+.edge-winbtn svg { width: 12px; height: 12px; }
+.edge-winbtn:hover { background: var(--edge-surface-hover); }
+.edge-winbtn--close:hover { background: var(--edge-close-hover); color: #fff; }
+
+/* ── Toolbar (46px) ── */
+.edge-toolbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 46px;
+  height: 46px;
+  padding: 0 8px;
+  background: var(--edge-surface);
+  border-top: 1px solid var(--edge-divider);
+  gap: 4px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Nav buttons group (back, forward, reload, home) */
+.edge-nav-group {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  margin-right: 4px;
+}
+.edge-nav-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text);
+  cursor: pointer;
+}
+.edge-nav-btn svg { width: 16px; height: 16px; }
+.edge-nav-btn:hover { background: var(--edge-surface-hover); }
+.edge-nav-btn--disabled { opacity: 0.35; cursor: default; }
+.edge-nav-btn--disabled:hover { background: transparent; }
+
+/* ── URL bar (pill) ── */
+.edge-urlbar {
+  display: flex;
+  align-items: center;
+  flex: 1 1 auto;
+  height: 34px;
+  padding: 0 12px;
+  background: var(--edge-url-fill);
+  border: 1px solid transparent;
+  border-radius: 20px;
+  gap: 8px;
+  cursor: text;
+  position: relative;
+  transition: background .15s, border-color .15s;
+}
+.edge-bg[data-url-focused="true"] .edge-urlbar {
+  background: var(--edge-surface);
+  border-color: var(--edge-accent);
+  box-shadow: 0 0 0 1px var(--edge-accent);
+}
+.edge-urlbar-icon {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+  color: var(--edge-text-sec);
+}
+.edge-urlbar-icon svg { width: 16px; height: 16px; }
+.edge-urlbar-lock {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+  color: var(--edge-text-sec);
+}
+.edge-urlbar-lock svg { width: 14px; height: 14px; }
+.edge-urlbar-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  color: var(--edge-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.edge-urlbar-text--placeholder { color: var(--edge-text-placeholder); }
+/* Progress bar inside URL bar */
+.edge-progress {
+  position: absolute;
+  left: 12px; right: 12px; bottom: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--edge-accent);
+  border-radius: 1px;
+  opacity: 0;
+  transition: none;
+}
+
+/* ── Toolbar right actions ── */
+.edge-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+  margin-left: 4px;
+}
+.edge-toolbar-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text);
+  cursor: pointer;
+}
+.edge-toolbar-btn svg { width: 16px; height: 16px; }
+.edge-toolbar-btn:hover { background: var(--edge-surface-hover); }
+
+/* Profile avatar circle */
+.edge-profile {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7e57c2, #3949ab);
+  color: #fff;
+  font-size: 12px; font-weight: 600;
+  flex: 0 0 28px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.edge-profile img { width: 28px; height: 28px; object-fit: cover; border-radius: 50%; }
+
+/* Ellipsis menu button */
+.edge-menu-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text);
+  cursor: pointer;
+}
+.edge-menu-btn svg { width: 16px; height: 16px; }
+.edge-menu-btn:hover { background: var(--edge-surface-hover); }
+
+/* Chat / Copilot button */
+.edge-chat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px 0 6px;
+  border-radius: 14px;
+  background: transparent;
+  border: 1px solid var(--edge-divider);
+  color: var(--edge-text);
+  font-size: 12px;
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+.edge-chat-btn svg { width: 18px; height: 18px; color: var(--edge-accent); }
+.edge-chat-btn:hover { background: var(--edge-surface-hover); }
+
+/* ── Bookmarks bar (32px) ── */
+.edge-bookmarksbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 32px;
+  height: 32px;
+  padding: 0 8px;
+  background: var(--edge-bm-bg);
+  border-top: 1px solid var(--edge-divider);
+  gap: 2px;
+  overflow: hidden;
+}
+.edge-bg[data-show-bookmarks="false"] .edge-bookmarksbar { display: none; }
+
+.edge-bm-sidebar-toggle {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 28px; height: 24px;
+  flex: 0 0 28px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--edge-text-sec);
+  cursor: pointer;
+  margin-right: 4px;
+}
+.edge-bm-sidebar-toggle svg { width: 16px; height: 16px; }
+.edge-bm-sidebar-toggle:hover { background: var(--edge-surface-hover); }
+
+.edge-bm-items {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.edge-bm-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0;
+  color: var(--edge-text);
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+.edge-bm-item:hover { background: var(--edge-surface-hover); }
+.edge-bm-item-icon {
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.edge-bm-item-icon svg { width: 16px; height: 16px; }
+.edge-bm-item-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Content area ── */
+.edge-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--edge-surface);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.edge-page-body {
+  flex: 1 1 auto;
+  overflow: auto;
+  position: relative;
+}
+
+/* ── Global icon styling ── */
+.edge-bg svg { fill: currentColor; }
+.edge-bg svg[aria-hidden] { pointer-events: none; }
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SVG SYMBOL MANIFEST — Filled-weight Fluent UI icons
+     All icons use viewBox="0 0 16 16" unless noted.
+     Wave B references these via <svg><use href="#edge-icon-{name}"/></svg>
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<defs>
+  <!-- Navigation -->
+  <symbol id="edge-icon-back" viewBox="0 0 16 16">
+    <path d="M10.27 3.2a.75.75 0 0 1 .03 1.06L6.56 8l3.74 3.74a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.03-.04Z"/>
+  </symbol>
+  <symbol id="edge-icon-forward" viewBox="0 0 16 16">
+    <path d="M5.73 3.2a.75.75 0 0 0-.03 1.06L9.44 8l-3.74 3.74a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06L6.76 3.24a.75.75 0 0 0-1.03-.04Z"/>
+  </symbol>
+  <symbol id="edge-icon-reload" viewBox="0 0 16 16">
+    <path d="M2.5 8a5.5 5.5 0 0 1 9.68-3.58l.14.18H10.5a.75.75 0 0 0 0 1.5h3.25a.75.75 0 0 0 .75-.75V2.1a.75.75 0 0 0-1.5 0v1.38A7 7 0 1 0 15 8a.75.75 0 0 0-1.5 0A5.5 5.5 0 0 1 2.5 8Z"/>
+  </symbol>
+  <symbol id="edge-icon-home" viewBox="0 0 16 16">
+    <path d="M8.36 1.37a.5.5 0 0 0-.72 0l-6 6.14A.5.5 0 0 0 2 8.13V13.5a1 1 0 0 0 1 1h3.5a.5.5 0 0 0 .5-.5v-3.5h2v3.5a.5.5 0 0 0 .5.5H13a1 1 0 0 0 1-1V8.13a.5.5 0 0 0 .36-.62l-6-6.14Z"/>
+  </symbol>
+
+  <!-- URL bar -->
+  <symbol id="edge-icon-search" viewBox="0 0 16 16">
+    <path d="M10.8226 11.8833C9.89957 12.5841 8.74835 13 7.5 13C4.46243 13 2 10.5376 2 7.5C2 4.46243 4.46243 2 7.5 2C10.5376 2 13 4.46243 13 7.5C13 8.74835 12.5841 9.89957 11.8833 10.8226L14.7803 13.7197C15.0732 14.0126 15.0732 14.4874 14.7803 14.7803C14.4874 15.0732 14.0126 15.0732 13.7197 14.7803L10.8226 11.8833ZM11.5 7.5C11.5 5.29086 9.70914 3.5 7.5 3.5C5.29086 3.5 3.5 5.29086 3.5 7.5C3.5 9.70914 5.29086 11.5 7.5 11.5C9.70914 11.5 11.5 9.70914 11.5 7.5Z"/>
+  </symbol>
+  <symbol id="edge-icon-lock" viewBox="0 0 16 16">
+    <path d="M8 1C9.65685 1 11 2.34315 11 4V6C12.1046 6 13 6.89543 13 8V13C13 14.1046 12.1046 15 11 15H5C3.89543 15 3 14.1046 3 13V8C3 6.89543 3.89543 6 5 6V4C5 2.34315 6.34315 1 8 1ZM8 9.5C7.44772 9.5 7 9.94772 7 10.5C7 11.0523 7.44772 11.5 8 11.5C8.55228 11.5 9 11.0523 9 10.5C9 9.94772 8.55228 9.5 8 9.5ZM8 2C6.89543 2 6 2.89543 6 4V6H10V4C10 2.89543 9.10457 2 8 2Z"/>
+  </symbol>
+  <symbol id="edge-icon-microphone" viewBox="0 0 16 16">
+    <path d="M8 1a2.5 2.5 0 0 0-2.5 2.5v3a2.5 2.5 0 0 0 5 0v-3A2.5 2.5 0 0 0 8 1ZM4 6.25a.75.75 0 0 0-1.5 0v.25a5.5 5.5 0 0 0 4.75 5.45v1.55H6a.75.75 0 0 0 0 1.5h4a.75.75 0 0 0 0-1.5H8.75v-1.55A5.5 5.5 0 0 0 13.5 6.5v-.25a.75.75 0 0 0-1.5 0v.25a4 4 0 0 1-8 0v-.25Z"/>
+  </symbol>
+
+  <!-- Toolbar right actions -->
+  <symbol id="edge-icon-star-outline" viewBox="0 0 16 16">
+    <path d="M7.19 1.8a.9.9 0 0 1 1.62 0l1.85 3.74 4.13.6a.9.9 0 0 1 .5 1.54l-2.99 2.91.7 4.12a.9.9 0 0 1-1.3.95L8 13.54l-3.7 1.94a.9.9 0 0 1-1.3-.95l.7-4.12L.71 7.5a.9.9 0 0 1 .5-1.54l4.13-.6L7.19 1.8Zm.81.94L6.35 6.2a.75.75 0 0 1-.56.41l-3.6.52 2.6 2.54a.75.75 0 0 1 .22.66l-.62 3.59 3.23-1.7a.75.75 0 0 1 .7 0l3.23 1.7-.62-3.59a.75.75 0 0 1 .22-.66l2.6-2.54-3.6-.52a.75.75 0 0 1-.56-.41L8 2.74Z"/>
+  </symbol>
+  <symbol id="edge-icon-star-filled" viewBox="0 0 16 16">
+    <path d="M7.19 1.8a.9.9 0 0 1 1.62 0l1.85 3.74 4.13.6a.9.9 0 0 1 .5 1.54l-2.99 2.91.7 4.12a.9.9 0 0 1-1.3.95L8 13.54l-3.7 1.94a.9.9 0 0 1-1.3-.95l.7-4.12L.71 7.5a.9.9 0 0 1 .5-1.54l4.13-.6L7.19 1.8Z"/>
+  </symbol>
+  <symbol id="edge-icon-share" viewBox="0 0 16 16">
+    <path d="M7.5 2C7.77614 2 8 2.22386 8 2.5C7.99995 2.77609 7.77611 3 7.5 3H4.5C3.67157 3 3 3.67157 3 4.5V11.5C3.00006 12.3284 3.67161 13 4.5 13H11.5C12.3284 13 12.9999 12.3284 13 11.5V9.5C13 9.22385 13.2239 9 13.5 9C13.7761 9 14 9.22385 14 9.5V11.5C13.9999 12.8807 12.8807 14 11.5 14H4.5C3.11932 14 2.00006 12.8807 2 11.5V4.5C2 3.11929 3.11929 2 4.5 2H7.5ZM10.7803 1.05078C10.9518 0.966903 11.1559 0.988318 11.3066 1.10547L15.8066 4.60547C15.9284 4.70019 16 4.84572 16 5C16 5.15425 15.9284 5.29982 15.8066 5.39453L11.3066 8.89453C11.1559 9.01163 10.9517 9.03306 10.7803 8.94922C10.6088 8.86533 10.5 8.69092 10.5 8.5V7.02539C8.26802 7.25505 6.87621 8.99835 6.10352 10.4238L5.94727 10.7236C5.84354 10.931 5.61041 11.0396 5.38477 10.9863C5.15933 10.9329 5.00005 10.7317 5 10.5C5 8.42355 5.51821 6.55894 6.53711 5.20019C7.47545 3.94908 8.82277 3.15337 10.5 3.02148V1.5C10.5 1.30905 10.6088 1.13469 10.7803 1.05078Z"/>
+  </symbol>
+  <symbol id="edge-icon-read-aloud" viewBox="0 0 16 16">
+    <path d="M8.75 2.75a.75.75 0 0 0-1.28-.53L4.44 5.25H2.25C1.56 5.25 1 5.81 1 6.5v3c0 .69.56 1.25 1.25 1.25h2.19l3.03 3.03a.75.75 0 0 0 1.28-.53v-10.5Zm2.63 1.21a.75.75 0 0 1 1.06.04 5.25 5.25 0 0 1 0 7.38.75.75 0 1 1-1.1-1.02 3.75 3.75 0 0 0 0-5.34.75.75 0 0 1 .04-1.06Zm-.37 2.67a.75.75 0 0 1 1.04.19 2.75 2.75 0 0 1 0 3.04.75.75 0 0 1-1.23-.86 1.25 1.25 0 0 0 0-1.38.75.75 0 0 1 .19-1Z"/>
+  </symbol>
+  <symbol id="edge-icon-extensions" viewBox="0 0 16 16">
+    <path d="M9.5 1a2 2 0 0 0-2 2h-.25A2.25 2.25 0 0 0 5 5.25v.25a2 2 0 1 0 0 4v.25A2.25 2.25 0 0 0 7.25 12h.25a2 2 0 1 0 4 0h.25A2.25 2.25 0 0 0 14 9.75v-.25a2 2 0 1 0 0-4v-.25A2.25 2.25 0 0 0 11.75 3h-.25a2 2 0 0 0-2-2Z"/>
+  </symbol>
+  <symbol id="edge-icon-downloads" viewBox="0 0 16 16">
+    <path d="M8 1.5a.75.75 0 0 1 .75.75v6.69l2.22-2.22a.75.75 0 0 1 1.06 1.06l-3.5 3.5a.75.75 0 0 1-1.06 0l-3.5-3.5a.75.75 0 0 1 1.06-1.06l2.22 2.22V2.25A.75.75 0 0 1 8 1.5ZM2.75 13a.75.75 0 0 0 0 1.5h10.5a.75.75 0 0 0 0-1.5H2.75Z"/>
+  </symbol>
+  <symbol id="edge-icon-collections" viewBox="0 0 16 16">
+    <path d="M2.5 2A1.5 1.5 0 0 0 1 3.5v7A1.5 1.5 0 0 0 2.5 12h8a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 10.5 2h-8Zm10.5 2v7.5a2.5 2.5 0 0 1-2.5 2.5H4a1.5 1.5 0 0 0 1.5 1.5h6A3.5 3.5 0 0 0 15 12V5.5A1.5 1.5 0 0 0 13 4Z"/>
+  </symbol>
+  <symbol id="edge-icon-copilot" viewBox="0 0 16 16">
+    <path d="M8 1.5a1.25 1.25 0 0 1 1.18.84l1.06 3.16h3.26a1.25 1.25 0 0 1 .74 2.26l-2.64 1.92.97 3.15a1.25 1.25 0 0 1-1.93 1.38L8 12.3l-2.64 1.91a1.25 1.25 0 0 1-1.93-1.38l.97-3.15-2.64-1.92a1.25 1.25 0 0 1 .74-2.26h3.26l1.06-3.16A1.25 1.25 0 0 1 8 1.5Z"/>
+  </symbol>
+  <symbol id="edge-icon-shield" viewBox="0 0 16 16">
+    <path d="M8 0a.5.5 0 0 1 .29.09l5.5 3.87A.5.5 0 0 1 14 4.4V7c0 4.09-2.5 6.74-5.82 8.44a.5.5 0 0 1-.36 0C4.5 13.74 2 11.09 2 7V4.4a.5.5 0 0 1 .21-.44l5.5-3.87A.5.5 0 0 1 8 0Zm2.85 5.85a.5.5 0 0 0-.7-.7L7 8.29 5.85 7.15a.5.5 0 0 0-.7.7l1.5 1.5a.5.5 0 0 0 .7 0l3.5-3.5Z"/>
+  </symbol>
+
+  <!-- Window controls -->
+  <symbol id="edge-icon-minimize" viewBox="0 0 16 16">
+    <path d="M3.5 8a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.5-.5Z"/>
+  </symbol>
+  <symbol id="edge-icon-maximize" viewBox="0 0 16 16">
+    <path d="M4.5 3C3.67157 3 3 3.67157 3 4.5V11.5C3 12.3284 3.67157 13 4.5 13H11.5C12.3284 13 13 12.3284 13 11.5V4.5C13 3.67157 12.3284 3 11.5 3H4.5ZM5 4.5H11C11.2761 4.5 11.5 4.72386 11.5 5V11C11.5 11.2761 11.2761 11.5 11 11.5H5C4.72386 11.5 4.5 11.2761 4.5 11V5C4.5 4.72386 4.72386 4.5 5 4.5Z"/>
+  </symbol>
+  <symbol id="edge-icon-close" viewBox="0 0 16 16">
+    <path d="M3.72 3.72a.75.75 0 0 1 1.06 0L8 6.94l3.22-3.22a.75.75 0 1 1 1.06 1.06L9.06 8l3.22 3.22a.75.75 0 0 1-1.06 1.06L8 9.06l-3.22 3.22a.75.75 0 0 1-1.06-1.06L6.94 8 3.72 4.78a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+
+  <!-- Tab / general -->
+  <symbol id="edge-icon-plus" viewBox="0 0 16 16">
+    <path d="M8 2.75a.75.75 0 0 1 .75.75v3.75h3.75a.75.75 0 0 1 0 1.5H8.75v3.75a.75.75 0 0 1-1.5 0V8.75H3.5a.75.75 0 0 1 0-1.5h3.75V3.5A.75.75 0 0 1 8 2.75Z"/>
+  </symbol>
+  <symbol id="edge-icon-globe" viewBox="0 0 16 16">
+    <path d="M6 8C6 7.29718 6.04415 6.62474 6.12456 6H9.87544C9.95585 6.62474 10 7.29718 10 8C10 8.70282 9.95585 9.37526 9.87544 10H6.12456C6.04415 9.37526 6 8.70282 6 8ZM5.11686 10C5.0406 9.36521 5 8.69337 5 8C5 7.30663 5.0406 6.63479 5.11686 6H2.34141C2.12031 6.62556 2 7.29873 2 8C2 8.70127 2.12031 9.37444 2.34141 10H5.11686ZM2.80269 11H5.27206C5.39817 11.6551 5.56493 12.254 5.76556 12.7757C5.89989 13.125 6.05249 13.4476 6.22341 13.7326C4.76902 13.2824 3.55119 12.2939 2.80269 11ZM6.292 11H9.708C9.59779 11.5266 9.46003 12.0035 9.30109 12.4167C9.08782 12.9712 8.84611 13.3857 8.60319 13.6528C8.3604 13.9198 8.15584 14 8 14C7.84416 14 7.6396 13.9198 7.39681 13.6528C7.15389 13.3857 6.91218 12.9712 6.69891 12.4167C6.53997 12.0035 6.40221 11.5266 6.292 11ZM10.7279 11C10.6018 11.6551 10.4351 12.254 10.2344 12.7757C10.1001 13.125 9.94751 13.4476 9.77659 13.7326C11.231 13.2824 12.4488 12.2939 13.1973 11H10.7279ZM13.6586 10C13.8797 9.37444 14 8.70127 14 8C14 7.29873 13.8797 6.62556 13.6586 6H10.8831C10.9594 6.63479 11 7.30663 11 8C11 8.69337 10.9594 9.36521 10.8831 10H13.6586ZM9.30109 3.5833C9.46003 3.99654 9.59779 4.47343 9.708 5H6.292C6.40221 4.47343 6.53997 3.99654 6.69891 3.5833C6.91218 3.02877 7.15389 2.61433 7.39681 2.34719C7.6396 2.08019 7.84416 2 8 2C8.15584 2 8.3604 2.08019 8.60319 2.34719C8.84611 2.61433 9.08782 3.02877 9.30109 3.5833ZM10.7279 5H13.1973C12.4488 3.70607 11.231 2.7176 9.77658 2.26738C9.94751 2.55238 10.1001 2.87505 10.2344 3.22432C10.4351 3.74596 10.6018 4.34494 10.7279 5ZM2.80269 5H5.27206C5.39817 4.34494 5.56493 3.74596 5.76556 3.22432C5.89989 2.87505 6.05249 2.55238 6.22341 2.26738C4.76902 2.7176 3.55119 3.70607 2.80269 5Z"/>
+  </symbol>
+  <symbol id="edge-icon-sidebar" viewBox="0 0 16 16">
+    <path d="M4.5 3C3.11914 3 2 4.11926 2 5.5V10.5C2 11.8807 3.11914 13 4.5 13H11.5C12.8809 13 14 11.8807 14 10.5V5.5C14 4.11926 12.8809 3 11.5 3H4.5ZM7 4H11.5C12.3281 4 13 4.67163 13 5.5V10.5C13 11.3284 12.3281 12 11.5 12H7V4Z"/>
+  </symbol>
+  <symbol id="edge-icon-ellipsis-h" viewBox="0 0 16 16">
+    <path d="M4 8a1.25 1.25 0 1 1-2.5 0A1.25 1.25 0 0 1 4 8Zm5.25 0a1.25 1.25 0 1 1-2.5 0 1.25 1.25 0 0 1 2.5 0ZM13.25 9.25a1.25 1.25 0 1 0 0-2.5 1.25 1.25 0 0 0 0 2.5Z"/>
+  </symbol>
+  <symbol id="edge-icon-profile" viewBox="0 0 16 16">
+    <path d="M8 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 10.5c0-2.21 2.24-3.5 5-3.5s5 1.29 5 3.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 3 12.5Z"/>
+  </symbol>
+  <symbol id="edge-icon-settings" viewBox="0 0 16 16">
+    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5ZM6.94 1.31a1.25 1.25 0 0 1 2.12 0l.56.9a.74.74 0 0 0 .66.36l1.05-.04a1.25 1.25 0 0 1 1.06 1.84l-.48.93a.74.74 0 0 0 0 .74l.48.93a1.25 1.25 0 0 1-1.06 1.84l-1.05-.04a.74.74 0 0 0-.66.36l-.56.9a1.25 1.25 0 0 1-2.12 0l-.56-.9a.74.74 0 0 0-.66-.36l-1.05.04a1.25 1.25 0 0 1-1.06-1.84l.48-.93a.74.74 0 0 0 0-.74l-.48-.93a1.25 1.25 0 0 1 1.06-1.84l1.05.04a.74.74 0 0 0 .66-.36l.56-.9Z"/>
+  </symbol>
+  <symbol id="edge-icon-history" viewBox="0 0 16 16">
+    <path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm.5 3.25a.75.75 0 0 0-1.5 0v4.5c0 .41.34.75.75.75h3a.75.75 0 0 0 0-1.5H8.5V4.25Z"/>
+  </symbol>
+  <symbol id="edge-icon-heart" viewBox="0 0 16 16">
+    <path d="M8 3.22C6.91 1.39 4.42.8 2.7 2.3.75 3.99.87 7 2.6 8.97L7.3 14.1a.9.9 0 0 0 1.4 0l4.7-5.13C15.13 7 15.25 4 13.3 2.3c-1.72-1.5-4.2-.9-5.3.92Z"/>
+  </symbol>
+  <symbol id="edge-icon-tab-preview" viewBox="0 0 16 16">
+    <path d="M2 3.5A1.5 1.5 0 0 1 3.5 2h3A1.5 1.5 0 0 1 8 3.5v3A1.5 1.5 0 0 1 6.5 8h-3A1.5 1.5 0 0 1 2 6.5v-3Zm6 0A1.5 1.5 0 0 1 9.5 2h3A1.5 1.5 0 0 1 14 3.5v3A1.5 1.5 0 0 1 12.5 8h-3A1.5 1.5 0 0 1 8 6.5v-3Zm-6 6A1.5 1.5 0 0 1 3.5 8h3A1.5 1.5 0 0 1 8 9.5v3A1.5 1.5 0 0 1 6.5 14h-3A1.5 1.5 0 0 1 2 12.5v-3Zm6 0A1.5 1.5 0 0 1 9.5 8h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 8 12.5v-3Z"/>
+  </symbol>
+  <symbol id="edge-icon-chevron-down" viewBox="0 0 16 16">
+    <path d="M3.2 5.73a.75.75 0 0 1 1.06-.03L8 9.44l3.74-3.74a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L3.24 6.76a.75.75 0 0 1-.04-1.03Z"/>
+  </symbol>
+
+  <!-- Edge-specific logo/brand favicon -->
+  <symbol id="edge-icon-edge-logo" viewBox="0 0 16 16">
+    <path fill="#0078d4" d="M8 1.5a6.5 6.5 0 0 0-6.13 8.7c.2.53.57 1.35 1.3 2.02.72.66 1.72 1.14 3.04 1.14 1.05 0 1.89-.37 2.5-.86a4.16 4.16 0 0 0 1.25-1.72.5.5 0 0 0-.47-.68H5.97a.5.5 0 0 1-.35-.85l3.3-3.3A4.5 4.5 0 0 0 8 1.5Z"/>
+    <path fill="#50e6ff" d="M12.16 5.18a6.5 6.5 0 0 0-3.24-3.43A4.5 4.5 0 0 1 12.5 5.5c0 .55-.1 1.08-.27 1.56a.38.38 0 0 0 .36.5h2.75a.38.38 0 0 0 .37-.45 6.53 6.53 0 0 0-3.55-1.93Z"/>
+    <path fill="#0078d4" d="M9.5 10.1a.5.5 0 0 0 .47.68c.41 0 .9-.08 1.42-.26 1.2-.42 2.58-1.41 3.08-3.62a.3.3 0 0 0-.3-.38h-2.2a.5.5 0 0 0-.36.15L9.5 10.1Z"/>
+  </symbol>
+</defs>
+</svg>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HTML STRUCTURE — Chrome shell with named slots
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="edge-bg" data-scene-component="EdgeBrowserScene"
+     data-show-bookmarks="true"
+     data-url-focused="false"
+     data-tab-count="1">
+  <div class="edge-window">
+
+    <!-- ═══ TABSTRIP (36px — integrated titlebar) ═══ -->
+    <div class="edge-tabstrip">
+      <div class="edge-tabstrip-tabs" data-slot="tab-list">
+        {{{tabListHtml}}}
+      </div>
+
+      <!-- New-tab (+) button -->
+      <button class="edge-newtab-btn" aria-label="New tab">
+        <svg aria-hidden="true"><use href="#edge-icon-plus"/></svg>
+      </button>
+
+      <!-- Window controls (min / max / close) -->
+      <div class="edge-wincontrols">
+        <button class="edge-winbtn" aria-label="Minimize">
+          <svg aria-hidden="true"><use href="#edge-icon-minimize"/></svg>
+        </button>
+        <button class="edge-winbtn" aria-label="Maximize">
+          <svg aria-hidden="true"><use href="#edge-icon-maximize"/></svg>
+        </button>
+        <button class="edge-winbtn edge-winbtn--close" aria-label="Close">
+          <svg aria-hidden="true"><use href="#edge-icon-close"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ TOOLBAR (46px) ═══ -->
+    <div class="edge-toolbar">
+      <!-- Navigation buttons -->
+      <div class="edge-nav-group">
+        <button class="edge-nav-btn" aria-label="Back">
+          <svg aria-hidden="true"><use href="#edge-icon-back"/></svg>
+        </button>
+        <button class="edge-nav-btn edge-nav-btn--disabled" aria-label="Forward">
+          <svg aria-hidden="true"><use href="#edge-icon-forward"/></svg>
+        </button>
+        <button class="edge-nav-btn" aria-label="Reload">
+          <svg aria-hidden="true"><use href="#edge-icon-reload"/></svg>
+        </button>
+        <button class="edge-nav-btn" aria-label="Home">
+          <svg aria-hidden="true"><use href="#edge-icon-home"/></svg>
+        </button>
+      </div>
+
+      <!-- URL bar (pill) -->
+      <div class="edge-urlbar">
+        <span class="edge-urlbar-icon">
+          <svg aria-hidden="true"><use href="#edge-icon-search"/></svg>
+        </span>
+        <span class="edge-urlbar-text edge-urlbar-text--placeholder" data-slot="url">{{urlText}}</span>
+        <div class="edge-progress"></div>
+      </div>
+
+      <!-- Toolbar right actions -->
+      <div class="edge-toolbar-right">
+        <button class="edge-toolbar-btn" aria-label="Favorites">
+          <svg aria-hidden="true"><use href="#edge-icon-star-outline"/></svg>
+        </button>
+        <button class="edge-toolbar-btn" aria-label="Collections">
+          <svg aria-hidden="true"><use href="#edge-icon-collections"/></svg>
+        </button>
+        <button class="edge-toolbar-btn" aria-label="Extensions">
+          <svg aria-hidden="true"><use href="#edge-icon-extensions"/></svg>
+        </button>
+        <span class="edge-profile" aria-label="Profile">JD</span>
+        <button class="edge-menu-btn" aria-label="Settings and more">
+          <svg aria-hidden="true"><use href="#edge-icon-ellipsis-h"/></svg>
+        </button>
+        <button class="edge-chat-btn" aria-label="Copilot">
+          <svg aria-hidden="true"><use href="#edge-icon-copilot"/></svg>
+          <span>Chat</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ BOOKMARKS BAR (32px) ═══ -->
+    <div class="edge-bookmarksbar">
+      <button class="edge-bm-sidebar-toggle" aria-label="Toggle sidebar">
+        <svg aria-hidden="true"><use href="#edge-icon-sidebar"/></svg>
+      </button>
+
+      <div class="edge-bm-items" data-slot="bookmarks">
+        {{{bookmarksHtml}}}
+      </div>
+    </div>
+
+    <!-- ═══ CONTENT AREA ═══ -->
+    <div class="edge-content">
+      <div class="edge-page-body" data-slot="page-content">
+        {{{pageContentHtml}}}
+      </div>
+    </div>
+
+  </div>
+</div>

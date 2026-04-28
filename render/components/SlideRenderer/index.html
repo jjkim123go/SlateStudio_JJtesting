@@ -1,0 +1,142 @@
+<!--
+  SlideRenderer
+  Purpose: Clean presentation slide surface for narration-first title/bullet/image/quote layouts.
+  Props consumed: layout, eyebrow, title, subtitle, bullets, image, imagePosition, leftContent, rightContent, quote, quoteAuthor, quoteRole, accent, theme, pageNumber, pageTotal
+-->
+<style>
+.scene-{{sceneId}} .sr-root{
+  --sr-accent:var(--brand-primary,#0078D4);
+  --sr-bg:#f8fafc;
+  --sr-panel:#ffffff;
+  --sr-border:rgba(15,23,42,0.12);
+  --sr-text:#0f172a;
+  --sr-muted:#475569;
+  position:absolute;inset:0;padding:56px 64px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(0,120,212,0.10), transparent 34%),
+    linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+}
+.scene-{{sceneId}} .sr-root[data-theme="dark"]{
+  --sr-bg:#020617;
+  --sr-panel:#0f172a;
+  --sr-border:rgba(148,163,184,0.16);
+  --sr-text:#e2e8f0;
+  --sr-muted:#94a3b8;
+  background:
+    radial-gradient(circle at top right, rgba(96,165,250,0.16), transparent 34%),
+    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+}
+.scene-{{sceneId}} .sr-surface{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;gap:26px;
+  padding:42px 46px 34px;
+  border-radius:34px;
+  background:var(--sr-panel);
+  border:1px solid var(--sr-border);
+  box-shadow:0 28px 68px rgba(15,23,42,0.14);
+  overflow:hidden;
+}
+.scene-{{sceneId}} .sr-header{display:flex;flex-direction:column;gap:10px}
+.scene-{{sceneId}} .sr-eyebrow{
+  font-size:16px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;color:var(--sr-accent)
+}
+.scene-{{sceneId}} .sr-eyebrow:empty,
+.scene-{{sceneId}} .sr-subtitle:empty{display:none}
+.scene-{{sceneId}} .sr-title{
+  margin:0;font-size:68px;line-height:1.02;font-weight:820;letter-spacing:-0.05em;color:var(--sr-text)
+}
+.scene-{{sceneId}} .sr-subtitle{
+  margin:0;max-width:78%;font-size:24px;line-height:1.38;color:var(--sr-muted)
+}
+.scene-{{sceneId}} .sr-body{flex:1;min-height:0;display:grid;gap:24px}
+.scene-{{sceneId}} .sr-body[data-mode="single"]{grid-template-columns:minmax(0,1fr)}
+.scene-{{sceneId}} .sr-body[data-mode="split"]{grid-template-columns:minmax(0,1.05fr) minmax(320px,0.95fr);align-items:stretch}
+.scene-{{sceneId}} .sr-body[data-mode="split-left"]{grid-template-columns:minmax(320px,0.95fr) minmax(0,1.05fr);align-items:stretch}
+.scene-{{sceneId}} .sr-body[data-mode="stacked"]{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+.scene-{{sceneId}} .sr-panel{
+  min-width:0;border-radius:26px;padding:26px 28px;
+  background:linear-gradient(180deg, rgba(148,163,184,0.08), rgba(148,163,184,0.03));
+  border:1px solid rgba(148,163,184,0.14);
+}
+.scene-{{sceneId}} .sr-copy-block{
+  font-size:26px;line-height:1.48;color:var(--sr-text)
+}
+.scene-{{sceneId}} .sr-copy-block strong{font-weight:800;color:var(--sr-text)}
+.scene-{{sceneId}} .sr-bullet-list{
+  margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:16px
+}
+.scene-{{sceneId}} .sr-bullet{
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:flex-start;
+  font-size:28px;line-height:1.34;color:var(--sr-text)
+}
+.scene-{{sceneId}} .sr-bullet strong{font-weight:800}
+.scene-{{sceneId}} .sr-bullet-dot{
+  width:14px;height:14px;border-radius:999px;background:var(--sr-accent);margin-top:14px;box-shadow:0 0 0 8px rgba(0,120,212,0.10)
+}
+.scene-{{sceneId}} .sr-image-frame{
+  position:relative;min-height:280px;height:100%;
+  border-radius:26px;overflow:hidden;background:#dbeafe;
+  border:1px solid rgba(148,163,184,0.16);
+}
+.scene-{{sceneId}} .sr-root[data-theme="dark"] .sr-image-frame{background:#1e293b}
+.scene-{{sceneId}} .sr-image{
+  width:100%;height:100%;object-fit:cover;display:block
+}
+.scene-{{sceneId}} .sr-image-frame[data-empty="true"]::after{
+  content:"Image";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  color:var(--sr-muted);font-size:22px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase
+}
+.scene-{{sceneId}} .sr-quote-wrap{
+  flex:1;display:flex;align-items:center;justify-content:center;padding:12px 24px 0
+}
+.scene-{{sceneId}} .sr-quote-card{
+  width:100%;max-width:1280px;padding:42px 48px;border-radius:30px;
+  background:linear-gradient(135deg, rgba(0,120,212,0.12), rgba(148,163,184,0.06));
+  border:1px solid rgba(148,163,184,0.14);
+}
+.scene-{{sceneId}} .sr-quote-mark{
+  font-size:108px;line-height:0.78;color:var(--sr-accent);font-weight:800
+}
+.scene-{{sceneId}} .sr-quote-text{
+  margin:8px 0 0;font-size:44px;line-height:1.24;font-weight:730;letter-spacing:-0.03em;color:var(--sr-text)
+}
+.scene-{{sceneId}} .sr-quote-attribution{
+  margin-top:26px;font-size:22px;line-height:1.4;color:var(--sr-muted)
+}
+.scene-{{sceneId}} .sr-page-indicator{
+  margin-left:auto;display:inline-flex;align-items:center;justify-content:center;
+  min-width:92px;padding:10px 16px;border-radius:999px;
+  background:rgba(148,163,184,0.10);border:1px solid rgba(148,163,184,0.14);
+  color:var(--sr-muted);font-size:18px;font-weight:750;letter-spacing:0.04em
+}
+.scene-{{sceneId}} .sr-page-indicator:empty{display:none}
+</style>
+<div class="sr-root" data-scene-component="SlideRenderer"
+  data-layout="{{layout}}"
+  data-eyebrow="{{eyebrow}}"
+  data-image="{{image}}"
+  data-image-position="{{imagePosition}}"
+  data-bullets="{{bullets}}"
+  data-left-content="{{leftContent}}"
+  data-right-content="{{rightContent}}"
+  data-quote="{{quote}}"
+  data-quote-text="{{quoteText}}"
+  data-quote-author="{{quoteAuthor}}"
+  data-quote-attribution="{{quoteAttribution}}"
+  data-quote-role="{{quoteRole}}"
+  data-accent="{{accent}}"
+  data-theme="{{theme}}"
+  data-page-number="{{pageNumber}}"
+  data-page-total="{{pageTotal}}">
+  <div class="sr-surface">
+    <div class="sr-header">
+      <div class="sr-eyebrow">{{eyebrow}}</div>
+      <h1 class="sr-title">{{title}}</h1>
+      <p class="sr-subtitle">{{subtitle}}</p>
+    </div>
+    <div class="sr-body" data-mode="single"></div>
+    <div class="sr-page-indicator"></div>
+  </div>
+</div>

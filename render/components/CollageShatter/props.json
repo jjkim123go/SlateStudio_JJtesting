@@ -1,0 +1,27 @@
+{
+  "tileColumns": {
+    "type": "number",
+    "default": 4,
+    "description": "Number of tile columns in the shatter grid."
+  },
+  "tileRows": {
+    "type": "number",
+    "default": 4,
+    "description": "Number of tile rows in the shatter grid."
+  },
+  "color": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS color for the tile fill and reveal background."
+  },
+  "incomingImageSrc": {
+    "type": "string",
+    "default": "",
+    "description": "Optional image path revealed behind the shattered tiles."
+  },
+  "spreadFactor": {
+    "type": "number",
+    "default": 1.5,
+    "description": "Multiplier for how far tiles travel when shattering (1.0 = moderate, 2.0 = dramatic)."
+  }
+}

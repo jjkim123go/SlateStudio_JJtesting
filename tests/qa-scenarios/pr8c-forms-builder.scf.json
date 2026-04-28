@@ -1,0 +1,38 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "forms-builder-10s",
+      "duration": 10,
+      "component": "FormsScene",
+      "props": {
+        "variant": "builder",
+        "state": "more-solutions",
+        "accountInitial": "I",
+        "formName": "Employee satisfaction survey",
+        "savedLabel": "Saved",
+        "heroTitle": "Employee satisfaction survey",
+        "heroSubtitle": "You are invited!",
+        "sectionLabel": "Section 1",
+        "formSection": {
+          "title": "Profile",
+          "question": "What is your role?",
+          "options": ["Individual contributor", "Team lead", "Manager", "Senior executive"]
+        },
+        "sidePanel": {
+          "moreSolutions": [
+            { "title": "Evaluate job satisfaction and engagement", "image": "linear-gradient(135deg,#9FBFE0,#6E9DCB)" },
+            { "title": "Pre-Sales Inquiry Satisfaction Survey",    "image": "linear-gradient(135deg,#E89465,#D87037)" },
+            { "title": "Gathering Feedback on Work-Life Flexibility", "image": "linear-gradient(135deg,#E25E9A,#D44C95)" },
+            { "title": "Assess IT Service Satisfaction",          "image": "linear-gradient(135deg,#3B5BA5,#3F7BCB)" },
+            { "title": "Evaluate Customer Satisfaction",          "image": "linear-gradient(135deg,#5DA988,#3F8C6E)" },
+            { "title": "Review Training Quality and Effectiveness","image": "linear-gradient(135deg,#A45CB8,#8C3FA3)" }
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "lists-default-10s",
+      "duration": 10,
+      "component": "ListsScene",
+      "props": {
+        "state": "default",
+        "iconColor": "purple",
+        "listName": "Incidents list",
+        "breadcrumb": "Cosmos BDP",
+        "activeView": "All Items",
+        "accountInitial": "A",
+        "searchPlaceholder": "Search this list",
+        "columns": [
+          { "name": "Title",            "width": 220, "sort": null },
+          { "name": "ICM Link",         "width": 110, "sort": null },
+          { "name": "Start Time",       "width": 130, "sort": "desc" },
+          { "name": "ETA",              "width": 110, "sort": null },
+          { "name": "Status",           "width": 130, "sort": null },
+          { "name": "Contact",          "width": 170, "sort": null },
+          { "name": "Additional Contact", "width": 180, "sort": null },
+          { "name": "Details",          "width": "flex" }
+        ],
+        "rows": [
+          {
+            "cells": {
+              "Title": "Ingestion delay on Tier-1 cluster",
+              "ICM Link": { "type": "link", "text": "ICM 8842110" },
+              "Start Time": "Apr 14, 9:42 AM",
+              "ETA": "Apr 14, 12:00 PM",
+              "Status": { "type": "pill", "value": "On-going", "color": "teal" },
+              "Contact": { "type": "person", "name": "Priya Singh" },
+              "Additional Contact": { "type": "person", "name": "Marco Costa" },
+              "Details": { "type": "rich", "html": "<strong>Symptom:</strong> queue depth &gt;1.2M.<br/><strong>Mitigation:</strong> scale-out in progress. <a>Runbook</a>" }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Stale dashboards in West US 2",
+              "ICM Link": { "type": "link", "text": "ICM 8841997" },
+              "Start Time": "Apr 14, 8:15 AM",
+              "ETA": "—",
+              "Status": { "type": "pill", "value": "Mitigated", "color": "amber" },
+              "Contact": { "type": "person", "name": "Hannah Ito" },
+              "Additional Contact": { "type": "person", "name": "Ravi Kumar" },
+              "Details": { "type": "rich", "html": "Cache warmer restarted. Watching for next refresh window." }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Auth token rotation review",
+              "ICM Link": { "type": "link", "text": "ICM 8841750" },
+              "Start Time": "Apr 13, 6:30 PM",
+              "ETA": "Apr 14, 5:00 PM",
+              "Status": { "type": "pill", "value": "Resolved", "color": "green" },
+              "Contact": { "type": "person", "name": "Lena Park" },
+              "Additional Contact": "—",
+              "Details": { "type": "rich", "html": "<ul><li>Rotated KV secret</li><li>Notified downstream</li></ul>" }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Capacity alert — Storage account contoso-prod-01",
+              "ICM Link": { "type": "link", "text": "ICM 8840922" },
+              "Start Time": "Apr 13, 2:11 PM",
+              "ETA": "Apr 15",
+              "Status": { "type": "pill", "value": "On-going", "color": "teal" },
+              "Contact": { "type": "person", "name": "Damon West" },
+              "Additional Contact": { "type": "person", "name": "Aisha Mansour" },
+              "Details": { "type": "rich", "html": "Quota increase ticket filed. Awaiting approval from capacity team." }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Pipeline retry storm — eu-west region",
+              "ICM Link": { "type": "link", "text": "ICM 8840014" },
+              "Start Time": "Apr 13, 11:02 AM",
+              "ETA": "—",
+              "Status": { "type": "pill", "value": "Resolved", "color": "green" },
+              "Contact": { "type": "person", "name": "Owen Tanaka" },
+              "Additional Contact": "—",
+              "Details": { "type": "rich", "html": "Backoff config tuned, retry rate normalized within 30 min." }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

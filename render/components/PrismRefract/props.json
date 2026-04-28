@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PrismRefractProps",
+  "type": "object",
+  "properties": {
+    "outgoingSrc": {
+      "type": "string",
+      "default": "",
+      "description": "Optional path or URL for the outgoing scene artwork."
+    },
+    "incomingSrc": {
+      "type": "string",
+      "default": "",
+      "description": "Optional path or URL for the incoming scene artwork."
+    },
+    "headline": {
+      "type": "string",
+      "default": "Spectrum resolves",
+      "description": "Large headline shown while the rainbow bands sweep."
+    },
+    "subline": {
+      "type": "string",
+      "default": "Color bands sweep through frame, then collapse into a single unified scene.",
+      "description": "Supporting copy beneath the headline."
+    }
+  },
+  "additionalProperties": false
+}

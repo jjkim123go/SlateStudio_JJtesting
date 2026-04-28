@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "AudienceSafe Smoke — info severity",
+    "description": "Single AudienceSafe scene with default info severity, synthetic-ui classification, bottom-right placement.",
+    "author": "Slate QA — PR5 Lane B"
+  },
+  "scenes": [
+    {
+      "id": "as-info-smoke",
+      "component": "AudienceSafe",
+      "duration": 8,
+      "props": {
+        "classification": "synthetic-ui",
+        "watermarkText": "Synthetic UI — for illustration only",
+        "placement": "bottom-right",
+        "severity": "info",
+        "icon": "ⓘ",
+        "appearStartSec": 0.3,
+        "appearDurationSec": 0.6
+      }
+    }
+  ]
+}

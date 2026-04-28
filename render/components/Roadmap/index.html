@@ -1,0 +1,188 @@
+<!--
+  Roadmap — horizontal time-axis swimlane roadmap for PM/EM personas.
+  Provenance: proposal §3.3 lines 248–263 (Slate Phase II PR 4 §8.0).
+  Props consumed:
+    title (string, required)
+    horizonStart (ISO date, required)
+    horizonEnd (ISO date, required)
+    swimlanes[]   { id, label, owner?, color? }       (required) + swimlanesJson
+    milestones[]  { id, title, date, swimlaneId, status, owner?,
+                    confidence?, dependencyIds?, badge?, note? } (required) + milestonesJson
+    todayMarker?  { label, date }                     + todayMarkerJson
+    legend?[]     { status, label, color }            + legendJson
+    revealMode?   "date" | "lane" | "status" (default "date")
+  Class prefix: rm-
+  All SVG ids are suffixed with -{{sceneId}} to avoid document-global collisions.
+-->
+<style>
+.scene-{{sceneId}} .rm-root{
+  position:absolute;inset:0;
+  padding:56px 64px;
+  display:flex;flex-direction:column;gap:22px;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(circle at top right, rgba(56,189,248,0.10), transparent 38%),
+    linear-gradient(160deg,#0b1220 0%,#111827 60%,#0f172a 100%);
+  color:#e2e8f0;
+  overflow:hidden;
+}
+.scene-{{sceneId}} .rm-header{
+  display:flex;align-items:baseline;gap:18px;
+  opacity:0;
+}
+.scene-{{sceneId}} .rm-title{
+  margin:0;font-size:46px;font-weight:800;letter-spacing:-0.02em;
+  color:#FFFFFF;line-height:1.1;
+}
+.scene-{{sceneId}} .rm-horizon{
+  font-size:16px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;
+  color:rgba(226,232,240,0.55);
+}
+.scene-{{sceneId}} .rm-stage{
+  position:relative;flex:1;min-height:0;
+  border-radius:22px;
+  background:linear-gradient(180deg,rgba(15,23,42,0.55),rgba(2,6,23,0.85));
+  border:1px solid rgba(148,163,184,0.14);
+  box-shadow:0 28px 64px rgba(2,6,23,0.45);
+  padding:18px 22px 14px;
+  overflow:hidden;
+}
+.scene-{{sceneId}} .rm-svg{
+  width:100%;height:100%;display:block;overflow:visible;
+}
+/* axis */
+.scene-{{sceneId}} .rm-axis-baseline{
+  stroke:rgba(148,163,184,0.55);stroke-width:1.6;
+}
+.scene-{{sceneId}} .rm-axis-tick{
+  stroke:rgba(148,163,184,0.32);stroke-width:1;
+}
+.scene-{{sceneId}} .rm-axis-label{
+  fill:rgba(226,232,240,0.66);
+  font-size:14px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;
+  font-variant-numeric:tabular-nums;
+}
+/* swimlanes */
+.scene-{{sceneId}} .rm-swimlane-band{
+  fill:rgba(148,163,184,0.05);
+  stroke:rgba(148,163,184,0.10);stroke-width:1;
+}
+.scene-{{sceneId}} .rm-swimlane-band[data-alt="1"]{
+  fill:rgba(148,163,184,0.09);
+}
+.scene-{{sceneId}} .rm-swimlane-rule{
+  stroke:rgba(148,163,184,0.18);stroke-width:1;stroke-dasharray:4 6;
+}
+.scene-{{sceneId}} .rm-lane-label{
+  fill:#f1f5f9;font-size:18px;font-weight:700;letter-spacing:-0.01em;
+}
+.scene-{{sceneId}} .rm-lane-owner{
+  fill:rgba(148,163,184,0.78);font-size:13px;font-weight:500;letter-spacing:0.02em;
+}
+.scene-{{sceneId}} .rm-lane-accent{
+  stroke-width:3;stroke-linecap:round;
+}
+/* milestone cards */
+.scene-{{sceneId}} .rm-milestone{
+  /* opacity/transform animated */
+}
+.scene-{{sceneId}} .rm-card-bg{
+  fill:#0f172a;
+  stroke:rgba(148,163,184,0.30);stroke-width:1.2;
+  rx:10;ry:10;
+}
+.scene-{{sceneId}} .rm-card-accent{
+  rx:3;ry:3;
+}
+.scene-{{sceneId}} .rm-card-status{
+  rx:5;ry:5;
+}
+.scene-{{sceneId}} .rm-card-title{
+  fill:#FFFFFF;font-size:14px;font-weight:700;letter-spacing:-0.01em;
+}
+.scene-{{sceneId}} .rm-card-date{
+  fill:rgba(226,232,240,0.62);font-size:11px;font-weight:600;
+  font-variant-numeric:tabular-nums;letter-spacing:0.02em;
+}
+.scene-{{sceneId}} .rm-card-badge{
+  fill:rgba(56,189,248,0.20);
+  stroke:rgba(56,189,248,0.55);stroke-width:1;
+  rx:4;ry:4;
+}
+.scene-{{sceneId}} .rm-card-badge-text{
+  fill:#bae6fd;font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;
+}
+.scene-{{sceneId}} .rm-card-conf{
+  font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;
+}
+.scene-{{sceneId}} .rm-card-conf[data-conf="low"]{ fill:#fca5a5; }
+.scene-{{sceneId}} .rm-card-conf[data-conf="med"]{ fill:#fcd34d; }
+.scene-{{sceneId}} .rm-card-conf[data-conf="high"]{ fill:#86efac; }
+/* dependency lines */
+.scene-{{sceneId}} .rm-dep-line{
+  fill:none;
+  stroke:rgba(148,163,184,0.55);
+  stroke-width:1.6;
+  stroke-dasharray:5 4;
+  stroke-linecap:round;
+}
+/* today marker */
+.scene-{{sceneId}} .rm-today-line{
+  stroke:#f97316;stroke-width:2;stroke-dasharray:6 5;
+}
+.scene-{{sceneId}} .rm-today-pill{
+  fill:#f97316;rx:5;ry:5;
+}
+.scene-{{sceneId}} .rm-today-label{
+  fill:#0b1220;font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;
+}
+/* legend */
+.scene-{{sceneId}} .rm-legend{
+  display:flex;flex-wrap:wrap;gap:14px;align-items:center;
+  padding:6px 4px 0;opacity:0;
+}
+.scene-{{sceneId}} .rm-legend:empty{display:none}
+.scene-{{sceneId}} .rm-legend-item{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 12px;border-radius:999px;
+  background:rgba(148,163,184,0.10);
+  border:1px solid rgba(148,163,184,0.16);
+  font-size:13px;font-weight:600;color:#e2e8f0;
+}
+.scene-{{sceneId}} .rm-legend-swatch{
+  width:10px;height:10px;border-radius:50%;
+  box-shadow:0 0 0 3px rgba(148,163,184,0.12);
+}
+</style>
+<div class="rm-root" data-scene-component="Roadmap"
+  data-horizon-start="{{horizonStart}}"
+  data-horizon-end="{{horizonEnd}}"
+  data-reveal-mode="{{revealMode}}">
+  <div class="rm-header">
+    <h2 class="rm-title">{{title}}</h2>
+    <span class="rm-horizon">{{horizonStart}} &rarr; {{horizonEnd}}</span>
+  </div>
+  <div class="rm-stage">
+    <svg class="rm-svg" viewBox="0 0 1700 760" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{title}}">
+      <defs>
+        <clipPath id="rm-axis-clip-{{sceneId}}">
+          <rect x="0" y="0" width="0" height="760"/>
+        </clipPath>
+      </defs>
+      <g class="rm-layer-bands"></g>
+      <g class="rm-layer-axis" clip-path="url(#rm-axis-clip-{{sceneId}})"></g>
+      <g class="rm-layer-axis-labels"></g>
+      <g class="rm-layer-lanes"></g>
+      <g class="rm-layer-deps"></g>
+      <g class="rm-layer-milestones"></g>
+      <g class="rm-layer-today"></g>
+    </svg>
+  </div>
+  <div class="rm-legend"></div>
+
+  <!-- data islands (PROP_PREPROCESSORS expected to populate Json variants) -->
+  <script type="application/json" id="rm-swimlanes-data-{{sceneId}}">{{{swimlanesJson}}}</script>
+  <script type="application/json" id="rm-milestones-data-{{sceneId}}">{{{milestonesJson}}}</script>
+  <script type="application/json" id="rm-legend-data-{{sceneId}}">{{{legendJson}}}</script>
+  <script type="application/json" id="rm-today-data-{{sceneId}}">{{{todayMarkerJson}}}</script>
+</div>

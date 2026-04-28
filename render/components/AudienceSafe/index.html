@@ -1,0 +1,58 @@
+<!--
+  AudienceSafe — persistent governance watermark overlay.
+  Honest disclosure that synthetic / illustrative / sanitized content is shown.
+  Props consumed: classification, watermarkText, placement, severity, icon,
+                  appearStartSec, appearDurationSec, pulseStartSec
+  Provenance: proposal §3.9, CONTRACT §3.1/§3.3 Pattern B, prefix as-
+-->
+<style>
+.scene-{{sceneId}} .as-root{
+  --as-bg:rgba(15,18,40,0.85);
+  --as-border:rgba(255,255,255,0.12);
+  --as-text-color:rgba(255,255,255,0.9);
+  --as-icon-color:rgba(255,255,255,0.8);
+  position:absolute;z-index:50;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  pointer-events:none;opacity:0;
+}
+/* Placement — safe-area inset of 48px from edge */
+.scene-{{sceneId}} .as-root[data-placement="top-left"]     {top:48px;left:48px}
+.scene-{{sceneId}} .as-root[data-placement="top-right"]    {top:48px;right:48px}
+.scene-{{sceneId}} .as-root[data-placement="bottom-left"]  {bottom:48px;left:48px}
+.scene-{{sceneId}} .as-root[data-placement="bottom-right"] {bottom:48px;right:48px}
+
+.scene-{{sceneId}} .as-pill{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 16px;
+  background:var(--as-bg);
+  border:1px solid var(--as-border);
+  border-radius:999px;
+  max-width:360px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.3);
+}
+.scene-{{sceneId}} .as-icon{
+  font-size:14px;line-height:1;flex-shrink:0;
+  color:var(--as-icon-color);
+}
+.scene-{{sceneId}} .as-icon:empty{display:none}
+.scene-{{sceneId}} .as-text{
+  font-size:14px;font-weight:500;line-height:1.3;
+  color:var(--as-text-color);letter-spacing:0.01em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* Severity: warn — amber accent */
+.scene-{{sceneId}} .as-root[data-severity="warn"] .as-pill{
+  border-color:rgba(245,158,11,0.4);
+}
+.scene-{{sceneId}} .as-root[data-severity="warn"] .as-icon{
+  color:#f59e0b;
+}
+</style>
+<div class="as-root" data-scene-component="AudienceSafe"
+     data-placement="{{placement}}" data-severity="{{severity}}">
+  <div class="as-pill">
+    <span class="as-icon">{{icon}}</span>
+    <span class="as-text">{{watermarkText}}</span>
+  </div>
+</div>

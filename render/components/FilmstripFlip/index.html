@@ -1,0 +1,47 @@
+<!--
+  FilmstripFlip — full-screen bridge transition. A 3D card flip reveals
+  the incoming scene on the reverse face. Perspective-parent + rotateY (or
+  rotateX for vertical) with a swinging drop shadow for cinematic depth.
+
+  Props consumed:
+    direction   "flip-left" (default) | "flip-right" | "flip-up" | "flip-down"
+    color       CSS accent color for the edge frame at midpoint
+    perspective number in px for the 3D perspective (default 1200)
+-->
+<style>
+.scene-{{sceneId}} .ff-root{position:absolute;inset:0;background:#000;overflow:hidden;perspective:var(--ff-perspective,1200px);perspective-origin:50% 50%}
+
+.scene-{{sceneId}} .ff-card{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+
+/* Outgoing face (front) */
+.scene-{{sceneId}} .ff-front{position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 100%);display:flex;align-items:center;justify-content:center}
+
+/* Incoming face (back) — pre-rotated 180° so it shows when card flips.
+   Horizontal flip is the default; animation.js overrides for vertical. */
+.scene-{{sceneId}} .ff-back{position:absolute;inset:0;backface-visibility:hidden;background:linear-gradient(135deg,#0a0a1a 0%,#1a1a3e 100%);transform:rotateY(180deg)}
+.scene-{{sceneId}} .ff-root[data-direction="flip-up"] .ff-back,
+.scene-{{sceneId}} .ff-root[data-direction="flip-down"] .ff-back{transform:rotateX(180deg)}
+
+/* Edge frame visible at flip midpoint */
+.scene-{{sceneId}} .ff-edge{position:absolute;inset:0;border:3px solid var(--ff-color,#0078D4);opacity:0;will-change:opacity}
+
+/* Drop shadow overlay */
+.scene-{{sceneId}} .ff-shadow{position:absolute;inset:0;pointer-events:none;will-change:filter,opacity;opacity:0}
+
+/* Film sprocket holes — decorative top/bottom strips */
+.scene-{{sceneId}} .ff-sprockets{position:absolute;left:0;right:0;height:32px;display:flex;gap:48px;justify-content:center;align-items:center;z-index:2}
+.scene-{{sceneId}} .ff-sprockets.top{top:0}
+.scene-{{sceneId}} .ff-sprockets.bottom{bottom:0}
+.scene-{{sceneId}} .ff-hole{width:18px;height:14px;border-radius:3px;background:#111;border:1px solid #333;opacity:0}
+</style>
+<div class="ff-root" data-scene-component="FilmstripFlip" style="--ff-color: {{color}}; --ff-perspective: {{perspective}}px" data-direction="{{direction}}">
+  <div class="ff-card">
+    <div class="ff-front">
+      <div class="ff-edge"></div>
+    </div>
+    <div class="ff-back"></div>
+  </div>
+  <div class="ff-shadow"></div>
+  <div class="ff-sprockets top"></div>
+  <div class="ff-sprockets bottom"></div>
+</div>

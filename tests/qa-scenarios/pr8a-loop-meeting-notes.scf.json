@@ -1,0 +1,49 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "loop-mn-12s",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "meetingNotes",
+        "pageTitle": "Q3 Planning — Sync Notes",
+        "pageMeta": "Updated just now · 5 contributors",
+        "attendees": [
+          "Avery Chen",
+          "Jordan Park",
+          "Sam Rivera",
+          "Morgan Lee",
+          "Taylor Quinn"
+        ],
+        "agenda": [
+          "Roadmap commitments",
+          "Open dependencies",
+          "Risk review"
+        ],
+        "discussion": "Aligned on shipping the new ingest pipeline by end of Q3. Two integration risks logged below; owners assigned.",
+        "actionItems": [
+          { "text": "Draft kickoff doc",         "assignee": "Avery Chen",  "due": "Fri" },
+          { "text": "Review API contracts",      "assignee": "Jordan Park", "due": "Mon" },
+          { "text": "Schedule stakeholder demo", "assignee": "Sam Rivera",  "due": "Wed" }
+        ],
+        "copilotSuggestions": [
+          "Summarize the discussion section",
+          "Send action items to Teams chat",
+          "Draft a status update for stakeholders"
+        ],
+        "liveCursor": {
+          "name": "Jordan",
+          "accentHex": "#E8770E"
+        }
+      }
+    }
+  ]
+}

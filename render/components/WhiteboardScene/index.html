@@ -1,0 +1,644 @@
+<!--
+  ============================================================================
+  WhiteboardScene — Synthetic Microsoft Whiteboard Surface (Wave A, PR 8a)
+  ============================================================================
+
+  SLOT CONTRACT — Wave A canonical variant: "brainstorm".
+  All variant interior content (stickies, cluster labels, live cursors,
+  Copilot bubble, reaction bursts) is built ONCE at module-eval inside
+  animation.js from SCENE_PROPS. The HTML below renders only the chrome.
+
+  ┌─────────────────────────────┬────────────────────────────────────────────┐
+  │ data-slot="board-title"     │ Editable-look board name in toolbar left   │
+  ├─────────────────────────────┼────────────────────────────────────────────┤
+  │ data-slot="canvas-world"    │ Inner DIV that animation.js populates      │
+  │                             │ with stickies / cursors / cluster labels.  │
+  │                             │ Has transform: translate3d() scale() set   │
+  │                             │ inline by JS to frame the brainstorm.      │
+  ├─────────────────────────────┼────────────────────────────────────────────┤
+  │ data-slot="copilot-thinking"│ Top-center Copilot status bubble. Hidden   │
+  │                             │ by default; JS reveals during Categorize.  │
+  ├─────────────────────────────┼────────────────────────────────────────────┤
+  │ data-slot="reactions-layer" │ Floating layer for reaction emoji bursts.  │
+  └─────────────────────────────┴────────────────────────────────────────────┘
+
+  VARIANT ATTRIBUTES on root .wb-bg:
+    data-variant="brainstorm"   — current canonical (Wave A)
+
+  CHROME REGIONS (Wave A owns):
+    .wb-toolbar          — top bar (file controls + tool palette + presence)
+    .wb-sticky-palette   — floating left-side sticky color palette (12 colors)
+    .wb-action-menu      — bottom-right Copilot pill + zoom controls
+    .wb-canvas-viewport  — clipping container for the infinite canvas
+    .wb-canvas-world     — pannable/zoomable inner world (slot for JS-built content)
+
+  STANDING RULES:
+    SR #15 — Fluent UI 2 Filled icons only (inline SVG; no Outline/Regular).
+    SR #16 — Animations registered on master (see animation.js).
+    Rule #7 — DOM built once; tweens mutate properties only.
+    Class prefix: wb-
+============================================================================ -->
+
+<style data-component="WhiteboardScene">
+/* ── Sticky palette tokens (exposed as CSS custom properties) ── */
+.scene-{{sceneId}} .wb-bg {
+  --wb-sticky-yellow:  #FFF475;
+  --wb-sticky-yellow2: #FFE066;
+  --wb-sticky-pink:    #F28B82;
+  --wb-sticky-red:     #FF8A80;
+  --wb-sticky-orange:  #FFD6A5;
+  --wb-sticky-green:   #CCFF90;
+  --wb-sticky-mint:    #A7FFEB;
+  --wb-sticky-lblue:   #AECBFA;
+  --wb-sticky-blue:    #8AB4F8;
+  --wb-sticky-purple:  #D7AEFB;
+  --wb-sticky-gray:    #E8EAED;
+  --wb-sticky-white:   #FFFFFF;
+
+  --wb-canvas-bg:      #FAFAF9;
+  --wb-grid-dot:       rgba(120, 120, 120, 0.18);
+  --wb-chrome-bg:      #FFFFFF;
+  --wb-chrome-border:  #E5E5E5;
+  --wb-text:           #1A1A1A;
+  --wb-text-sec:       #616161;
+  --wb-accent:         #0F6CBD;
+  --wb-accent-hover:   #115EA3;
+  --wb-shadow-card:    0 1px 2px rgba(0,0,0,0.08), 0 4px 10px rgba(0,0,0,0.10);
+  --wb-shadow-float:   0 8px 16px rgba(0,0,0,0.14), 0 0 2px rgba(0,0,0,0.12);
+  --wb-shadow-sticky:  0 1px 1px rgba(0,0,0,0.10), 0 2px 6px rgba(0,0,0,0.13);
+  --wb-copilot-grad:   linear-gradient(135deg, #C770F0 0%, #5C8AF0 100%);
+
+  position: absolute; inset: 0;
+  background: var(--wb-canvas-bg);
+  font-family: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--wb-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+/* ── Canvas viewport (infinite-canvas surface) ── */
+.scene-{{sceneId}} .wb-canvas-viewport {
+  position: absolute;
+  top: 52px; left: 0; right: 0; bottom: 0;
+  overflow: hidden;
+  background-color: var(--wb-canvas-bg);
+  background-image: radial-gradient(circle, var(--wb-grid-dot) 1.4px, transparent 1.6px);
+  background-size: 28px 28px;
+  background-position: 0 0;
+}
+.scene-{{sceneId}} .wb-canvas-world {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  transform-origin: 0 0;
+  /* JS overrides via inline style: translate3d(x,y,0) scale(s) */
+  transform: translate3d(0, 0, 0) scale(1);
+  pointer-events: none;
+}
+
+/* ── Top toolbar (52px) ── */
+.scene-{{sceneId}} .wb-toolbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 52px;
+  background: var(--wb-chrome-bg);
+  border-bottom: 1px solid var(--wb-chrome-border);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  z-index: 20;
+  box-shadow: 0 1px 0 rgba(0,0,0,0.02);
+}
+.scene-{{sceneId}} .wb-tb-left {
+  display: flex; align-items: center; gap: 4px;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .wb-tb-center {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: center;
+}
+.scene-{{sceneId}} .wb-tb-right {
+  display: flex; align-items: center; gap: 8px;
+  flex: 0 0 auto;
+}
+
+/* Toolbar buttons (ghost) */
+.scene-{{sceneId}} .wb-tb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  border: 0; padding: 0; background: transparent;
+  color: var(--wb-text);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .12s;
+}
+.scene-{{sceneId}} .wb-tb-btn svg { width: 18px; height: 18px; }
+.scene-{{sceneId}} .wb-tb-btn:hover { background: rgba(0,0,0,0.05); }
+.scene-{{sceneId}} .wb-tb-divider {
+  width: 1px; height: 22px;
+  background: var(--wb-chrome-border);
+  margin: 0 6px;
+}
+
+.scene-{{sceneId}} .wb-board-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wb-text);
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: transparent;
+  margin-left: 4px;
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Centered tool palette (pen / highlighter / sticky / text / shape / select) */
+.scene-{{sceneId}} .wb-tool-palette {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 6px;
+  background: var(--wb-chrome-bg);
+  border: 1px solid var(--wb-chrome-border);
+  border-radius: 8px;
+  box-shadow: var(--wb-shadow-float);
+}
+.scene-{{sceneId}} .wb-tool-btn {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 36px; height: 32px;
+  border: 0; padding: 0; background: transparent;
+  color: var(--wb-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .wb-tool-btn svg { width: 18px; height: 18px; }
+.scene-{{sceneId}} .wb-tool-btn:hover { background: rgba(0,0,0,0.05); }
+.scene-{{sceneId}} .wb-tool-btn[data-active="1"] {
+  background: rgba(15, 108, 189, 0.10);
+  color: var(--wb-accent);
+}
+.scene-{{sceneId}} .wb-tool-btn[data-active="1"]::after {
+  content: "";
+  position: absolute;
+  left: 8px; right: 8px; bottom: 1px;
+  height: 2px;
+  background: var(--wb-accent);
+  border-radius: 2px;
+}
+
+/* Right cluster: reactions, copilot, presence */
+.scene-{{sceneId}} .wb-reactions-btn,
+.scene-{{sceneId}} .wb-copilot-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 32px; min-width: 32px;
+  padding: 0 8px;
+  border: 0; background: transparent; color: var(--wb-text);
+  border-radius: 16px;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .wb-reactions-btn svg { width: 18px; height: 18px; }
+.scene-{{sceneId}} .wb-reactions-btn:hover { background: rgba(0,0,0,0.05); }
+.scene-{{sceneId}} .wb-copilot-btn {
+  background: var(--wb-copilot-grad);
+  color: #FFFFFF;
+  padding: 0 4px;
+  width: 32px;
+}
+.scene-{{sceneId}} .wb-copilot-btn svg { width: 16px; height: 16px; }
+
+/* Presence avatars */
+.scene-{{sceneId}} .wb-presence {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+}
+.scene-{{sceneId}} .wb-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid #FFFFFF;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: #FFFFFF;
+  margin-left: -8px;
+  box-sizing: border-box;
+  letter-spacing: 0;
+}
+.scene-{{sceneId}} .wb-avatar:first-child { margin-left: 0; }
+
+/* ── Floating sticky-color palette (left, vertical) ── */
+.scene-{{sceneId}} .wb-sticky-palette {
+  position: absolute;
+  left: 16px; top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  padding: 8px 6px;
+  background: var(--wb-chrome-bg);
+  border: 1px solid var(--wb-chrome-border);
+  border-radius: 8px;
+  box-shadow: var(--wb-shadow-float);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  z-index: 15;
+}
+.scene-{{sceneId}} .wb-color-chip {
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,0.08);
+  cursor: pointer;
+  margin: 0 auto;
+}
+
+/* ── Bottom-right action menu (Copilot pill + zoom) ── */
+.scene-{{sceneId}} .wb-action-menu {
+  position: absolute;
+  right: 16px; bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  z-index: 18;
+}
+.scene-{{sceneId}} .wb-copilot-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 36px;
+  padding: 0 14px;
+  background: var(--wb-copilot-grad);
+  color: #FFFFFF;
+  font-weight: 600; font-size: 13px;
+  border-radius: 18px;
+  border: 0; cursor: pointer;
+  box-shadow: var(--wb-shadow-float);
+}
+.scene-{{sceneId}} .wb-copilot-pill svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .wb-zoom-cluster {
+  display: inline-flex;
+  align-items: stretch;
+  height: 36px;
+  background: var(--wb-chrome-bg);
+  border: 1px solid var(--wb-chrome-border);
+  border-radius: 4px;
+  box-shadow: var(--wb-shadow-float);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .wb-zoom-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 100%;
+  border: 0; background: transparent;
+  color: var(--wb-text);
+  cursor: pointer;
+}
+.scene-{{sceneId}} .wb-zoom-btn svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .wb-zoom-btn:hover { background: rgba(0,0,0,0.05); }
+.scene-{{sceneId}} .wb-zoom-pct {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 42px; padding: 0 4px;
+  font-size: 12px;
+  color: var(--wb-text);
+  border-left: 1px solid var(--wb-chrome-border);
+  border-right: 1px solid var(--wb-chrome-border);
+}
+
+/* ── Copilot "thinking" bubble (top-center) ── */
+.scene-{{sceneId}} .wb-copilot-thinking {
+  position: absolute;
+  top: 68px; left: 50%;
+  transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 36px;
+  padding: 0 14px;
+  background: var(--wb-chrome-bg);
+  border: 1px solid var(--wb-chrome-border);
+  border-radius: 18px;
+  box-shadow: var(--wb-shadow-float);
+  font-size: 13px; font-weight: 500;
+  color: var(--wb-text);
+  z-index: 22;
+  opacity: 0;
+}
+.scene-{{sceneId}} .wb-copilot-thinking .wb-copilot-mark {
+  width: 18px; height: 18px;
+  background: var(--wb-copilot-grad);
+  border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #FFFFFF;
+}
+.scene-{{sceneId}} .wb-copilot-thinking .wb-copilot-mark svg { width: 12px; height: 12px; }
+
+/* ── Stickies, cursors, clusters, reactions (built by JS) ── */
+.scene-{{sceneId}} .wb-sticky {
+  position: absolute;
+  width: 142px;
+  min-height: 130px;
+  padding: 14px 12px 24px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.32;
+  font-weight: 500;
+  color: #1A1A1A;
+  box-shadow: var(--wb-shadow-sticky);
+  box-sizing: border-box;
+  transform-origin: 50% 50%;
+  word-break: break-word;
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+.scene-{{sceneId}} .wb-sticky--title {
+  font-size: 15px;
+  font-weight: 700;
+  background: var(--wb-sticky-yellow2);
+}
+.scene-{{sceneId}} .wb-sticky-author-dot {
+  position: absolute;
+  left: 8px; bottom: 8px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.85);
+  box-sizing: border-box;
+}
+
+.scene-{{sceneId}} .wb-cluster-label {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 12px;
+  background: var(--wb-chrome-bg);
+  border: 1px solid var(--wb-chrome-border);
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wb-text);
+  box-shadow: var(--wb-shadow-card);
+  white-space: nowrap;
+  opacity: 0;
+  transform-origin: 50% 50%;
+}
+.scene-{{sceneId}} .wb-cluster-label::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 6px;
+  background: var(--wb-accent);
+}
+.scene-{{sceneId}} .wb-cluster-label[data-cluster="performance"]::before { background: #2DA94F; }
+.scene-{{sceneId}} .wb-cluster-label[data-cluster="pricing"]::before     { background: #E07B00; }
+.scene-{{sceneId}} .wb-cluster-label[data-cluster="onboarding"]::before  { background: #5C8AF0; }
+
+.scene-{{sceneId}} .wb-cursor {
+  position: absolute;
+  top: 0; left: 0;
+  width: 0; height: 0;
+  pointer-events: none;
+  z-index: 25;
+  will-change: transform;
+}
+.scene-{{sceneId}} .wb-cursor-arrow {
+  position: absolute;
+  top: 0; left: 0;
+  width: 18px; height: 18px;
+}
+.scene-{{sceneId}} .wb-cursor-pill {
+  position: absolute;
+  top: -20px; left: 6px;
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #FFFFFF;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.20);
+}
+
+.scene-{{sceneId}} .wb-reaction {
+  position: absolute;
+  font-size: 28px;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  z-index: 26;
+  will-change: transform, opacity;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Wave B — variant: 'diagramMode'
+ * SVG layer covers the canvas-world; uses native viewport coordinates
+ * (no world transform). Both rough and clean path layers are children of
+ * the same <svg> with MATCHED GEOMETRY — the refine effect is an opacity
+ * crossfade only (no path mutation).
+ * ──────────────────────────────────────────────────────────────────────── */
+.scene-{{sceneId}} .wb-dg-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 12;
+  overflow: visible;
+}
+.scene-{{sceneId}} .wb-dg-box,
+.scene-{{sceneId}} .wb-dg-arrow {
+  pointer-events: none;
+}
+.scene-{{sceneId}} .wb-dg-rough,
+.scene-{{sceneId}} .wb-dg-clean,
+.scene-{{sceneId}} .wb-dg-rough-arrow,
+.scene-{{sceneId}} .wb-dg-clean-arrow {
+  will-change: opacity, stroke-dashoffset;
+}
+
+/* ────────────────────────────────────────────────────────────────────────
+ * Wave B — variant: 'templateRetro'
+ * 4-column retrospective frame in viewport coords (no world transform).
+ * ──────────────────────────────────────────────────────────────────────── */
+.scene-{{sceneId}} .wb-rt-frame {
+  position: absolute;
+  background: #FFFFFF;
+  border: 1px solid #D1D1D1;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  z-index: 11;
+  will-change: opacity;
+}
+.scene-{{sceneId}} .wb-rt-col {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+.scene-{{sceneId}} .wb-rt-col-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1A1A1A;
+  letter-spacing: 0.2px;
+  border-bottom: 2px solid #E5E5E5;
+  background: #FAFAFA;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  will-change: opacity;
+}
+.scene-{{sceneId}} .wb-rt-col-divider {
+  position: absolute;
+  top: 56px;
+  bottom: 0;
+  width: 1px;
+  background: #E5E5E5;
+  will-change: transform;
+}
+.scene-{{sceneId}} .wb-rt-sticky {
+  position: absolute;
+  border-radius: 6px;
+  box-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.10),
+    0 1px 2px rgba(0, 0, 0, 0.06);
+  padding: 16px 18px 28px 18px;
+  box-sizing: border-box;
+  z-index: 14;
+  font-family: 'Segoe UI Variable', 'Segoe UI', sans-serif;
+  display: flex;
+  align-items: flex-start;
+  will-change: transform, opacity;
+}
+.scene-{{sceneId}} .wb-rt-sticky-text {
+  display: block;
+  font-size: 18px;
+  line-height: 1.32;
+  color: #1A1A1A;
+  font-weight: 500;
+  word-wrap: break-word;
+}
+.scene-{{sceneId}} .wb-rt-sticky-author-dot {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+}
+.scene-{{sceneId}} .wb-rt-cluster-bg {
+  position: absolute;
+  background: rgba(15, 108, 189, 0.08);
+  border: 1.5px dashed rgba(15, 108, 189, 0.45);
+  border-radius: 12px;
+  z-index: 13;
+  will-change: opacity;
+}
+</style>
+
+<!--
+  Fluent System Icons (filled variants only) — clean-room geometry inspired by
+  the Fluent System Icons set. Used via <svg><use href="#wb-icon-..."/></svg>.
+-->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="wb-icon-home" viewBox="0 0 20 20"><path fill="currentColor" d="M10.7 2.3a1 1 0 0 0-1.4 0L2.6 8.9c-.4.4-.4 1 0 1.4.4.4 1 .4 1.4 0L4 10.4V16c0 1.1.9 2 2 2h2.5v-4c0-.3.2-.5.5-.5h2c.3 0 .5.2.5.5v4H14c1.1 0 2-.9 2-2v-5.6l.1.1c.2.2.4.3.7.3.3 0 .5-.1.7-.3.4-.4.4-1 0-1.4l-6.8-6.6Z"/></symbol>
+    <symbol id="wb-icon-undo" viewBox="0 0 20 20"><path fill="currentColor" d="M5.5 7H11c2.5 0 4.5 2 4.5 4.5S13.5 16 11 16H7a.75.75 0 0 1 0-1.5h4c1.7 0 3-1.3 3-3s-1.3-3-3-3H5.5l1.7 1.7a.75.75 0 1 1-1 1.1L2.7 8.6a.75.75 0 0 1 0-1.1l3.5-3.2a.75.75 0 1 1 1 1.1L5.5 7Z"/></symbol>
+    <symbol id="wb-icon-redo" viewBox="0 0 20 20"><path fill="currentColor" d="M14.5 7H9C6.5 7 4.5 9 4.5 11.5S6.5 16 9 16h4a.75.75 0 0 0 0-1.5H9c-1.7 0-3-1.3-3-3s1.3-3 3-3h5.5l-1.7 1.7a.75.75 0 1 0 1 1.1l3.5-3.2a.75.75 0 0 0 0-1.1l-3.5-3.2a.75.75 0 1 0-1 1.1L14.5 7Z"/></symbol>
+    <symbol id="wb-icon-pen" viewBox="0 0 20 20"><path fill="currentColor" d="M14.7 2.3a2 2 0 0 1 2.8 2.8L7.7 14.9l-3.6 1 .9-3.7L14.7 2.3Zm-.7 2.1L4.7 13.7l-.5 1.9 1.9-.5L15.4 5.8 14 4.4Z"/></symbol>
+    <symbol id="wb-icon-highlighter" viewBox="0 0 20 20"><path fill="currentColor" d="M13 2.5a1.5 1.5 0 0 1 2.1 0l2.4 2.4a1.5 1.5 0 0 1 0 2.1L9.4 15.2 5 16.3l-1.3 1.3a.75.75 0 1 1-1-1l1.3-1.3 1.1-4.4L13 2.5Zm-7 9.7-.7 2.7L8 14.2l-2-2Z"/></symbol>
+    <symbol id="wb-icon-sticky" viewBox="0 0 20 20"><path fill="currentColor" d="M3 4.5C3 3.7 3.7 3 4.5 3h11c.8 0 1.5.7 1.5 1.5v7L11.5 17h-7c-.8 0-1.5-.7-1.5-1.5v-11Zm9 11h.5L17 11v-.5h-3.5c-.8 0-1.5.7-1.5 1.5v3.5Z"/></symbol>
+    <symbol id="wb-icon-text" viewBox="0 0 20 20"><path fill="currentColor" d="M3 4.5C3 4.2 3.2 4 3.5 4h13c.3 0 .5.2.5.5V6a.75.75 0 0 1-1.5 0V5.5h-5v9h1.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5H9v-9H4v.5a.75.75 0 0 1-1.5 0V4.5Z"/></symbol>
+    <symbol id="wb-icon-shapes" viewBox="0 0 20 20"><path fill="currentColor" d="M6 3a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.5 8a.5.5 0 0 0-.5.5v6c0 .3.2.5.5.5h6c.3 0 .5-.2.5-.5v-6a.5.5 0 0 0-.5-.5h-6Zm-7-.5a.5.5 0 0 0-.45.7l3 6a.5.5 0 0 0 .9 0l3-6a.5.5 0 0 0-.45-.7h-6Z"/></symbol>
+    <symbol id="wb-icon-cursor" viewBox="0 0 20 20"><path fill="currentColor" d="M4.6 2.5a.85.85 0 0 1 1.05-.07l11 7a.85.85 0 0 1-.25 1.55l-5.1 1.2-2.85 4.55a.85.85 0 0 1-1.55-.27L4.42 3.25a.85.85 0 0 1 .18-.75Z"/></symbol>
+    <symbol id="wb-icon-emoji" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2.5a7.5 7.5 0 1 0 0 15 7.5 7.5 0 0 0 0-15Zm-2.6 5.4a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm5.2 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2ZM6.6 11.5a.75.75 0 0 1 1.05.16 3 3 0 0 0 4.7 0 .75.75 0 1 1 1.2.91 4.5 4.5 0 0 1-7.1 0 .75.75 0 0 1 .15-1.07Z"/></symbol>
+    <symbol id="wb-icon-sparkle" viewBox="0 0 20 20"><path fill="currentColor" d="M10 1.5a.5.5 0 0 1 .48.36l1.16 4 4 1.16a.5.5 0 0 1 0 .96l-4 1.16-1.16 4a.5.5 0 0 1-.96 0l-1.16-4-4-1.16a.5.5 0 0 1 0-.96l4-1.16 1.16-4A.5.5 0 0 1 10 1.5Zm5.5 9a.5.5 0 0 1 .48.36l.5 1.7 1.7.5a.5.5 0 0 1 0 .96l-1.7.5-.5 1.7a.5.5 0 0 1-.96 0l-.5-1.7-1.7-.5a.5.5 0 0 1 0-.96l1.7-.5.5-1.7a.5.5 0 0 1 .48-.36Z"/></symbol>
+    <symbol id="wb-icon-zoom-in" viewBox="0 0 20 20"><path fill="currentColor" d="M9 3a6 6 0 0 1 4.7 9.74l3.78 3.78a.75.75 0 1 1-1.06 1.06l-3.78-3.78A6 6 0 1 1 9 3Zm0 1.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Zm.75 2a.75.75 0 0 0-1.5 0v1.75H6.5a.75.75 0 0 0 0 1.5h1.75v1.75a.75.75 0 0 0 1.5 0V9.75h1.75a.75.75 0 0 0 0-1.5H9.75V6.5Z"/></symbol>
+    <symbol id="wb-icon-zoom-out" viewBox="0 0 20 20"><path fill="currentColor" d="M9 3a6 6 0 0 1 4.7 9.74l3.78 3.78a.75.75 0 1 1-1.06 1.06l-3.78-3.78A6 6 0 1 1 9 3Zm0 1.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9ZM6.5 8.25h5a.75.75 0 0 1 0 1.5h-5a.75.75 0 0 1 0-1.5Z"/></symbol>
+    <symbol id="wb-icon-fit" viewBox="0 0 20 20"><path fill="currentColor" d="M3 4.5C3 3.7 3.7 3 4.5 3H8a.75.75 0 0 1 0 1.5H4.5V8a.75.75 0 0 1-1.5 0V4.5ZM12 3.75A.75.75 0 0 1 12.75 3h2.75c.83 0 1.5.67 1.5 1.5V8a.75.75 0 0 1-1.5 0V4.5H12.75A.75.75 0 0 1 12 3.75ZM3.75 12a.75.75 0 0 1 .75.75v2.75H8a.75.75 0 0 1 0 1.5H4.5A1.5 1.5 0 0 1 3 15.5v-2.75A.75.75 0 0 1 3.75 12Zm12.5 0a.75.75 0 0 1 .75.75v2.75A1.5 1.5 0 0 1 15.5 17h-2.75a.75.75 0 0 1 0-1.5h2.75v-2.75a.75.75 0 0 1 .75-.75Z"/></symbol>
+  </defs>
+</svg>
+
+<div class="wb-bg" data-scene-component="WhiteboardScene" data-variant="brainstorm">
+
+  <!-- ═══ INFINITE CANVAS VIEWPORT (sized to fit under toolbar) ═══ -->
+  <div class="wb-canvas-viewport">
+    <div class="wb-canvas-world" data-slot="canvas-world"></div>
+  </div>
+
+  <!-- ═══ TOP TOOLBAR (52px) ═══ -->
+  <div class="wb-toolbar">
+    <!-- Left: file/share controls + board name -->
+    <div class="wb-tb-left">
+      <button class="wb-tb-btn" aria-label="Home"><svg aria-hidden="true"><use href="#wb-icon-home"/></svg></button>
+      <button class="wb-tb-btn" aria-label="Undo"><svg aria-hidden="true"><use href="#wb-icon-undo"/></svg></button>
+      <button class="wb-tb-btn" aria-label="Redo"><svg aria-hidden="true"><use href="#wb-icon-redo"/></svg></button>
+      <span class="wb-tb-divider" aria-hidden="true"></span>
+      <span class="wb-board-name" data-slot="board-title">{{boardTitle}}</span>
+    </div>
+
+    <!-- Center: tool palette (all Filled icons) -->
+    <div class="wb-tb-center">
+      <div class="wb-tool-palette" role="toolbar" aria-label="Whiteboard tools">
+        <button class="wb-tool-btn" data-tool="pen" aria-label="Pen"><svg aria-hidden="true"><use href="#wb-icon-pen"/></svg></button>
+        <button class="wb-tool-btn" data-tool="highlighter" aria-label="Highlighter"><svg aria-hidden="true"><use href="#wb-icon-highlighter"/></svg></button>
+        <button class="wb-tool-btn" data-tool="sticky" data-active="1" aria-label="Sticky note"><svg aria-hidden="true"><use href="#wb-icon-sticky"/></svg></button>
+        <button class="wb-tool-btn" data-tool="text" aria-label="Text"><svg aria-hidden="true"><use href="#wb-icon-text"/></svg></button>
+        <button class="wb-tool-btn" data-tool="shape" aria-label="Shape"><svg aria-hidden="true"><use href="#wb-icon-shapes"/></svg></button>
+        <button class="wb-tool-btn" data-tool="select" aria-label="Select"><svg aria-hidden="true"><use href="#wb-icon-cursor"/></svg></button>
+      </div>
+    </div>
+
+    <!-- Right: reactions, copilot diamond, presence -->
+    <div class="wb-tb-right">
+      <button class="wb-reactions-btn" aria-label="Reactions"><svg aria-hidden="true"><use href="#wb-icon-emoji"/></svg></button>
+      <button class="wb-copilot-btn" data-slot="copilot-diamond" aria-label="Copilot"><svg aria-hidden="true"><use href="#wb-icon-sparkle"/></svg></button>
+      <span class="wb-presence" aria-label="Collaborators">
+        <span class="wb-avatar" style="background:#0F6CBD">AV</span>
+        <span class="wb-avatar" style="background:#0E7A0D">SM</span>
+        <span class="wb-avatar" style="background:#7719AA">JR</span>
+        <span class="wb-avatar" style="background:#D83B01">MO</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- ═══ FLOATING STICKY-COLOR PALETTE (left) ═══ -->
+  <div class="wb-sticky-palette" aria-label="Sticky colors">
+    <span class="wb-color-chip" style="background:var(--wb-sticky-yellow)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-yellow2)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-pink)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-red)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-orange)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-green)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-mint)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-lblue)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-blue)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-purple)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-gray)"></span>
+    <span class="wb-color-chip" style="background:var(--wb-sticky-white)"></span>
+  </div>
+
+  <!-- ═══ COPILOT THINKING BUBBLE (top-center, hidden by default) ═══ -->
+  <div class="wb-copilot-thinking" data-slot="copilot-thinking">
+    <span class="wb-copilot-mark"><svg aria-hidden="true"><use href="#wb-icon-sparkle"/></svg></span>
+    <span class="wb-copilot-thinking-text">Categorizing 12 ideas…</span>
+  </div>
+
+  <!-- ═══ BOTTOM-RIGHT ACTION MENU ═══ -->
+  <div class="wb-action-menu">
+    <button class="wb-copilot-pill" aria-label="Copilot"><svg aria-hidden="true"><use href="#wb-icon-sparkle"/></svg><span>Copilot</span></button>
+    <div class="wb-zoom-cluster">
+      <button class="wb-zoom-btn" aria-label="Zoom out"><svg aria-hidden="true"><use href="#wb-icon-zoom-out"/></svg></button>
+      <span class="wb-zoom-pct">100%</span>
+      <button class="wb-zoom-btn" aria-label="Zoom in"><svg aria-hidden="true"><use href="#wb-icon-zoom-in"/></svg></button>
+      <button class="wb-zoom-btn" aria-label="Fit to screen"><svg aria-hidden="true"><use href="#wb-icon-fit"/></svg></button>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "pipeline": "lottie-smoke",
+  "metadata": { "title": "Lottie Smoke" },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "lottie-scene",
+      "duration": 3,
+      "layers": [
+        {
+          "type": "image",
+          "src": "../../render/vendor/lottie-web/samples/checkmark.json"
+        },
+        {
+          "type": "lottie",
+          "id": "checkmark",
+          "src": "../../render/vendor/lottie-web/samples/checkmark.json",
+          "loop": true,
+          "speed": 1.5,
+          "x": 100, "y": 100, "width": 400, "height": 400,
+          "opacity": 1
+        }
+      ]
+    }
+  ]
+}

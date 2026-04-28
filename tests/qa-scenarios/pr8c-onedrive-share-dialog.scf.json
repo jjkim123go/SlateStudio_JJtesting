@@ -1,0 +1,46 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "onedrive-share-dialog-10s",
+      "duration": 10,
+      "component": "OneDriveScene",
+      "props": {
+        "variant": "selected",
+        "state": "share-dialog",
+        "pageTitle": "My files",
+        "accountName": "Adele Vance",
+        "accountInitial": "A",
+        "activeNav": "My files",
+        "selectedCount": 1,
+        "shareTarget": "Apps",
+        "showFeedbackCard": true,
+        "quickAccess": [
+          { "name": "Contoso Sales Platforms", "color": "#107C10", "initial": "C" },
+          { "name": "Contoso Finance Team", "color": "#D13438", "initial": "C" },
+          { "name": "Platform Engineering...", "color": "#8764B8", "initial": "P" },
+          { "name": "Marketing", "color": "#0078D4", "initial": "M" },
+          { "name": "Dev Tenant", "color": "#038387", "initial": "D" },
+          { "name": "HR Portal - Videos", "color": "#107C10", "initial": "H" },
+          { "name": "Commerce Docs - C...", "color": "#038387", "initial": "C" },
+          { "name": "Identity & Access Sup...", "color": "#605E5C", "initial": "I" }
+        ],
+        "files": [
+          { "name": "Apps", "type": "folder", "modified": "February 28, 2023", "modifiedBy": "Adele Vance", "size": "2 items", "sharing": "Private", "selected": true },
+          { "name": "Attachments", "type": "folder", "modified": "March 8, 2021", "modifiedBy": "Adele Vance", "size": "3 items", "sharing": "Private" },
+          { "name": "Desktop", "type": "folder", "modified": "August 27, 2020", "modifiedBy": "Adele Vance", "size": "2 items", "sharing": "Private" },
+          { "name": "Documents", "type": "folder", "modified": "August 27, 2020", "modifiedBy": "Adele Vance", "size": "48 items", "sharing": "Private" },
+          { "name": "Meetings", "type": "folder-shared", "modified": "February 9, 2022", "modifiedBy": "Adele Vance", "size": "1 item", "sharing": "Shared" },
+          { "name": "Microsoft Copilot Chat Files", "type": "folder", "modified": "September 5, 2024", "modifiedBy": "Adele Vance", "size": "1 item", "sharing": "Private" },
+          { "name": "Microsoft Teams Chat Files", "type": "folder", "modified": "June 22, 2020", "modifiedBy": "Adele Vance", "size": "105 items", "sharing": "Private" },
+          { "name": "OneNote Loop Files", "type": "folder", "modified": "May 12, 2025", "modifiedBy": "Adele Vance", "size": "1 item", "sharing": "Private" },
+          { "name": "Pictures", "type": "folder", "modified": "August 27, 2020", "modifiedBy": "Adele Vance", "size": "8 items", "sharing": "Private" },
+          { "name": "Recordings", "type": "folder-shared", "modified": "July 29, 2022", "modifiedBy": "Adele Vance", "size": "17 items", "sharing": "Shared" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-recording",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "outlook-shell-probe",
+      "duration": 4,
+      "component": "OutlookScene",
+      "props": {
+        "theme": "light",
+        "ribbonVariant": "mail-home",
+        "activeRail": "mail",
+        "accountName": "Alex Chen",
+        "searchPlaceholder": "Search or ask Copilot",
+        "notifCount": 9,
+        "toastState": "hidden"
+      }
+    }
+  ]
+}

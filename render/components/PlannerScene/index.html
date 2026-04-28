@@ -1,0 +1,760 @@
+<!--
+  PlannerScene — Wave A Chrome Shell (PR 8c — Productivity Surfaces)
+  Models the modern Microsoft Planner desktop chrome (board + charts + task-detail modal).
+  All selectors scoped: .scene-{{sceneId}} .ps-bg .ps-*
+
+  Variant switching via data-attributes on .ps-bg:
+    [data-variant] : board | charts
+    [data-state]   : default | task-open
+    [data-modal]   : 0 | 1   (mirrors hasModal — drives overlay visibility)
+
+  Slot HTML emitted by render/lib/planner-scene-transformer.mjs:
+    {{{tabsHtml}}}    — tab strip (Goals / Grid / Board / Calendar / Charts + filter/search)
+    {{{bodyHtml}}}    — buckets (board) OR chart cards grid (charts)
+    {{{modalHtml}}}   — empty unless state=task-open
+--><!-- ============================================================================
+     DENSITY SPEC — measured from output/pr8c-references/planner/raw-03..05.png.
+     Wave B agents: ground-truth numbers; do not deviate without a reference.
+     ============================================================================
+     Left rail width:           230px      bg: #fafafa, divider: #ededed
+     Top breadcrumb height:     48px       white, breadcrumb 14px
+     Tab strip height:          48px       white, tabs 32px tall pills
+     Bucket column width:       320px      gap: 12px
+     Bucket head height:        32px       (with help-icon row)
+     Add task button height:    28px
+     Task card padding:         10px 12px  border-radius: 8px, shadow subtle
+     Task card line-height:     20px
+     Modal width:               1100px (with chat) | scales down via min()
+     Field grid:                2 cols     12px row gap, 16px col gap
+     Brand purple:              #5B5FC7    Planner brand (different from Lists #742774)
+     ============================================================================ --><style data-component="PlannerScene">
+/* ---------- Theme tokens ---------- */
+.scene-{{sceneId}} .ps-bg {
+  --ps-bg: #f5f5f5;
+  --ps-surface: #ffffff;
+  --ps-surface-rail: #fafafa;
+  --ps-surface-hover: #f3f2f1;
+  --ps-divider: #ededed;
+  --ps-divider-strong: #d1d1d1;
+  --ps-text-primary: #242424;
+  --ps-text-secondary: #616161;
+  --ps-text-tertiary: #8a8886;
+  --ps-text-on-brand: #ffffff;
+  --ps-brand: #5B5FC7;
+  --ps-brand-hover: #4f52b6;
+  --ps-brand-light: #eef0fb;
+  --ps-warn-orange: #E8770E;
+  --ps-success-green: #3FB984;
+  --ps-card-shadow: 0 1px 2px rgba(0,0,0,0.07), 0 0 1px rgba(0,0,0,0.10);
+
+  position: absolute;
+  inset: 0;
+  background: var(--ps-bg);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Roboto, sans-serif;
+  color: var(--ps-text-primary);
+  font-size: 14px;
+  overflow: hidden;
+  display: flex;
+  opacity: 0; /* animation sets to 1 */
+}
+
+/* ---------- Left rail ---------- */
+.scene-{{sceneId}} .ps-rail {
+  flex: 0 0 230px;
+  background: var(--ps-surface-rail);
+  border-right: 1px solid var(--ps-divider);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 12px;
+  gap: 12px;
+}
+.scene-{{sceneId}} .ps-rail-app {
+  display: flex; align-items: center; gap: 10px;
+  padding: 4px 4px 8px;
+}
+.scene-{{sceneId}} .ps-rail-app-icon {
+  width: 24px; height: 24px;
+  background: var(--ps-brand);
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 14px;
+}
+.scene-{{sceneId}} .ps-rail-app-name {
+  font-size: 16px; font-weight: 600;
+}
+.scene-{{sceneId}} .ps-rail-create {
+  background: var(--ps-brand);
+  color: var(--ps-text-on-brand);
+  border: none;
+  height: 36px;
+  border-radius: 18px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: default;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+}
+.scene-{{sceneId}} .ps-rail-nav {
+  display: flex; flex-direction: column; gap: 2px;
+  margin-top: 4px;
+}
+.scene-{{sceneId}} .ps-rail-link {
+  height: 32px; border-radius: 4px;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 10px;
+  font-size: 14px;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-rail-link.is-active {
+  background: var(--ps-brand-light);
+  color: var(--ps-brand);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .ps-rail-section-head {
+  font-size: 12px; font-weight: 600; color: var(--ps-text-secondary);
+  padding: 12px 10px 4px;
+}
+
+/* ---------- Main column ---------- */
+.scene-{{sceneId}} .ps-main {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--ps-bg);
+}
+
+/* Breadcrumb header */
+.scene-{{sceneId}} .ps-crumb {
+  flex: 0 0 48px;
+  background: var(--ps-surface);
+  border-bottom: 1px solid var(--ps-divider);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-crumb-current {
+  color: var(--ps-text-primary);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .ps-crumb-shield {
+  width: 14px; height: 14px;
+  border-radius: 2px;
+  background: var(--ps-brand);
+  display: inline-block;
+}
+.scene-{{sceneId}} .ps-crumb-spacer { flex: 1 1 auto; }
+/* Group-by selector matches reference top-right "Group by : Bucket ▾" */
+.scene-{{sceneId}} .ps-groupby {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px;
+  color: var(--ps-text-secondary);
+  margin-right: 8px;
+}
+.scene-{{sceneId}} .ps-groupby-label { font-weight: 400; }
+.scene-{{sceneId}} .ps-groupby-value { font-weight: 600; color: var(--ps-text-primary); }
+.scene-{{sceneId}} .ps-groupby-caret { font-size: 10px; color: var(--ps-text-secondary); }
+.scene-{{sceneId}} .ps-share-btn {
+  background: var(--ps-brand);
+  color: var(--ps-text-on-brand);
+  border: none;
+  height: 32px;
+  border-radius: 4px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: default;
+}
+
+/* Tab strip */
+.scene-{{sceneId}} .ps-tabs {
+  flex: 0 0 48px;
+  background: var(--ps-surface);
+  border-bottom: 1px solid var(--ps-divider);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 8px;
+}
+.scene-{{sceneId}} .ps-tab {
+  background: transparent;
+  border: none;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ps-text-primary);
+  height: 32px;
+  border-radius: 4px;
+  padding: 0 12px;
+  display: inline-flex; align-items: center; gap: 8px;
+  cursor: default;
+}
+.scene-{{sceneId}} .ps-tab--active {
+  background: var(--ps-brand);
+  color: var(--ps-text-on-brand);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .ps-tabs-right {
+  margin-left: auto;
+  display: inline-flex; gap: 6px;
+}
+.scene-{{sceneId}} .ps-tab-icon-only {
+  width: 32px; height: 32px;
+  padding: 8px;
+  border-radius: 4px;
+  fill: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-icon { fill: currentColor; flex-shrink: 0; }
+
+/* ---------- Body container ---------- */
+.scene-{{sceneId}} .ps-body {
+  flex: 1 1 auto;
+  overflow: hidden;
+  position: relative;
+  padding: 16px 24px;
+}
+
+/* ============================================================================
+   BOARD VARIANT — bucket columns
+============================================================================ */
+.scene-{{sceneId}} .ps-bg[data-variant="charts"] .ps-buckets,
+.scene-{{sceneId}} .ps-bg[data-variant="board"] .ps-charts-grid,
+.scene-{{sceneId}} .ps-bg[data-variant="charts"] .ps-buckets-empty,
+.scene-{{sceneId}} .ps-bg[data-variant="board"] .ps-charts-empty {
+  display: none;
+}
+
+.scene-{{sceneId}} .ps-buckets {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  height: 100%;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ps-bucket {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 100%;
+}
+.scene-{{sceneId}} .ps-bucket-head {
+  display: flex; align-items: center; gap: 6px;
+  height: 32px;
+  padding: 0 4px;
+}
+.scene-{{sceneId}} .ps-bucket-help {
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: #d1d1d1;
+  color: #fff;
+  font-size: 11px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .ps-bucket-name {
+  font-size: 14px; font-weight: 600;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-add-task {
+  background: transparent;
+  border: none;
+  text-align: left;
+  padding: 0 4px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ps-text-secondary);
+  height: 28px;
+  cursor: default;
+}
+.scene-{{sceneId}} .ps-bucket-body {
+  display: flex; flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ps-add-bucket {
+  flex: 0 0 320px;
+  height: 36px;
+  background: var(--ps-brand);
+  color: var(--ps-text-on-brand);
+  border: none;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: default;
+}
+
+/* Task card hover overflow "..." button — matches reference raw-03 */
+.scene-{{sceneId}} .ps-card {
+  background: var(--ps-surface);
+  border-radius: 8px;
+  box-shadow: var(--ps-card-shadow);
+  padding: 10px 12px;
+  display: flex; flex-direction: column;
+  gap: 8px;
+  position: relative;
+  transition: box-shadow 120ms ease;
+}
+.scene-{{sceneId}} .ps-card:hover {
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10), 0 0 2px rgba(0,0,0,0.12);
+}
+.scene-{{sceneId}} .ps-card-overflow {
+  position: absolute;
+  top: 8px; right: 8px;
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  opacity: 0;
+  background: var(--ps-surface);
+  transition: opacity 80ms ease;
+}
+.scene-{{sceneId}} .ps-card:hover .ps-card-overflow { opacity: 1; }
+.scene-{{sceneId}} .ps-card-overflow .ps-icon { width: 14px; height: 14px; fill: var(--ps-text-secondary); }
+.scene-{{sceneId}} .ps-card-labels {
+  display: flex; gap: 4px;
+}
+.scene-{{sceneId}} .ps-card-label {
+  height: 6px; flex: 0 0 32px;
+  border-radius: 3px;
+}
+.scene-{{sceneId}} .ps-card-row {
+  display: flex; align-items: flex-start;
+  gap: 8px;
+}
+.scene-{{sceneId}} .ps-card-recurrence {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--ps-warn-orange);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.scene-{{sceneId}} .ps-card-recurrence .ps-icon {
+  width: 10px; height: 10px; fill: #fff;
+}
+.scene-{{sceneId}} .ps-card-title {
+  flex: 1 1 auto;
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-card-priority {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.scene-{{sceneId}} .ps-card-meta {
+  display: flex; align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-card-due {
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.scene-{{sceneId}} .ps-card-due .ps-icon { width: 12px; height: 12px; fill: var(--ps-text-secondary); }
+.scene-{{sceneId}} .ps-card-people {
+  margin-left: auto;
+  display: flex;
+}
+.scene-{{sceneId}} .ps-card-person {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--ps-brand);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-left: -4px;
+  border: 2px solid var(--ps-surface);
+}
+.scene-{{sceneId}} .ps-card-person:first-child { margin-left: 0; }
+
+/* ============================================================================
+   CHARTS VARIANT
+============================================================================ */
+.scene-{{sceneId}} .ps-charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  height: 100%;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ps-chart-card {
+  background: var(--ps-surface);
+  border-radius: 8px;
+  box-shadow: var(--ps-card-shadow);
+  padding: 16px;
+  display: flex; flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+.scene-{{sceneId}} .ps-chart-title {
+  font-size: 16px; font-weight: 600;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-chart-body {
+  flex: 1 1 auto;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 0;
+  position: relative;
+}
+.scene-{{sceneId}} .ps-chart-body--bar {
+  align-items: stretch; justify-content: stretch;
+  gap: 12px;
+}
+.scene-{{sceneId}} .ps-donut {
+  position: relative;
+  width: 160px; height: 160px;
+}
+.scene-{{sceneId}} .ps-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.scene-{{sceneId}} .ps-donut-value {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+}
+.scene-{{sceneId}} .ps-donut-num { font-size: 32px; font-weight: 700; color: var(--ps-text-primary); }
+.scene-{{sceneId}} .ps-donut-label { font-size: 12px; color: var(--ps-text-secondary); }
+
+.scene-{{sceneId}} .ps-chart-y {
+  display: flex; flex-direction: column;
+  justify-content: space-between;
+  font-size: 11px; color: var(--ps-text-tertiary);
+  padding-right: 4px;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .ps-chart-y-tick { line-height: 1; }
+.scene-{{sceneId}} .ps-chart-bars {
+  flex: 1 1 auto;
+  display: flex; align-items: flex-end; justify-content: space-around;
+  gap: 12px;
+  border-left: 1px solid var(--ps-divider);
+  border-bottom: 1px solid var(--ps-divider);
+  padding: 4px 8px 0;
+}
+.scene-{{sceneId}} .ps-bar-col {
+  flex: 1 1 0;
+  display: flex; flex-direction: column;
+  align-items: center;
+  height: 100%;
+  gap: 6px;
+  min-width: 0;
+}
+.scene-{{sceneId}} .ps-bar {
+  width: 100%; max-width: 56px;
+  margin-top: auto;
+  display: flex; flex-direction: column-reverse;
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--ps-divider);
+}
+.scene-{{sceneId}} .ps-bar-seg { width: 100%; }
+.scene-{{sceneId}} .ps-bar-label {
+  font-size: 11px; color: var(--ps-text-secondary);
+  text-align: center;
+  max-width: 100%;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+.scene-{{sceneId}} .ps-chart-legend {
+  flex: 0 0 auto;
+  display: flex; flex-wrap: wrap; gap: 12px;
+  padding-top: 8px;
+  border-top: 1px solid var(--ps-divider);
+  font-size: 12px;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-legend-item {
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .ps-legend-swatch {
+  width: 10px; height: 10px;
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   TASK DETAIL MODAL (state="task-open")
+============================================================================ */
+.scene-{{sceneId}} .ps-modal-scrim {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,0.32);
+  opacity: 0; pointer-events: none;
+}
+.scene-{{sceneId}} .ps-modal {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.96);
+  width: min(1100px, calc(100% - 64px));
+  max-height: calc(100% - 64px);
+  background: var(--ps-surface);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.20), 0 2px 6px rgba(0,0,0,0.12);
+  opacity: 0; pointer-events: none;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ps-bg[data-state="task-open"] .ps-modal-scrim { opacity: 1; }
+.scene-{{sceneId}} .ps-bg[data-state="task-open"] .ps-modal {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.scene-{{sceneId}} .ps-modal-head {
+  flex: 0 0 48px;
+  display: flex; align-items: center;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--ps-divider);
+}
+.scene-{{sceneId}} .ps-modal-plan {
+  font-size: 14px; font-weight: 600;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-modal-actions {
+  margin-left: auto;
+  display: inline-flex; gap: 4px;
+}
+.scene-{{sceneId}} .ps-modal-icon-btn {
+  width: 32px; height: 32px;
+  border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-modal-icon-btn .ps-icon { width: 16px; height: 16px; }
+.scene-{{sceneId}} .ps-modal-grid {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  min-height: 0;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ps-modal-main {
+  padding: 20px 24px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  gap: 12px;
+}
+.scene-{{sceneId}} .ps-modal-title-row {
+  display: flex; align-items: flex-start;
+  gap: 10px;
+}
+.scene-{{sceneId}} .ps-modal-icon-leading {
+  width: 20px; height: 20px;
+  fill: var(--ps-warn-orange);
+  margin-top: 2px;
+}
+.scene-{{sceneId}} .ps-modal-title {
+  flex: 1 1 auto;
+  font-size: 22px; font-weight: 600;
+  line-height: 28px;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-modal-title-ellipsis {
+  color: var(--ps-text-secondary);
+  font-weight: 400;
+  margin-left: 4px;
+}
+.scene-{{sceneId}} .ps-modal-meta {
+  font-size: 12px;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-modal-info-i {
+  display: inline-block;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 9px;
+  text-align: center;
+  line-height: 12px;
+  color: var(--ps-text-tertiary);
+}
+.scene-{{sceneId}} .ps-modal-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-modal-row-icon { width: 18px; height: 18px; fill: var(--ps-text-secondary); }
+.scene-{{sceneId}} .ps-muted { color: var(--ps-text-secondary); }
+
+.scene-{{sceneId}} .ps-modal-pills {
+  display: flex; gap: 8px;
+  margin-top: 4px;
+}
+.scene-{{sceneId}} .ps-pill-btn {
+  background: transparent;
+  border: 1px solid var(--ps-divider-strong);
+  border-radius: 16px;
+  height: 32px;
+  padding: 0 14px;
+  font: inherit; font-size: 13px;
+  color: var(--ps-text-primary);
+  display: inline-flex; align-items: center; gap: 6px;
+  cursor: default;
+}
+.scene-{{sceneId}} .ps-pill-btn .ps-icon { width: 14px; height: 14px; fill: var(--ps-text-secondary); }
+.scene-{{sceneId}} .ps-pill-btn--active {
+  background: var(--ps-brand-light);
+  border-color: var(--ps-brand);
+  color: var(--ps-brand);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .ps-pill-btn--active .ps-icon { fill: var(--ps-brand); }
+
+.scene-{{sceneId}} .ps-field-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  margin-top: 4px;
+}
+.scene-{{sceneId}} .ps-field {
+  display: flex; flex-direction: column;
+  gap: 4px;
+}
+.scene-{{sceneId}} .ps-field label {
+  font-size: 12px;
+  color: var(--ps-text-secondary);
+  display: inline-flex; align-items: center; gap: 4px;
+}
+.scene-{{sceneId}} .ps-field-input {
+  height: 32px;
+  border: 1px solid var(--ps-divider-strong);
+  border-radius: 4px;
+  padding: 0 10px;
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px;
+}
+.scene-{{sceneId}} .ps-field-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.scene-{{sceneId}} .ps-field-caret {
+  margin-left: auto;
+  display: inline-flex; align-items: center;
+  color: var(--ps-text-secondary);
+}
+.scene-{{sceneId}} .ps-field-caret .ps-icon { width: 14px; height: 14px; fill: var(--ps-text-secondary); }
+
+.scene-{{sceneId}} .ps-section { margin-top: 8px; }
+.scene-{{sceneId}} .ps-section-head {
+  font-size: 14px; font-weight: 600;
+  margin-bottom: 8px;
+}
+.scene-{{sceneId}} .ps-checklist { display: flex; flex-direction: column; gap: 6px; }
+.scene-{{sceneId}} .ps-checklist-item, .scene-{{sceneId}} .ps-checklist-empty {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 14px;
+  color: var(--ps-text-primary);
+}
+.scene-{{sceneId}} .ps-check {
+  width: 14px; height: 14px;
+  border: 1.5px solid var(--ps-text-tertiary);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .ps-check.is-done {
+  background: var(--ps-success-green);
+  border-color: var(--ps-success-green);
+}
+.scene-{{sceneId}} .ps-notes-text {
+  font-size: 14px; color: var(--ps-text-primary);
+  line-height: 20px;
+}
+.scene-{{sceneId}} .ps-notes-placeholder {
+  font-size: 14px; color: var(--ps-text-tertiary);
+  font-style: italic;
+}
+
+.scene-{{sceneId}} .ps-modal-chat {
+  border-left: 1px solid var(--ps-divider);
+  display: flex; flex-direction: column;
+  background: var(--ps-surface-rail);
+}
+.scene-{{sceneId}} .ps-chat-head {
+  flex: 0 0 40px;
+  padding: 0 16px;
+  display: flex; align-items: center;
+  font-size: 14px; font-weight: 600;
+  border-bottom: 1px solid var(--ps-divider);
+}
+.scene-{{sceneId}} .ps-chat-body {
+  flex: 1 1 auto;
+  padding: 24px 16px;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .ps-chat-empty {
+  text-align: center;
+  max-width: 280px;
+}
+.scene-{{sceneId}} .ps-chat-emoji { font-size: 32px; margin-bottom: 12px; }
+.scene-{{sceneId}} .ps-chat-empty-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.scene-{{sceneId}} .ps-chat-empty-sub { font-size: 12px; color: var(--ps-text-secondary); line-height: 18px; }
+.scene-{{sceneId}} .ps-chat-input {
+  flex: 0 0 60px;
+  border-top: 1px solid var(--ps-divider);
+  padding: 0 16px;
+  display: flex; align-items: center; gap: 8px;
+  background: var(--ps-surface);
+}
+.scene-{{sceneId}} .ps-chat-placeholder {
+  flex: 1 1 auto;
+  font-size: 13px; color: var(--ps-text-tertiary);
+}
+.scene-{{sceneId}} .ps-chat-send {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--ps-brand);
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .ps-chat-send .ps-icon { width: 16px; height: 16px; fill: var(--ps-brand); }
+
+/* ---------- Animation initial states ---------- */
+.scene-{{sceneId}} .ps-card,
+.scene-{{sceneId}} .ps-bucket,
+.scene-{{sceneId}} .ps-chart-card { opacity: 0; transform: translateY(8px); }
+</style>
+
+<div class="ps-bg" data-variant="{{variant}}" data-state="{{state}}" data-modal="{{dataModal}}">
+  <!-- Left rail -->
+  <aside class="ps-rail" aria-label="Planner navigation">
+    <div class="ps-rail-app">
+      <span class="ps-rail-app-icon">♥</span>
+      <span class="ps-rail-app-name">Planner</span>
+    </div>
+    <button type="button" class="ps-rail-create">+&nbsp; Create a plan</button>
+    <nav class="ps-rail-nav">
+      <a class="ps-rail-link">My day</a>
+      <a class="ps-rail-link">My tasks</a>
+      <a class="ps-rail-link is-active">My plans</a>
+    </nav>
+    <div class="ps-rail-section-head">Pinned</div>
+    <nav class="ps-rail-nav">
+      <a class="ps-rail-link">{{planName}}</a>
+    </nav>
+  </aside>
+
+  <!-- Main column -->
+  <section class="ps-main">
+    <header class="ps-crumb">
+      <span>{{breadcrumb}}</span>
+      <span>›</span>
+      <span class="ps-crumb-current"><span class="ps-crumb-shield"></span><span>{{planName}}</span></span>
+      <span class="ps-crumb-spacer"></span>
+      <span class="ps-groupby"><span class="ps-groupby-label">Group by :</span><span class="ps-groupby-value">{{groupBy}}</span><span class="ps-groupby-caret">▾</span></span>
+      <button type="button" class="ps-share-btn">Share</button>
+    </header>
+
+    <nav class="ps-tabs" role="tablist">{{{tabsHtml}}}</nav>
+
+    <div class="ps-body">{{{bodyHtml}}}</div>
+  </section>
+
+  <!-- Modal overlay (rendered always; opacity 0 unless data-state="task-open") -->
+  {{{modalHtml}}}
+
+  <script type="application/json" data-region="planner-meta">{
+    "variant": "{{variant}}",
+    "state": "{{state}}",
+    "activeTab": "{{activeTab}}",
+    "hasModal": {{hasModal}}
+  }</script>
+</div>

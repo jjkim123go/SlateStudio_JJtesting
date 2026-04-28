@@ -1,0 +1,131 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr4-roadmap",
+    "title": "PR 4 Smoke — Roadmap (full props with native arrays + edge case)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "rm-full",
+      "duration": 12,
+      "component": "Roadmap",
+      "description": "Full props using NATIVE JS arrays (not pre-stringified). Verifies orchestrator wires PROP_PREPROCESSORS for swimlanes/milestones/legend/todayMarker.",
+      "props": {
+        "title": "Q1–Q2 Platform Roadmap",
+        "horizonStart": "2025-01-01",
+        "horizonEnd": "2025-03-31",
+        "revealMode": "date",
+        "swimlanes": [
+          { "id": "lane-platform", "label": "Platform", "owner": "Sarah Chen" },
+          { "id": "lane-ai", "label": "AI Services", "owner": "Marcus Rivera", "color": "#a78bfa" },
+          { "id": "lane-data", "label": "Data Plane", "owner": "Aisha Patel", "color": "#34d399" }
+        ],
+        "milestones": [
+          {
+            "id": "m1", "title": "Auth refactor GA", "date": "2025-01-15",
+            "swimlaneId": "lane-platform", "status": "done",
+            "owner": "S. Chen", "confidence": "high", "badge": "GA"
+          },
+          {
+            "id": "m2", "title": "Vector store private preview", "date": "2025-01-28",
+            "swimlaneId": "lane-ai", "status": "done",
+            "owner": "M. Rivera", "confidence": "high"
+          },
+          {
+            "id": "m3", "title": "Schema v3 migration", "date": "2025-02-12",
+            "swimlaneId": "lane-data", "status": "in_progress",
+            "owner": "A. Patel", "confidence": "med", "badge": "BETA",
+            "dependencyIds": ["m1"]
+          },
+          {
+            "id": "m4", "title": "Embedding cache rollout", "date": "2025-02-20",
+            "swimlaneId": "lane-ai", "status": "in_progress",
+            "owner": "M. Rivera", "confidence": "med",
+            "dependencyIds": ["m2", "m3"]
+          },
+          {
+            "id": "m5", "title": "Multi-region failover", "date": "2025-03-08",
+            "swimlaneId": "lane-platform", "status": "at_risk",
+            "owner": "S. Chen", "confidence": "low", "badge": "P0",
+            "dependencyIds": ["m1", "m3"]
+          },
+          {
+            "id": "m6", "title": "Public API GA", "date": "2025-03-25",
+            "swimlaneId": "lane-ai", "status": "planned",
+            "owner": "M. Rivera", "confidence": "med",
+            "dependencyIds": ["m4", "m5"]
+          },
+          {
+            "id": "m7", "title": "Observability v2", "date": "2025-03-25",
+            "swimlaneId": "lane-data", "status": "planned",
+            "owner": "A. Patel", "confidence": "high"
+          },
+          {
+            "id": "m-invalid-dep", "title": "Telemetry pipeline", "date": "2025-02-26",
+            "swimlaneId": "lane-data", "status": "in_progress",
+            "dependencyIds": ["m2", "does-not-exist"]
+          }
+        ],
+        "todayMarker": { "label": "TODAY", "date": "2025-02-18" },
+        "legend": [
+          { "status": "done", "label": "Done", "color": "#22c55e" },
+          { "status": "in_progress", "label": "In progress", "color": "#38bdf8" },
+          { "status": "at_risk", "label": "At risk", "color": "#f97316" },
+          { "status": "planned", "label": "Planned", "color": "#a78bfa" }
+        ]
+      }
+    },
+    {
+      "id": "rm-edge",
+      "duration": 10,
+      "component": "Roadmap",
+      "description": "edge-case: same-day stacked milestones (3 milestones in same lane on same date) + out-of-range todayMarker (clamp+hide per documented rule) + revealMode='lane' to exercise non-default reveal path. Also includes one out-of-horizon milestone that should be silently filtered.",
+      "props": {
+        "title": "Edge cases — collisions, out-of-range, lane reveal",
+        "horizonStart": "2025-04-01",
+        "horizonEnd": "2025-05-31",
+        "revealMode": "lane",
+        "swimlanes": [
+          { "id": "lane-a", "label": "Workstream A" },
+          { "id": "lane-b", "label": "Workstream B", "owner": "Team B" }
+        ],
+        "milestones": [
+          {
+            "id": "e1", "title": "Kickoff", "date": "2025-04-15",
+            "swimlaneId": "lane-a", "status": "done"
+          },
+          {
+            "id": "e2", "title": "Spec freeze", "date": "2025-04-30",
+            "swimlaneId": "lane-a", "status": "done"
+          },
+          {
+            "id": "e3", "title": "Design review", "date": "2025-04-30",
+            "swimlaneId": "lane-a", "status": "in_progress"
+          },
+          {
+            "id": "e4", "title": "Risk review", "date": "2025-04-30",
+            "swimlaneId": "lane-a", "status": "at_risk", "badge": "P1"
+          },
+          {
+            "id": "e5", "title": "Launch", "date": "2025-05-20",
+            "swimlaneId": "lane-b", "status": "planned",
+            "dependencyIds": ["e2", "e3"]
+          },
+          {
+            "id": "e-out-of-range", "title": "Should be filtered",
+            "date": "2025-08-01", "swimlaneId": "lane-b", "status": "planned"
+          }
+        ],
+        "todayMarker": { "label": "NOW", "date": "2025-12-31" },
+        "legend": [
+          { "status": "done", "label": "Done", "color": "#22c55e" },
+          { "status": "in_progress", "label": "Active", "color": "#38bdf8" },
+          { "status": "at_risk", "label": "At risk", "color": "#f97316" },
+          { "status": "planned", "label": "Planned", "color": "#a78bfa" }
+        ]
+      }
+    }
+  ]
+}

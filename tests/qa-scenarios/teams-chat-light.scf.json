@@ -1,0 +1,130 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-recording",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "teams-chat-light",
+      "duration": 14,
+      "component": "TeamsScene",
+      "props": {
+        "theme": "light",
+        "view": "chat",
+        "user": { "name": "Megan Bowen", "initials": "MB", "avatarColor": "#5B5FC7" },
+        "topBar": {
+          "currentTab": "chat",
+          "search": { "placeholder": "Search" }
+        },
+        "rail": {
+          "items": [
+            { "key": "activity", "label": "Activity", "badge": 3 },
+            { "key": "chat", "label": "Chat", "active": true, "badge": 12 },
+            { "key": "teams", "label": "Teams" },
+            { "key": "calendar", "label": "Calendar" },
+            { "key": "calls", "label": "Calls" },
+            { "key": "files", "label": "Files" }
+          ]
+        },
+        "navigator": {
+          "title": "Chat",
+          "filter": "Recent",
+          "actions": ["filter", "compose"],
+          "items": [
+            {
+              "type": "chat",
+              "kind": "oneOnOne",
+              "name": "Adele Vance",
+              "avatarColor": "#0078D4",
+              "presence": "online",
+              "lastMessage": "Sounds good — let's ship it.",
+              "time": "10:42",
+              "active": true,
+              "unread": false
+            },
+            {
+              "type": "chat",
+              "kind": "group",
+              "name": "Mark 8 Project Team",
+              "lastMessage": "Diego: Updated the spec",
+              "time": "10:30",
+              "unread": true
+            },
+            {
+              "type": "chat",
+              "kind": "oneOnOne",
+              "name": "Lynne Robbins",
+              "avatarColor": "#107C10",
+              "presence": "away",
+              "lastMessage": "Thanks!",
+              "time": "Yesterday"
+            },
+            {
+              "type": "chat",
+              "kind": "oneOnOne",
+              "name": "Patti Fernandez",
+              "avatarColor": "#D83B01",
+              "presence": "busy",
+              "lastMessage": "Will review tomorrow",
+              "time": "Yesterday"
+            }
+          ]
+        },
+        "contentHeader": {
+          "kind": "chat",
+          "title": "Adele Vance",
+          "subtitle": "Available",
+          "avatarColor": "#0078D4",
+          "tabs": [
+            { "label": "Chat", "active": true },
+            { "label": "Shared" },
+            { "label": "Activity" }
+          ]
+        },
+        "steps": [
+          { "kind": "date_divider", "label": "Today" },
+          {
+            "kind": "message",
+            "id": "m1",
+            "author": "Adele Vance",
+            "avatarColor": "#0078D4",
+            "status": "online",
+            "time": "10:38 AM",
+            "text": "Hey @Megan — can you review the deployment plan when you get a chance?"
+          },
+          {
+            "kind": "message",
+            "id": "m2",
+            "author": "Megan Bowen",
+            "avatarColor": "#5B5FC7",
+            "status": "online",
+            "time": "10:40 AM",
+            "text": "On it. Looking now."
+          },
+          {
+            "kind": "message_with_quote",
+            "id": "m3",
+            "author": "Megan Bowen",
+            "avatarColor": "#5B5FC7",
+            "status": "online",
+            "time": "10:41 AM",
+            "quote": { "author": "Adele Vance", "text": "can you review the deployment plan" },
+            "text": "Approved — looks great. Ship it 🚀"
+          },
+          { "kind": "reaction", "targetStepId": "m3", "emoji": "👍", "from": "Adele Vance" },
+          {
+            "kind": "message",
+            "id": "m4",
+            "author": "Adele Vance",
+            "avatarColor": "#0078D4",
+            "status": "online",
+            "time": "10:42 AM",
+            "text": "Sounds good — let's ship it."
+          }
+        ],
+        "composer": {
+          "placeholder": "Type a message"
+        }
+      }
+    }
+  ]
+}

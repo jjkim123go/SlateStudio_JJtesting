@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "pipeline": "tech-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "wb-diagram",
+      "duration": 12,
+      "component": "WhiteboardScene",
+      "props": {
+        "variant": "diagramMode",
+        "boardTitle": "Release pipeline",
+        "liveCursors": [
+          {
+            "name": "Avery",
+            "accentHex": "#0F6CBD",
+            "path": [
+              { "x": 320,  "y": 280 },
+              { "x": 600,  "y": 220 },
+              { "x": 940,  "y": 360 },
+              { "x": 1180, "y": 300 },
+              { "x": 1320, "y": 260 }
+            ]
+          },
+          {
+            "name": "Sam",
+            "accentHex": "#0E7A0D",
+            "path": [
+              { "x": 1380, "y": 600 },
+              { "x": 1100, "y": 540 },
+              { "x": 820,  "y": 500 },
+              { "x": 540,  "y": 520 },
+              { "x": 360,  "y": 480 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

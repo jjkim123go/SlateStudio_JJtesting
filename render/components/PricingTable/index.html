@@ -1,0 +1,190 @@
+<style>
+  /* Shared cmp-* grid structure (per pr3-comparison-grid-spec.md) +
+     pt-* PricingTable-specific overrides. All scoped under .scene-{{sceneId}}
+     to honor CONTRACT.md §3.3 + §4.3. */
+  .scene-{{sceneId}} .cmp-root.pt-root {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--cmp-bg, #0a0a0c);
+    color: var(--cmp-fg, #f4f4f6);
+    padding: 64px 80px 56px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    --cmp-bg: #0a0a0c;
+    --cmp-fg: #f4f4f6;
+    --cmp-fg-dim: #9ca3af;
+    --cmp-accent: #2563eb;
+    --cmp-good: #22c55e;
+    --cmp-warn: #f59e0b;
+    --cmp-bad: #ef4444;
+    --cmp-row-divider: rgba(255,255,255,0.08);
+    --cmp-col-divider: rgba(255,255,255,0.06);
+    --cmp-recommended: rgba(37,99,235,0.12);
+  }
+
+  .scene-{{sceneId}} .cmp-header {
+    opacity: 0;
+    flex: 0 0 auto;
+  }
+  .scene-{{sceneId}} .cmp-title {
+    margin: 0;
+    font-size: 56px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--cmp-fg);
+  }
+
+  .scene-{{sceneId}} .cmp-grid {
+    flex: 1 1 auto;
+    display: grid;
+    gap: 0;
+    align-items: stretch;
+  }
+  .scene-{{sceneId}} .cmp-grid[data-cols="1"] { grid-template-columns: 1fr; }
+  .scene-{{sceneId}} .cmp-grid[data-cols="2"] { grid-template-columns: repeat(2, 1fr); }
+  .scene-{{sceneId}} .cmp-grid[data-cols="3"] { grid-template-columns: repeat(3, 1fr); }
+  .scene-{{sceneId}} .cmp-grid[data-cols="4"] { grid-template-columns: repeat(4, 1fr); }
+
+  .scene-{{sceneId}} .cmp-col-head {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 32px 28px;
+    border-right: 1px solid var(--cmp-col-divider);
+    background: rgba(255,255,255,0.02);
+    opacity: 0;
+    transform-origin: center top;
+  }
+  .scene-{{sceneId}} .cmp-col-head:last-child { border-right: none; }
+  .scene-{{sceneId}} .cmp-col-head[data-recommended="true"] {
+    background: var(--cmp-recommended);
+    box-shadow: inset 0 0 0 1px rgba(37,99,235,0.35);
+  }
+
+  .scene-{{sceneId}} .pt-recommended-badge {
+    position: absolute;
+    top: -14px;
+    left: 28px;
+    background: var(--cmp-accent);
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 999px;
+    opacity: 0;
+  }
+
+  .scene-{{sceneId}} .pt-tier-name {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--cmp-fg);
+    margin: 0;
+  }
+
+  .scene-{{sceneId}} .pt-price-block {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .scene-{{sceneId}} .pt-price {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--cmp-fg);
+    line-height: 1;
+  }
+  .scene-{{sceneId}} .pt-billing {
+    font-size: 14px;
+    color: var(--cmp-fg-dim);
+    font-weight: 500;
+  }
+
+  .scene-{{sceneId}} .pt-feature-list {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1 1 auto;
+  }
+  .scene-{{sceneId}} .pt-feature-li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 15px;
+    line-height: 1.4;
+    color: var(--cmp-fg);
+    opacity: 0;
+  }
+  .scene-{{sceneId}} .pt-feature-bullet {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--cmp-good);
+    margin-top: 3px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #07120a;
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .scene-{{sceneId}} .pt-feature-bullet::before { content: "✓"; }
+
+  .scene-{{sceneId}} .pt-cta {
+    margin-top: auto;
+    display: inline-block;
+    padding: 12px 18px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.06);
+    color: var(--cmp-fg);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .scene-{{sceneId}} .cmp-col-head[data-recommended="true"] .pt-cta {
+    background: var(--cmp-accent);
+    border-color: var(--cmp-accent);
+    color: #ffffff;
+  }
+
+  .scene-{{sceneId}} .cmp-footer {
+    flex: 0 0 auto;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .scene-{{sceneId}} .cmp-disclaimer {
+    font-size: 13px;
+    color: var(--cmp-fg-dim);
+    line-height: 1.4;
+  }
+</style>
+
+<div class="cmp-root pt-root"
+     data-scene-component="PricingTable"
+     data-recommended-tier-id="{{recommendedTierId}}">
+  <header class="cmp-header">
+    <h1 class="cmp-title">{{title}}</h1>
+  </header>
+  <div class="cmp-grid pt-grid" data-cols="0"></div>
+  <footer class="cmp-footer">
+    <div class="cmp-disclaimer">{{disclaimer}}</div>
+  </footer>
+  <script type="application/json" class="pt-data" data-pt-data>{{{tiersJson}}}</script>
+</div>

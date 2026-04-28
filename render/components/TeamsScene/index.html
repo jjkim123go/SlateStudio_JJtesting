@@ -1,0 +1,1963 @@
+<style>
+/* TeamsScene — Microsoft Teams 2025 chrome (4-zone: top bar / rail / nav / content)
+   Theme tokens light/dark; switched via [data-theme] on .teams-bg.
+   All chrome rendered by compiler PROP_TRANSFORMER (see render/lib/scf-to-html.mjs). */
+
+.scene-{{sceneId}} .teams-bg {
+  --tm-canvas: #F5F5F5;
+  --tm-pane: #FFFFFF;
+  --tm-rail: #F5F5F5;
+  --tm-topbar: #FAFAFA;
+  --tm-topbar-text: #242424;
+  --tm-selected: #EAEAFC;
+  --tm-bubble: #F5F5F5;
+  --tm-bubble-mine: #EAEAFC;
+  --tm-text-1: #242424;
+  --tm-text-2: #616161;
+  --tm-text-3: #9E9E9E;
+  --tm-border: #E0E0E0;
+  --tm-border-strong: #BDBDBD;
+  --tm-accent: #5B5FC7;
+  --tm-accent-hover: #4F52B2;
+  --tm-accent-bg: #EAEAFC;
+  --tm-status-online: #13A10E;
+  --tm-status-busy: #C50F1F;
+  --tm-status-away: #F1C40F;
+  --tm-status-dnd: #C50F1F;
+  --tm-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  --tm-search-bg: #FFFFFF;
+  --tm-search-bg-focus: #FFFFFF;
+  --tm-search-text: #616161;
+  --tm-search-text-focus: #242424;
+  --tm-search-border: #D1D1D1;
+  --tm-icon: #424242;
+  --tm-icon-active: #5B5FC7;
+  --tm-topbar-pill-bg: #EAEAFC;
+  --tm-topbar-pill-text: #4F52B2;
+}
+
+.scene-{{sceneId}} .teams-bg[data-theme="dark"] {
+  --tm-canvas: #1F1F23;
+  --tm-pane: #2B2B2F;
+  --tm-rail: #1F1F23;
+  --tm-topbar: #1F1F23;
+  --tm-topbar-text: #F5F5F5;
+  --tm-search-border: #4A4950;
+  --tm-topbar-pill-bg: #3D3E66;
+  --tm-topbar-pill-text: #C8CAFF;
+  --tm-selected: #3B3A40;
+  --tm-bubble: #3B3A40;
+  --tm-bubble-mine: #444459;
+  --tm-text-1: #FFFFFF;
+  --tm-text-2: #C7C7C7;
+  --tm-text-3: #8A8886;
+  --tm-border: #3B3A40;
+  --tm-border-strong: #5C5C61;
+  --tm-accent: #7F85F5;
+  --tm-accent-hover: #9499F5;
+  --tm-accent-bg: #3D3E66;
+  --tm-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  --tm-search-bg: #3B3A40;
+  --tm-search-bg-focus: #4A4950;
+  --tm-search-text: #FFFFFF;
+  --tm-search-text-focus: #FFFFFF;
+  --tm-icon: #C7C7C7;
+  --tm-icon-active: #7F85F5;
+}
+
+.scene-{{sceneId}} .teams-bg {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  background: var(--tm-canvas);
+  font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--tm-text-1);
+  overflow: hidden;
+  font-size: 14px;
+}
+
+/* ───── Top app bar (h56) ───── */
+.scene-{{sceneId}} .tm-topbar {
+  height: 48px; flex-shrink: 0;
+  background: var(--tm-topbar); color: var(--tm-topbar-text);
+  display: flex; align-items: center;
+  padding: 0 12px; gap: 10px;
+  border-bottom: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-workspace {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 8px 4px 4px;
+  font-size: 14px; font-weight: 600;
+  color: var(--tm-topbar-text);
+}
+.scene-{{sceneId}} .tm-workspace .tm-ws-letter {
+  width: 24px; height: 24px; border-radius: 4px;
+  background: linear-gradient(135deg, #5B5FC7, #4F52B2);
+  color: #FFFFFF;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+}
+.scene-{{sceneId}} .tm-pill {
+  background: var(--tm-topbar-pill-bg);
+  color: var(--tm-topbar-pill-text);
+  border-radius: 4px; padding: 2px 8px;
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+.scene-{{sceneId}} .tm-nav-arrows { display: flex; gap: 2px; color: var(--tm-icon); opacity: 0.6; }
+.scene-{{sceneId}} .tm-nav-arrows svg { width: 16px; height: 16px; padding: 4px; }
+.scene-{{sceneId}} .tm-search {
+  flex: 1; max-width: 720px; margin: 0 auto;
+  height: 32px;
+  background: var(--tm-search-bg);
+  border: 1px solid var(--tm-search-border);
+  border-radius: 4px;
+  display: flex; align-items: center;
+  padding: 0 12px; gap: 8px;
+  color: var(--tm-search-text);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .tm-search svg { width: 16px; height: 16px; color: var(--tm-icon); opacity: 0.7; }
+.scene-{{sceneId}} .tm-topbar-right { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+.scene-{{sceneId}} .tm-topbar-icon { width: 18px; height: 18px; opacity: 0.7; color: var(--tm-icon); }
+.scene-{{sceneId}} .tm-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--tm-accent);
+  display: flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 12px; font-weight: 600;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-presence {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 11px; height: 11px; border-radius: 50%;
+  background: var(--tm-status-online);
+  border: 2px solid var(--tm-pane);
+}
+.scene-{{sceneId}} .tm-presence[data-status="busy"]   { background: var(--tm-status-busy); }
+.scene-{{sceneId}} .tm-presence[data-status="away"]   { background: var(--tm-status-away); }
+.scene-{{sceneId}} .tm-presence[data-status="dnd"]    { background: var(--tm-status-dnd); }
+.scene-{{sceneId}} .tm-win-controls { display: flex; gap: 0; margin-left: 8px; }
+.scene-{{sceneId}} .tm-win-controls .tm-wc {
+  width: 40px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; opacity: 0.7; color: var(--tm-icon);
+}
+
+/* ───── Body (rail + nav + content) ───── */
+.scene-{{sceneId}} .tm-body {
+  flex: 1; display: flex; min-height: 0;
+}
+
+/* ───── Left rail (56px) ───── */
+.scene-{{sceneId}} .tm-rail {
+  width: 56px; flex-shrink: 0;
+  background: var(--tm-rail);
+  border-right: 1px solid var(--tm-border);
+  display: flex; flex-direction: column;
+  padding: 8px 0;
+}
+.scene-{{sceneId}} .tm-rail-item {
+  height: 56px; position: relative;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--tm-icon);
+  cursor: pointer;
+}
+.scene-{{sceneId}} .tm-rail-item svg { width: 22px; height: 22px; }
+.scene-{{sceneId}} .tm-rail-item[data-active="true"] {
+  color: var(--tm-icon-active);
+}
+.scene-{{sceneId}} .tm-rail-item[data-active="true"]::before {
+  content: ''; position: absolute; left: 0; top: 14px; bottom: 14px;
+  width: 3px; border-radius: 0 2px 2px 0;
+  background: var(--tm-accent);
+}
+.scene-{{sceneId}} .tm-rail-badge {
+  position: absolute; top: 8px; right: 10px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  border-radius: 8px; background: var(--tm-status-busy);
+  color: #fff; font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--tm-rail);
+}
+
+/* ───── Middle navigator (280px) ───── */
+.scene-{{sceneId}} .tm-nav {
+  width: 280px; flex-shrink: 0;
+  background: var(--tm-pane);
+  border-right: 1px solid var(--tm-border);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .tm-nav-header {
+  height: 48px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 16px;
+  font-size: 18px; font-weight: 600;
+  color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-nav-header-actions { display: flex; gap: 4px; color: var(--tm-icon); }
+.scene-{{sceneId}} .tm-nav-header-actions svg { width: 18px; height: 18px; padding: 4px; }
+.scene-{{sceneId}} .tm-nav-section { padding: 0; }
+.scene-{{sceneId}} .tm-nav-section-header {
+  display: flex; align-items: center; gap: 6px;
+  padding: 8px 16px 6px;
+  font-size: 12px; font-weight: 600; color: var(--tm-text-2);
+  text-transform: none;
+}
+.scene-{{sceneId}} .tm-nav-section-chevron { width: 12px; height: 12px; }
+.scene-{{sceneId}} .tm-nav-list { display: flex; flex-direction: column; }
+.scene-{{sceneId}} .tm-nav-item {
+  height: 44px; padding: 0 12px;
+  display: flex; align-items: center; gap: 10px;
+  color: var(--tm-text-1);
+  position: relative;
+  font-size: 13px;
+}
+.scene-{{sceneId}} .tm-nav-item[data-selected="true"] {
+  background: var(--tm-selected);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .tm-nav-item[data-selected="true"]::before {
+  content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 4px; background: var(--tm-accent);
+}
+.scene-{{sceneId}} .tm-nav-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--tm-accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; flex-shrink: 0;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-nav-avatar .tm-presence-sm {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--tm-status-online);
+  border: 2px solid var(--tm-pane);
+}
+.scene-{{sceneId}} .tm-nav-avatar .tm-presence-sm[data-status="busy"] { background: var(--tm-status-busy); }
+.scene-{{sceneId}} .tm-nav-avatar .tm-presence-sm[data-status="away"] { background: var(--tm-status-away); }
+.scene-{{sceneId}} .tm-nav-avatar .tm-presence-sm[data-status="dnd"]  { background: var(--tm-status-dnd); }
+.scene-{{sceneId}} .tm-nav-avatar svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .tm-nav-item-body {
+  flex: 1; min-width: 0;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.scene-{{sceneId}} .tm-nav-item-row1 {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.scene-{{sceneId}} .tm-nav-item-title {
+  font-size: 13px; color: var(--tm-text-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-nav-item-time {
+  font-size: 11px; color: var(--tm-text-3); flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-nav-item-preview {
+  font-size: 12px; color: var(--tm-text-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-nav-item[data-unread="true"] .tm-nav-item-title { font-weight: 700; }
+.scene-{{sceneId}} .tm-nav-item[data-unread="true"] .tm-nav-item-preview { color: var(--tm-text-1); font-weight: 600; }
+.scene-{{sceneId}} .tm-nav-unread-badge {
+  min-width: 18px; height: 18px; padding: 0 5px;
+  border-radius: 9px; background: var(--tm-status-busy);
+  color: #fff; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-left: 6px;
+}
+
+/* ───── Content (flex) ───── */
+.scene-{{sceneId}} .tm-content {
+  flex: 1; min-width: 0;
+  background: var(--tm-pane);
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .tm-content-header {
+  height: 64px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-content-icon {
+  width: 32px; height: 32px; border-radius: 4px;
+  background: var(--tm-accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-content-title {
+  font-size: 16px; font-weight: 600; color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-sensitivity {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 6px; border-radius: 3px;
+  background: rgba(196,15,31,0.12); color: #C50F1F;
+  font-size: 11px; font-weight: 600;
+}
+.scene-{{sceneId}} .tm-tabs {
+  display: flex; gap: 4px; margin-left: 16px;
+  align-items: center; height: 100%;
+}
+.scene-{{sceneId}} .tm-tab {
+  padding: 0 12px; height: 100%;
+  display: flex; align-items: center;
+  font-size: 14px; color: var(--tm-text-2);
+  position: relative;
+}
+.scene-{{sceneId}} .tm-tab[data-active="true"] {
+  color: var(--tm-text-1); font-weight: 600;
+}
+.scene-{{sceneId}} .tm-tab[data-active="true"]::after {
+  content: ''; position: absolute; left: 8px; right: 8px; bottom: 0;
+  height: 2px; background: var(--tm-accent);
+}
+.scene-{{sceneId}} .tm-tab-pinned {
+  padding: 4px 10px;
+  background: var(--tm-selected);
+  border-radius: 12px; font-size: 12px;
+  color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-content-actions {
+  margin-left: auto; display: flex; align-items: center; gap: 8px;
+  color: var(--tm-icon);
+}
+.scene-{{sceneId}} .tm-content-actions svg { width: 18px; height: 18px; }
+.scene-{{sceneId}} .tm-join-btn {
+  height: 32px; padding: 0 16px;
+  background: var(--tm-accent); color: #fff;
+  border-radius: 4px; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .tm-member-count {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; color: var(--tm-text-2);
+}
+
+/* ───── Chat / Channel-post body ───── */
+.scene-{{sceneId}} .tm-msg-area {
+  flex: 1; min-height: 0; overflow: hidden;
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 4px;
+}
+.scene-{{sceneId}} .tm-date-divider {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px 0 4px;
+  font-size: 11px; color: var(--tm-text-2); font-weight: 600;
+}
+.scene-{{sceneId}} .tm-date-divider::before,
+.scene-{{sceneId}} .tm-date-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--tm-border);
+}
+
+.scene-{{sceneId}} .tm-msg {
+  display: flex; gap: 10px; padding: 4px 0;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-msg-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--tm-accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; flex-shrink: 0;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-msg-avatar .tm-presence-sm {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--tm-status-online);
+  border: 2px solid var(--tm-pane);
+}
+.scene-{{sceneId}} .tm-msg-body { flex: 1; min-width: 0; }
+.scene-{{sceneId}} .tm-msg-meta {
+  display: flex; align-items: baseline; gap: 8px; margin-bottom: 2px;
+}
+.scene-{{sceneId}} .tm-msg-author { font-size: 14px; font-weight: 600; color: var(--tm-text-1); }
+.scene-{{sceneId}} .tm-msg-time { font-size: 12px; color: var(--tm-text-3); }
+.scene-{{sceneId}} .tm-msg-bubble {
+  background: var(--tm-bubble);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px; color: var(--tm-text-1);
+  line-height: 1.4;
+  max-width: 720px;
+}
+.scene-{{sceneId}} .tm-msg[data-continuation="true"] .tm-msg-avatar { visibility: hidden; }
+.scene-{{sceneId}} .tm-msg[data-continuation="true"] .tm-msg-meta { display: none; }
+.scene-{{sceneId}} .tm-msg-quote {
+  background: var(--tm-pane);
+  border-left: 3px solid var(--tm-accent);
+  border-radius: 0 4px 4px 0;
+  padding: 6px 10px; margin-bottom: 6px;
+  font-size: 13px; color: var(--tm-text-2);
+}
+.scene-{{sceneId}} .tm-msg-quote-author {
+  font-weight: 600; color: var(--tm-text-1); font-size: 12px;
+  display: block; margin-bottom: 2px;
+}
+.scene-{{sceneId}} .tm-mention {
+  color: var(--tm-accent); background: var(--tm-accent-bg);
+  padding: 0 4px; border-radius: 3px; font-weight: 600;
+}
+.scene-{{sceneId}} .tm-msg-reactions {
+  display: flex; gap: 4px; margin-top: 6px;
+  align-items: center; flex-wrap: wrap;
+}
+.scene-{{sceneId}} .tm-reaction-pill {
+  height: 24px; padding: 0 8px;
+  background: var(--tm-pane);
+  border: 1px solid var(--tm-border);
+  border-radius: 12px;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 12px; color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-reaction-add {
+  width: 24px; height: 24px;
+  background: var(--tm-pane);
+  border: 1px solid var(--tm-border);
+  border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--tm-text-2); font-size: 14px;
+}
+.scene-{{sceneId}} .tm-msg-file {
+  margin-top: 6px;
+  background: var(--tm-pane);
+  border: 1px solid var(--tm-border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex; align-items: center; gap: 10px;
+  max-width: 420px;
+}
+.scene-{{sceneId}} .tm-msg-file-icon {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--tm-accent-bg); color: var(--tm-accent);
+  border-radius: 4px;
+  font-size: 11px; font-weight: 700;
+}
+.scene-{{sceneId}} .tm-msg-file-meta { flex: 1; min-width: 0; }
+.scene-{{sceneId}} .tm-msg-file-name {
+  font-size: 13px; font-weight: 600; color: var(--tm-text-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-msg-file-sub {
+  font-size: 12px; color: var(--tm-text-2);
+}
+
+/* ───── Composer ───── */
+.scene-{{sceneId}} .tm-composer-wrap {
+  flex-shrink: 0; padding: 0 20px 16px;
+}
+.scene-{{sceneId}} .tm-composer {
+  background: var(--tm-pane);
+  border: 1px solid var(--tm-border);
+  border-radius: 8px;
+  display: flex; flex-direction: column;
+  box-shadow: var(--tm-shadow);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .tm-composer-toolbar {
+  display: flex; align-items: center; gap: 4px;
+  padding: 6px 8px; border-bottom: 1px solid var(--tm-border);
+  color: var(--tm-icon); font-size: 13px;
+}
+.scene-{{sceneId}} .tm-composer-toolbar svg { width: 16px; height: 16px; padding: 4px; }
+.scene-{{sceneId}} .tm-composer-toolbar .tm-divider-v {
+  width: 1px; height: 16px; background: var(--tm-border); margin: 0 4px;
+}
+.scene-{{sceneId}} .tm-composer-input {
+  padding: 12px 14px; min-height: 44px;
+  font-size: 14px; color: var(--tm-text-3);
+  display: flex; align-items: center;
+}
+.scene-{{sceneId}} .tm-composer-actions {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 8px; border-top: 1px solid var(--tm-border);
+  color: var(--tm-icon);
+}
+.scene-{{sceneId}} .tm-composer-actions svg { width: 16px; height: 16px; padding: 4px; }
+.scene-{{sceneId}} .tm-composer-send {
+  margin-left: auto;
+  width: 32px; height: 32px;
+  background: var(--tm-accent); color: #fff;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .tm-composer-send svg { width: 16px; height: 16px; padding: 0; color: #fff; }
+
+/* ───── Activity view ───── */
+.scene-{{sceneId}} .tm-activity-list { padding: 0; }
+.scene-{{sceneId}} .tm-activity-item {
+  display: flex; gap: 12px; padding: 12px 20px;
+  border-bottom: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-activity-icon {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--tm-accent-bg); color: var(--tm-accent);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-activity-icon svg { width: 18px; height: 18px; }
+.scene-{{sceneId}} .tm-activity-body { flex: 1; min-width: 0; }
+.scene-{{sceneId}} .tm-activity-meta {
+  display: flex; justify-content: space-between; gap: 8px;
+  font-size: 13px; color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-activity-actor { font-weight: 600; }
+.scene-{{sceneId}} .tm-activity-time { font-size: 11px; color: var(--tm-text-3); }
+.scene-{{sceneId}} .tm-activity-preview {
+  font-size: 13px; color: var(--tm-text-2); margin-top: 4px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-activity-source {
+  font-size: 11px; color: var(--tm-text-3); margin-top: 4px;
+}
+
+/* ───── Calendar view ───── */
+.scene-{{sceneId}} .tm-cal-toolbar {
+  height: 56px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-cal-today {
+  height: 32px; padding: 0 14px;
+  border: 1px solid var(--tm-border-strong);
+  border-radius: 4px;
+  display: flex; align-items: center;
+  font-size: 13px; color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-cal-arrow {
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--tm-icon);
+}
+.scene-{{sceneId}} .tm-cal-arrow svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .tm-cal-date {
+  font-size: 16px; font-weight: 600; color: var(--tm-text-1);
+  margin: 0 8px;
+}
+.scene-{{sceneId}} .tm-cal-actions { margin-left: auto; display: flex; gap: 8px; }
+.scene-{{sceneId}} .tm-cal-meet-now {
+  height: 32px; padding: 0 12px;
+  background: var(--tm-accent); color: #fff;
+  border-radius: 4px; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .tm-cal-new {
+  height: 32px; padding: 0 12px;
+  border: 1px solid var(--tm-border-strong);
+  border-radius: 4px; font-size: 13px; color: var(--tm-text-1);
+  display: flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .tm-cal-grid {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .tm-cal-day-headers {
+  display: grid; grid-template-columns: 60px repeat(7, 1fr);
+  border-bottom: 1px solid var(--tm-border);
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-cal-day-header {
+  padding: 10px 12px;
+  border-left: 1px solid var(--tm-border);
+  font-size: 12px; color: var(--tm-text-2);
+}
+.scene-{{sceneId}} .tm-cal-day-header[data-today="true"] { color: var(--tm-accent); font-weight: 600; }
+.scene-{{sceneId}} .tm-cal-day-header .tm-cal-dow { font-size: 11px; }
+.scene-{{sceneId}} .tm-cal-day-header .tm-cal-dom { font-size: 18px; font-weight: 600; color: var(--tm-text-1); margin-top: 2px; }
+.scene-{{sceneId}} .tm-cal-day-header[data-today="true"] .tm-cal-dom {
+  display: inline-flex; width: 28px; height: 28px; border-radius: 50%;
+  background: var(--tm-accent); color: #fff;
+  align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.scene-{{sceneId}} .tm-cal-allday {
+  display: grid; grid-template-columns: 60px repeat(7, 1fr);
+  min-height: 32px; max-height: 64px;
+  border-bottom: 1px solid var(--tm-border);
+  background: var(--tm-canvas);
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-cal-allday-label {
+  padding: 6px 8px; font-size: 11px; color: var(--tm-text-2);
+}
+.scene-{{sceneId}} .tm-cal-allday-cell {
+  border-left: 1px solid var(--tm-border);
+  padding: 4px;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-cal-allday-event {
+  background: var(--tm-accent-bg); color: var(--tm-accent);
+  border-radius: 3px; padding: 2px 6px;
+  font-size: 11px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-cal-body {
+  flex: 1; overflow: hidden; position: relative;
+  display: grid; grid-template-columns: 60px repeat(7, 1fr);
+}
+.scene-{{sceneId}} .tm-cal-time-col {
+  border-right: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-cal-hour-label {
+  height: 56px; padding: 4px 8px;
+  font-size: 11px; color: var(--tm-text-2);
+  text-align: right;
+}
+.scene-{{sceneId}} .tm-cal-day-col {
+  border-left: 1px solid var(--tm-border);
+  position: relative;
+}
+.scene-{{sceneId}} .tm-cal-hour-row {
+  height: 56px; border-bottom: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-cal-event {
+  position: absolute; left: 2px; right: 2px;
+  background: var(--tm-accent-bg);
+  border-left: 3px solid var(--tm-accent);
+  border-radius: 3px;
+  padding: 4px 6px;
+  font-size: 11px; color: var(--tm-text-1);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .tm-cal-event[data-state="canceled"] {
+  background: repeating-linear-gradient(45deg, var(--tm-canvas), var(--tm-canvas) 4px, var(--tm-bubble) 4px, var(--tm-bubble) 8px);
+  color: var(--tm-text-3);
+  text-decoration: line-through;
+  border-left-color: var(--tm-text-3);
+}
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] {
+  background: var(--tm-accent); color: #fff;
+  border-left-color: var(--tm-accent-hover);
+  box-shadow: 0 0 0 2px var(--tm-pane), 0 0 0 4px var(--tm-accent);
+}
+.scene-{{sceneId}} .tm-cal-event-title {
+  font-weight: 600; font-size: 11px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-cal-event-time {
+  font-size: 10px; opacity: 0.85;
+}
+
+/* ───── Shared (files) view ───── */
+.scene-{{sceneId}} .tm-shared-toolbar {
+  height: 48px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--tm-border);
+}
+.scene-{{sceneId}} .tm-shared-toggle {
+  display: flex; gap: 0;
+  border: 1px solid var(--tm-border-strong);
+  border-radius: 4px; overflow: hidden;
+}
+.scene-{{sceneId}} .tm-shared-toggle-btn {
+  padding: 6px 14px; font-size: 13px; color: var(--tm-text-1);
+  border-right: 1px solid var(--tm-border-strong);
+}
+.scene-{{sceneId}} .tm-shared-toggle-btn:last-child { border-right: 0; }
+.scene-{{sceneId}} .tm-shared-toggle-btn[data-active="true"] {
+  background: var(--tm-accent-bg); color: var(--tm-accent); font-weight: 600;
+}
+.scene-{{sceneId}} .tm-shared-filter {
+  flex: 1; max-width: 280px; height: 32px;
+  border: 1px solid var(--tm-border-strong);
+  border-radius: 4px; padding: 0 10px;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 13px; color: var(--tm-text-3);
+}
+.scene-{{sceneId}} .tm-shared-filter svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .tm-shared-upload {
+  margin-left: auto;
+  height: 32px; padding: 0 14px;
+  background: var(--tm-accent); color: #fff;
+  border-radius: 4px; font-size: 13px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .tm-shared-table { padding: 0; }
+.scene-{{sceneId}} .tm-shared-thead {
+  display: grid; grid-template-columns: 32px 32px 1fr 180px 180px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--tm-border);
+  font-size: 12px; font-weight: 600; color: var(--tm-text-2);
+}
+.scene-{{sceneId}} .tm-shared-row {
+  display: grid; grid-template-columns: 32px 32px 1fr 180px 180px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--tm-border);
+  align-items: center;
+  font-size: 13px;
+}
+.scene-{{sceneId}} .tm-shared-checkbox {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--tm-border-strong); border-radius: 3px;
+}
+.scene-{{sceneId}} .tm-shared-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+  border-radius: 3px;
+}
+.scene-{{sceneId}} .tm-shared-icon[data-type="xlsx"] { background: #21A366; }
+.scene-{{sceneId}} .tm-shared-icon[data-type="docx"] { background: #2B579A; }
+.scene-{{sceneId}} .tm-shared-icon[data-type="pptx"] { background: #B7472A; }
+.scene-{{sceneId}} .tm-shared-icon[data-type="pdf"]  { background: #C8102E; }
+.scene-{{sceneId}} .tm-shared-icon[data-type="link"] { background: var(--tm-accent); }
+.scene-{{sceneId}} .tm-shared-name { color: var(--tm-text-1); font-weight: 500; }
+.scene-{{sceneId}} .tm-shared-name-sub { font-size: 11px; color: var(--tm-text-3); margin-top: 2px; }
+.scene-{{sceneId}} .tm-shared-cell { color: var(--tm-text-2); font-size: 12px; }
+.scene-{{sceneId}} .tm-shared-author {
+  display: flex; align-items: center; gap: 8px;
+}
+.scene-{{sceneId}} .tm-shared-author-avatar {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--tm-accent); color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600;
+}
+
+/* ───── Step elements (drives animation timeline) ───── */
+.scene-{{sceneId}} .tm-step { opacity: 0; }
+.scene-{{sceneId}} .tm-step[data-kind="pause"] { display: none; }
+
+/* ───── Meeting overlay (placeholder until screenshot) ───── */
+.scene-{{sceneId}} .tm-meeting-overlay {
+  position: absolute; inset: 0;
+  background: #1a1a1a;
+  display: flex; flex-direction: column;
+  opacity: 0; pointer-events: none; z-index: 50;
+}
+.scene-{{sceneId}} .tm-meeting-overlay[data-active="true"] { opacity: 1; }
+
+
+/* === teams-redo-icons overrides === */
+/* Fluent 2 icon polish: ensure all SVGs inherit color cleanly, render crisp,
+   and snap to canonical sizes per surface. Append-only — do not mutate above. */
+.scene-{{sceneId}} svg { display: inline-block; vertical-align: middle; flex-shrink: 0; }
+.scene-{{sceneId}} svg * { vector-effect: non-scaling-stroke; }
+
+/* Top bar: 16px nav arrows + search glyph, slightly stronger contrast */
+.scene-{{sceneId}} .tm-nav-arrows svg { width: 16px; height: 16px; padding: 4px; opacity: 0.85; }
+.scene-{{sceneId}} .tm-search svg { width: 16px; height: 16px; opacity: 0.6; }
+.scene-{{sceneId}} .tm-topbar-icon svg { width: 100%; height: 100%; }
+
+/* Left rail: 20px icons (down from 22px) — Fluent 2 visual rhythm */
+.scene-{{sceneId}} .tm-rail-item svg { width: 20px; height: 20px; }
+.scene-{{sceneId}} .tm-rail-item { color: var(--tm-icon); }
+.scene-{{sceneId}} .tm-rail-item[data-active="true"] svg { color: var(--tm-accent); }
+
+/* Navigator header: 16px, lighter padding for Fluent feel */
+.scene-{{sceneId}} .tm-nav-header-actions svg { width: 16px; height: 16px; padding: 4px; opacity: 0.75; }
+
+/* Composer: regular icons at 16px with 4px padding tap target;
+   send glyph (filled paper-plane) sits flush in its purple button */
+.scene-{{sceneId}} .tm-composer-toolbar svg,
+.scene-{{sceneId}} .tm-composer-actions svg { width: 16px; height: 16px; padding: 4px; opacity: 0.75; }
+.scene-{{sceneId}} .tm-composer-send svg { width: 16px; height: 16px; padding: 0; opacity: 1; color: #fff; }
+
+/* Content header (channel toolbar) icons: 16px, muted */
+.scene-{{sceneId}} .tm-content-actions svg { width: 16px; height: 16px; opacity: 0.75; }
+
+/* Calendar arrows: 14px chevrons feel right against the toolbar text */
+.scene-{{sceneId}} .tm-cal-arrow svg { width: 14px; height: 14px; }
+
+/* Shared-files filter / upload glyphs: 14px inline */
+.scene-{{sceneId}} .tm-shared-filter svg,
+.scene-{{sceneId}} .tm-shared-upload svg { width: 14px; height: 14px; opacity: 0.75; }
+
+/* === teams-redo-calendar overrides ===================================== */
+/* Real Teams 2025 week-view calendar. Header is owned by teams-redo-headers;
+   this block styles the grid (day headers, all-day strip, hour gutter, day
+   columns, events, now-line). All rules are scoped to .scene-{{sceneId}}. */
+
+.scene-{{sceneId}} .tm-cal-grid {
+  flex: 1; min-height: 0; overflow: hidden;
+  display: flex; flex-direction: column;
+  background: var(--tm-pane);
+  --tm-cal-today-tint: rgba(91, 95, 199, 0.06);
+  --tm-cal-half-line:  rgba(0, 0, 0, 0.04);
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-grid,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-grid {
+  --tm-cal-half-line: rgba(255, 255, 255, 0.04);
+}
+
+/* Day headers row */
+.scene-{{sceneId}} .tm-cal-day-headers {
+  display: grid;
+  grid-template-columns: var(--tm-cal-cols, 60px repeat(7, 1fr));
+  border-bottom: 1px solid var(--tm-border);
+  flex-shrink: 0;
+  background: var(--tm-pane);
+}
+.scene-{{sceneId}} .tm-cal-day-header {
+  padding: 8px 12px 10px;
+  border-left: 1px solid var(--tm-border);
+  font-size: 12px; color: var(--tm-text-2);
+  display: flex; align-items: baseline; gap: 6px;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-cal-day-header.tm-cal-corner { border-left: none; }
+.scene-{{sceneId}} .tm-cal-day-header[data-today="true"] { color: var(--tm-accent); }
+.scene-{{sceneId}} .tm-cal-day-header[data-today="true"]::after {
+  content: ""; position: absolute; left: 12px; right: 12px; bottom: -1px;
+  height: 2px; background: var(--tm-accent); border-radius: 2px;
+}
+.scene-{{sceneId}} .tm-cal-day-header .tm-cal-dow {
+  font-size: 12px; font-weight: 400; text-transform: none;
+}
+.scene-{{sceneId}} .tm-cal-day-header .tm-cal-dom {
+  font-size: 16px; font-weight: 600; color: var(--tm-text-1);
+  display: inline-flex; min-width: 24px; height: 24px;
+  align-items: center; justify-content: center;
+  margin-top: 0;
+}
+.scene-{{sceneId}} .tm-cal-day-header[data-today="true"] .tm-cal-dom {
+  width: 26px; height: 26px; border-radius: 50%;
+  background: var(--tm-accent); color: #fff;
+}
+
+/* All-day strip */
+.scene-{{sceneId}} .tm-cal-allday {
+  display: grid;
+  grid-template-columns: var(--tm-cal-cols, 60px repeat(7, 1fr));
+  min-height: 28px;
+  border-bottom: 1px solid var(--tm-border);
+  background: var(--tm-pane);
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-cal-allday[data-empty="true"] { min-height: 22px; }
+.scene-{{sceneId}} .tm-cal-allday-label {
+  padding: 6px 8px; font-size: 11px; color: var(--tm-text-2);
+  text-align: right; align-self: center;
+}
+.scene-{{sceneId}} .tm-cal-allday-track { position: relative; }
+.scene-{{sceneId}} .tm-cal-allday-grid {
+  position: absolute; inset: 0;
+  display: grid;
+  pointer-events: none;
+}
+.scene-{{sceneId}} .tm-cal-allday-grid .tm-cal-allday-cell {
+  border-left: 1px solid var(--tm-border);
+  background: transparent;
+  padding: 0;
+}
+.scene-{{sceneId}} .tm-cal-allday-events {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  padding: 3px 4px;
+  min-height: 22px;
+}
+.scene-{{sceneId}} .tm-cal-allday-event {
+  background: var(--evt-bg, var(--tm-accent-bg));
+  border-left: 3px solid var(--evt-bar, var(--tm-accent));
+  color: var(--tm-text-1);
+  border-radius: 3px;
+  padding: 2px 8px;
+  font-size: 11px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: 18px;
+}
+.scene-{{sceneId}} .tm-cal-allday-event[data-state="selected"] {
+  background: var(--evt-bar, var(--tm-accent));
+  color: #fff;
+}
+
+/* Body: scrollable area that holds time gutter + day columns.
+   IMPORTANT: explicitly override the legacy `display: grid` + 7-col template
+   from the original `.tm-cal-body` rule earlier in this stylesheet. Without
+   this override, .tm-cal-body-inner gets placed into the legacy 60px gutter
+   cell and the entire calendar collapses into a thin left column. */
+.scene-{{sceneId}} .tm-cal-body {
+  flex: 1; min-height: 0; overflow: hidden;
+  position: relative;
+  background: var(--tm-pane);
+  display: block;
+  grid-template-columns: none;
+}
+.scene-{{sceneId}} .tm-cal-body-inner {
+  display: grid;
+  grid-template-columns: var(--tm-cal-cols, 60px repeat(7, 1fr));
+  min-height: 100%;
+}
+
+/* Time gutter */
+.scene-{{sceneId}} .tm-cal-time-col {
+  border-right: 1px solid var(--tm-border);
+  background: #f5f5f5;
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-time-col,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-time-col {
+  background: #1f1f1f;
+}
+.scene-{{sceneId}} .tm-cal-hour-label {
+  height: var(--tm-cal-row-h, 52px);
+  padding: 2px 8px 0;
+  font-size: 11px; color: var(--tm-text-2);
+  text-align: right;
+  box-sizing: border-box;
+  transform: translateY(-6px);
+}
+
+/* Day column with hour rows + half-hour gridline */
+.scene-{{sceneId}} .tm-cal-day-col {
+  border-left: 1px solid var(--tm-border);
+  position: relative;
+  background-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(50% - 0.5px),
+    var(--tm-cal-half-line) calc(50% - 0.5px),
+    var(--tm-cal-half-line) calc(50% + 0.5px),
+    transparent calc(50% + 0.5px)
+  );
+  background-size: 100% var(--tm-cal-row-h, 52px);
+  background-repeat: repeat-y;
+}
+.scene-{{sceneId}} .tm-cal-day-col[data-today="true"] {
+  background-color: var(--tm-cal-today-tint);
+}
+.scene-{{sceneId}} .tm-cal-hour-row {
+  height: var(--tm-cal-row-h, 52px);
+  border-bottom: 1px solid var(--tm-border);
+  box-sizing: border-box;
+}
+
+/* Light vs dark grid lines (per spec) */
+.scene-{{sceneId}} .tm-cal-day-headers,
+.scene-{{sceneId}} .tm-cal-allday,
+.scene-{{sceneId}} .tm-cal-time-col,
+.scene-{{sceneId}} .tm-cal-day-col,
+.scene-{{sceneId}} .tm-cal-hour-row,
+.scene-{{sceneId}} .tm-cal-day-header,
+.scene-{{sceneId}} .tm-cal-allday-grid .tm-cal-allday-cell {
+  border-color: #e1e1e1;
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-day-headers,
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-allday,
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-time-col,
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-day-col,
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-hour-row,
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-day-header,
+.scene-{{sceneId}}[data-theme="dark"] .tm-cal-allday-grid .tm-cal-allday-cell,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-day-headers,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-allday,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-time-col,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-day-col,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-hour-row,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-day-header,
+.scene-{{sceneId}} [data-theme="dark"] .tm-cal-allday-grid .tm-cal-allday-cell {
+  border-color: #3d3d3d;
+}
+
+/* Event blocks */
+.scene-{{sceneId}} .tm-cal-event {
+  position: absolute; left: 3px; right: 3px;
+  background: var(--evt-bg, var(--tm-accent-bg));
+  border-left: 3px solid var(--evt-bar, var(--tm-accent));
+  border-radius: 4px;
+  padding: 4px 8px 4px 8px;
+  font-size: 12px; color: var(--tm-text-1);
+  overflow: hidden;
+  display: flex; flex-direction: column; gap: 1px;
+  box-sizing: border-box;
+  cursor: default;
+  transition: none;
+}
+.scene-{{sceneId}} .tm-cal-event-time {
+  font-size: 11px; font-weight: 600;
+  color: var(--evt-txt, var(--tm-accent));
+  letter-spacing: 0.1px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  order: 1;
+}
+.scene-{{sceneId}} .tm-cal-event-title {
+  font-size: 12px; font-weight: 600;
+  color: var(--tm-text-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: flex; align-items: center; gap: 4px;
+  order: 2;
+}
+.scene-{{sceneId}} .tm-cal-event-loc {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--tm-text-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  order: 3;
+}
+.scene-{{sceneId}} .tm-cal-event-loc svg { width: 11px; height: 11px; flex-shrink: 0; }
+.scene-{{sceneId}} .tm-cal-event-badge {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 14px; height: 14px;
+  color: var(--evt-txt, var(--tm-accent));
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-cal-event-badge svg { width: 12px; height: 12px; }
+
+/* Compact (≤30 min): tighter padding, hide location, single-line title */
+.scene-{{sceneId}} .tm-cal-event[data-compact="true"] {
+  padding: 2px 6px;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.scene-{{sceneId}} .tm-cal-event[data-compact="true"] .tm-cal-event-time {
+  font-size: 10px; order: 0;
+}
+.scene-{{sceneId}} .tm-cal-event[data-compact="true"] .tm-cal-event-title {
+  font-size: 11px; order: 1;
+}
+.scene-{{sceneId}} .tm-cal-event[data-compact="true"] .tm-cal-event-loc { display: none; }
+
+/* Selected: solid accent fill, white text */
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] {
+  background: var(--evt-bar, var(--tm-accent));
+  border-left-color: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  box-shadow: 0 0 0 1.5px var(--tm-pane), 0 0 0 3px var(--evt-bar, var(--tm-accent));
+}
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] .tm-cal-event-time,
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] .tm-cal-event-title,
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] .tm-cal-event-loc,
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] .tm-cal-event-badge {
+  color: #fff;
+}
+.scene-{{sceneId}} .tm-cal-event[data-state="selected"] .tm-cal-event-loc { opacity: 0.85; }
+
+/* Canceled: keep stripe pattern from base; ensure text muted */
+.scene-{{sceneId}} .tm-cal-event[data-state="canceled"] {
+  color: var(--tm-text-3);
+  text-decoration: line-through;
+}
+
+/* Now-line indicator: thin red line + dot, today's column only */
+.scene-{{sceneId}} .tm-cal-now {
+  position: absolute; left: -3px; right: 0;
+  height: 0;
+  border-top: 1.5px solid #c4314b;
+  pointer-events: none;
+  z-index: 5;
+}
+.scene-{{sceneId}} .tm-cal-now-dot {
+  position: absolute; top: -4px; left: 0;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: #c4314b;
+  box-shadow: 0 0 0 1.5px var(--tm-pane);
+}
+
+/* Activity row icon (mention/reply badge) — keep 18px filled accent */
+.scene-{{sceneId}} .tm-activity-icon svg { width: 18px; height: 18px; }
+
+/* === teams-redo-activity overrides === */
+/* Real Teams 2025 Activity feed: card-like rows, kind-icon over avatar, unread dot. */
+.scene-{{sceneId}} .tm-act-list {
+  padding: 8px 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.scene-{{sceneId}} .tm-act-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14px 40px 1fr auto;
+  column-gap: 12px;
+  align-items: flex-start;
+  padding: 12px 12px 12px 4px;
+  border-bottom: 1px solid var(--tm-border, rgba(0,0,0,0.06));
+  border-radius: 6px;
+  background: transparent;
+  transition: background 120ms ease;
+  cursor: default;
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-act-row,
+.scene-{{sceneId}} [data-theme="dark"] .tm-act-row {
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+.scene-{{sceneId}} .tm-act-row:hover { background: #f5f5f5; }
+.scene-{{sceneId}}[data-theme="dark"] .tm-act-row:hover,
+.scene-{{sceneId}} [data-theme="dark"] .tm-act-row:hover { background: #2b2b2b; }
+.scene-{{sceneId}} .tm-act-row[data-selected="true"] {
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+  border-bottom-color: transparent;
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-act-row[data-selected="true"],
+.scene-{{sceneId}} [data-theme="dark"] .tm-act-row[data-selected="true"] {
+  background: #2f2f2f;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+}
+
+/* Unread dot (left edge) */
+.scene-{{sceneId}} .tm-act-unread-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #5b5fc7;
+  margin: 18px 0 0 4px;
+  opacity: 0;
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-act-row[data-unread="true"] .tm-act-unread-dot { opacity: 1; }
+
+/* Avatar + kind badge */
+.scene-{{sceneId}} .tm-act-avatar-wrap {
+  position: relative;
+  width: 40px; height: 40px;
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-act-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.scene-{{sceneId}} .tm-act-kind-badge {
+  position: absolute;
+  right: -3px; bottom: -3px;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  display: flex; align-items: center; justify-content: center;
+  color: #ffffff;
+  box-sizing: border-box;
+  background: #5b5fc7;
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-act-kind-badge,
+.scene-{{sceneId}} [data-theme="dark"] .tm-act-kind-badge {
+  border-color: #1f1f1f;
+}
+.scene-{{sceneId}} .tm-act-kind-badge svg {
+  width: 10px; height: 10px;
+  stroke-width: 2;
+}
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="mention"]      { background: #5b5fc7; }
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="reply"]        { background: #0f6cbd; }
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="reaction"]     { background: #f2c811; color: #3b2f00; }
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="missed-call"]  { background: #c4314b; }
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="new-post"]     { background: #107c10; }
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="file-edit"]    { background: #855722; }
+.scene-{{sceneId}} .tm-act-kind-badge[data-act-kind="generic"]      { background: #616161; }
+
+/* Body */
+.scene-{{sceneId}} .tm-act-body { min-width: 0; padding-top: 1px; }
+.scene-{{sceneId}} .tm-act-line1 {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+.scene-{{sceneId}} .tm-act-title {
+  font-size: 14px;
+  color: var(--tm-text-1);
+  line-height: 1.35;
+  min-width: 0;
+}
+.scene-{{sceneId}} .tm-act-actor {
+  font-weight: 600;
+  color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-act-action {
+  font-weight: 400;
+  color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-act-row[data-unread="true"] .tm-act-actor,
+.scene-{{sceneId}} .tm-act-row[data-unread="true"] .tm-act-action {
+  font-weight: 600;
+}
+.scene-{{sceneId}} .tm-act-time {
+  font-size: 12px;
+  color: var(--tm-text-3);
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .tm-act-preview {
+  font-size: 13px;
+  color: var(--tm-text-2);
+  line-height: 1.35;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.scene-{{sceneId}} .tm-act-source {
+  font-size: 12px;
+  color: var(--tm-text-3);
+  margin-top: 4px;
+  display: flex; align-items: center; gap: 4px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-act-source-team,
+.scene-{{sceneId}} .tm-act-source-channel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 45%;
+}
+.scene-{{sceneId}} .tm-act-source-sep {
+  color: var(--tm-text-3);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+/* Hover actions (right side, fade in on row hover) */
+.scene-{{sceneId}} .tm-act-hover-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  align-self: center;
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-act-row:hover .tm-act-hover-actions { opacity: 1; }
+.scene-{{sceneId}} .tm-act-hover-btn {
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--tm-text-2);
+  cursor: pointer;
+}
+.scene-{{sceneId}} .tm-act-hover-btn:hover { background: rgba(0,0,0,0.06); }
+.scene-{{sceneId}}[data-theme="dark"] .tm-act-hover-btn:hover,
+.scene-{{sceneId}} [data-theme="dark"] .tm-act-hover-btn:hover { background: rgba(255,255,255,0.08); }
+.scene-{{sceneId}} .tm-act-hover-btn svg { width: 14px; height: 14px; }
+
+/* === teams-redo-shared overrides ===
+   Real Teams 2025 shared-files surface. Tab pills, toolbar, and "+ New" are
+   owned by teams-redo-headers — this block only styles the column header row,
+   file rows, file-type icon badges, author cell, and hover/selected states.
+   Scoped to .scene-{{sceneId}}; light + dark themes via existing tokens. */
+.scene-{{sceneId}} .tm-sf-table {
+  display: flex; flex-direction: column;
+  padding: 0 8px 12px;
+  background: var(--tm-pane);
+  flex: 1; min-height: 0;
+  overflow: auto;
+}
+
+/* Column header row — sticky, muted labels, sortable */
+.scene-{{sceneId}} .tm-sf-thead {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px 160px 160px;
+  align-items: center;
+  height: 36px;
+  padding: 0 12px 0 16px;
+  border-bottom: 1px solid var(--tm-border);
+  position: sticky; top: 0; z-index: 2;
+  background: var(--tm-pane);
+}
+.scene-{{sceneId}} .tm-sf-th {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12px; font-weight: 600; color: var(--tm-text-2);
+  letter-spacing: 0.01em;
+  user-select: none;
+}
+.scene-{{sceneId}} .tm-sf-th[data-sort-active="true"] { color: var(--tm-text-1); }
+.scene-{{sceneId}} .tm-sf-sort-arrow svg {
+  width: 12px; height: 12px;
+  display: block;
+  transition: transform 120ms ease;
+}
+.scene-{{sceneId}} .tm-sf-sort-arrow[data-dir="asc"] svg { transform: rotate(180deg); }
+
+/* File rows — list view */
+.scene-{{sceneId}} .tm-sf-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px 160px 160px;
+  align-items: center;
+  height: 48px;
+  padding: 0 12px 0 12px;
+  border-radius: 6px;
+  border-left: 3px solid transparent;
+  margin-left: 1px;
+  cursor: default;
+  position: relative;
+  transition: background-color 80ms ease;
+}
+.scene-{{sceneId}} .tm-sf-row:hover { background: rgba(0,0,0,0.04); }
+.scene-{{sceneId}}[data-theme="dark"] .tm-sf-row:hover,
+.scene-{{sceneId}} [data-theme="dark"] .tm-sf-row:hover { background: rgba(255,255,255,0.05); }
+.scene-{{sceneId}} .tm-sf-row[data-selected="true"] {
+  background: var(--tm-accent-bg);
+  border-left-color: var(--tm-accent);
+}
+
+.scene-{{sceneId}} .tm-sf-cell { min-width: 0; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--tm-text-2); }
+.scene-{{sceneId}} .tm-sf-cell-name { gap: 12px; padding-right: 16px; }
+.scene-{{sceneId}} .tm-sf-cell-mod { color: var(--tm-text-2); }
+
+/* File-type icon badge — 32px square, rounded, color-coded */
+.scene-{{sceneId}} .tm-sf-icon {
+  width: 32px; height: 32px; flex-shrink: 0;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.02em;
+  background: #616161;
+  position: relative;
+}
+.scene-{{sceneId}} .tm-sf-icon[data-type="word"]       { background: #2b579a; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="excel"]      { background: #217346; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="powerpoint"] { background: #b7472a; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="pdf"]        { background: #d13438; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="figma"]      { background: #a259ff; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="image"]      { background: #5b5fc7; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="video"]      { background: #038387; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="text"]       { background: #616161; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="generic"]    { background: #616161; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="folder"]     { background: transparent; color: #FFCB6B; }
+.scene-{{sceneId}} .tm-sf-icon[data-type="folder"] svg { width: 28px; height: 28px; }
+.scene-{{sceneId}} .tm-sf-icon-letter { line-height: 1; }
+
+/* Tiny chain-link badge for externally shared files */
+.scene-{{sceneId}} .tm-sf-icon-badge {
+  position: absolute; right: -4px; bottom: -4px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--tm-pane);
+  color: var(--tm-text-2);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 1px var(--tm-border);
+}
+.scene-{{sceneId}} .tm-sf-icon-badge svg { width: 9px; height: 9px; }
+
+/* File name + optional sub-row */
+.scene-{{sceneId}} .tm-sf-name-wrap { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.scene-{{sceneId}} .tm-sf-name {
+  font-size: 14px; font-weight: 600; color: var(--tm-text-1);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-sf-name-sub {
+  font-size: 11px; color: var(--tm-text-3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* Author cell */
+.scene-{{sceneId}} .tm-sf-cell-modby { gap: 8px; }
+.scene-{{sceneId}} .tm-sf-author-avatar {
+  width: 24px; height: 24px; flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--tm-accent);
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 600; letter-spacing: 0.02em;
+}
+.scene-{{sceneId}} .tm-sf-author-name {
+  font-size: 13px; color: var(--tm-text-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-sf-author-empty { color: var(--tm-text-3); }
+
+/* Hover-only action cluster on the right */
+.scene-{{sceneId}} .tm-sf-cell-actions {
+  justify-content: flex-end; gap: 2px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 80ms ease;
+}
+.scene-{{sceneId}} .tm-sf-row:hover .tm-sf-cell-actions,
+.scene-{{sceneId}} .tm-sf-row[data-selected="true"] .tm-sf-cell-actions {
+  opacity: 1; pointer-events: auto;
+}
+.scene-{{sceneId}} .tm-sf-action {
+  appearance: none; background: transparent; border: 0;
+  width: 28px; height: 28px;
+  border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--tm-text-2);
+  cursor: pointer;
+  padding: 0;
+}
+.scene-{{sceneId}} .tm-sf-action:hover {
+  background: rgba(0,0,0,0.06);
+  color: var(--tm-text-1);
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-sf-action:hover,
+.scene-{{sceneId}} [data-theme="dark"] .tm-sf-action:hover {
+  background: rgba(255,255,255,0.08);
+}
+.scene-{{sceneId}} .tm-sf-action svg { width: 14px; height: 14px; display: block; }
+
+/* Folder rows: keep name weight consistent with files */
+.scene-{{sceneId}} .tm-sf-row[data-folder="true"] .tm-sf-name { font-weight: 600; }
+
+/* === teams-redo-channel overrides ===
+   Channel-post card surface. All selectors scoped to .scene-{{sceneId}}.
+   Cards follow Teams 2025 channel posts: bordered surface (not chat bubble),
+   header with avatar + author + role + timestamp, optional pinned badge and
+   announcement banner, body, file chips, reactions, and a reply thread.
+   Reuses --tm-pane / --tm-border / --tm-text* CSS vars (light + dark themes).
+*/
+.scene-{{sceneId}} .tm-ch-feed {
+  display: flex; flex-direction: column; gap: 16px;
+  padding: 16px 20px 24px; overflow-y: auto; flex: 1 1 auto;
+  background: var(--tm-canvas);
+}
+.scene-{{sceneId}} .tm-ch-divider {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--tm-text-muted);
+  text-transform: uppercase; letter-spacing: 0.6px;
+  padding: 4px 0; gap: 12px;
+}
+.scene-{{sceneId}} .tm-ch-divider::before,
+.scene-{{sceneId}} .tm-ch-divider::after {
+  content: ''; flex: 1 1 0; height: 1px; background: var(--tm-border);
+}
+.scene-{{sceneId}} .tm-ch-card {
+  position: relative;
+  background: var(--tm-pane);
+  border: 1px solid var(--tm-border);
+  border-radius: 8px;
+  padding: 16px 18px;
+  display: flex; flex-direction: column; gap: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+}
+.scene-{{sceneId}}[data-theme="dark"] .tm-ch-card,
+.scene-{{sceneId}} [data-theme="dark"] .tm-ch-card {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.25);
+}
+.scene-{{sceneId}} .tm-ch-card[data-pinned="true"] {
+  border-color: rgba(91,95,199,0.45);
+}
+.scene-{{sceneId}} .tm-ch-pinned-badge {
+  position: absolute; top: -10px; left: 14px;
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--tm-pane); border: 1px solid var(--tm-border);
+  font-size: 11px; font-weight: 600; color: var(--tm-text-muted);
+}
+.scene-{{sceneId}} .tm-ch-pinned-badge svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .tm-ch-announce-banner {
+  --tm-ch-accent: #5B5FC7;
+  margin: -16px -18px 4px;
+  padding: 12px 18px;
+  border-top-left-radius: 8px; border-top-right-radius: 8px;
+  background: linear-gradient(135deg, var(--tm-ch-accent) 0%, color-mix(in srgb, var(--tm-ch-accent) 70%, #000) 100%);
+  color: #FFFFFF;
+  display: flex; flex-direction: column; gap: 2px;
+}
+.scene-{{sceneId}} .tm-ch-announce-eyebrow {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+  font-weight: 700; opacity: 0.85;
+}
+.scene-{{sceneId}} .tm-ch-announce-title {
+  font-size: 18px; font-weight: 700; line-height: 1.25;
+}
+.scene-{{sceneId}} .tm-ch-announce-sub {
+  font-size: 13px; opacity: 0.92;
+}
+.scene-{{sceneId}} .tm-ch-post-head {
+  display: grid;
+  grid-template-columns: 40px 1fr auto auto;
+  align-items: center;
+  gap: 12px;
+}
+.scene-{{sceneId}} .tm-ch-post-head .tm-ch-avatar {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #FFFFFF; font-size: 14px; font-weight: 600;
+  position: relative; flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-ch-post-head .tm-presence-sm {
+  position: absolute; right: -1px; bottom: -1px;
+  width: 11px; height: 11px; border-radius: 50%;
+  border: 2px solid var(--tm-pane);
+  background: var(--tm-presence-online, #6BB700);
+}
+.scene-{{sceneId}} .tm-ch-post-head .tm-presence-sm[data-status="away"]   { background: var(--tm-presence-away, #FCD116); }
+.scene-{{sceneId}} .tm-ch-post-head .tm-presence-sm[data-status="busy"]   { background: var(--tm-presence-busy, #C4314B); }
+.scene-{{sceneId}} .tm-ch-post-head .tm-presence-sm[data-status="dnd"]    { background: var(--tm-presence-busy, #C4314B); }
+.scene-{{sceneId}} .tm-ch-post-head .tm-presence-sm[data-status="offline"]{ background: var(--tm-text-muted); }
+.scene-{{sceneId}} .tm-ch-author {
+  font-size: 14px; font-weight: 600; color: var(--tm-text);
+  line-height: 1.25;
+}
+.scene-{{sceneId}} .tm-ch-author-sub {
+  font-size: 12px; color: var(--tm-text-muted); line-height: 1.25;
+  margin-top: 2px;
+}
+.scene-{{sceneId}} .tm-ch-post-time {
+  font-size: 12px; color: var(--tm-text-muted); white-space: nowrap;
+}
+.scene-{{sceneId}} .tm-ch-post-more {
+  width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px; color: var(--tm-text-muted); cursor: pointer;
+}
+.scene-{{sceneId}} .tm-ch-post-more svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .tm-ch-post-more:hover { background: rgba(0,0,0,0.06); }
+.scene-{{sceneId}}[data-theme="dark"] .tm-ch-post-more:hover,
+.scene-{{sceneId}} [data-theme="dark"] .tm-ch-post-more:hover { background: rgba(255,255,255,0.06); }
+.scene-{{sceneId}} .tm-ch-subject {
+  font-size: 17px; font-weight: 600; color: var(--tm-text);
+  line-height: 1.3; padding: 2px 0;
+}
+.scene-{{sceneId}} .tm-ch-body {
+  font-size: 14px; line-height: 1.5; color: var(--tm-text);
+  white-space: pre-wrap; word-wrap: break-word;
+}
+.scene-{{sceneId}} .tm-ch-body .tm-mention {
+  color: var(--tm-accent, #5B5FC7); font-weight: 600;
+}
+.scene-{{sceneId}} .tm-ch-attachments {
+  display: flex; flex-direction: column; gap: 8px;
+  margin-top: 4px;
+}
+.scene-{{sceneId}} .tm-ch-file-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--tm-border); border-radius: 6px;
+  background: var(--tm-canvas);
+}
+.scene-{{sceneId}} .tm-ch-file-chip-icon {
+  width: 32px; height: 32px; border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: #FFFFFF;
+  background: #5B5FC7; flex-shrink: 0; letter-spacing: 0.4px;
+}
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="pdf"]  .tm-ch-file-chip-icon { background: #C4314B; }
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="docx"] .tm-ch-file-chip-icon,
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="doc"]  .tm-ch-file-chip-icon { background: #185ABD; }
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="xlsx"] .tm-ch-file-chip-icon,
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="xls"]  .tm-ch-file-chip-icon,
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="csv"]  .tm-ch-file-chip-icon { background: #107C41; }
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="pptx"] .tm-ch-file-chip-icon,
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="ppt"]  .tm-ch-file-chip-icon { background: #C43E1C; }
+.scene-{{sceneId}} .tm-ch-file-chip[data-type="fig"]  .tm-ch-file-chip-icon { background: #1ABCFE; }
+.scene-{{sceneId}} .tm-ch-file-chip-meta {
+  display: flex; flex-direction: column; min-width: 0;
+}
+.scene-{{sceneId}} .tm-ch-file-chip-name {
+  font-size: 13px; font-weight: 600; color: var(--tm-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-ch-file-chip-sub {
+  font-size: 11px; color: var(--tm-text-muted);
+}
+.scene-{{sceneId}} .tm-ch-reactions {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding-top: 4px;
+}
+.scene-{{sceneId}} .tm-ch-reactions .tm-reaction-pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; height: 22px; border-radius: 11px;
+  background: var(--tm-canvas); border: 1px solid var(--tm-border);
+  font-size: 12px; color: var(--tm-text);
+}
+.scene-{{sceneId}} .tm-ch-react-add {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 8px; height: 22px; border-radius: 11px;
+  background: transparent; border: 1px dashed var(--tm-border);
+  font-size: 12px; color: var(--tm-text-muted); cursor: pointer;
+  font-family: inherit;
+}
+.scene-{{sceneId}} .tm-ch-react-add svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .tm-ch-react-add:hover { background: rgba(0,0,0,0.04); color: var(--tm-text); }
+.scene-{{sceneId}}[data-theme="dark"] .tm-ch-react-add:hover,
+.scene-{{sceneId}} [data-theme="dark"] .tm-ch-react-add:hover { background: rgba(255,255,255,0.05); }
+.scene-{{sceneId}} .tm-ch-replies {
+  margin-top: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--tm-border);
+  display: flex; flex-direction: column; gap: 10px;
+}
+.scene-{{sceneId}} .tm-ch-replies[data-empty="true"] {
+  border-top: none; padding-top: 0; margin-top: 2px;
+}
+.scene-{{sceneId}} .tm-ch-reply-collapsed {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--tm-text-muted); font-weight: 600;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .tm-ch-reply-collapsed svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .tm-ch-reply {
+  display: grid; grid-template-columns: 28px 1fr; gap: 10px;
+  align-items: flex-start;
+}
+.scene-{{sceneId}} .tm-ch-reply-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #FFFFFF; font-size: 11px; font-weight: 600;
+  position: relative; flex-shrink: 0;
+}
+.scene-{{sceneId}} .tm-ch-reply-avatar .tm-presence-sm {
+  position: absolute; right: -1px; bottom: -1px;
+  width: 8px; height: 8px; border-radius: 50%;
+  border: 1.5px solid var(--tm-pane);
+  background: var(--tm-presence-online, #6BB700);
+}
+.scene-{{sceneId}} .tm-ch-reply-avatar .tm-presence-sm[data-status="away"]   { background: var(--tm-presence-away, #FCD116); }
+.scene-{{sceneId}} .tm-ch-reply-avatar .tm-presence-sm[data-status="busy"]   { background: var(--tm-presence-busy, #C4314B); }
+.scene-{{sceneId}} .tm-ch-reply-avatar .tm-presence-sm[data-status="dnd"]    { background: var(--tm-presence-busy, #C4314B); }
+.scene-{{sceneId}} .tm-ch-reply-avatar .tm-presence-sm[data-status="offline"]{ background: var(--tm-text-muted); }
+.scene-{{sceneId}} .tm-ch-reply-body {
+  display: flex; flex-direction: column; gap: 4px; min-width: 0;
+}
+.scene-{{sceneId}} .tm-ch-reply-meta {
+  display: flex; align-items: baseline; gap: 8px;
+}
+.scene-{{sceneId}} .tm-ch-reply-author {
+  font-size: 13px; font-weight: 600; color: var(--tm-text);
+}
+.scene-{{sceneId}} .tm-ch-reply-time {
+  font-size: 11px; color: var(--tm-text-muted);
+}
+.scene-{{sceneId}} .tm-ch-reply-text {
+  font-size: 13px; line-height: 1.45; color: var(--tm-text);
+  white-space: pre-wrap; word-wrap: break-word;
+}
+.scene-{{sceneId}} .tm-ch-reply-attachments {
+  display: flex; flex-direction: column; gap: 6px; margin-top: 2px;
+}
+.scene-{{sceneId}} .tm-ch-reply-reactions {
+  display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px;
+}
+.scene-{{sceneId}} .tm-ch-reply-reactions .tm-reaction-pill {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px 6px; height: 18px; border-radius: 9px;
+  background: var(--tm-canvas); border: 1px solid var(--tm-border);
+  font-size: 11px; color: var(--tm-text);
+}
+.scene-{{sceneId}} .tm-ch-reply-input {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12px; color: var(--tm-text-muted); font-weight: 500;
+  cursor: text;
+  padding: 6px 10px; border: 1px solid var(--tm-border); border-radius: 6px;
+  background: var(--tm-canvas);
+  align-self: flex-start;
+}
+.scene-{{sceneId}} .tm-ch-reply-input svg { width: 14px; height: 14px; }
+/* === end teams-redo-channel overrides === */
+
+/* === teams-redo-rail-nav-headers overrides ===
+   Aligns the left rail (48px), middle navigator (260px), and view-specific
+   content headers with the Microsoft Teams 2025 chrome. All selectors are
+   scoped under .scene-{{sceneId}} and override (not replace) the base rules.
+   ============================================================== */
+
+/* ── Left rail (48px) ── */
+.scene-{{sceneId}} .tm-rail {
+  width: 48px;
+  padding: 4px 0;
+  gap: 2px;
+}
+.scene-{{sceneId}} .tm-rail-item {
+  position: relative;
+  width: 40px;
+  height: 44px;
+  margin: 0 4px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  color: var(--tm-text-2);
+  cursor: default;
+  transition: background-color 0.12s ease;
+}
+.scene-{{sceneId}} .tm-rail-item:hover { background: var(--tm-hover); }
+.scene-{{sceneId}} .tm-rail-item svg { width: 22px; height: 22px; display: block; }
+.scene-{{sceneId}} .tm-rail-label {
+  font-size: 10px;
+  line-height: 12px;
+  font-weight: 400;
+  color: var(--tm-text-2);
+  text-align: center;
+  letter-spacing: 0.1px;
+}
+.scene-{{sceneId}} .tm-rail-item[data-active="true"] {
+  color: var(--tm-icon-active);
+}
+.scene-{{sceneId}} .tm-rail-item[data-active="true"] .tm-rail-label {
+  color: var(--tm-icon-active);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .tm-rail-item[data-active="true"]::before {
+  content: "";
+  position: absolute;
+  left: -4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 18px;
+  border-radius: 2px;
+  background: var(--tm-accent);
+}
+.scene-{{sceneId}} .tm-rail-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: #C4314B;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+  border: 1.5px solid var(--tm-rail);
+}
+
+/* ── Middle navigator (260px) ── */
+.scene-{{sceneId}} .tm-nav { width: 260px; }
+.scene-{{sceneId}} .tm-nav-header {
+  height: 56px;
+  padding: 0 8px 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--tm-text-1);
+}
+.scene-{{sceneId}} .tm-nav-header-actions {
+  display: flex;
+  gap: 2px;
+  color: var(--tm-text-2);
+}
+.scene-{{sceneId}} .tm-nav-action-btn {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: default;
+}
+.scene-{{sceneId}} .tm-nav-action-btn:hover { background: var(--tm-hover); color: var(--tm-text-1); }
+.scene-{{sceneId}} .tm-nav-action-btn svg { width: 16px; height: 16px; display: block; }
+
+.scene-{{sceneId}} .tm-nav-search {
+  margin: 4px 8px 8px;
+  height: 32px;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 4px;
+  background: var(--tm-hover);
+  color: var(--tm-text-2);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .tm-nav-search svg { width: 14px; height: 14px; flex: none; }
+
+.scene-{{sceneId}} .tm-nav-item {
+  min-height: 36px;
+  padding: 4px 16px 4px 8px;
+  margin: 1px 4px;
+  border-radius: 4px;
+  align-items: center;
+  gap: 8px;
+}
+.scene-{{sceneId}} .tm-nav-item[data-has-preview="true"] { min-height: 56px; align-items: flex-start; padding-top: 8px; padding-bottom: 8px; }
+.scene-{{sceneId}} .tm-nav-item[data-selected="true"] { background: var(--tm-selected); }
+
+/* Channel/tree rows: no avatar, indented, compact */
+.scene-{{sceneId}} .tm-nav-item[data-kind="channel"] { min-height: 32px; padding-left: 38px; gap: 6px; }
+.scene-{{sceneId}} .tm-nav-item[data-kind="channel"] .tm-nav-avatar { display: none; }
+.scene-{{sceneId}} .tm-nav-item[data-kind="channel"] .tm-nav-item-title { font-weight: 400; font-size: 13px; }
+.scene-{{sceneId}} .tm-nav-item[data-kind="channel"][data-unread="true"] .tm-nav-item-title { font-weight: 700; }
+
+/* ── Content header — common ── */
+.scene-{{sceneId}} .tm-content-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px 0 16px;
+  height: 56px;
+  border-bottom: 1px solid var(--tm-border);
+  background: var(--tm-pane);
+  flex: none;
+}
+.scene-{{sceneId}} .tm-content-header .tm-content-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--tm-text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .tm-content-header .tm-header-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.scene-{{sceneId}} .tm-header-icon-btn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  color: var(--tm-text-2);
+  cursor: default;
+}
+.scene-{{sceneId}} .tm-header-icon-btn:hover { background: var(--tm-hover); color: var(--tm-text-1); }
+.scene-{{sceneId}} .tm-header-icon-btn svg { width: 16px; height: 16px; display: block; }
+
+.scene-{{sceneId}} .tm-header-text-btn {
+  height: 32px;
+  padding: 0 10px;
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 4px;
+  color: var(--tm-text-1);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: default;
+}
+.scene-{{sceneId}} .tm-header-text-btn:hover { background: var(--tm-hover); }
+.scene-{{sceneId}} .tm-header-text-btn svg { width: 14px; height: 14px; opacity: 0.85; }
+
+.scene-{{sceneId}} .tm-header-accent-btn {
+  height: 32px;
+  padding: 0 12px;
+  display: inline-flex; align-items: center; gap: 6px;
+  border-radius: 4px;
+  background: var(--tm-accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: default;
+}
+.scene-{{sceneId}} .tm-header-accent-btn:hover { background: var(--tm-accent-hover); }
+.scene-{{sceneId}} .tm-header-accent-btn svg { width: 14px; height: 14px; }
+
+/* ── Content header — chat variant ── */
+.scene-{{sceneId}} .tm-content-header[data-kind="chat"] .tm-content-icon {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  flex: none;
+}
+.scene-{{sceneId}} .tm-content-header[data-kind="chat"] .tm-content-icon .tm-presence-sm {
+  position: absolute;
+  bottom: -1px; right: -1px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: 2px solid var(--tm-pane);
+}
+
+/* ── Content header — channel variant ── */
+.scene-{{sceneId}} .tm-content-header[data-kind="channel"] .tm-content-icon {
+  width: 28px; height: 28px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex: none;
+}
+.scene-{{sceneId}} .tm-content-header[data-kind="channel"] .tm-channel-prefix {
+  font-size: 18px;
+  font-weight: 400;
+  color: var(--tm-text-2);
+  margin-right: 4px;
+}
+
+/* ── Content header — activity variant ── */
+.scene-{{sceneId}} .tm-content-header[data-kind="activity"] {
+  height: 64px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.scene-{{sceneId}} .tm-content-header[data-kind="activity"] .tm-content-title {
+  font-size: 18px;
+  font-weight: 700;
+  width: 100%;
+  height: 28px;
+  line-height: 28px;
+}
+.scene-{{sceneId}} .tm-activity-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.scene-{{sceneId}} .tm-chip {
+  height: 28px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 14px;
+  border: 1px solid var(--tm-border);
+  background: transparent;
+  color: var(--tm-text-1);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: default;
+}
+.scene-{{sceneId}} .tm-chip:hover { background: var(--tm-hover); }
+.scene-{{sceneId}} .tm-chip[data-active="true"] {
+  background: var(--tm-accent-bg);
+  border-color: var(--tm-accent);
+  color: var(--tm-accent);
+}
+
+/* ── Content header — shared/files variant ── */
+.scene-{{sceneId}} .tm-content-header[data-kind="shared"] .tm-content-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-right: 8px;
+}
+.scene-{{sceneId}} .tm-shared-tabs {
+  display: flex;
+  gap: 4px;
+}
+.scene-{{sceneId}} .tm-pill-tab {
+  height: 32px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 4px;
+  color: var(--tm-text-1);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: default;
+}
+.scene-{{sceneId}} .tm-pill-tab:hover { background: var(--tm-hover); }
+.scene-{{sceneId}} .tm-pill-tab[data-active="true"] {
+  background: var(--tm-selected);
+  color: var(--tm-accent);
+}
+
+/* When the new shared header is present, hide the legacy in-pane toolbar
+   that renderSharedContent emits (we can't modify that function from here). */
+.scene-{{sceneId}} .tm-content-header[data-kind="shared"] + .tm-shared-toolbar {
+  display: none;
+}
+/* === end teams-redo-rail-nav-headers overrides === */
+</style>
+
+<div class="teams-bg" data-theme="{{theme}}" data-view="{{view}}" data-scene-component="TeamsScene">
+
+  <!-- Top app bar -->
+  <div class="tm-topbar">
+    {{{topBarHtml}}}
+  </div>
+
+  <!-- Body: rail + nav + content -->
+  <div class="tm-body">
+    <div class="tm-rail">
+      {{{railHtml}}}
+    </div>
+
+    <div class="tm-nav">
+      {{{navigatorHtml}}}
+    </div>
+
+    <div class="tm-content">
+      {{{contentHtml}}}
+    </div>
+  </div>
+
+  <!-- Meeting overlay (placeholder; awaiting screenshot for fidelity rebuild) -->
+  <div class="tm-meeting-overlay" data-active="false">
+    <div style="margin:auto;color:#888;font-size:14px">Meeting view — pending source screenshot</div>
+  </div>
+
+</div>

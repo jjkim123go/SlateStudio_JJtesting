@@ -1,0 +1,54 @@
+<div class="az-bg" data-scene-component="AzurePortalScene"
+  style="position:absolute;inset:0;background:#e6e6e6;display:flex;align-items:center;justify-content:center;padding:40px;font-family:'Segoe UI',-apple-system,sans-serif">
+  <div class="az-window" style="width:100%;height:100%;background:#ffffff;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,0.4);display:flex;flex-direction:column;overflow:hidden;opacity:0">
+    <div class="az-header" style="display:flex;align-items:center;height:48px;background:#0078d4;padding:0 16px;flex-shrink:0;color:#ffffff">
+      <div style="display:flex;align-items:center;gap:14px;font-size:14px">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#ffffff" stroke-width="1.6"><path d="M2 4h14M2 9h14M2 14h14"/></svg>
+        <span style="font-weight:600;letter-spacing:0.01em">Microsoft Azure</span>
+      </div>
+      <div style="flex:1;display:flex;justify-content:center">
+        <div style="width:700px;max-width:60%;height:32px;background:#ffffff;border-radius:3px;display:flex;align-items:center;padding:0 12px;gap:10px;color:#605e5c;font-size:13px">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#605e5c" stroke-width="1.5"><circle cx="6" cy="6" r="4"/><path d="M12 12l-3-3"/></svg>
+          <span style="opacity:0.7">Search resources, services, and docs (G+/)</span>
+        </div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:center;font-size:14px">
+        <span>⚙</span><span>?</span><span>🔔</span>
+        <div style="width:30px;height:30px;border-radius:50%;background:#5c2d91;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600">IB</div>
+      </div>
+    </div>
+    <div class="az-main" style="display:flex;flex:1;min-height:0">
+      <div class="az-leftnav" style="width:60px;background:#ffffff;border-right:1px solid #edebe9;display:flex;flex-direction:column;align-items:center;padding-top:14px;gap:16px;flex-shrink:0;color:#0078d4;font-size:10px;text-align:center">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px">＋</span><span>Create</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:18px">🏠</span><span>Home</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;color:#323130"><span style="font-size:18px">📁</span><span>Groups</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;color:#323130"><span style="font-size:18px">⊞</span><span>All res.</span></div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;color:#323130"><span style="font-size:18px">⌘</span><span>Dashb.</span></div>
+      </div>
+      <div class="az-content" style="flex:1;display:flex;flex-direction:column;background:#faf9f8;min-width:0">
+        <div class="az-breadcrumb" style="display:flex;align-items:center;height:48px;padding:0 24px;background:#f3f2f1;border-bottom:1px solid #edebe9;font-size:13px;color:#323130;flex-shrink:0;gap:6px;flex-wrap:nowrap;overflow:hidden">
+          {{{breadcrumbHtml}}}
+        </div>
+        <div class="az-blade" style="flex:1;background:#ffffff;margin:16px 24px;border:1px solid #edebe9;border-radius:2px;display:flex;flex-direction:column;min-height:0;overflow:hidden;position:relative">
+          <div class="az-bladehead" style="padding:18px 24px 6px;flex-shrink:0">
+            <div style="font-size:12px;color:#605e5c;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px">{{resourceType}}</div>
+            <div style="display:flex;align-items:center;gap:12px">
+              <div style="width:36px;height:36px;background:#0078d4;border-radius:4px;display:flex;align-items:center;justify-content:center;color:#ffffff;font-size:18px">☁</div>
+              <div style="font-size:22px;font-weight:600;color:#323130">{{resourceName}}</div>
+            </div>
+          </div>
+          <div class="az-tabs" style="display:flex;padding:14px 24px 0;border-bottom:1px solid #edebe9;flex-shrink:0;font-size:14px;color:#323130;gap:4px;position:relative">
+            <div class="az-tab az-tab-active" style="padding:8px 14px;font-weight:600;position:relative">Overview<div class="az-tab-underline" style="position:absolute;left:0;right:0;bottom:-1px;height:2px;background:#0078d4"></div></div>
+            <div class="az-tab" style="padding:8px 14px;color:#605e5c">Activity log</div>
+            <div class="az-tab" style="padding:8px 14px;color:#605e5c">Access control (IAM)</div>
+            <div class="az-tab" style="padding:8px 14px;color:#605e5c">Tags</div>
+            <div class="az-tab" style="padding:8px 14px;color:#605e5c">Diagnose and solve problems</div>
+          </div>
+          <div class="az-bladebody" style="flex:1;padding:20px 24px;overflow:hidden;position:relative;font-size:14px;color:#323130">
+            {{{stepsHtml}}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

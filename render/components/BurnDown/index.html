@@ -1,0 +1,146 @@
+<!--
+  BurnDown — Sprint / iteration burn-down chart with line-draw animation.
+  Props consumed: title, xLabel, yLabel, plan, actual, forecast, todayIndex,
+                  highlights, goalLine
+  Data-island IDs: bd-plan-data-{{sceneId}}, bd-actual-data-{{sceneId}},
+                   bd-forecast-data-{{sceneId}}, bd-highlights-data-{{sceneId}}
+  Preprocessed props: planJson, actualJson, forecastJson, highlightsJson
+  Class prefix: bd-
+  Provenance: proposal §3.3 lines 265–281, CONTRACT §3.1/§3.3 Pattern B
+  DIVERGENCE: Inline SVG (not Chart.js) — see animation.js header comment.
+-->
+<style>
+.scene-{{sceneId}} .bd-root{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  overflow:hidden;
+}
+.scene-{{sceneId}} .bd-shell{
+  width:92%;max-width:1600px;height:82%;
+  display:flex;flex-direction:column;gap:16px;
+  padding:32px 40px 24px;
+  border-radius:24px;
+  background:rgba(15,23,42,0.7);
+  border:1px solid rgba(148,163,184,0.12);
+  box-shadow:0 28px 64px rgba(0,0,0,0.25);
+  overflow:hidden;
+}
+.scene-{{sceneId}} .bd-header{
+  display:flex;align-items:baseline;gap:16px;opacity:0;
+}
+.scene-{{sceneId}} .bd-title{
+  margin:0;font-size:42px;font-weight:800;color:#FFFFFF;
+  letter-spacing:-0.03em;line-height:1.1;
+}
+.scene-{{sceneId}} .bd-title:empty{display:none}
+.scene-{{sceneId}} .bd-canvas-wrap{
+  flex:1;position:relative;min-height:0;
+  padding:8px 6px 4px;
+  border-radius:16px;
+  background:rgba(148,163,184,0.04);
+  border:1px solid rgba(148,163,184,0.08);
+}
+.scene-{{sceneId}} .bd-svg{
+  width:100%;height:100%;display:block;overflow:visible;
+}
+/* Axis text */
+.scene-{{sceneId}} .bd-axis-label,
+.scene-{{sceneId}} .bd-axis-number{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  fill:rgba(148,163,184,0.7);font-size:17px;
+}
+.scene-{{sceneId}} .bd-axis-number{font-variant-numeric:tabular-nums}
+.scene-{{sceneId}} .bd-gridline{stroke:rgba(148,163,184,0.15);stroke-width:1}
+.scene-{{sceneId}} .bd-domain{stroke:rgba(148,163,184,0.35);stroke-width:1.4}
+/* Lines */
+.scene-{{sceneId}} .bd-plan-path{
+  fill:none;stroke:#94a3b8;stroke-width:3;
+  stroke-dasharray:12 6;stroke-linecap:round;stroke-linejoin:round;
+}
+.scene-{{sceneId}} .bd-actual-path{
+  fill:none;stroke:#3b82f6;stroke-width:4;
+  stroke-linecap:round;stroke-linejoin:round;
+}
+.scene-{{sceneId}} .bd-forecast-path{
+  fill:none;stroke:#a78bfa;stroke-width:3;
+  stroke-dasharray:8 8;stroke-linecap:round;stroke-linejoin:round;
+}
+.scene-{{sceneId}} .bd-variance{fill-opacity:0}
+.scene-{{sceneId}} .bd-goal-line{
+  stroke:#22c55e;stroke-width:2;stroke-dasharray:10 5;opacity:0;
+}
+.scene-{{sceneId}} .bd-goal-label{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  fill:#22c55e;font-size:14px;font-weight:600;opacity:0;
+}
+/* Today marker */
+.scene-{{sceneId}} .bd-today-line{stroke:#f97316;stroke-width:2;stroke-dasharray:6 4}
+.scene-{{sceneId}} .bd-today-dot{fill:#f97316}
+.scene-{{sceneId}} .bd-today-label{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  fill:#f97316;font-size:14px;font-weight:700;
+}
+/* Actual dots */
+.scene-{{sceneId}} .bd-actual-dot{
+  fill:#3b82f6;stroke:#0f172a;stroke-width:2;
+}
+/* Highlights */
+.scene-{{sceneId}} .bd-highlight-marker{opacity:0}
+.scene-{{sceneId}} .bd-highlight-diamond{stroke-width:1.5}
+.scene-{{sceneId}} .bd-highlight-label{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:13px;font-weight:600;
+}
+/* Legend row */
+.scene-{{sceneId}} .bd-legend{
+  display:flex;gap:24px;padding:4px 0 0;opacity:0;
+}
+.scene-{{sceneId}} .bd-legend-item{
+  display:flex;align-items:center;gap:8px;
+  font-size:15px;font-weight:500;color:rgba(255,255,255,0.7);
+}
+.scene-{{sceneId}} .bd-legend-swatch{
+  width:24px;height:3px;border-radius:2px;flex-shrink:0;
+}
+.scene-{{sceneId}} .bd-legend-swatch--dashed{
+  background:repeating-linear-gradient(
+    90deg,var(--bd-swatch-c) 0 6px,transparent 6px 10px);
+}
+</style>
+<div class="bd-root" data-scene-component="BurnDown"
+  data-x-label="{{xLabel}}"
+  data-y-label="{{yLabel}}"
+  data-today-index="{{todayIndex}}"
+  data-goal-line="{{goalLine}}">
+  <div class="bd-shell">
+    <div class="bd-header">
+      <h2 class="bd-title">{{title}}</h2>
+    </div>
+    <div class="bd-canvas-wrap">
+      <svg class="bd-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet"
+           role="img" aria-label="{{title}} burn-down chart">
+        <defs>
+          <!-- Reveal mask for variance area (left-to-right wipe) -->
+          <mask id="bd-reveal-mask-{{sceneId}}">
+            <rect x="0" y="0" width="0" height="600" fill="white" class="bd-mask-rect"/>
+          </mask>
+          <!-- Clip paths for dashed lines (stroke-dasharray conflicts with stroke-dashoffset) -->
+          <clipPath id="bd-clip-plan-{{sceneId}}">
+            <rect x="0" y="0" width="0" height="600" class="bd-clip-plan"/>
+          </clipPath>
+          <clipPath id="bd-clip-forecast-{{sceneId}}">
+            <rect x="0" y="0" width="0" height="600" class="bd-clip-forecast"/>
+          </clipPath>
+        </defs>
+      </svg>
+    </div>
+    <div class="bd-legend"></div>
+  </div>
+  <!-- data islands (populated by PROP_PREPROCESSORS from native array props) -->
+  <script type="application/json" id="bd-plan-data-{{sceneId}}">{{{planJson}}}</script>
+  <script type="application/json" id="bd-actual-data-{{sceneId}}">{{{actualJson}}}</script>
+  <script type="application/json" id="bd-forecast-data-{{sceneId}}">{{{forecastJson}}}</script>
+  <script type="application/json" id="bd-highlights-data-{{sceneId}}">{{{highlightsJson}}}</script>
+</div>

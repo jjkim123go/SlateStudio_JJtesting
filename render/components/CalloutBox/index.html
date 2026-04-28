@@ -1,0 +1,66 @@
+<!--
+  CalloutBox — floating annotation card with leader line to a target point.
+  Differs from CalloutPin: richer rectangular box with title + body + optional
+  icon, anchored to (targetX, targetY) at one of four corner positions.
+
+  Props consumed:
+    targetX, targetY    number 0-100, percent of viewport (target point)
+    anchor              "top-left" | "top-right" | "bottom-left" | "bottom-right"
+    title               string
+    body                string
+    icon                string (optional, single emoji/char; element hides if empty)
+    theme               "light" | "dark"  (default dark)
+    enterDelay          number, seconds (default 0)
+    holdDuration        number, seconds (default = SCENE_DURATION - enterDelay - 0.5)
+-->
+<style>
+.scene-{{sceneId}} .cbx-bg{position:absolute;inset:0;background:transparent;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+
+.scene-{{sceneId}} .cbx-target{position:absolute;left:{{targetX}}%;top:{{targetY}}%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;background:#f59e0b;box-shadow:0 0 18px rgba(245,158,11,0.85);opacity:0;z-index:6}
+.scene-{{sceneId}} .cbx-pulse{position:absolute;left:{{targetX}}%;top:{{targetY}}%;transform:translate(-50%,-50%);width:18px;height:18px;border-radius:50%;border:2px solid #f59e0b;opacity:0;pointer-events:none;z-index:5}
+
+/* Leader line — outer rotates per anchor, inner is what GSAP scales */
+.scene-{{sceneId}} .cbx-leader{position:absolute;left:{{targetX}}%;top:{{targetY}}%;width:0;height:0;z-index:4}
+.scene-{{sceneId}} .cbx-leader-rot{position:absolute;left:0;top:0;transform-origin:0 0}
+.scene-{{sceneId}} .cbx-leader-line{width:96px;height:2px;background:#f59e0b;transform-origin:0 50%;transform:scaleX(0);box-shadow:0 0 6px rgba(245,158,11,0.6)}
+.scene-{{sceneId}} .cbx-leader[data-anchor="top-left"]     .cbx-leader-rot{transform:rotate(-135deg)}
+.scene-{{sceneId}} .cbx-leader[data-anchor="top-right"]    .cbx-leader-rot{transform:rotate(-45deg)}
+.scene-{{sceneId}} .cbx-leader[data-anchor="bottom-left"]  .cbx-leader-rot{transform:rotate(135deg)}
+.scene-{{sceneId}} .cbx-leader[data-anchor="bottom-right"] .cbx-leader-rot{transform:rotate(45deg)}
+
+/* Box positioning — outer at target, mid offsets per anchor, inner is GSAP-animated */
+.scene-{{sceneId}} .cbx-pos{position:absolute;left:{{targetX}}%;top:{{targetY}}%;z-index:7}
+.scene-{{sceneId}} .cbx-offset{position:absolute;left:0;top:0}
+.scene-{{sceneId}} .cbx-offset[data-anchor="top-left"]    {transform:translate(calc(-100% - 72px), calc(-100% - 72px))}
+.scene-{{sceneId}} .cbx-offset[data-anchor="top-right"]   {transform:translate(72px, calc(-100% - 72px))}
+.scene-{{sceneId}} .cbx-offset[data-anchor="bottom-left"] {transform:translate(calc(-100% - 72px), 72px)}
+.scene-{{sceneId}} .cbx-offset[data-anchor="bottom-right"]{transform:translate(72px, 72px)}
+
+/* Card — base = dark theme; light theme via attribute selector */
+.scene-{{sceneId}} .cbx-card{display:flex;align-items:flex-start;gap:18px;background:rgba(15,23,42,0.94);color:#fff;border-left:4px solid #f59e0b;backdrop-filter:blur(12px);padding:22px 28px;border-radius:10px;box-shadow:0 24px 48px rgba(0,0,0,0.55);max-width:480px;min-width:240px;opacity:0;transform-origin:top left}
+.scene-{{sceneId}} .cbx-card[data-theme="light"]{background:rgba(255,255,255,0.97);color:#0f172a;border-left-color:#f59e0b;box-shadow:0 24px 48px rgba(15,23,42,0.25)}
+.scene-{{sceneId}} .cbx-icon{font-size:36px;line-height:1;flex-shrink:0}
+.scene-{{sceneId}} .cbx-icon:empty{display:none}
+.scene-{{sceneId}} .cbx-body-wrap{display:flex;flex-direction:column;gap:6px;min-width:0}
+.scene-{{sceneId}} .cbx-title{margin:0;font-size:24px;font-weight:700;line-height:1.2}
+.scene-{{sceneId}} .cbx-body{margin:0;font-size:17px;font-weight:400;line-height:1.45;opacity:0.85}
+.scene-{{sceneId}} .cbx-card[data-theme="light"] .cbx-body{opacity:0.7}
+</style>
+<div class="cbx-bg" data-scene-component="CalloutBox">
+  <div class="cbx-pulse"></div>
+  <div class="cbx-target"></div>
+  <div class="cbx-leader" data-anchor="{{anchor}}">
+    <div class="cbx-leader-rot"><div class="cbx-leader-line"></div></div>
+  </div>
+  <div class="cbx-pos">
+    <div class="cbx-offset" data-anchor="{{anchor}}">
+      <div class="cbx-card" data-theme="{{theme}}">
+        <div class="cbx-icon">{{icon}}</div>
+        <div class="cbx-body-wrap">
+          <p class="cbx-title">{{title}}</p>
+          <p class="cbx-body">{{body}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

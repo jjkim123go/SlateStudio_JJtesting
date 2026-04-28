@@ -1,0 +1,23 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "AuditTrail Smoke Test — PR2 Lane B",
+    "description": "Single AuditTrail scene with 6 events (2 highlighted) to validate timeline draw, stagger, highlight pulse, and footer.",
+    "author": "Slate QA"
+  },
+  "scenes": [
+    {
+      "id": "audit-smoke",
+      "component": "AuditTrail",
+      "duration": 10,
+      "props": {
+        "title": "Q3 2024 Revenue Recon Trail",
+        "eventsHtml": "<div class=\"at-event\" id=\"evt-0\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-08-15 09:14 UTC</span><span class=\"at-icon\">📝</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Alice Yamada</span> submitted <span class=\"at-target\">Invoice #4491</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Success</span><span class=\"at-corr\">corr-7a3f</span></div></div></div><div class=\"at-event\" id=\"evt-1\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-08-15 09:21 UTC</span><span class=\"at-icon\">🔍</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Contoso AutoCheck</span> validated <span class=\"at-target\">GL-3300 match</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Pass</span><span class=\"at-corr\">corr-7a3f</span></div></div></div><div class=\"at-event\" id=\"evt-2\" data-highlighted=\"true\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-08-15 09:44 UTC</span><span class=\"at-icon\">⚠️</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Bob Chen</span> flagged <span class=\"at-target\">Variance $12,400</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"failure\">✗ Flagged</span><span class=\"at-corr\">corr-8b1e</span></div></div></div><div class=\"at-event\" id=\"evt-3\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-08-15 10:02 UTC</span><span class=\"at-icon\">📎</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Carol Reyes</span> attached <span class=\"at-target\">Supporting memo</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Uploaded</span></div></div></div><div class=\"at-event\" id=\"evt-4\" data-highlighted=\"true\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-08-15 11:30 UTC</span><span class=\"at-icon\">🔒</span></div><div class=\"at-card-body\"><span class=\"at-actor\">Fabrikam Compliance Bot</span> escalated <span class=\"at-target\">Review threshold breach</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"failure\">✗ Escalated</span><span class=\"at-corr\">corr-9d42</span></div></div></div><div class=\"at-event\" id=\"evt-5\" data-highlighted=\"false\"><div class=\"at-dot-wrap\"><div class=\"at-dot\"></div></div><div class=\"at-card\"><div class=\"at-card-head\"><span class=\"at-ts\">2024-08-15 14:05 UTC</span><span class=\"at-icon\">✅</span></div><div class=\"at-card-body\"><span class=\"at-actor\">David Park</span> resolved <span class=\"at-target\">Variance #12,400</span></div><div class=\"at-card-meta\"><span class=\"at-result\" data-result=\"success\">✓ Closed</span><span class=\"at-corr\">corr-8b1e</span></div></div></div>",
+        "retentionNote": "Retained for 7 years per SOX §302",
+        "exportRef": "AUD-2024Q3-0819"
+      }
+    }
+  ]
+}

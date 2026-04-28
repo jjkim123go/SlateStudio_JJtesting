@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "CalloutBox smoke test",
+    "purpose": "Single-scene compile test for the CalloutBox component."
+  },
+  "scenes": [
+    {
+      "id": "callout",
+      "duration": 4,
+      "component": "CalloutBox",
+      "props": {
+        "targetX": 35,
+        "targetY": 60,
+        "anchor": "top-right",
+        "title": "Self-review rubric",
+        "body": "Every render is scored 1-3 across brand, captions, audio, visual consistency, pacing, and accuracy.",
+        "icon": "📊",
+        "theme": "dark",
+        "enterDelay": 0.2,
+        "holdDuration": 2.6
+      }
+    }
+  ]
+}

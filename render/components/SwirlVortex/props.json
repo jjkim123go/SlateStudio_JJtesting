@@ -1,0 +1,27 @@
+{
+  "outgoingColor": {
+    "type": "string",
+    "default": "#1a1a2e",
+    "description": "CSS color for the outgoing layer."
+  },
+  "incomingColor": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS color for the incoming layer."
+  },
+  "brandColor": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS color for the radial vortex bands."
+  },
+  "bandCount": {
+    "type": "number",
+    "default": 6,
+    "description": "Number of radial bands in the vortex."
+  },
+  "vortexRotation": {
+    "type": "number",
+    "default": 720,
+    "description": "Total rotation in degrees for the vortex effect."
+  }
+}

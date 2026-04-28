@@ -1,0 +1,139 @@
+<!--
+  DataChart
+  Purpose: SVG-rendered bar/line/area/donut/pie chart scene with themeable chrome.
+  Props consumed: chartType, title, subtitle, labels, series, unit, showLegend, showGridlines, theme, animateOnEnter
+-->
+<style>
+.scene-{{sceneId}} .dc-root{
+  --dc-bg:#f8fafc;
+  --dc-panel:#ffffff;
+  --dc-border:rgba(15,23,42,0.10);
+  --dc-text:#0f172a;
+  --dc-muted:#475569;
+  --dc-grid:rgba(148,163,184,0.28);
+  --dc-shadow:0 28px 64px rgba(15,23,42,0.12);
+  position:absolute;inset:0;padding:56px 64px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(59,130,246,0.12), transparent 30%),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+  color:var(--dc-text);
+}
+.scene-{{sceneId}} .dc-root[data-theme="dark"]{
+  --dc-bg:#020617;
+  --dc-panel:#0f172a;
+  --dc-border:rgba(148,163,184,0.14);
+  --dc-text:#e2e8f0;
+  --dc-muted:#94a3b8;
+  --dc-grid:rgba(148,163,184,0.18);
+  --dc-shadow:0 32px 72px rgba(2,6,23,0.45);
+  background:
+    radial-gradient(circle at top left, rgba(96,165,250,0.16), transparent 32%),
+    linear-gradient(180deg, #020617 0%, #0f172a 100%);
+}
+.scene-{{sceneId}} .dc-shell{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;gap:28px;
+  padding:38px 42px 34px;
+  border-radius:32px;
+  background:var(--dc-panel);
+  border:1px solid var(--dc-border);
+  box-shadow:var(--dc-shadow);
+  overflow:hidden;
+}
+.scene-{{sceneId}} .dc-header{display:flex;flex-direction:column;gap:8px}
+.scene-{{sceneId}} .dc-title{margin:0;font-size:58px;line-height:1.03;font-weight:800;letter-spacing:-0.04em;color:var(--dc-text)}
+.scene-{{sceneId}} .dc-title:empty,
+.scene-{{sceneId}} .dc-subtitle:empty{display:none}
+.scene-{{sceneId}} .dc-subtitle{margin:0;max-width:76%;font-size:25px;line-height:1.35;color:var(--dc-muted)}
+.scene-{{sceneId}} .dc-chart-frame{
+  flex:1;display:grid;grid-template-columns:minmax(0,1fr) 300px;
+  gap:26px;min-height:0;align-items:stretch;
+}
+.scene-{{sceneId}} .dc-root[data-show-legend="false"] .dc-chart-frame{grid-template-columns:minmax(0,1fr)}
+.scene-{{sceneId}} .dc-root[data-show-legend="false"] .dc-legend-panel{display:none}
+.scene-{{sceneId}} .dc-canvas-wrap{
+  position:relative;min-height:0;padding:22px 18px 12px;
+  border-radius:24px;background:linear-gradient(180deg, rgba(148,163,184,0.08), rgba(148,163,184,0.03));
+  border:1px solid rgba(148,163,184,0.12);
+}
+.scene-{{sceneId}} .dc-root[data-theme="dark"] .dc-canvas-wrap{
+  background:linear-gradient(180deg, rgba(30,41,59,0.9), rgba(15,23,42,0.66));
+  border-color:rgba(148,163,184,0.10);
+}
+.scene-{{sceneId}} .dc-svg{width:100%;height:100%;display:block;overflow:visible}
+.scene-{{sceneId}} .dc-axis-label,
+.scene-{{sceneId}} .dc-axis-number{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  fill:var(--dc-muted);
+  font-size:19px;
+}
+.scene-{{sceneId}} .dc-axis-number{font-variant-numeric:tabular-nums}
+.scene-{{sceneId}} .dc-gridline{stroke:var(--dc-grid);stroke-width:1}
+.scene-{{sceneId}} .dc-domain{stroke:rgba(100,116,139,0.48);stroke-width:1.4}
+.scene-{{sceneId}} .dc-bar,
+.scene-{{sceneId}} .dc-point,
+.scene-{{sceneId}} .dc-area-path,
+.scene-{{sceneId}} .dc-line-path{transform-box:fill-box}
+.scene-{{sceneId}} .dc-point-value,
+.scene-{{sceneId}} .dc-center-total{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  fill:var(--dc-text);
+  font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.scene-{{sceneId}} .dc-center-total{font-size:48px;letter-spacing:-0.04em}
+.scene-{{sceneId}} .dc-center-caption{
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  fill:var(--dc-muted);font-size:20px;font-weight:600;letter-spacing:0.02em;text-transform:uppercase;
+}
+.scene-{{sceneId}} .dc-legend-panel{
+  display:flex;flex-direction:column;gap:14px;padding:18px 16px 0 2px;
+}
+.scene-{{sceneId}} .dc-legend-title{
+  font-size:17px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--dc-muted)
+}
+.scene-{{sceneId}} .dc-legend-list{display:flex;flex-direction:column;gap:10px}
+.scene-{{sceneId}} .dc-legend-entry{
+  display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;
+  gap:12px;padding:14px 16px;border-radius:18px;
+  background:rgba(148,163,184,0.08);border:1px solid rgba(148,163,184,0.12);
+}
+.scene-{{sceneId}} .dc-legend-swatch{
+  width:14px;height:14px;border-radius:999px;box-shadow:0 0 0 5px rgba(148,163,184,0.08);
+}
+.scene-{{sceneId}} .dc-legend-name{
+  min-width:0;font-size:19px;font-weight:650;color:var(--dc-text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis
+}
+.scene-{{sceneId}} .dc-legend-value{
+  font-size:20px;font-weight:800;color:var(--dc-text);font-variant-numeric:tabular-nums;letter-spacing:-0.02em
+}
+.scene-{{sceneId}} .dc-legend-sub{display:block;margin-top:2px;font-size:14px;font-weight:500;color:var(--dc-muted)}
+.scene-{{sceneId}} .dc-point-value{font-size:16px}
+</style>
+<div class="dc-root" data-scene-component="DataChart"
+  data-chart-type="{{chartType}}"
+  data-labels="{{labels}}"
+  data-series="{{series}}"
+  data-unit="{{unit}}"
+  data-show-legend="{{showLegend}}"
+  data-show-gridlines="{{showGridlines}}"
+  data-theme="{{theme}}"
+  data-animate-on-enter="{{animateOnEnter}}">
+  <div class="dc-shell">
+    <div class="dc-header">
+      <h2 class="dc-title">{{title}}</h2>
+      <p class="dc-subtitle">{{subtitle}}</p>
+    </div>
+    <div class="dc-chart-frame">
+      <div class="dc-canvas-wrap">
+        <svg class="dc-svg" viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" role="img" aria-label="{{title}} chart"></svg>
+      </div>
+      <aside class="dc-legend-panel">
+        <div class="dc-legend-title">Legend</div>
+        <div class="dc-legend-list"></div>
+      </aside>
+    </div>
+  </div>
+</div>

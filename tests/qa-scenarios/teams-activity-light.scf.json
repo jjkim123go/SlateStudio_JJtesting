@@ -1,0 +1,97 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-recording",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "teams-activity-light",
+      "duration": 14,
+      "component": "TeamsScene",
+      "props": {
+        "theme": "light",
+        "view": "activity",
+        "user": { "name": "Megan Bowen", "initials": "MB", "avatarColor": "#5B5FC7" },
+        "topBar": {
+          "currentTab": "activity",
+          "search": { "placeholder": "Search" }
+        },
+        "rail": {
+          "items": [
+            { "key": "activity", "label": "Activity", "active": true, "badge": 5 },
+            { "key": "chat", "label": "Chat", "badge": 12 },
+            { "key": "teams", "label": "Teams" },
+            { "key": "calendar", "label": "Calendar" },
+            { "key": "calls", "label": "Calls" },
+            { "key": "files", "label": "Files" }
+          ]
+        },
+        "navigator": {
+          "title": "Activity",
+          "filter": "Feed",
+          "actions": ["filter"],
+          "items": []
+        },
+        "contentHeader": {
+          "kind": "activity",
+          "title": "Activity",
+          "tabs": [
+            { "label": "Feed", "active": true },
+            { "label": "My activity" }
+          ]
+        },
+        "steps": [
+          {
+            "kind": "activity_item",
+            "iconKey": "mention",
+            "actor": "Adele Vance",
+            "avatarColor": "#0078D4",
+            "action": "mentioned you",
+            "time": "10:42 AM",
+            "preview": "@Megan can you review the deployment plan when you get a chance?",
+            "source": "Adele Vance · Chat"
+          },
+          {
+            "kind": "activity_item",
+            "iconKey": "reaction",
+            "actor": "Diego Siciliani",
+            "avatarColor": "#107C10",
+            "action": "liked your message",
+            "time": "10:30 AM",
+            "preview": "Approved — looks great. Ship it 🚀",
+            "source": "Mark 8 Project Team › Design"
+          },
+          {
+            "kind": "activity_item",
+            "iconKey": "reply",
+            "actor": "Lynne Robbins",
+            "avatarColor": "#5B5FC7",
+            "action": "replied to your post",
+            "time": "9:48 AM",
+            "preview": "Yes — but recolored to the new accent. See frame 12.",
+            "source": "Mark 8 Project Team › Design"
+          },
+          {
+            "kind": "activity_item",
+            "iconKey": "mention",
+            "actor": "Pradeep Gupta",
+            "avatarColor": "#D83B01",
+            "action": "mentioned the team",
+            "time": "9:14 AM",
+            "preview": "Posting the latest comp set for the Mark 8 dashboard…",
+            "source": "Mark 8 Project Team › Design"
+          },
+          {
+            "kind": "activity_item",
+            "iconKey": "missed",
+            "actor": "Henrietta Mueller",
+            "avatarColor": "#5C2D91",
+            "action": "missed call",
+            "time": "Yesterday",
+            "preview": "Tap to call back",
+            "source": "Calls"
+          }
+        ]
+      }
+    }
+  ]
+}

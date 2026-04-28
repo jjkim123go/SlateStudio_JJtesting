@@ -1,0 +1,6 @@
+{
+  "triggerSec": 0.5,
+  "intensity": "medium",
+  "direction": "both",
+  "targetSelector": ".scene-{{sceneId}}"
+}

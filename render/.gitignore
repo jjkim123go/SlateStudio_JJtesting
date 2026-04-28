@@ -1,0 +1,7 @@
+node_modules/
+output/
+.cache/
+.debug/
+*.html
+!components/**/index.html
+!templates/**/*.html

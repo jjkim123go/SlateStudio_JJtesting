@@ -1,0 +1,215 @@
+<style>
+  /* Shared cmp-* grid structure (per pr3-comparison-grid-spec.md) +
+     cm-* CompetitiveMatrix-specific overrides. All scoped under
+     .scene-{{sceneId}} to honor CONTRACT.md §3.3 + §4.3. */
+  .scene-{{sceneId}} .cmp-root.cm-root {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--cmp-bg, #0a0a0c);
+    color: var(--cmp-fg, #f4f4f6);
+    padding: 56px 72px 48px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    --cmp-bg: #0a0a0c;
+    --cmp-fg: #f4f4f6;
+    --cmp-fg-dim: #9ca3af;
+    --cmp-accent: #2563eb;
+    --cmp-good: #22c55e;
+    --cmp-warn: #f59e0b;
+    --cmp-bad: #ef4444;
+    --cmp-row-divider: rgba(255,255,255,0.08);
+    --cmp-col-divider: rgba(255,255,255,0.06);
+    --cmp-recommended: rgba(37,99,235,0.12);
+  }
+
+  .scene-{{sceneId}} .cmp-header {
+    opacity: 0;
+    flex: 0 0 auto;
+  }
+  .scene-{{sceneId}} .cmp-title {
+    margin: 0;
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--cmp-fg);
+  }
+
+  .scene-{{sceneId}} .cmp-grid {
+    flex: 1 1 auto;
+    display: grid;
+    gap: 0;
+    align-content: start;
+    background: rgba(255,255,255,0.015);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .scene-{{sceneId}} .cmp-row {
+    display: grid;
+    grid-template-columns: var(--cm-grid-cols, 320px repeat(4, 1fr));
+    border-bottom: 1px solid var(--cmp-row-divider);
+    align-items: stretch;
+  }
+  .scene-{{sceneId}} .cmp-row:last-child { border-bottom: none; }
+
+  .scene-{{sceneId}} .cmp-row--header {
+    background: rgba(255,255,255,0.04);
+    border-bottom: 1px solid var(--cmp-row-divider);
+  }
+
+  .scene-{{sceneId}} .cmp-cell {
+    padding: 18px 20px;
+    border-right: 1px solid var(--cmp-col-divider);
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: var(--cmp-fg);
+    min-height: 56px;
+    box-sizing: border-box;
+  }
+  .scene-{{sceneId}} .cmp-cell:last-child { border-right: none; }
+  .scene-{{sceneId}} .cmp-cell--label {
+    color: var(--cmp-fg-dim);
+    font-weight: 600;
+    font-size: 15px;
+  }
+
+  .scene-{{sceneId}} .cmp-col-head {
+    padding: 22px 20px;
+    border-right: 1px solid var(--cmp-col-divider);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+    justify-content: center;
+    opacity: 0;
+    transform-origin: center top;
+    min-height: 88px;
+  }
+  .scene-{{sceneId}} .cmp-col-head:last-child { border-right: none; }
+  .scene-{{sceneId}} .cmp-col-head[data-highlight="true"],
+  .scene-{{sceneId}} .cmp-col-head[data-is-us="true"] {
+    background: var(--cmp-recommended);
+    box-shadow: inset 0 0 0 1px rgba(37,99,235,0.30);
+  }
+
+  .scene-{{sceneId}} .cm-product-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cmp-fg);
+    margin: 0;
+  }
+  .scene-{{sceneId}} .cm-product-logo {
+    height: 28px;
+    width: auto;
+    max-width: 120px;
+    object-fit: contain;
+    display: block;
+  }
+  .scene-{{sceneId}} .cm-us-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: var(--cmp-accent);
+    padding: 3px 8px;
+    border-radius: 4px;
+  }
+
+  .scene-{{sceneId}} .cm-rating-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 900;
+    line-height: 1;
+    flex-shrink: 0;
+    color: #ffffff;
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  .scene-{{sceneId}} .cmp-cell[data-rating="yes"] .cm-rating-icon {
+    background: var(--cmp-good);
+  }
+  .scene-{{sceneId}} .cmp-cell[data-rating="yes"] .cm-rating-icon::before { content: "✓"; }
+  .scene-{{sceneId}} .cmp-cell[data-rating="partial"] .cm-rating-icon {
+    background: var(--cmp-warn);
+  }
+  .scene-{{sceneId}} .cmp-cell[data-rating="partial"] .cm-rating-icon::before { content: "~"; }
+  .scene-{{sceneId}} .cmp-cell[data-rating="no"] .cm-rating-icon {
+    background: var(--cmp-bad);
+  }
+  .scene-{{sceneId}} .cmp-cell[data-rating="no"] .cm-rating-icon::before { content: "×"; }
+  .scene-{{sceneId}} .cmp-cell[data-rating="n/a"] .cm-rating-icon {
+    background: rgba(255,255,255,0.12);
+    color: var(--cmp-fg-dim);
+  }
+  .scene-{{sceneId}} .cmp-cell[data-rating="n/a"] .cm-rating-icon::before { content: "—"; }
+
+  .scene-{{sceneId}} .cm-rating-note {
+    margin-left: 10px;
+    font-size: 13px;
+    color: var(--cmp-fg-dim);
+    opacity: 0;
+  }
+
+  .scene-{{sceneId}} .cmp-footer {
+    flex: 0 0 auto;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .scene-{{sceneId}} .cmp-disclaimer {
+    font-size: 13px;
+    color: var(--cmp-fg-dim);
+    line-height: 1.4;
+  }
+  .scene-{{sceneId}} .cmp-footnotes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    counter-reset: footnote;
+  }
+  .scene-{{sceneId}} .cmp-footnotes li {
+    font-size: 12px;
+    color: var(--cmp-fg-dim);
+    line-height: 1.4;
+    counter-increment: footnote;
+  }
+  .scene-{{sceneId}} .cmp-footnotes li::before {
+    content: counter(footnote) ".  ";
+    font-weight: 700;
+    color: var(--cmp-fg);
+    margin-right: 2px;
+  }
+</style>
+
+<div class="cmp-root cm-root"
+     data-scene-component="CompetitiveMatrix"
+     data-highlight-product-id="{{highlightProductId}}">
+  <header class="cmp-header">
+    <h1 class="cmp-title">{{title}}</h1>
+  </header>
+  <div class="cmp-grid cm-grid"></div>
+  <footer class="cmp-footer">
+    <div class="cmp-disclaimer">{{disclaimer}}</div>
+    <ul class="cmp-footnotes" data-cm-footnotes></ul>
+  </footer>
+  <script type="application/json" class="cm-data" data-cm-products>{{{productsJson}}}</script>
+  <script type="application/json" class="cm-data" data-cm-features>{{{featuresJson}}}</script>
+  <script type="application/json" class="cm-data" data-cm-footnotes-json>{{{footnotesJson}}}</script>
+</div>

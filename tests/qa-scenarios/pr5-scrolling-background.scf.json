@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "metadata": {
+    "id": "pr5-scrolling-background",
+    "title": "PR 5 — ScrollingBackground smoke (parallax, gradient + shape + image layers, noise, safe-contrast, child overlay)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "sb-parallax-hero",
+      "duration": 10,
+      "component": "ScrollingBackground",
+      "props": {
+        "direction": "parallax",
+        "loopSec": 14,
+        "noise": true,
+        "safeContrastMode": true,
+        "gradientStopsJson": "[\"#020617\",\"#0f172a\",\"#020617\"]",
+        "layersJson": "[{\"type\":\"gradient\",\"color\":\"#7c3aed\",\"opacity\":0.55,\"speed\":80},{\"type\":\"shape\",\"color\":\"#22d3ee\",\"opacity\":0.40,\"speed\":140},{\"type\":\"image\",\"assetSrc\":\"\",\"opacity\":0.70,\"speed\":220}]",
+        "childHtml": "<h1 style=\"font-size:88px;font-weight:800;color:#fff;text-align:center;max-width:14ch;line-height:1.05;letter-spacing:-0.03em;font-family:Inter,sans-serif;\">A platform that explains itself.</h1>"
+      }
+    }
+  ]
+}

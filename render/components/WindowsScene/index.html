@@ -1,0 +1,552 @@
+<!--
+  ============================================================================
+  WindowsScene — Windows 11 File Explorer (light, 23H2+) — PR 10e Wave A
+  ============================================================================
+
+  SLOT CONTRACT (Wave B passes via SCF props):
+    {{titlebarTabsHtml}}      — Title-bar tab strip <div class="fe-tab"> children
+    {{commandBarHtml}}        — Command-bar action chips
+    {{breadcrumbHtml}}        — Address-bar segmented breadcrumb
+    {{searchPlaceholder}}     — Search box placeholder text
+    {{navTreeHtml}}           — Left nav rail tree
+    {{contentHtml}}           — Main pane (icon grid / detail list)
+    {{statusLeftHtml}}        — Status bar left ("X items")
+    {{statusRightHtml}}       — Status bar right (view mode toggle)
+
+  VARIANT ATTRIBUTES on .fe-root:
+    data-theme="light"          (only light variant in scope for PR 10e)
+
+  CHROME REGIONS:
+    .fe-titlebar    32px — tab strip + new-tab + window controls
+    .fe-cmdbar      40px — New / Cut / Copy / Rename / Share / Delete / Sort / View …
+    .fe-addressbar  36px — back/fwd/up nav + breadcrumb + search
+    .fe-body        flex — left rail (240px) + main pane
+    .fe-statusbar   24px — items count + view-mode chips
+
+  Standing Rule #15 (PR 10c): all <symbol> use Fluent UI 2 Filled style
+    (single solid path, NO `stroke=`). Window-control glyphs (min/max/close)
+    are Windows-flat squares using <rect>/<line> — these use stroke as a
+    spec exception (Windows convention is 1px line glyphs, mirror of PR 10d).
+  ============================================================================ -->
+
+<style data-component="WindowsScene">
+/* ============================================================================
+   DENSITY SPEC (measured at 1920×1080):
+     Titlebar     32px (tab height 30px, +2px bottom shadow)
+     Command bar  40px
+     Address bar  36px
+     Statusbar    24px
+     Nav rail     240px
+     Tab font     12px Segoe UI Variable
+     Cmd font     12px
+     Tree row     30px tall, 14px icon, 13px label
+     Address bar font 13px
+   ============================================================================ */
+
+.scene-{{sceneId}} .fe-root {
+  --fe-bg:           #f3f3f3;
+  --fe-tab-bar:      #f9f9f9;
+  --fe-tab-active:   #ffffff;
+  --fe-tab-inactive: rgba(0,0,0,0.04);
+  --fe-body:         #ffffff;
+  --fe-rail:         #fafafa;
+  --fe-hover:        rgba(0,0,0,0.04);
+  --fe-selected:     rgba(0,120,212,0.10);
+  --fe-text:         rgba(0,0,0,0.9);
+  --fe-text-sec:     #5d5d5d;
+  --fe-text-mute:    #767676;
+  --fe-border:       rgba(0,0,0,0.08);
+  --fe-divider:      rgba(0,0,0,0.06);
+  --fe-accent:       #0078d4;
+  --fe-shadow:       0 30px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.08);
+
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 40px;
+  background: linear-gradient(135deg, #1c4a7a 0%, #2570b5 50%, #3da3d4 100%);
+  font-family: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--fe-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+.scene-{{sceneId}} .fe-window {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: var(--fe-bg);
+  border-radius: 8px;
+  box-shadow: var(--fe-shadow);
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* ── Titlebar (32px) ── */
+.scene-{{sceneId}} .fe-titlebar {
+  display: flex; align-items: stretch;
+  flex: 0 0 32px; height: 32px;
+  background: var(--fe-tab-bar);
+  border-bottom: 1px solid var(--fe-border);
+  user-select: none;
+}
+.scene-{{sceneId}} .fe-tabs {
+  display: flex; align-items: center;
+  gap: 2px; padding: 4px 6px 0;
+  flex: 0 1 auto; min-width: 0;
+}
+.scene-{{sceneId}} .fe-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px 0 12px;
+  font-size: 12px; color: var(--fe-text);
+  background: transparent;
+  border-radius: 6px 6px 0 0;
+  max-width: 200px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  cursor: default;
+}
+.scene-{{sceneId}} .fe-tab:hover { background: var(--fe-tab-inactive); }
+.scene-{{sceneId}} .fe-tab--active {
+  background: var(--fe-tab-active);
+  box-shadow: inset 0 -1px 0 var(--fe-tab-active), 0 0 0 1px var(--fe-border);
+}
+.scene-{{sceneId}} .fe-tab svg { width: 14px; height: 14px; flex-shrink: 0; }
+.scene-{{sceneId}} .fe-tab-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 4px;
+  background: transparent; border: 0; padding: 0; margin-left: 4px;
+  color: var(--fe-text-sec); cursor: pointer;
+}
+.scene-{{sceneId}} .fe-tab-close:hover { background: rgba(0,0,0,0.08); color: var(--fe-text); }
+.scene-{{sceneId}} .fe-tab-close svg { width: 10px; height: 10px; }
+.scene-{{sceneId}} .fe-newtab {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; margin-top: 4px; margin-left: 2px;
+  border-radius: 4px;
+  background: transparent; border: 0; padding: 0;
+  color: var(--fe-text-sec); cursor: pointer;
+}
+.scene-{{sceneId}} .fe-newtab:hover { background: var(--fe-hover); }
+.scene-{{sceneId}} .fe-newtab svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .fe-titlebar-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .fe-wincontrols {
+  display: flex; align-items: stretch;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .fe-winbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 32px;
+  background: transparent; border: 0; padding: 0;
+  color: var(--fe-text); cursor: pointer;
+}
+.scene-{{sceneId}} .fe-winbtn:hover { background: rgba(0,0,0,0.06); }
+.scene-{{sceneId}} .fe-winbtn--close:hover { background: #e81123; color: #fff; }
+.scene-{{sceneId}} .fe-winbtn svg { width: 10px; height: 10px; }
+
+/* ── Command bar (40px) ── */
+.scene-{{sceneId}} .fe-cmdbar {
+  display: flex; align-items: center;
+  flex: 0 0 40px; height: 40px;
+  padding: 0 10px;
+  background: var(--fe-bg);
+  border-bottom: 1px solid var(--fe-divider);
+  gap: 2px;
+}
+.scene-{{sceneId}} .fe-cmd {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px;
+  font-size: 12px; color: var(--fe-text);
+  background: transparent; border: 0; border-radius: 4px;
+  cursor: pointer; white-space: nowrap;
+}
+.scene-{{sceneId}} .fe-cmd:hover { background: var(--fe-hover); }
+.scene-{{sceneId}} .fe-cmd svg { width: 14px; height: 14px; flex-shrink: 0; }
+.scene-{{sceneId}} .fe-cmd--icon { padding: 0 8px; }
+.scene-{{sceneId}} .fe-cmd--primary { color: var(--fe-accent); font-weight: 600; }
+.scene-{{sceneId}} .fe-cmd-divider {
+  width: 1px; height: 18px; margin: 0 4px;
+  background: var(--fe-border);
+}
+.scene-{{sceneId}} .fe-cmd-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .fe-cmd-chev { width: 10px; height: 10px; opacity: 0.65; }
+
+/* ── Address bar (36px) ── */
+.scene-{{sceneId}} .fe-addressbar {
+  display: flex; align-items: center;
+  flex: 0 0 36px; height: 36px;
+  padding: 0 10px;
+  background: var(--fe-bg);
+  border-bottom: 1px solid var(--fe-divider);
+  gap: 4px;
+}
+.scene-{{sceneId}} .fe-navbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: transparent; border: 0; padding: 0; border-radius: 4px;
+  color: var(--fe-text); cursor: pointer;
+}
+.scene-{{sceneId}} .fe-navbtn:hover { background: var(--fe-hover); }
+.scene-{{sceneId}} .fe-navbtn--disabled { color: var(--fe-text-mute); cursor: default; }
+.scene-{{sceneId}} .fe-navbtn--disabled:hover { background: transparent; }
+.scene-{{sceneId}} .fe-navbtn svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .fe-bcwrap {
+  flex: 1 1 auto; min-width: 0;
+  height: 28px;
+  display: flex; align-items: center;
+  padding: 0 8px;
+  margin: 0 6px;
+  background: #ffffff;
+  border: 1px solid var(--fe-border);
+  border-radius: 4px;
+  font-size: 13px; color: var(--fe-text);
+  gap: 2px; overflow: hidden;
+}
+.scene-{{sceneId}} .fe-bc-item {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 22px; padding: 0 6px;
+  border-radius: 3px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .fe-bc-item:hover { background: var(--fe-hover); }
+.scene-{{sceneId}} .fe-bc-sep {
+  display: inline-flex; align-items: center;
+  width: 14px; height: 22px;
+  color: var(--fe-text-mute);
+}
+.scene-{{sceneId}} .fe-bc-sep svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .fe-bc-icon { display: inline-flex; }
+.scene-{{sceneId}} .fe-bc-icon svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .fe-search {
+  display: flex; align-items: center; gap: 6px;
+  flex: 0 0 240px;
+  height: 28px; padding: 0 10px;
+  background: #ffffff;
+  border: 1px solid var(--fe-border);
+  border-radius: 4px;
+  font-size: 13px; color: var(--fe-text-mute);
+}
+.scene-{{sceneId}} .fe-search svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+/* ── Body (rail | main) ── */
+.scene-{{sceneId}} .fe-body {
+  display: flex;
+  flex: 1 1 auto; min-height: 0;
+  background: var(--fe-body);
+}
+.scene-{{sceneId}} .fe-rail {
+  flex: 0 0 240px; width: 240px;
+  background: var(--fe-rail);
+  border-right: 1px solid var(--fe-divider);
+  padding: 6px 0;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fe-rail-row {
+  display: flex; align-items: center;
+  gap: 8px;
+  height: 30px; padding: 0 10px 0 8px;
+  font-size: 13px; color: var(--fe-text);
+  cursor: pointer; position: relative;
+}
+.scene-{{sceneId}} .fe-rail-row:hover { background: var(--fe-hover); }
+.scene-{{sceneId}} .fe-rail-row--active { background: var(--fe-selected); }
+.scene-{{sceneId}} .fe-rail-row--active::before {
+  content: ""; position: absolute;
+  left: 2px; top: 7px; bottom: 7px; width: 3px;
+  background: var(--fe-accent); border-radius: 2px;
+}
+.scene-{{sceneId}} .fe-rail-chev {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 14px; height: 14px;
+  color: var(--fe-text-sec);
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .fe-rail-chev svg { width: 10px; height: 10px; }
+.scene-{{sceneId}} .fe-rail-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .fe-rail-icon svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .fe-rail-label {
+  flex: 1 1 auto; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .fe-rail-row[data-depth="1"] { padding-left: 24px; }
+.scene-{{sceneId}} .fe-rail-row[data-depth="2"] { padding-left: 40px; }
+.scene-{{sceneId}} .fe-rail-section {
+  height: 26px; padding: 0 10px 0 16px;
+  display: flex; align-items: center;
+  font-size: 11px; color: var(--fe-text-sec);
+  text-transform: uppercase; letter-spacing: 0.4px;
+  margin-top: 6px;
+}
+
+.scene-{{sceneId}} .fe-main {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; flex-direction: column;
+  background: var(--fe-body);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fe-section {
+  padding: 14px 22px 6px;
+  font-size: 12px; color: var(--fe-text-sec);
+  text-transform: uppercase; letter-spacing: 0.4px;
+}
+.scene-{{sceneId}} .fe-grid {
+  flex: 1 1 auto;
+  padding: 8px 22px 22px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  align-content: start;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fe-tile {
+  display: flex; flex-direction: column;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px;
+  cursor: default;
+}
+.scene-{{sceneId}} .fe-tile--selected {
+  background: var(--fe-selected);
+  border: 1px solid rgba(0,120,212,0.55);
+  box-shadow: 0 0 0 1px rgba(0,120,212,0.35);
+}
+.scene-{{sceneId}} .fe-tile--selected .fe-tile-thumb {
+  outline: 2px solid #0078d4;
+  outline-offset: 1px;
+}
+.scene-{{sceneId}} .fe-tile-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 4px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #b3d4ff, #6fa8e8);
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .fe-tile-thumb svg { width: 32px; height: 32px; opacity: 0.55; color: #fff; }
+.scene-{{sceneId}} .fe-tile-label {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--fe-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ── Status bar (24px) ── */
+.scene-{{sceneId}} .fe-statusbar {
+  display: flex; align-items: center;
+  flex: 0 0 24px; height: 24px;
+  padding: 0 14px;
+  background: var(--fe-bg);
+  border-top: 1px solid var(--fe-divider);
+  font-size: 12px;
+  color: var(--fe-text-sec);
+}
+.scene-{{sceneId}} .fe-status-left { flex: 1 1 auto; }
+.scene-{{sceneId}} .fe-status-right { display: inline-flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+.scene-{{sceneId}} .fe-viewbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 20px;
+  border: 0; background: transparent; padding: 0; border-radius: 3px;
+  color: var(--fe-text-sec); cursor: pointer;
+}
+.scene-{{sceneId}} .fe-viewbtn:hover { background: var(--fe-hover); color: var(--fe-text); }
+.scene-{{sceneId}} .fe-viewbtn--active { background: var(--fe-selected); color: var(--fe-accent); }
+.scene-{{sceneId}} .fe-viewbtn svg { width: 14px; height: 14px; }
+
+/* ── Global icon coloring ── */
+.scene-{{sceneId}} .fe-root svg { fill: currentColor; }
+.scene-{{sceneId}} .fe-root svg[aria-hidden] { pointer-events: none; }
+
+/* ── Defensive guard (PR 10d v2 lesson) ── */
+.scene-{{sceneId}} .fe-rail svg:not([width]),
+.scene-{{sceneId}} .fe-main svg:not([width]),
+.scene-{{sceneId}} .fe-cmdbar svg:not([width]),
+.scene-{{sceneId}} .fe-bcwrap svg:not([width]) {
+  width: 16px; height: 16px; flex-shrink: 0;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SVG SYMBOL MANIFEST — Fluent UI 2 Filled (16×16 viewBox)
+     Standing Rule #15: single solid path, NO `stroke=` attribute.
+     Window controls (min/max/close) use stroke as Windows-spec exception.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<defs>
+  <!-- Folder / file -->
+  <symbol id="fe-icon-folder" viewBox="0 0 16 16">
+    <path fill="#dcb67a" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h2.13c.6 0 1.18.24 1.6.66l.95.95c.14.14.34.22.54.22h4.28A2.25 2.25 0 0 1 16 6.08v5.67A2.25 2.25 0 0 1 13.75 14H4.25A2.25 2.25 0 0 1 2 11.75V4.25Z"/>
+  </symbol>
+  <symbol id="fe-icon-folder-open" viewBox="0 0 16 16">
+    <path fill="#dcb67a" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h2.13c.6 0 1.18.24 1.6.66l.95.95c.14.14.34.22.54.22h4.28A2.25 2.25 0 0 1 16 6.08V8H2V4.25Zm0 5h14l-1.16 4.42A2 2 0 0 1 12.91 15H4.7a2 2 0 0 1-1.93-1.49L2 9.25Z"/>
+  </symbol>
+  <symbol id="fe-icon-file" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.5 1A1.5 1.5 0 0 0 2 2.5v11A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V6.41a1.5 1.5 0 0 0-.44-1.06l-3.91-3.91A1.5 1.5 0 0 0 8.59 1H3.5Zm5.5 1.5 4 4H10a1 1 0 0 1-1-1V2.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-image" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.5 2A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2h-11Zm9 3.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM2 11.5l3-3.5 3.5 4 2-2L14 12.5v.5h-12v-1.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-document" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.5 1A1.5 1.5 0 0 0 2 2.5v11A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V6h-3.5A1.5 1.5 0 0 1 9 4.5V1H3.5Zm0 7H10v1H3.5V8Zm0 2.5h6v1h-6v-1ZM10 1l4 4h-3.5a.5.5 0 0 1-.5-.5V1Z"/>
+  </symbol>
+  <symbol id="fe-icon-video" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 4.5A1.5 1.5 0 0 1 3.5 3h6A1.5 1.5 0 0 1 11 4.5v.78l3.6-2.06A.5.5 0 0 1 15.4 3.65v8.7a.5.5 0 0 1-.8.41L11 10.72v.78A1.5 1.5 0 0 1 9.5 13h-6A1.5 1.5 0 0 1 2 11.5v-7Z"/>
+  </symbol>
+  <symbol id="fe-icon-music" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M14 2.25v8.5a2.5 2.5 0 1 1-1-2v-5.4l-6 1.6V12a2.5 2.5 0 1 1-1-2V3.5l8-2.13a.5.5 0 0 1 0 .88Z"/>
+  </symbol>
+
+  <!-- Search -->
+  <symbol id="fe-icon-search" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M6.75 1.75a5 5 0 0 1 3.92 8.1l3.74 3.74a.75.75 0 0 1-1.06 1.06l-3.74-3.74A5 5 0 1 1 6.75 1.75Zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"/>
+  </symbol>
+
+  <!-- Chevrons -->
+  <symbol id="fe-icon-chevron-right" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M5.7 3.3a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06L6.76 12.86a.75.75 0 0 1-1.06-1.06L9.44 8 5.7 4.36a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="fe-icon-chevron-down" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.3 5.7a.75.75 0 0 1 1.06 0L8 9.44l3.64-3.74a.75.75 0 1 1 1.06 1.06l-4.17 4.25a.75.75 0 0 1-1.06 0L3.3 6.76a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="fe-icon-chevron-up" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.3 10.3a.75.75 0 0 0 1.06 0L8 6.56l3.64 3.74a.75.75 0 1 0 1.06-1.06L8.53 4.99a.75.75 0 0 0-1.06 0L3.3 9.24a.75.75 0 0 0 0 1.06Z"/>
+  </symbol>
+
+  <!-- Nav arrows -->
+  <symbol id="fe-icon-arrow-left" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M7.78 3.22a.75.75 0 0 1 0 1.06L4.81 7.25H13a.75.75 0 0 1 0 1.5H4.81l2.97 2.97a.75.75 0 1 1-1.06 1.06L2.47 8.53a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z"/>
+  </symbol>
+  <symbol id="fe-icon-arrow-right" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8.22 3.22a.75.75 0 0 0 0 1.06l2.97 2.97H3a.75.75 0 0 0 0 1.5h8.19l-2.97 2.97a.75.75 0 1 0 1.06 1.06l4.25-4.25a.75.75 0 0 0 0-1.06L9.28 3.22a.75.75 0 0 0-1.06 0Z"/>
+  </symbol>
+  <symbol id="fe-icon-arrow-up" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.22 7.78a.75.75 0 0 0 1.06 0L7.25 4.81V13a.75.75 0 0 0 1.5 0V4.81l2.97 2.97a.75.75 0 0 0 1.06-1.06L8.53 2.47a.75.75 0 0 0-1.06 0L3.22 6.72a.75.75 0 0 0 0 1.06Z"/>
+  </symbol>
+
+  <!-- Plus -->
+  <symbol id="fe-icon-plus" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"/>
+  </symbol>
+  <symbol id="fe-icon-more" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.5 8a1.25 1.25 0 1 1 2.5 0 1.25 1.25 0 0 1-2.5 0Zm3.25 0a1.25 1.25 0 1 1 2.5 0 1.25 1.25 0 0 1-2.5 0Zm3.25 0a1.25 1.25 0 1 1 2.5 0 1.25 1.25 0 0 1-2.5 0Z"/>
+  </symbol>
+
+  <!-- Command bar verbs -->
+  <symbol id="fe-icon-cut" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M4.5 2.25a2.25 2.25 0 1 0 1.5 3.92L8 8l-2 1.83a2.25 2.25 0 1 0 .96 1.15L8.96 9.2l5.04-5.5a.5.5 0 0 0-.66-.74L9 7.06 7.46 5.66a2.25 2.25 0 0 0-2.96-3.41Zm0 1.5a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm0 7.5a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-copy" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M5 2A1.5 1.5 0 0 0 3.5 3.5v8A1.5 1.5 0 0 0 5 13h6a1.5 1.5 0 0 0 1.5-1.5v-8A1.5 1.5 0 0 0 11 2H5ZM2 5.5a1.5 1.5 0 0 1 1-1.42v7.92A2 2 0 0 0 5 14h5.92a1.5 1.5 0 0 1-1.42 1H5a3 3 0 0 1-3-3V5.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-rename" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M11.46 1.6a2 2 0 0 1 2.83 2.83l-8.7 8.7a2 2 0 0 1-.95.53l-3 .65a.5.5 0 0 1-.6-.6l.65-3a2 2 0 0 1 .53-.95l8.7-8.7Zm1.42 1.42-1.06-1.06-1.06 1.06 1.06 1.06 1.06-1.06Z"/>
+  </symbol>
+  <symbol id="fe-icon-share" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M11.5 2a2.5 2.5 0 1 0-2.36 3.34L5.42 7.5a2.5 2.5 0 1 0 0 1.34l3.72 2.16a2.5 2.5 0 1 0 .55-.95L5.97 7.83a2.51 2.51 0 0 0 0-1.34l3.72-2.16A2.5 2.5 0 0 0 11.5 2Z"/>
+  </symbol>
+  <symbol id="fe-icon-delete" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M6.5 1.75A.75.75 0 0 1 7.25 1h1.5a.75.75 0 0 1 .75.75V3h3.25a.75.75 0 0 1 0 1.5h-.7l-.5 8.66A2 2 0 0 1 9.55 15h-3.1a2 2 0 0 1-2-1.84L3.95 4.5h-.7a.75.75 0 0 1 0-1.5H6.5V1.75ZM6.25 5.5a.5.5 0 0 0-.5.55l.4 6.5a.5.5 0 0 0 .5.45h2.7a.5.5 0 0 0 .5-.45l.4-6.5a.5.5 0 0 0-.5-.55h-3.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-sort" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.75 3a.75.75 0 0 1 .75.75v7.69l1.72-1.72a.75.75 0 1 1 1.06 1.06l-3 3a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 0 1 1.06-1.06L3 11.44V3.75A.75.75 0 0 1 3.75 3Zm6.25.5a.75.75 0 0 1 .75-.75h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1-.75-.75ZM10 7a.75.75 0 0 1 .75-.75h3a.75.75 0 0 1 0 1.5h-3A.75.75 0 0 1 10 7Zm.75 3.25a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-view-grid" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h2A1.5 1.5 0 0 1 7 3.5v2A1.5 1.5 0 0 1 5.5 7h-2A1.5 1.5 0 0 1 2 5.5v-2Zm7 0A1.5 1.5 0 0 1 10.5 2h2A1.5 1.5 0 0 1 14 3.5v2A1.5 1.5 0 0 1 12.5 7h-2A1.5 1.5 0 0 1 9 5.5v-2ZM2 10.5A1.5 1.5 0 0 1 3.5 9h2A1.5 1.5 0 0 1 7 10.5v2A1.5 1.5 0 0 1 5.5 14h-2A1.5 1.5 0 0 1 2 12.5v-2Zm7 0A1.5 1.5 0 0 1 10.5 9h2a1.5 1.5 0 0 1 1.5 1.5v2a1.5 1.5 0 0 1-1.5 1.5h-2A1.5 1.5 0 0 1 9 12.5v-2Z"/>
+  </symbol>
+  <symbol id="fe-icon-view-list" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.5 3a.5.5 0 0 0 0 1h.5a.5.5 0 0 0 0-1h-.5Zm2.75.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5ZM3.5 7a.5.5 0 0 0 0 1h.5a.5.5 0 0 0 0-1h-.5Zm2.75.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5ZM3.5 11a.5.5 0 0 0 0 1h.5a.5.5 0 0 0 0-1h-.5Zm2.75.5a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-view-tile" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4Zm6 6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2Z"/>
+  </symbol>
+  <symbol id="fe-icon-view-detail" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 4.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5Zm0 3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5Zm.5 2.5a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11Z"/>
+  </symbol>
+  <symbol id="fe-icon-panel-right" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.5 2A2.5 2.5 0 0 0 0 4.5v7A2.5 2.5 0 0 0 2.5 14h11a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 13.5 2h-11Zm10 1.5a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H10v-9h2.5Z"/>
+  </symbol>
+
+  <!-- Nav-rail brand icons -->
+  <symbol id="fe-icon-home" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M7.36 1.32a1 1 0 0 1 1.28 0l5.5 4.62A1 1 0 0 1 14.5 6.7v6.55A1.75 1.75 0 0 1 12.75 15H10a.5.5 0 0 1-.5-.5v-3.75A.75.75 0 0 0 8.75 10h-1.5a.75.75 0 0 0-.75.75v3.75a.5.5 0 0 1-.5.5H3.25A1.75 1.75 0 0 1 1.5 13.25V6.7a1 1 0 0 1 .36-.76l5.5-4.62Z"/>
+  </symbol>
+  <symbol id="fe-icon-gallery" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.5 2A1.5 1.5 0 0 0 1 3.5v7A1.5 1.5 0 0 0 2.5 12h7a1.5 1.5 0 0 0 1.5-1.5v-7A1.5 1.5 0 0 0 9.5 2h-7Zm5 3.25a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5ZM2 9.25l2-2.25 2.5 3 1.5-1.5L10 10.5V11H2v-1.75ZM12.75 4a.75.75 0 0 1 .75.75V13c0 .14-.11.25-.25.25H4a.75.75 0 0 0 0 1.5h9.25A1.75 1.75 0 0 0 15 13V4.75a.75.75 0 0 0-.75-.75h-1.5Z"/>
+  </symbol>
+  <symbol id="fe-icon-onedrive" viewBox="0 0 16 16">
+    <path fill="#0078d4" d="M9.5 4a4.5 4.5 0 0 0-4.4 3.6 3.5 3.5 0 0 0-3.1 3.5A2.9 2.9 0 0 0 4.9 14h7.6a2.5 2.5 0 0 0 .35-4.97A4.5 4.5 0 0 0 9.5 4Z"/>
+  </symbol>
+  <symbol id="fe-icon-thispc" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h9A1.5 1.5 0 0 1 14 3.5V10a1.5 1.5 0 0 1-1.5 1.5h-3l.5 1.5h1.5a.5.5 0 0 1 0 1h-7a.5.5 0 0 1 0-1H6l.5-1.5h-3A1.5 1.5 0 0 1 2 10V3.5Zm1.5 0V10h9V3.5h-9Z"/>
+  </symbol>
+  <symbol id="fe-icon-network" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1a4 4 0 0 0-1 7.87V11H4.5A1.5 1.5 0 0 0 3 12.5V14h2v-1.5h6V14h2v-1.5a1.5 1.5 0 0 0-1.5-1.5H9V8.87A4 4 0 0 0 8 1Z"/>
+  </symbol>
+  <symbol id="fe-icon-settings" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm-1.04-4.4a1.5 1.5 0 0 1 2.08 0l.55.53a.7.7 0 0 0 .61.18l.74-.13a1.5 1.5 0 0 1 1.74 1.04l.22.72a.7.7 0 0 0 .45.45l.72.22a1.5 1.5 0 0 1 1.04 1.74l-.13.74a.7.7 0 0 0 .18.61l.53.55a1.5 1.5 0 0 1 0 2.08l-.53.55a.7.7 0 0 0-.18.61l.13.74a1.5 1.5 0 0 1-1.04 1.74l-.72.22a.7.7 0 0 0-.45.45l-.22.72a1.5 1.5 0 0 1-1.74 1.04l-.74-.13a.7.7 0 0 0-.61.18l-.55.53a1.5 1.5 0 0 1-2.08 0l-.55-.53a.7.7 0 0 0-.61-.18l-.74.13a1.5 1.5 0 0 1-1.74-1.04l-.22-.72a.7.7 0 0 0-.45-.45l-.72-.22a1.5 1.5 0 0 1-1.04-1.74l.13-.74a.7.7 0 0 0-.18-.61l-.53-.55a1.5 1.5 0 0 1 0-2.08l.53-.55a.7.7 0 0 0 .18-.61l-.13-.74a1.5 1.5 0 0 1 1.04-1.74l.72-.22a.7.7 0 0 0 .45-.45l.22-.72a1.5 1.5 0 0 1 1.74-1.04l.74.13a.7.7 0 0 0 .61-.18l.55-.53Z"/>
+  </symbol>
+
+  <!-- Window controls (Windows-flat — stroke spec exception) -->
+  <symbol id="fe-icon-win-min" viewBox="0 0 10 10">
+    <line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+  <symbol id="fe-icon-win-max" viewBox="0 0 10 10">
+    <rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+  <symbol id="fe-icon-win-close" viewBox="0 0 10 10">
+    <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1"/>
+    <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+</defs>
+</svg>
+
+<div class="fe-root" data-scene-component="WindowsScene" data-theme="{{theme}}" style="position:absolute;inset:0">
+  <div class="fe-window">
+
+    <!-- ═══ TITLEBAR (32px) ═══ -->
+    <div class="fe-titlebar">
+      <div class="fe-tabs" data-slot="titlebar-tabs">{{{titlebarTabsHtml}}}</div>
+      <button class="fe-newtab" aria-label="New tab"><svg aria-hidden="true"><use href="#fe-icon-plus"/></svg></button>
+      <div class="fe-titlebar-spacer"></div>
+      <div class="fe-wincontrols">
+        <button class="fe-winbtn" aria-label="Minimize"><svg aria-hidden="true"><use href="#fe-icon-win-min"/></svg></button>
+        <button class="fe-winbtn" aria-label="Maximize"><svg aria-hidden="true"><use href="#fe-icon-win-max"/></svg></button>
+        <button class="fe-winbtn fe-winbtn--close" aria-label="Close"><svg aria-hidden="true"><use href="#fe-icon-win-close"/></svg></button>
+      </div>
+    </div>
+
+    <!-- ═══ COMMAND BAR (40px) ═══ -->
+    <div class="fe-cmdbar" data-slot="commandbar">{{{commandBarHtml}}}</div>
+
+    <!-- ═══ ADDRESS BAR (36px) ═══ -->
+    <div class="fe-addressbar">
+      <button class="fe-navbtn" aria-label="Back"><svg aria-hidden="true"><use href="#fe-icon-arrow-left"/></svg></button>
+      <button class="fe-navbtn fe-navbtn--disabled" aria-label="Forward"><svg aria-hidden="true"><use href="#fe-icon-arrow-right"/></svg></button>
+      <button class="fe-navbtn" aria-label="Up"><svg aria-hidden="true"><use href="#fe-icon-arrow-up"/></svg></button>
+      <div class="fe-bcwrap" data-slot="breadcrumb">{{{breadcrumbHtml}}}</div>
+      <div class="fe-search">
+        <svg aria-hidden="true"><use href="#fe-icon-search"/></svg>
+        <span>{{searchPlaceholder}}</span>
+      </div>
+    </div>
+
+    <!-- ═══ BODY ═══ -->
+    <div class="fe-body">
+      <aside class="fe-rail" data-slot="navtree">{{{navTreeHtml}}}</aside>
+      <section class="fe-main" data-slot="content">{{{contentHtml}}}</section>
+    </div>
+
+    <!-- ═══ STATUS BAR (24px) ═══ -->
+    <div class="fe-statusbar">
+      <div class="fe-status-left" data-slot="status-left">{{{statusLeftHtml}}}</div>
+      <div class="fe-status-right" data-slot="status-right">{{{statusRightHtml}}}</div>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,37 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "loop-tasks-12s",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "taskList",
+        "pageTitle": "Sprint 47 — Open work",
+        "pageMeta": "Updated just now · 7 active tasks",
+        "attendees": ["Avery Chen", "Jordan Park", "Sam Rivera", "Maya Lopez", "Tariq Quinn"],
+        "tasks": [
+          { "text": "Wire up retry policy on ingest worker", "assignee": "Avery Chen",  "due": "Today",    "priority": "high" },
+          { "text": "Land schema migration (rev 0042)",      "assignee": "Jordan Park", "due": "Tomorrow", "priority": "high" },
+          { "text": "Draft postmortem for Sev3 #6021",       "assignee": "Sam Rivera",  "due": "Thu",      "priority": "med"  },
+          { "text": "Triage telemetry backlog",              "assignee": "Maya Lopez",  "due": "Fri",      "priority": "med"  },
+          { "text": "Write runbook for failover drill",      "assignee": "Tariq Quinn", "due": "Mon",      "priority": "low"  },
+          { "text": "Code review: PR #4421",                 "assignee": "Avery Chen",  "due": "Today",    "priority": "med"  },
+          { "text": "Update on-call rotation doc",           "assignee": "Jordan Park", "due": "Wed",      "priority": "low"  }
+        ],
+        "followUps": [
+          { "text": "Sync with Tariq on capacity plan",   "assignee": "Maya Lopez", "due": "Fri", "priority": "med"  },
+          { "text": "File ICM review for Tuesday outage", "assignee": "Avery Chen", "due": "Tue", "priority": "high" }
+        ],
+        "copilotSuggestions": [
+          "Add follow-ups from Tuesday's call",
+          "Reassign overdue items",
+          "Mark completed tasks as done"
+        ]
+      }
+    }
+  ]
+}

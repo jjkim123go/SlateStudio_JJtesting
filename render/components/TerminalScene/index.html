@@ -1,0 +1,313 @@
+<!--
+  ============================================================================
+  TerminalScene — Windows Terminal (dark, split-pane) — PR 10e Wave A
+  ============================================================================
+
+  SLOT CONTRACT (Wave B passes via SCF props):
+    {{tabsHtml}}            — Title-bar tab strip <div class="wt-tab"> children
+    {{leftPaneTitle}}       — Left pane label (e.g. "PowerShell")
+    {{leftPaneContentHtml}} — Left pane terminal body (each line a div.wt-line)
+    {{rightPaneTitle}}      — Right pane label (e.g. "Ubuntu")
+    {{rightPaneContentHtml}}— Right pane terminal body
+    {{statusHtml}}          — Status bar inner HTML (optional, can be empty)
+
+  VARIANT ATTRIBUTES on .wt-root:
+    data-theme="dark"       (only dark variant in scope for PR 10e)
+
+  CHROME REGIONS:
+    .wt-titlebar  32px — terminal logo + tab strip + dropdown/+/settings + win controls
+    .wt-body      flex — vertical split: leftPane | divider | rightPane
+    .wt-statusbar 22px — optional status
+
+  Standing Rule #15: Fluent UI 2 Filled glyphs in <symbol> blocks.
+    Window controls use stroke (Windows-flat spec exception).
+  ============================================================================ -->
+
+<style data-component="TerminalScene">
+/* ============================================================================
+   DENSITY SPEC (measured at 1920×1080):
+     Titlebar      32px (tab height 30px)
+     Tab font      12px Segoe UI
+     Body font     14px / line-height 1.4 Cascadia Code
+     Pane top accent border  2px (#4ec9b0 active, transparent inactive)
+     Status bar    22px
+   ============================================================================ */
+
+.scene-{{sceneId}} .wt-root {
+  --wt-chrome:        #0c0c0c;
+  --wt-titlebar:      #0c0c0c;
+  --wt-tab-active:    rgba(255,255,255,0.08);
+  --wt-tab-inactive:  transparent;
+  --wt-text:          #cccccc;
+  --wt-text-mute:     #858585;
+  --wt-border:        rgba(255,255,255,0.08);
+  --wt-divider:       rgba(255,255,255,0.06);
+  --wt-accent:        #61dafb;
+  --wt-pane-pwsh:     #012456;
+  --wt-pane-ubuntu:   #0c0c0c;
+  --wt-prompt-pwsh:   #4ec9b0;
+  --wt-prompt-ubuntu: #4ec98e;
+  --wt-yellow:        #dcdcaa;
+  --wt-cyan:          #9cdcfe;
+  --wt-green:         #b5cea8;
+  --wt-red:           #f48771;
+  --wt-blue:          #569cd6;
+  --wt-shadow:        0 30px 80px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.04);
+
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 40px;
+  background: linear-gradient(135deg, #0a0a16 0%, #1a1a2e 50%, #0a1a2a 100%);
+  font-family: "Segoe UI Variable", "Segoe UI", -apple-system, system-ui, sans-serif;
+  font-size: 13px;
+  color: var(--wt-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+.scene-{{sceneId}} .wt-window {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: var(--wt-chrome);
+  border-radius: 8px;
+  box-shadow: var(--wt-shadow);
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* ── Titlebar ── */
+.scene-{{sceneId}} .wt-titlebar {
+  display: flex; align-items: stretch;
+  flex: 0 0 32px; height: 32px;
+  background: var(--wt-titlebar);
+  border-bottom: 1px solid var(--wt-border);
+  user-select: none;
+}
+.scene-{{sceneId}} .wt-brand {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 32px;
+  color: var(--wt-text-mute);
+}
+.scene-{{sceneId}} .wt-brand svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .wt-tabs {
+  display: flex; align-items: center;
+  gap: 0; padding: 0;
+  flex: 0 1 auto; min-width: 0;
+}
+.scene-{{sceneId}} .wt-tab {
+  display: inline-flex; align-items: center; gap: 8px;
+  height: 32px; padding: 0 14px;
+  font-size: 12px; color: var(--wt-text);
+  background: var(--wt-tab-inactive);
+  position: relative;
+  cursor: default; max-width: 260px;
+  white-space: nowrap; overflow: hidden;
+}
+.scene-{{sceneId}} .wt-tab--active {
+  background: var(--wt-tab-active);
+  color: #ffffff;
+}
+.scene-{{sceneId}} .wt-tab--active::after {
+  content: ""; position: absolute;
+  left: 0; right: 0; bottom: 0; height: 2px;
+  background: #ffffff;
+}
+.scene-{{sceneId}} .wt-tab svg { width: 14px; height: 14px; flex-shrink: 0; }
+.scene-{{sceneId}} .wt-tab-close {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px; border-radius: 3px;
+  background: transparent; border: 0; padding: 0;
+  color: var(--wt-text-mute); cursor: pointer;
+}
+.scene-{{sceneId}} .wt-tab-close:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.scene-{{sceneId}} .wt-tab-close svg { width: 8px; height: 8px; }
+.scene-{{sceneId}} .wt-titlebar-actions {
+  display: inline-flex; align-items: center;
+  gap: 0; padding: 0 4px;
+}
+.scene-{{sceneId}} .wt-titlebar-actions .wt-iconbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: transparent; border: 0; padding: 0;
+  color: var(--wt-text-mute); cursor: pointer;
+}
+.scene-{{sceneId}} .wt-titlebar-actions .wt-iconbtn:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.scene-{{sceneId}} .wt-titlebar-actions .wt-iconbtn svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .wt-titlebar-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .wt-wincontrols {
+  display: flex; align-items: stretch;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .wt-winbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 32px;
+  background: transparent; border: 0; padding: 0;
+  color: #cccccc; cursor: pointer;
+}
+.scene-{{sceneId}} .wt-winbtn:hover { background: rgba(255,255,255,0.08); }
+.scene-{{sceneId}} .wt-winbtn--close:hover { background: #e81123; color: #fff; }
+.scene-{{sceneId}} .wt-winbtn svg { width: 10px; height: 10px; }
+
+/* ── Body (split panes) ── */
+.scene-{{sceneId}} .wt-body {
+  display: flex;
+  flex: 1 1 auto; min-height: 0;
+  background: var(--wt-chrome);
+}
+.scene-{{sceneId}} .wt-pane {
+  flex: 1 1 50%;
+  display: flex; flex-direction: column;
+  min-width: 0; min-height: 0;
+  position: relative;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .wt-pane--pwsh   { background: var(--wt-pane-pwsh); }
+.scene-{{sceneId}} .wt-pane--ubuntu { background: var(--wt-pane-ubuntu); }
+.scene-{{sceneId}} .wt-pane--active::before {
+  content: ""; position: absolute;
+  left: 0; right: 0; top: 0; height: 3px;
+  background: var(--wt-accent);
+  box-shadow: 0 0 8px rgba(97,218,251,0.45);
+  z-index: 2;
+}
+.scene-{{sceneId}} .wt-pane-divider {
+  flex: 0 0 1px; width: 1px;
+  background: var(--wt-border);
+}
+.scene-{{sceneId}} .wt-pane-content {
+  flex: 1 1 auto; min-height: 0;
+  padding: 14px 18px;
+  font-family: "Cascadia Code", "Cascadia Mono", Consolas, "Courier New", monospace;
+  font-size: 14px; line-height: 1.4;
+  color: var(--wt-text);
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.scene-{{sceneId}} .wt-line {
+  display: block;
+  white-space: pre-wrap;
+  min-height: 1.4em;
+}
+.scene-{{sceneId}} .wt-prompt-pwsh   { color: var(--wt-prompt-pwsh); }
+.scene-{{sceneId}} .wt-prompt-ubuntu { color: var(--wt-prompt-ubuntu); }
+.scene-{{sceneId}} .wt-path          { color: var(--wt-yellow); }
+.scene-{{sceneId}} .wt-cmd           { color: #ffffff; }
+.scene-{{sceneId}} .wt-flag          { color: var(--wt-cyan); }
+.scene-{{sceneId}} .wt-ok            { color: var(--wt-accent); }
+.scene-{{sceneId}} .wt-bad           { color: var(--wt-red); }
+.scene-{{sceneId}} .wt-info          { color: var(--wt-cyan); }
+.scene-{{sceneId}} .wt-warn          { color: var(--wt-yellow); }
+.scene-{{sceneId}} .wt-mute          { color: rgba(204,204,204,0.55); }
+.scene-{{sceneId}} .wt-cursor {
+  display: inline-block;
+  width: 8px; height: 1.05em;
+  background: rgba(255,255,255,0.7);
+  vertical-align: text-bottom;
+  margin-left: 2px;
+}
+
+/* ── Status bar ── */
+.scene-{{sceneId}} .wt-statusbar {
+  display: flex; align-items: center;
+  flex: 0 0 22px; height: 22px;
+  padding: 0 12px;
+  background: rgba(0,0,0,0.4);
+  border-top: 1px solid var(--wt-border);
+  font-size: 11px;
+  color: var(--wt-text-mute);
+  gap: 14px;
+}
+
+/* ── Global icon coloring + defensive guard ── */
+.scene-{{sceneId}} .wt-root svg { fill: currentColor; }
+.scene-{{sceneId}} .wt-titlebar svg:not([width]),
+.scene-{{sceneId}} .wt-statusbar svg:not([width]) {
+  width: 14px; height: 14px; flex-shrink: 0;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SVG SYMBOL MANIFEST — Fluent UI 2 Filled (16×16 viewBox)
+     Standing Rule #15: solid-fill only. Window controls = stroke (exception).
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<defs>
+  <symbol id="wt-icon-terminal" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.5 2A2.5 2.5 0 0 0 0 4.5v7A2.5 2.5 0 0 0 2.5 14h11a2.5 2.5 0 0 0 2.5-2.5v-7A2.5 2.5 0 0 0 13.5 2h-11Zm.97 3.47a.75.75 0 0 1 1.06 0l2.5 2.5a.75.75 0 0 1 0 1.06l-2.5 2.5a.75.75 0 1 1-1.06-1.06L5.44 8.5l-1.97-1.97a.75.75 0 0 1 0-1.06ZM8.75 10h3.5a.75.75 0 0 1 0 1.5h-3.5a.75.75 0 0 1 0-1.5Z"/>
+  </symbol>
+  <symbol id="wt-icon-pwsh" viewBox="0 0 16 16">
+    <path fill="#012456" d="M1 2h14v12H1z"/>
+    <path fill="#ffffff" d="M3.5 11.5 6.7 8 3.5 4.5h1.4l3.2 3.5-3.2 3.5H3.5Zm5 0h3v-1h-3v1Z"/>
+  </symbol>
+  <symbol id="wt-icon-linux" viewBox="0 0 16 16">
+    <path fill="#e95420" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm-1.4 3.2a1 1 0 1 1 0 2 1 1 0 0 1 0-2Zm2.8 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2ZM8 8.5c1.4 0 2.6.6 3 1.5H5c.4-.9 1.6-1.5 3-1.5Z"/>
+  </symbol>
+  <symbol id="wt-icon-cmd" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.5 2A1.5 1.5 0 0 0 1 3.5v9A1.5 1.5 0 0 0 2.5 14h11a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 13.5 2h-11Zm1 2.7L4.7 4l2.6 4-2.6 4-1.2-.7L5.3 8 3.5 4.7ZM8 11h4v1H8v-1Z"/>
+  </symbol>
+  <symbol id="wt-icon-plus" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2Z"/>
+  </symbol>
+  <symbol id="wt-icon-chevron-down" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.3 5.7a.75.75 0 0 1 1.06 0L8 9.44l3.64-3.74a.75.75 0 1 1 1.06 1.06l-4.17 4.25a.75.75 0 0 1-1.06 0L3.3 6.76a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="wt-icon-settings" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm-1.04-4.4a1.5 1.5 0 0 1 2.08 0l.55.53a.7.7 0 0 0 .61.18l.74-.13a1.5 1.5 0 0 1 1.74 1.04l.22.72a.7.7 0 0 0 .45.45l.72.22a1.5 1.5 0 0 1 1.04 1.74l-.13.74a.7.7 0 0 0 .18.61l.53.55a1.5 1.5 0 0 1 0 2.08l-.53.55a.7.7 0 0 0-.18.61l.13.74a1.5 1.5 0 0 1-1.04 1.74l-.72.22a.7.7 0 0 0-.45.45l-.22.72a1.5 1.5 0 0 1-1.74 1.04l-.74-.13a.7.7 0 0 0-.61.18l-.55.53a1.5 1.5 0 0 1-2.08 0l-.55-.53a.7.7 0 0 0-.61-.18l-.74.13a1.5 1.5 0 0 1-1.74-1.04l-.22-.72a.7.7 0 0 0-.45-.45l-.72-.22a1.5 1.5 0 0 1-1.04-1.74l.13-.74a.7.7 0 0 0-.18-.61l-.53-.55a1.5 1.5 0 0 1 0-2.08l.53-.55a.7.7 0 0 0 .18-.61l-.13-.74a1.5 1.5 0 0 1 1.04-1.74l.72-.22a.7.7 0 0 0 .45-.45l.22-.72a1.5 1.5 0 0 1 1.74-1.04l.74.13a.7.7 0 0 0 .61-.18l.55-.53Z"/>
+  </symbol>
+  <symbol id="wt-icon-close-x" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M4.22 4.22a.75.75 0 0 1 1.06 0L8 6.94l2.72-2.72a.75.75 0 1 1 1.06 1.06L9.06 8l2.72 2.72a.75.75 0 0 1-1.06 1.06L8 9.06l-2.72 2.72a.75.75 0 1 1-1.06-1.06L6.94 8 4.22 5.28a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+
+  <!-- Window controls (Windows-flat — stroke spec exception) -->
+  <symbol id="wt-icon-win-min" viewBox="0 0 10 10">
+    <line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+  <symbol id="wt-icon-win-max" viewBox="0 0 10 10">
+    <rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+  <symbol id="wt-icon-win-close" viewBox="0 0 10 10">
+    <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1"/>
+    <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+</defs>
+</svg>
+
+<div class="wt-root" data-scene-component="TerminalScene" data-theme="{{theme}}" style="position:absolute;inset:0">
+  <div class="wt-window">
+
+    <!-- ═══ TITLEBAR ═══ -->
+    <div class="wt-titlebar">
+      <div class="wt-brand"><svg aria-hidden="true"><use href="#wt-icon-terminal"/></svg></div>
+      <div class="wt-tabs" data-slot="tabs">{{{tabsHtml}}}</div>
+      <div class="wt-titlebar-actions">
+        <button class="wt-iconbtn" aria-label="New tab"><svg aria-hidden="true"><use href="#wt-icon-plus"/></svg></button>
+        <button class="wt-iconbtn" aria-label="Profiles"><svg aria-hidden="true"><use href="#wt-icon-chevron-down"/></svg></button>
+        <button class="wt-iconbtn" aria-label="Settings"><svg aria-hidden="true"><use href="#wt-icon-settings"/></svg></button>
+      </div>
+      <div class="wt-titlebar-spacer"></div>
+      <div class="wt-wincontrols">
+        <button class="wt-winbtn" aria-label="Minimize"><svg aria-hidden="true"><use href="#wt-icon-win-min"/></svg></button>
+        <button class="wt-winbtn" aria-label="Maximize"><svg aria-hidden="true"><use href="#wt-icon-win-max"/></svg></button>
+        <button class="wt-winbtn wt-winbtn--close" aria-label="Close"><svg aria-hidden="true"><use href="#wt-icon-win-close"/></svg></button>
+      </div>
+    </div>
+
+    <!-- ═══ BODY (split) ═══ -->
+    <div class="wt-body">
+      <section class="wt-pane wt-pane--pwsh wt-pane--active" aria-label="{{leftPaneTitle}}">
+        <div class="wt-pane-content" data-slot="left-content">{{{leftPaneContentHtml}}}</div>
+      </section>
+      <div class="wt-pane-divider"></div>
+      <section class="wt-pane wt-pane--ubuntu" aria-label="{{rightPaneTitle}}">
+        <div class="wt-pane-content" data-slot="right-content">{{{rightPaneContentHtml}}}</div>
+      </section>
+    </div>
+
+    <!-- ═══ STATUS ═══ -->
+    <div class="wt-statusbar" data-slot="status">{{{statusHtml}}}</div>
+
+  </div>
+</div>

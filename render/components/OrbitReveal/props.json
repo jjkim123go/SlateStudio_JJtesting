@@ -1,0 +1,23 @@
+{
+  "direction": {
+    "type": "string",
+    "enum": ["clockwise", "counterclockwise"],
+    "default": "clockwise",
+    "description": "Spiral rotation direction"
+  },
+  "color": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS color for the comet and trail particles (brand primary recommended)"
+  },
+  "trailCount": {
+    "type": "number",
+    "default": 18,
+    "description": "Number of trailing particles behind the comet (1–40)"
+  },
+  "spiralTurns": {
+    "type": "number",
+    "default": 2.5,
+    "description": "Number of full spiral revolutions (0.5–5)"
+  }
+}

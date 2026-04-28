@@ -1,0 +1,23 @@
+{
+  "eyebrow": "Slate proof",
+  "title": "Metrics belong in the scene",
+  "body": "Component-led layouts keep exact numbers readable while motion carries the edit.",
+  "pageImage": "assets/images/book-page-texture.jpg",
+  "overlay": {
+    "component": "MetricsCard",
+    "props": {
+      "label": "Production velocity",
+      "prevValue": "1.2",
+      "value": "3.8",
+      "unit": "x",
+      "deltaText": "faster delivery",
+      "sparklinePoints": "20,98 120,84 220,92 320,58 420,64 520,42 620,36"
+    }
+  },
+  "metric1Value": "3x",
+  "metric1Label": "faster scene planning through reusable components",
+  "metric2Value": "0",
+  "metric2Label": "AI-rendered tables or hallucinated labels required",
+  "metric3Value": "8",
+  "metric3Label": "review dimensions checked before delivery"
+}

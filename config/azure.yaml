@@ -1,0 +1,28 @@
+# Slate Azure Configuration
+# ──────────────────────────────────────────────────────────────────────
+# This file is the distribution template. All fields are blank.
+#
+# To configure Slate for your Azure environment:
+#   1. Copy this file to config/azure.local.yaml
+#   2. Fill in your Azure AI Services resource details
+#   3. azure.local.yaml is gitignored and never distributed
+#
+# Alternatively, set environment variables (these override YAML values):
+#   SLATE_AZURE_RESOURCE        — AI Services resource name
+#   SLATE_AZURE_ENDPOINT        — Full endpoint URL (auto-derived if blank)
+#   SLATE_AZURE_RESOURCE_GROUP  — Resource group name
+#   SLATE_AZURE_SUBSCRIPTION_ID — Azure subscription ID
+#   SLATE_AZURE_LOCATION        — Azure region (e.g., eastus2)
+# ──────────────────────────────────────────────────────────────────────
+
+ai_services:
+  resource_name: ""
+  endpoint: ""               # Auto-derived: https://{resource_name}.cognitiveservices.azure.com
+  resource_group: ""
+  subscription_id: ""
+  location: ""
+
+video_indexer:
+  account_id: ""
+  account_name: ""
+  # Inherits resource_group, subscription_id, location from ai_services if blank

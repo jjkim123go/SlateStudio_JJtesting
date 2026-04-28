@@ -1,0 +1,557 @@
+<!--
+  ReleaseNotes — PM/EM release digest with feature, fix, and breaking-change sections.
+  Props consumed: version, releaseDate, channel, themeVariant, featuresJson, fixesJson,
+                  breakingChangesJson, linksJson
+  Class prefix: rn-
+-->
+<style>
+.scene-{{sceneId}} .rn-root{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  background:
+    radial-gradient(circle at top right, rgba(56,189,248,0.18), transparent 34%),
+    radial-gradient(circle at bottom left, rgba(245,158,11,0.16), transparent 32%),
+    linear-gradient(135deg,#0b1220 0%,#101a2e 42%,#0f172a 100%);
+  color:#f8fafc;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  overflow:hidden;
+}
+.scene-{{sceneId}} .rn-shell{
+  position:relative;
+  width:86%;
+  max-width:1540px;
+  height:82%;
+  display:flex;
+  flex-direction:column;
+  gap:28px;
+}
+.scene-{{sceneId}} .rn-ribbon{
+  position:absolute;
+  top:0;
+  right:0;
+  min-width:280px;
+  max-width:44%;
+  padding:18px 26px 20px;
+  border-radius:0 0 20px 20px;
+  background:linear-gradient(135deg,#38bdf8 0%,#2563eb 55%,#1d4ed8 100%);
+  box-shadow:0 18px 48px rgba(37,99,235,0.28);
+  z-index:2;
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-ribbon-label{
+  display:block;
+  margin-bottom:6px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,0.76);
+}
+.scene-{{sceneId}} .rn-ribbon-version{
+  display:block;
+  font-size:34px;
+  font-weight:800;
+  line-height:1.05;
+  color:#ffffff;
+}
+.scene-{{sceneId}} .rn-ribbon-date{
+  display:block;
+  margin-top:8px;
+  font-size:14px;
+  font-weight:600;
+  color:rgba(255,255,255,0.84);
+}
+.scene-{{sceneId}} .rn-header{
+  display:flex;
+  justify-content:space-between;
+  gap:32px;
+  padding-top:30px;
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-kicker{
+  margin:0 0 10px;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:#93c5fd;
+}
+.scene-{{sceneId}} .rn-title{
+  margin:0;
+  max-width:760px;
+  font-size:56px;
+  line-height:1.04;
+  letter-spacing:-0.03em;
+  color:#ffffff;
+}
+.scene-{{sceneId}} .rn-summary{
+  margin:14px 0 0;
+  max-width:780px;
+  font-size:18px;
+  line-height:1.55;
+  color:rgba(226,232,240,0.84);
+}
+.scene-{{sceneId}} .rn-meta{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  align-items:flex-start;
+  gap:12px;
+  max-width:360px;
+}
+.scene-{{sceneId}} .rn-meta-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:10px 16px;
+  border-radius:999px;
+  border:1px solid rgba(148,163,184,0.26);
+  background:rgba(15,23,42,0.72);
+  font-size:13px;
+  font-weight:700;
+  color:#e2e8f0;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+.scene-{{sceneId}} .rn-meta-pill:empty{display:none}
+.scene-{{sceneId}} .rn-meta-pill:before{
+  content:"";
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#38bdf8;
+  box-shadow:0 0 0 6px rgba(56,189,248,0.16);
+}
+.scene-{{sceneId}} .rn-meta-pill[data-channel="Hotfix"]:before{background:#f97316;box-shadow:0 0 0 6px rgba(249,115,22,0.18)}
+.scene-{{sceneId}} .rn-meta-pill[data-channel="Preview"]:before,
+.scene-{{sceneId}} .rn-meta-pill[data-channel="Private preview"]:before{background:#a855f7;box-shadow:0 0 0 6px rgba(168,85,247,0.18)}
+.scene-{{sceneId}} .rn-meta-pill[data-channel="GA"]:before{background:#22c55e;box-shadow:0 0 0 6px rgba(34,197,94,0.18)}
+.scene-{{sceneId}} .rn-grid{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(340px,0.92fr);
+  grid-auto-rows:minmax(0,auto);
+  gap:18px;
+  flex:1;
+  align-content:start;
+}
+.scene-{{sceneId}} .rn-root.rn-no-features .rn-section-fixes,
+.scene-{{sceneId}} .rn-root.rn-no-features .rn-section-breaking{
+  grid-column:1 / span 2;
+}
+.scene-{{sceneId}} .rn-root.rn-has-features.rn-no-breaking .rn-section-fixes{
+  min-height:240px;
+}
+.scene-{{sceneId}} .rn-section{
+  position:relative;
+  padding:24px 24px 22px;
+  border-radius:26px;
+  border:1px solid rgba(148,163,184,0.16);
+  background:rgba(15,23,42,0.76);
+  box-shadow:0 16px 48px rgba(15,23,42,0.18);
+  backdrop-filter:blur(10px);
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-section-features{min-height:340px}
+.scene-{{sceneId}} .rn-section-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:18px;
+}
+.scene-{{sceneId}} .rn-section-kicker{
+  margin:0 0 8px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.16em;
+  text-transform:uppercase;
+  color:rgba(148,163,184,0.82);
+}
+.scene-{{sceneId}} .rn-section-title{
+  margin:0;
+  font-size:28px;
+  font-weight:750;
+  line-height:1.15;
+  color:#ffffff;
+}
+.scene-{{sceneId}} .rn-section-subtitle{
+  margin:8px 0 0;
+  font-size:15px;
+  line-height:1.5;
+  color:rgba(203,213,225,0.72);
+}
+.scene-{{sceneId}} .rn-feature-list{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.scene-{{sceneId}} .rn-feature-card{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  min-height:188px;
+  padding:18px;
+  border-radius:20px;
+  background:linear-gradient(180deg,rgba(30,41,59,0.88),rgba(15,23,42,0.92));
+  border:1px solid rgba(148,163,184,0.16);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-feature-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+.scene-{{sceneId}} .rn-icon-wrap{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  background:rgba(56,189,248,0.12);
+  border:1px solid rgba(56,189,248,0.24);
+  flex-shrink:0;
+}
+.scene-{{sceneId}} .rn-icon-image{
+  width:22px;
+  height:22px;
+  object-fit:contain;
+}
+.scene-{{sceneId}} .rn-icon-fallback{
+  width:16px;
+  height:16px;
+  border-radius:5px;
+  background:linear-gradient(135deg,#38bdf8 0%,#8b5cf6 100%);
+  box-shadow:0 8px 18px rgba(56,189,248,0.28);
+}
+.scene-{{sceneId}} .rn-pill{
+  display:inline-flex;
+  align-items:center;
+  padding:7px 12px;
+  border-radius:999px;
+  background:rgba(37,99,235,0.18);
+  border:1px solid rgba(96,165,250,0.28);
+  color:#bfdbfe;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.scene-{{sceneId}} .rn-feature-title{
+  margin:0;
+  font-size:22px;
+  font-weight:700;
+  line-height:1.2;
+  color:#ffffff;
+}
+.scene-{{sceneId}} .rn-feature-body{
+  margin:0;
+  font-size:15px;
+  line-height:1.6;
+  color:rgba(226,232,240,0.76);
+}
+.scene-{{sceneId}} .rn-fix-counter{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:18px;
+  background:rgba(15,118,110,0.18);
+  border:1px solid rgba(45,212,191,0.2);
+}
+.scene-{{sceneId}} .rn-fix-counter-value{
+  min-width:32px;
+  font-size:26px;
+  font-weight:800;
+  line-height:1;
+  color:#ffffff;
+  font-variant-numeric:tabular-nums;
+}
+.scene-{{sceneId}} .rn-fix-counter-label{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:#99f6e4;
+}
+.scene-{{sceneId}} .rn-fix-list{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.scene-{{sceneId}} .rn-fix-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:14px 16px;
+  border-radius:18px;
+  border:1px solid rgba(148,163,184,0.14);
+  background:rgba(30,41,59,0.56);
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-fix-title{
+  margin:0;
+  font-size:16px;
+  font-weight:600;
+  line-height:1.5;
+  color:#f8fafc;
+}
+.scene-{{sceneId}} .rn-severity{
+  display:inline-flex;
+  align-items:center;
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.scene-{{sceneId}} .rn-severity[data-severity="high"]{background:rgba(239,68,68,0.18);border:1px solid rgba(248,113,113,0.28);color:#fecaca}
+.scene-{{sceneId}} .rn-severity[data-severity="med"]{background:rgba(249,115,22,0.18);border:1px solid rgba(251,146,60,0.26);color:#fed7aa}
+.scene-{{sceneId}} .rn-severity[data-severity="low"]{background:rgba(34,197,94,0.16);border:1px solid rgba(74,222,128,0.22);color:#dcfce7}
+.scene-{{sceneId}} .rn-section-breaking{overflow:hidden}
+.scene-{{sceneId}} .rn-breaking-list{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.scene-{{sceneId}} .rn-breaking-item{
+  position:relative;
+  padding:18px 18px 18px 22px;
+  border-radius:20px;
+  border:1px solid rgba(251,191,36,0.2);
+  background:linear-gradient(180deg,rgba(69,26,3,0.46),rgba(31,41,55,0.78));
+  overflow:hidden;
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-breaking-accent{
+  position:absolute;
+  inset:0 auto 0 0;
+  width:7px;
+  background:linear-gradient(180deg,#f59e0b 0%,#ef4444 100%);
+  transform:scaleY(0);
+  transform-origin:center top;
+}
+.scene-{{sceneId}} .rn-breaking-title{
+  margin:0 0 8px;
+  padding-left:8px;
+  font-size:18px;
+  font-weight:700;
+  line-height:1.35;
+  color:#fef3c7;
+}
+.scene-{{sceneId}} .rn-breaking-mitigation{
+  margin:0;
+  padding-left:8px;
+  font-size:14px;
+  line-height:1.6;
+  color:rgba(254,243,199,0.84);
+}
+.scene-{{sceneId}} .rn-link-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.scene-{{sceneId}} .rn-link-pill{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid rgba(96,165,250,0.22);
+  background:rgba(15,23,42,0.62);
+  color:#e0f2fe;
+  text-decoration:none;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.4;
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-link-pill:after{
+  content:"↗";
+  font-size:14px;
+  color:#7dd3fc;
+}
+.scene-{{sceneId}} .rn-footer{
+  position:relative;
+  min-height:64px;
+}
+.scene-{{sceneId}} .rn-footer-cards,
+.scene-{{sceneId}} .rn-footer-ticker{
+  position:absolute;
+  inset:0;
+}
+.scene-{{sceneId}} .rn-footer-cards{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:16px 18px;
+  border-radius:22px;
+  border:1px solid rgba(148,163,184,0.14);
+  background:rgba(15,23,42,0.68);
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-footer-copy{
+  margin:0;
+  font-size:14px;
+  line-height:1.6;
+  color:rgba(203,213,225,0.74);
+}
+.scene-{{sceneId}} .rn-footer-tags{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:10px;
+}
+.scene-{{sceneId}} .rn-footer-tag{
+  display:inline-flex;
+  align-items:center;
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(30,41,59,0.84);
+  border:1px solid rgba(148,163,184,0.16);
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:#cbd5e1;
+}
+.scene-{{sceneId}} .rn-footer-tag:empty{display:none}
+.scene-{{sceneId}} .rn-footer-ticker{
+  display:none;
+  align-items:center;
+  overflow:hidden;
+  border-radius:22px;
+  border:1px solid rgba(96,165,250,0.14);
+  background:linear-gradient(90deg,rgba(15,23,42,0.92) 0%,rgba(30,41,59,0.76) 100%);
+  opacity:0;
+}
+.scene-{{sceneId}} .rn-ticker-track{
+  display:inline-flex;
+  align-items:center;
+  gap:14px;
+  padding:0 18px;
+  white-space:nowrap;
+}
+.scene-{{sceneId}} .rn-ticker-item{
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  padding:10px 14px;
+  border-radius:999px;
+  background:rgba(30,41,59,0.92);
+  border:1px solid rgba(148,163,184,0.14);
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:#e2e8f0;
+}
+.scene-{{sceneId}} .rn-ticker-item[data-type="link"]{color:#bfdbfe}
+.scene-{{sceneId}} .rn-ticker-item[data-type="breaking"]{color:#fde68a}
+.scene-{{sceneId}} .rn-ticker-item[data-type="fix"]{color:#99f6e4}
+.scene-{{sceneId}} .rn-root[data-theme-variant="ticker"] .rn-footer-cards{display:none}
+.scene-{{sceneId}} .rn-root[data-theme-variant="ticker"] .rn-footer-ticker{display:flex}
+.scene-{{sceneId}} .rn-root[data-theme-variant="ticker"] .rn-section-links{display:none}
+.scene-{{sceneId}} .rn-root[data-theme-variant="ticker"] .rn-feature-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+</style>
+
+<div class="rn-root" data-scene-component="ReleaseNotes" data-theme-variant="{{themeVariant}}">
+  <div class="rn-shell">
+    <div class="rn-ribbon">
+      <span class="rn-ribbon-label">Release</span>
+      <span class="rn-ribbon-version">{{version}}</span>
+      <time class="rn-ribbon-date" datetime="{{releaseDate}}">{{releaseDate}}</time>
+    </div>
+
+    <div class="rn-header">
+      <div class="rn-header-copy">
+        <p class="rn-kicker">Product update digest</p>
+        <h1 class="rn-title">{{version}} Release Notes</h1>
+        <p class="rn-summary">Highlights for product managers and engineering leads: shipping value, operational fixes, and rollout guidance in a single view.</p>
+      </div>
+      <div class="rn-meta">
+        <span class="rn-meta-pill" data-channel="{{channel}}">{{channel}}</span>
+        <span class="rn-meta-pill" data-channel="">
+          <time datetime="{{releaseDate}}">{{releaseDate}}</time>
+        </span>
+      </div>
+    </div>
+
+    <div class="rn-grid">
+      <section class="rn-section rn-section-features" aria-label="Features">
+        <div class="rn-section-head">
+          <div>
+            <p class="rn-section-kicker">What shipped</p>
+            <h2 class="rn-section-title">Feature highlights</h2>
+            <p class="rn-section-subtitle">Prioritized updates for this release, ordered for quick executive readout.</p>
+          </div>
+        </div>
+        <div class="rn-feature-list" data-section="features"></div>
+      </section>
+
+      <section class="rn-section rn-section-fixes" aria-label="Fixes">
+        <div class="rn-section-head">
+          <div>
+            <p class="rn-section-kicker">Reliability</p>
+            <h2 class="rn-section-title">Resolved issues</h2>
+            <p class="rn-section-subtitle">Hotfix-safe summary of bug fixes and service hardening.</p>
+          </div>
+          <div class="rn-fix-counter" aria-label="Fix count">
+            <span class="rn-fix-counter-value">0</span>
+            <span class="rn-fix-counter-label">fixes</span>
+          </div>
+        </div>
+        <div class="rn-fix-list" data-section="fixes"></div>
+      </section>
+
+      <section class="rn-section rn-section-breaking" aria-label="Breaking changes">
+        <div class="rn-section-head">
+          <div>
+            <p class="rn-section-kicker">Plan ahead</p>
+            <h2 class="rn-section-title">Breaking changes</h2>
+            <p class="rn-section-subtitle">Migration steps to keep downstream teams ahead of rollout risk.</p>
+          </div>
+        </div>
+        <div class="rn-breaking-list" data-section="breaking"></div>
+      </section>
+
+      <section class="rn-section rn-section-links" aria-label="Links">
+        <div class="rn-section-head">
+          <div>
+            <p class="rn-section-kicker">Follow-up</p>
+            <h2 class="rn-section-title">Docs & rollout links</h2>
+            <p class="rn-section-subtitle">Fast paths to notes, implementation details, and release communications.</p>
+          </div>
+        </div>
+        <div class="rn-link-list" data-section="links"></div>
+      </section>
+    </div>
+
+    <div class="rn-footer">
+      <div class="rn-footer-cards">
+        <p class="rn-footer-copy">Use this summary for launch notes, executive weekly status, and release train handoff.</p>
+        <div class="rn-footer-tags">
+          <span class="rn-footer-tag">{{channel}}</span>
+          <span class="rn-footer-tag">{{version}}</span>
+          <span class="rn-footer-tag">{{releaseDate}}</span>
+        </div>
+      </div>
+      <div class="rn-footer-ticker" aria-hidden="true">
+        <div class="rn-ticker-track"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="rn-features-{{sceneId}}">{{{featuresJson}}}</script>
+  <script type="application/json" id="rn-fixes-{{sceneId}}">{{{fixesJson}}}</script>
+  <script type="application/json" id="rn-breaking-{{sceneId}}">{{{breakingChangesJson}}}</script>
+  <script type="application/json" id="rn-links-{{sceneId}}">{{{linksJson}}}</script>
+</div>

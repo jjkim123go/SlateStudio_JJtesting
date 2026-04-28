@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "pipeline": "stream-player-smoke",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "stream-chapters-nav",
+      "duration": 12,
+      "component": "StreamScene",
+      "props": {
+        "variant": "chaptersNavigation",
+        "videoTitle": "Q1 All-Hands: Roadmap & Customer Wins",
+        "videoOwner": "Avery Chen",
+        "videoDate": "Apr 12, 2026",
+        "videoDuration": "12:34",
+
+        "chapters": [
+          { "title": "Welcome",        "startSec": 0 },
+          { "title": "Customer wins",  "startSec": 3 },
+          { "title": "Roadmap themes", "startSec": 6.0 },
+          { "title": "Live demo",      "startSec": 8.5 },
+          { "title": "Q&A",            "startSec": 10.5 }
+        ],
+        "chaptersJson": "[{\"title\":\"Welcome\",\"startSec\":0},{\"title\":\"Customer wins\",\"startSec\":3},{\"title\":\"Roadmap themes\",\"startSec\":6.0},{\"title\":\"Live demo\",\"startSec\":8.5},{\"title\":\"Q&A\",\"startSec\":10.5}]",
+
+        "speakers": [],
+        "speakersJson": "[]",
+        "transcriptSegments": [],
+        "transcriptSegmentsJson": "[]"
+      }
+    }
+  ]
+}

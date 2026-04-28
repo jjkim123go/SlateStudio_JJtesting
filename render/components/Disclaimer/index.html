@@ -1,0 +1,152 @@
+<!--
+  Disclaimer — standardized legal/compliance copy overlay.
+  Three placement variants: full-width-footer, modal-card, scene-end.
+  Props consumed: text, placement, severity, audience, title,
+                  mustAcknowledge, durationSec,
+                  revealStartSec, revealDurationSec, acknowledgeChipStartSec
+  Provenance: proposal §3.9, CONTRACT §3.1/§3.3 Pattern B, prefix dcl-
+-->
+<style>
+/* ── Theme variables by severity ── */
+.scene-{{sceneId}} .dcl-root{
+  --dcl-text:#e8eaf2;
+  --dcl-accent:#0078d4;
+  --dcl-badge-bg:rgba(148,163,184,0.18);
+  --dcl-badge-text:rgba(232,234,242,0.7);
+  position:absolute;inset:0;z-index:60;
+  font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  pointer-events:none;
+}
+.scene-{{sceneId}} .dcl-root[data-severity="legal"]     {--dcl-accent:#a07b00}
+.scene-{{sceneId}} .dcl-root[data-severity="financial"] {--dcl-accent:#00a884}
+
+/* ── Audience badge (shared across variants) ── */
+.scene-{{sceneId}} .dcl-badge{
+  position:absolute;top:12px;right:16px;
+  display:inline-block;padding:3px 10px;
+  font-size:10px;font-weight:600;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--dcl-badge-text);
+  background:var(--dcl-badge-bg);border-radius:999px;
+}
+.scene-{{sceneId}} .dcl-badge:empty{display:none}
+
+/* ── Acknowledge chip (shared, hidden by default) ── */
+.scene-{{sceneId}} .dcl-ack-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:6px 14px;margin-top:12px;
+  font-size:13px;font-weight:600;color:var(--dcl-accent);
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:999px;opacity:0;
+}
+
+/* ── Title (shared) ── */
+.scene-{{sceneId}} .dcl-title{
+  margin:0 0 12px;font-size:24px;font-weight:700;
+  line-height:1.25;color:var(--dcl-text);
+}
+.scene-{{sceneId}} .dcl-title:empty{display:none}
+
+/* ── Body text (shared) ── */
+.scene-{{sceneId}} .dcl-body-text{
+  font-size:16px;font-weight:400;line-height:1.55;
+  color:var(--dcl-text);opacity:0.92;
+}
+
+/* ── Hide all variants by default ── */
+.scene-{{sceneId}} .dcl-footer,
+.scene-{{sceneId}} .dcl-modal,
+.scene-{{sceneId}} .dcl-scene-end{display:none}
+
+/* ═══════════════════════════════════════════
+   VARIANT: full-width-footer
+   ═══════════════════════════════════════════ */
+.scene-{{sceneId}} .dcl-root[data-placement="full-width-footer"] .dcl-footer{
+  display:flex;flex-direction:column;
+  position:absolute;bottom:0;left:0;right:0;
+  background:rgba(15,18,40,0.88);
+  backdrop-filter:blur(10px);
+  border-top:3px solid var(--dcl-accent);
+  padding:20px 48px 24px;
+  min-height:100px;
+  transform:translateY(100%);
+}
+.scene-{{sceneId}} .dcl-footer .dcl-footer-inner{
+  position:relative;max-width:1400px;width:100%;
+}
+
+/* ═══════════════════════════════════════════
+   VARIANT: modal-card
+   ═══════════════════════════════════════════ */
+.scene-{{sceneId}} .dcl-root[data-placement="modal-card"] .dcl-modal{
+  display:flex;align-items:center;justify-content:center;
+  position:absolute;inset:0;
+}
+.scene-{{sceneId}} .dcl-dimmer{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0.55);
+  opacity:0;
+}
+.scene-{{sceneId}} .dcl-card{
+  position:relative;z-index:1;
+  max-width:720px;width:90%;padding:32px;
+  background:rgba(15,18,40,0.94);
+  border:1px solid rgba(255,255,255,0.08);
+  border-top:4px solid var(--dcl-accent);
+  border-radius:12px;
+  box-shadow:0 32px 64px rgba(0,0,0,0.5);
+  opacity:0;transform:scale(0.95);
+}
+
+/* ═══════════════════════════════════════════
+   VARIANT: scene-end
+   ═══════════════════════════════════════════ */
+.scene-{{sceneId}} .dcl-root[data-placement="scene-end"] .dcl-scene-end{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  position:absolute;inset:0;
+  padding:80px 120px;text-align:center;
+  opacity:0;
+}
+.scene-{{sceneId}} .dcl-scene-end .dcl-body-text{
+  font-size:28px;line-height:1.6;max-width:900px;
+}
+.scene-{{sceneId}} .dcl-scene-end .dcl-title{
+  font-size:36px;margin-bottom:20px;
+}
+.scene-{{sceneId}} .dcl-scene-end .dcl-badge{
+  position:static;margin-bottom:24px;
+}
+</style>
+<div class="dcl-root" data-scene-component="Disclaimer"
+     data-placement="{{placement}}" data-severity="{{severity}}">
+
+  <!-- ── full-width-footer ── -->
+  <div class="dcl-footer">
+    <div class="dcl-footer-inner">
+      <span class="dcl-badge">{{audience}}</span>
+      <div class="dcl-title">{{title}}</div>
+      <div class="dcl-body-text">{{text}}</div>
+      <div class="dcl-ack-chip">→ acknowledge</div>
+    </div>
+  </div>
+
+  <!-- ── modal-card ── -->
+  <div class="dcl-modal">
+    <div class="dcl-dimmer"></div>
+    <div class="dcl-card">
+      <span class="dcl-badge">{{audience}}</span>
+      <div class="dcl-title">{{title}}</div>
+      <div class="dcl-body-text">{{text}}</div>
+      <div class="dcl-ack-chip">→ acknowledge</div>
+    </div>
+  </div>
+
+  <!-- ── scene-end ── -->
+  <div class="dcl-scene-end">
+    <span class="dcl-badge">{{audience}}</span>
+    <div class="dcl-title">{{title}}</div>
+    <div class="dcl-body-text">{{text}}</div>
+    <div class="dcl-ack-chip">→ acknowledge</div>
+  </div>
+
+</div>

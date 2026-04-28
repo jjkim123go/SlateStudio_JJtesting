@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr3-customer-story",
+    "title": "PR 3 Smoke — CustomerStory (full props, minimal props, no metrics)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "cs-full",
+      "duration": 10,
+      "component": "CustomerStory",
+      "props": {
+        "customerName": "Contoso Corp",
+        "industry": "Financial Services",
+        "quote": "We cut reconciliation time from three days to four hours — and freed our team to focus on strategic analysis.",
+        "attribution": {
+          "name": "Sarah Chen",
+          "title": "VP of Finance",
+          "photoSrc": "assets/sarah-chen.png"
+        },
+        "metricsJson": "[{\"value\":73,\"label\":\"Time saved\",\"unit\":\"%\",\"deltaPct\":73},{\"value\":4,\"label\":\"Hours to reconcile\",\"unit\":\"hrs\",\"deltaPct\":-87},{\"value\":12,\"label\":\"Controls automated\"},{\"value\":99.7,\"label\":\"Accuracy rate\",\"unit\":\"%\"}]",
+        "logoSrc": "assets/contoso-logo.png",
+        "industryIconSrc": "assets/icon-finance.svg"
+      }
+    },
+    {
+      "id": "cs-minimal",
+      "duration": 6,
+      "component": "CustomerStory",
+      "props": {
+        "customerName": "Northwind Traders",
+        "quote": "The platform just works. Our team adopted it in a single sprint.",
+        "attribution": {
+          "name": "Marcus Rivera",
+          "title": "Engineering Lead"
+        }
+      }
+    },
+    {
+      "id": "cs-metrics-only",
+      "duration": 8,
+      "component": "CustomerStory",
+      "props": {
+        "customerName": "Fabrikam Industries",
+        "industry": "Manufacturing",
+        "quote": "Downtime dropped by 60% in the first quarter.",
+        "attribution": {
+          "name": "Aisha Patel",
+          "title": "Director of Operations"
+        },
+        "metricsJson": "[{\"value\":60,\"label\":\"Downtime reduction\",\"unit\":\"%\"},{\"value\":2.3,\"label\":\"ROI multiple\",\"unit\":\"×\"},{\"value\":18,\"label\":\"Sites deployed\"},{\"value\":340,\"label\":\"Operators trained\"},{\"value\":99.2,\"label\":\"Uptime\",\"unit\":\"%\"},{\"value\":4.1,\"label\":\"Payback period\",\"unit\":\"months\"}]"
+      }
+    }
+  ]
+}

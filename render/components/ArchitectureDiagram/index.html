@@ -1,0 +1,20 @@
+<div class="ad-bg" data-scene-component="ArchitectureDiagram"
+  style="position:absolute;inset:0;background:radial-gradient(ellipse at center,#1e293b 0%,#0f172a 70%);font-family:Inter,-apple-system,sans-serif">
+  <style>
+    .scene-{{sceneId}} .ad-box,
+    .scene-{{sceneId}} .ad-arrow,
+    .scene-{{sceneId}} .ad-arrow-label {
+      opacity: 0;
+    }
+  </style>
+  <h2 class="ad-title" style="position:absolute;top:48px;left:0;right:0;text-align:center;margin:0;font-size:48px;font-weight:700;color:#FFFFFF;letter-spacing:-0.02em;opacity:0">{{title}}</h2>
+  <svg class="ad-svg" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%">
+    <defs>
+      <marker id="ad-arrow-{{markerId}}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#38bdf8"/>
+      </marker>
+    </defs>
+    {{{boxesSvg}}}
+    {{{arrowsSvg}}}
+  </svg>
+</div>

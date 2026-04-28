@@ -1,0 +1,893 @@
+<!--
+  ExcelScene — Wave A Chrome Shell (PR 10c fidelity hardening)
+  All selectors scoped: .scene-{{sceneId}} .xl-bg .xl-*
+  Variant switching via data-attributes on .xl-bg:
+    [data-active-tab]  : home | insert | page-layout | formulas | data | review | view | help
+    [data-view-mode]   : workbook | start (start screen hides grid/ribbon-content)
+-->
+
+<!-- ============================================================================
+     DENSITY SPEC — measured from refs/excel/02-workbook-table.png and 03-blank-ribbon.png
+     Wave B agents: THESE ARE YOUR GROUND-TRUTH NUMBERS. Do not deviate.
+     ============================================================================
+     Titlebar height:         32px
+     Ribbon-tabs strip height: 28px  (File Home Insert ... labels)
+     Ribbon-content height:   100px  (3-row button area + group labels)
+     Formula-bar height:       26px
+     Column-header height:     20px
+     Row-header width:         30px
+     Default cell row height:  16px  (Excel 100% zoom default)
+     Default column width:     72px
+     Font: "Aptos Narrow" for cell content, "Segoe UI" for chrome
+     Font-size titlebar text:  12px
+     Font-size ribbon tabs:    12px  (regular weight, active tab semibold)
+     Font-size ribbon buttons: 12px  (small row buttons), 11px (large button labels)
+     Font-size ribbon groups:  10px  (group name labels below divider)
+     Font-size cell content:   11px  (Calibri 11pt equivalent at 100% zoom ≈ CSS 11px)
+     Font-size column/row hdr: 11px
+     Font-size formula bar:    12px
+     Font-size sheet tabs:     12px
+     Font-size status bar:     11px
+     Font-size name box:       12px
+     Selection border color:   #107C41 (Excel brand green)
+     Selection border width:   2px (normal), 3px (editing)
+     Selection handle:         6×6px filled square, bottom-right
+     File button bg:           #107C41
+     Active tab underline:     2px #107C41
+     Ribbon bg:                #f3f2f1
+     Grid line color:          #d4d4d4
+     Header bg:                #f3f2f1
+     Sheet tab active border:  2px bottom #107C41
+     Status bar bg:            #f3f2f1
+     ============================================================================ -->
+
+<style data-component="ExcelScene">
+/* ---------- Theme tokens ---------- */
+.scene-{{sceneId}} .xl-bg {
+  --xl-bg: #ffffff;
+  --xl-surface: #ffffff;
+  --xl-surface-hover: #f5f5f5;
+  --xl-surface-active: #e8e8e8;
+  --xl-chrome-bg: #f3f2f1;
+  --xl-divider: #d4d4d4;
+  --xl-divider-light: #e1dfdd;
+  --xl-text-primary: #242424;
+  --xl-text-secondary: #616161;
+  --xl-text-tertiary: #8a8886;
+  --xl-text-on-accent: #ffffff;
+  --xl-brand: #107C41;
+  --xl-brand-dark: #0b5a2e;
+  --xl-brand-light: #e6f4ea;
+  --xl-accent: #107C41;
+  --xl-selection: #107C41;
+  --xl-focus-ring: #107C41;
+  --xl-link: #0078d4;
+  --xl-gridline: #e0e0e0;
+  --xl-header-bg: #f3f2f1;
+  --xl-header-text: #616161;
+  --xl-shadow: 0 2px 4px rgba(0,0,0,.08);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--xl-bg);
+  color: var(--xl-text-primary);
+  font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 12px;
+  line-height: 1.35;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* ---------- Titlebar (32px) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-titlebar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 32px;
+  height: 32px;
+  padding: 0 0 0 8px;
+  background: var(--xl-bg);
+  gap: 0;
+  user-select: none;
+}
+.scene-{{sceneId}} .xl-bg .xl-titlebar-left {
+  display: flex; align-items: center; gap: 6px;
+  min-width: 0; flex: 0 0 auto;
+}
+.scene-{{sceneId}} .xl-bg .xl-app-icon {
+  width: 16px; height: 16px; flex: 0 0 16px;
+}
+.scene-{{sceneId}} .xl-bg .xl-autosave {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--xl-text-secondary);
+  margin-left: 4px;
+}
+.scene-{{sceneId}} .xl-bg .xl-autosave-toggle {
+  width: 28px; height: 14px; border-radius: 7px;
+  background: var(--xl-brand); position: relative;
+  flex: 0 0 28px;
+}
+.scene-{{sceneId}} .xl-bg .xl-autosave-toggle::after {
+  content: ""; position: absolute; top: 2px; right: 2px;
+  width: 10px; height: 10px; border-radius: 50%; background: #fff;
+}
+.scene-{{sceneId}} .xl-bg .xl-autosave-toggle[data-state="off"] {
+  background: #8a8886;
+}
+.scene-{{sceneId}} .xl-bg .xl-autosave-toggle[data-state="off"]::after {
+  right: auto; left: 2px;
+}
+.scene-{{sceneId}} .xl-bg .xl-titlebar-qat {
+  display: flex; align-items: center; gap: 2px;
+  margin-left: 6px;
+}
+.scene-{{sceneId}} .xl-bg .xl-qat-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; background: transparent; border: 0;
+  border-radius: 3px; color: var(--xl-text-secondary); cursor: pointer; padding: 0;
+}
+.scene-{{sceneId}} .xl-bg .xl-qat-btn:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-qat-btn svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .xl-bg .xl-titlebar-center {
+  display: flex; align-items: center; justify-content: center;
+  flex: 1 1 auto; min-width: 0; gap: 6px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .xl-bg .xl-filename {
+  font-size: 12px; color: var(--xl-text-primary);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .xl-bg .xl-confidential {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 10px; color: var(--xl-text-tertiary);
+}
+.scene-{{sceneId}} .xl-bg .xl-titlebar-search {
+  display: flex; align-items: center; gap: 6px;
+  height: 24px; padding: 0 10px;
+  background: var(--xl-chrome-bg); border-radius: 12px;
+  color: var(--xl-text-tertiary); font-size: 11px;
+  min-width: 160px; max-width: 240px;
+}
+.scene-{{sceneId}} .xl-bg .xl-titlebar-search svg { width: 12px; height: 12px; flex: 0 0 12px; }
+.scene-{{sceneId}} .xl-bg .xl-titlebar-right {
+  display: flex; align-items: center; gap: 2px;
+  margin-left: auto; flex: 0 0 auto;
+}
+.scene-{{sceneId}} .xl-bg .xl-tb-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+  height: 24px; padding: 0 8px;
+  background: transparent; border: 0; border-radius: 3px;
+  color: var(--xl-text-primary); cursor: pointer; font-size: 11px;
+  font-family: inherit;
+}
+.scene-{{sceneId}} .xl-bg .xl-tb-btn:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-tb-btn svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .xl-bg .xl-share-btn {
+  background: var(--xl-brand); color: #fff; border-radius: 4px;
+  padding: 0 12px; font-weight: 600;
+}
+.scene-{{sceneId}} .xl-bg .xl-share-btn:hover { background: var(--xl-brand-dark); }
+.scene-{{sceneId}} .xl-bg .xl-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: linear-gradient(135deg,#7e57c2,#3949ab);
+  color: #fff; font-size: 10px; font-weight: 600;
+  margin: 0 2px;
+}
+.scene-{{sceneId}} .xl-bg .xl-win-controls {
+  display: flex; align-items: center; height: 32px; margin-left: 4px;
+}
+.scene-{{sceneId}} .xl-bg .xl-win-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 32px; background: transparent; border: 0;
+  color: var(--xl-text-primary); cursor: pointer; padding: 0;
+}
+.scene-{{sceneId}} .xl-bg .xl-win-btn:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-win-btn svg { width: 10px; height: 10px; }
+.scene-{{sceneId}} .xl-bg .xl-win-close:hover { background: #e81123; color: #fff; }
+
+/* ---------- Ribbon tab strip (28px) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-ribbon-tabs {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 28px;
+  height: 28px;
+  padding: 0 4px;
+  background: var(--xl-bg);
+  border-bottom: 1px solid var(--xl-divider-light);
+  gap: 0;
+  user-select: none;
+}
+.scene-{{sceneId}} .xl-bg .xl-rtab {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 28px; padding: 0 12px;
+  background: transparent; border: 0;
+  color: var(--xl-text-primary); cursor: pointer;
+  font-family: inherit; font-size: 12px; font-weight: 400;
+  position: relative; white-space: nowrap;
+}
+.scene-{{sceneId}} .xl-bg .xl-rtab:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-rtab--file {
+  background: var(--xl-brand); color: #fff; border-radius: 3px 3px 0 0;
+  padding: 0 14px; font-weight: 600;
+}
+.scene-{{sceneId}} .xl-bg .xl-rtab--file:hover { background: var(--xl-brand-dark); }
+.scene-{{sceneId}} .xl-bg .xl-rtab--active {
+  font-weight: 600;
+}
+.scene-{{sceneId}} .xl-bg .xl-rtab--active::after {
+  content: ""; position: absolute;
+  left: 4px; right: 4px; bottom: 0;
+  height: 2px; background: var(--xl-brand); border-radius: 1px;
+}
+.scene-{{sceneId}} .xl-bg .xl-rtab--contextual {
+  color: var(--xl-brand); font-weight: 600;
+}
+
+/* ---------- Ribbon content area (100px) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-ribbon-content {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 100px;
+  height: 100px;
+  padding: 2px 4px 0 4px;
+  background: var(--xl-chrome-bg);
+  border-bottom: 1px solid var(--xl-divider);
+  gap: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Ribbon group */
+.scene-{{sceneId}} .xl-bg .xl-rgroup {
+  display: flex; flex-direction: column;
+  align-items: stretch;
+  flex: 0 0 auto;
+  padding: 2px 4px 0 4px;
+  border-right: 1px solid var(--xl-divider-light);
+  position: relative;
+  min-width: 44px;
+}
+.scene-{{sceneId}} .xl-bg .xl-rgroup-body {
+  display: flex; flex-direction: row;
+  align-items: stretch;
+  gap: 1px;
+  flex: 1 1 auto;
+}
+.scene-{{sceneId}} .xl-bg .xl-rgroup-label {
+  display: block; flex: 0 0 14px;
+  font-size: 10px; color: var(--xl-text-tertiary);
+  text-align: center; white-space: nowrap;
+  padding: 0 2px;
+}
+.scene-{{sceneId}} .xl-bg .xl-rgroup-launcher {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 12px; height: 12px; position: absolute;
+  right: 2px; bottom: 14px;
+  color: var(--xl-text-tertiary); cursor: pointer;
+}
+.scene-{{sceneId}} .xl-bg .xl-rgroup-launcher svg { width: 8px; height: 8px; }
+
+/* Ribbon buttons */
+.scene-{{sceneId}} .xl-bg .xl-rbtn {
+  display: inline-flex; align-items: center;
+  background: transparent; border: 0; padding: 0;
+  color: var(--xl-text-primary); cursor: pointer;
+  border-radius: 3px; font-family: inherit;
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .xl-bg .xl-rbtn:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-rbtn svg { fill: currentColor; }
+
+/* Large button (icon on top, label below) — e.g. Paste */
+.scene-{{sceneId}} .xl-bg .xl-rbtn--lg {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  min-width: 48px; padding: 4px 4px 2px;
+  height: 72px; gap: 2px;
+}
+.scene-{{sceneId}} .xl-bg .xl-rbtn--lg svg { width: 24px; height: 24px; }
+.scene-{{sceneId}} .xl-bg .xl-rbtn--lg .xl-rlabel {
+  font-size: 11px; line-height: 1.15; text-align: center;
+}
+
+/* Small button (icon + optional label, single row) */
+.scene-{{sceneId}} .xl-bg .xl-rbtn--sm {
+  display: inline-flex; flex-direction: row;
+  align-items: center; gap: 3px;
+  height: 22px; padding: 0 4px;
+  font-size: 12px;
+}
+.scene-{{sceneId}} .xl-bg .xl-rbtn--sm svg { width: 16px; height: 16px; }
+
+/* Icon-only small button */
+.scene-{{sceneId}} .xl-bg .xl-rbtn--icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px; padding: 0;
+}
+.scene-{{sceneId}} .xl-bg .xl-rbtn--icon svg { width: 14px; height: 14px; }
+
+/* Ribbon stack (vertical column of 3 small buttons) */
+.scene-{{sceneId}} .xl-bg .xl-rstack {
+  display: flex; flex-direction: column;
+  gap: 1px; flex: 0 0 auto;
+}
+
+/* Ribbon dropdown (sm button with chevron) */
+.scene-{{sceneId}} .xl-bg .xl-rbtn--dropdown::after {
+  content: ""; display: inline-block;
+  width: 0; height: 0;
+  border-left: 3px solid transparent; border-right: 3px solid transparent;
+  border-top: 4px solid var(--xl-text-secondary);
+  margin-left: 3px;
+}
+
+/* Font dropdowns in ribbon */
+.scene-{{sceneId}} .xl-bg .xl-font-name {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 22px; padding: 0 4px;
+  border: 1px solid var(--xl-divider); border-radius: 2px;
+  background: var(--xl-surface); font-size: 11px;
+  min-width: 100px; max-width: 140px;
+}
+.scene-{{sceneId}} .xl-bg .xl-font-size {
+  display: inline-flex; align-items: center; gap: 2px;
+  height: 22px; padding: 0 4px;
+  border: 1px solid var(--xl-divider); border-radius: 2px;
+  background: var(--xl-surface); font-size: 11px;
+  min-width: 32px;
+}
+.scene-{{sceneId}} .xl-bg .xl-font-name svg,
+.scene-{{sceneId}} .xl-bg .xl-font-size svg { width: 8px; height: 8px; color: var(--xl-text-secondary); }
+
+/* Number format dropdown */
+.scene-{{sceneId}} .xl-bg .xl-num-fmt {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 22px; padding: 0 6px;
+  border: 1px solid var(--xl-divider); border-radius: 2px;
+  background: var(--xl-surface); font-size: 11px;
+  min-width: 70px;
+}
+
+/* Color swatch (font color / fill color indicators) */
+.scene-{{sceneId}} .xl-bg .xl-color-swatch {
+  display: block; width: 14px; height: 3px;
+  position: absolute; bottom: 2px; left: 50%; transform: translateX(-50%);
+}
+
+/* ---------- Formula bar (26px) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-formulabar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 26px;
+  height: 26px;
+  background: var(--xl-bg);
+  border-bottom: 1px solid var(--xl-divider);
+}
+.scene-{{sceneId}} .xl-bg .xl-namebox {
+  display: flex; align-items: center; justify-content: center;
+  width: 90px; height: 26px;
+  padding: 0 6px;
+  font-size: 12px; color: var(--xl-text-primary);
+  border-right: 1px solid var(--xl-divider);
+  background: var(--xl-bg);
+  font-family: inherit;
+}
+.scene-{{sceneId}} .xl-bg .xl-fb-btns {
+  display: flex; align-items: center; gap: 0;
+  border-right: 1px solid var(--xl-divider);
+  height: 26px;
+}
+.scene-{{sceneId}} .xl-bg .xl-fb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 26px;
+  background: transparent; border: 0;
+  color: var(--xl-text-secondary); cursor: pointer;
+  font-size: 12px;
+}
+.scene-{{sceneId}} .xl-bg .xl-fb-btn:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-fb-btn svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .xl-bg .xl-fb-btn--fx { color: var(--xl-text-secondary); font-style: italic; font-weight: 600; }
+.scene-{{sceneId}} .xl-bg .xl-fb-input {
+  flex: 1 1 auto; height: 26px;
+  padding: 0 8px;
+  font-size: 12px; color: var(--xl-text-primary);
+  font-family: "Aptos Narrow", "Calibri", sans-serif;
+  display: flex; align-items: center;
+  overflow: hidden; white-space: nowrap;
+}
+
+/* ---------- Grid wrapper (flex: 1) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-grid-wrapper {
+  display: flex; flex-direction: column;
+  flex: 1 1 auto; min-height: 0; min-width: 0; overflow: hidden;
+  position: relative;
+}
+
+/* Corner cell */
+.scene-{{sceneId}} .xl-bg .xl-grid-corner {
+  flex: 0 0 30px; width: 30px; height: 20px;
+  background: var(--xl-header-bg);
+  border-right: 1px solid var(--xl-divider);
+  border-bottom: 1px solid var(--xl-divider);
+}
+
+/* Column headers */
+.scene-{{sceneId}} .xl-bg .xl-grid-colhead {
+  display: flex; flex: 1 1 auto;
+  height: 20px;
+  background: var(--xl-header-bg);
+  border-bottom: 1px solid var(--xl-divider);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .xl-bg .xl-colh {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 72px; min-width: 72px;
+  height: 20px;
+  border-right: 1px solid var(--xl-gridline);
+  font-size: 11px; color: var(--xl-header-text);
+  box-sizing: border-box;
+}
+
+/* Row headers */
+.scene-{{sceneId}} .xl-bg .xl-grid-rowhead {
+  display: flex; flex-direction: column;
+  flex: 0 0 30px; width: 30px;
+  background: var(--xl-header-bg);
+  border-right: 1px solid var(--xl-divider);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .xl-bg .xl-rowh {
+  display: flex; align-items: center; justify-content: center;
+  height: 16px;
+  border-bottom: 1px solid var(--xl-gridline);
+  font-size: 11px; color: var(--xl-header-text);
+}
+
+/* Cell grid */
+.scene-{{sceneId}} .xl-bg .xl-grid-cells {
+  flex: 1 1 auto; position: relative;
+  overflow: visible;
+  background: var(--xl-bg);
+}
+
+/* Grid row + cell */
+.scene-{{sceneId}} .xl-bg .xl-grow {
+  display: flex; height: 16px;
+  border-bottom: 1px solid var(--xl-gridline);
+}
+.scene-{{sceneId}} .xl-bg .xl-gcell {
+  display: inline-flex; align-items: center;
+  width: 72px; min-width: 72px; height: 16px;
+  padding: 0 4px;
+  border-right: 1px solid var(--xl-gridline);
+  font-size: 11px; color: var(--xl-text-primary);
+  font-family: "Aptos Narrow", "Calibri", sans-serif;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  box-sizing: border-box;
+}
+
+/* Cell state classes — Wave B composes these */
+.scene-{{sceneId}} .xl-bg .xl-cell-selected {
+  outline: 2px solid var(--xl-selection);
+  outline-offset: -1px;
+  position: relative;
+}
+.scene-{{sceneId}} .xl-bg .xl-cell-selected::after {
+  content: ""; position: absolute;
+  bottom: -3px; right: -3px;
+  width: 6px; height: 6px; background: var(--xl-selection);
+}
+.scene-{{sceneId}} .xl-bg .xl-cell-editing {
+  outline: 3px solid var(--xl-selection);
+  outline-offset: -1px;
+  background: #fff;
+}
+.scene-{{sceneId}} .xl-bg .xl-cell-header {
+  background: var(--xl-header-bg); font-weight: 600;
+  color: var(--xl-header-text);
+}
+.scene-{{sceneId}} .xl-bg .xl-cell-bold { font-weight: 700; }
+.scene-{{sceneId}} .xl-bg .xl-cell-italic { font-style: italic; }
+.scene-{{sceneId}} .xl-bg .xl-cell-currency::before { content: "$"; }
+.scene-{{sceneId}} .xl-bg .xl-cell-formula-result { color: var(--xl-brand); }
+.scene-{{sceneId}} .xl-bg .xl-cell-number { text-align: right; justify-content: flex-end; }
+.scene-{{sceneId}} .xl-bg .xl-cell-table-header {
+  background: #107C41; color: #fff; font-weight: 600;
+  font-size: 11px;
+}
+.scene-{{sceneId}} .xl-bg .xl-cell-table-stripe {
+  background: #e6f4ea;
+}
+
+/* ---------- Sheet tabs (28px) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-sheettabs {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 28px;
+  height: 28px;
+  background: var(--xl-chrome-bg);
+  border-top: 1px solid var(--xl-divider);
+  padding: 0;
+  gap: 0;
+}
+.scene-{{sceneId}} .xl-bg .xl-st-nav {
+  display: flex; align-items: center; gap: 0;
+  flex: 0 0 auto;
+  border-right: 1px solid var(--xl-divider-light);
+}
+.scene-{{sceneId}} .xl-bg .xl-st-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 24px; height: 28px;
+  background: transparent; border: 0;
+  color: var(--xl-text-secondary); cursor: pointer;
+}
+.scene-{{sceneId}} .xl-bg .xl-st-btn:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-st-btn svg { width: 10px; height: 10px; }
+.scene-{{sceneId}} .xl-bg .xl-st-list {
+  display: flex; align-items: stretch; gap: 0;
+  flex: 0 1 auto; overflow: hidden;
+}
+.scene-{{sceneId}} .xl-bg .xl-stab {
+  display: inline-flex; align-items: center;
+  height: 28px; padding: 0 14px;
+  font-size: 12px; color: var(--xl-text-primary);
+  background: transparent; border: 0; cursor: pointer;
+  font-family: inherit; position: relative;
+  white-space: nowrap; border-bottom: 2px solid transparent;
+}
+.scene-{{sceneId}} .xl-bg .xl-stab:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-stab--active {
+  font-weight: 600;
+  background: var(--xl-bg);
+  border-bottom-color: var(--xl-brand);
+}
+.scene-{{sceneId}} .xl-bg .xl-st-add {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  background: transparent; border: 0;
+  color: var(--xl-text-secondary); cursor: pointer;
+  font-size: 16px;
+}
+.scene-{{sceneId}} .xl-bg .xl-st-add:hover { background: var(--xl-surface-hover); }
+.scene-{{sceneId}} .xl-bg .xl-st-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .xl-bg .xl-st-scrollbar {
+  flex: 0 0 auto; display: flex; align-items: center;
+  min-width: 200px; height: 28px;
+  border-left: 1px solid var(--xl-divider-light);
+}
+.scene-{{sceneId}} .xl-bg .xl-st-scrollbar-track {
+  flex: 1 1 auto; height: 8px;
+  background: var(--xl-chrome-bg); margin: 0 4px;
+  border-radius: 4px; position: relative;
+}
+.scene-{{sceneId}} .xl-bg .xl-st-scrollbar-thumb {
+  position: absolute; top: 0; left: 0; width: 60px; height: 8px;
+  background: #c8c6c4; border-radius: 4px;
+}
+
+/* ---------- Status bar (22px) ---------- */
+.scene-{{sceneId}} .xl-bg .xl-statusbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 22px;
+  height: 22px;
+  padding: 0 8px;
+  background: var(--xl-chrome-bg);
+  border-top: 1px solid var(--xl-divider-light);
+  gap: 0;
+  font-size: 11px;
+  color: var(--xl-text-secondary);
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-left {
+  display: flex; align-items: center; gap: 8px;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-mode {
+  font-size: 11px; color: var(--xl-text-primary);
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-accessibility {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px; color: var(--xl-text-secondary);
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-accessibility svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .xl-bg .xl-sb-center {
+  flex: 1 1 auto; display: flex;
+  align-items: center; justify-content: flex-end;
+  gap: 12px; padding-right: 12px;
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-stat {
+  font-size: 11px; color: var(--xl-text-secondary);
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-right {
+  display: flex; align-items: center; gap: 4px;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-view-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 18px;
+  background: transparent; border: 0;
+  color: var(--xl-text-secondary); cursor: pointer;
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-view-btn:hover { color: var(--xl-text-primary); }
+.scene-{{sceneId}} .xl-bg .xl-sb-view-btn--active { color: var(--xl-text-primary); }
+.scene-{{sceneId}} .xl-bg .xl-sb-view-btn svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .xl-bg .xl-sb-zoom {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 11px;
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-zoom-track {
+  width: 80px; height: 3px;
+  background: #c8c6c4; border-radius: 2px; position: relative;
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-zoom-thumb {
+  position: absolute; top: -3px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--xl-text-secondary); border: 1px solid var(--xl-bg);
+}
+.scene-{{sceneId}} .xl-bg .xl-sb-zoom-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  background: transparent; border: 0;
+  color: var(--xl-text-secondary); cursor: pointer; font-size: 14px;
+}
+
+/* ---------- Copilot FAB ---------- */
+.scene-{{sceneId}} .xl-bg .xl-copilot-fab {
+  position: absolute; bottom: 52px; right: 16px;
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg, #2899f5 0%, #9b6dff 100%);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,.15);
+  z-index: 20; cursor: pointer;
+}
+.scene-{{sceneId}} .xl-bg .xl-copilot-fab svg { width: 20px; height: 20px; color: #fff; }
+
+/* ---------- Utility ---------- */
+.scene-{{sceneId}} .xl-bg .xl-hidden { display: none !important; }
+.scene-{{sceneId}} .xl-bg .xl-flex-1 { flex: 1 1 auto; }
+</style>
+
+<!-- ======================== SVG SYMBOL MANIFEST (filled Fluent weights) ======================== -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+  <!-- Clipboard group -->
+  <symbol id="xl-icon-paste" viewBox="0 0 20 20"><path fill="currentColor" d="M11.5 3A1.5 1.5 0 0010 2h-.5A1.5 1.5 0 008 3H6.5A1.5 1.5 0 005 4.5v12A1.5 1.5 0 006.5 18h7a1.5 1.5 0 001.5-1.5v-12A1.5 1.5 0 0013.5 3H12h-.5zm-2 0a.5.5 0 01.5-.5h.5a.5.5 0 010 1H10a.5.5 0 01-.5-.5zM7 8h6v1H7V8zm0 2.5h6v1H7v-1zM7 13h4v1H7v-1z"/></symbol>
+  <symbol id="xl-icon-cut" viewBox="0 0 20 20"><path fill="currentColor" d="M5.5 4a2.5 2.5 0 012.45 2.01L10 9.58l2.05-3.57A2.5 2.5 0 1114.5 9a2.49 2.49 0 01-1.58-.57L10.87 12l2.05 3.57A2.5 2.5 0 1112.05 19a2.49 2.49 0 01-.05-3.01L10 12.42l-2 3.57A2.5 2.5 0 115.5 19a2.5 2.5 0 01-.87-4.43L6.68 11H5.5a.5.5 0 010-1h1.18l2.05-3.57A2.5 2.5 0 015.5 4zM4 6.5a1.5 1.5 0 103 0 1.5 1.5 0 00-3 0zm9 0a1.5 1.5 0 103 0 1.5 1.5 0 00-3 0zm-9 10a1.5 1.5 0 103 0 1.5 1.5 0 00-3 0zm9 0a1.5 1.5 0 103 0 1.5 1.5 0 00-3 0z"/></symbol>
+  <symbol id="xl-icon-copy" viewBox="0 0 20 20"><path fill="currentColor" d="M6 4C6 2.89543 6.89543 2 8 2H14C15.1046 2 16 2.89543 16 4V14C16 15.1046 15.1046 16 14 16H8C6.89543 16 6 15.1046 6 14V4ZM4 6.00001C4 5.25973 4.4022 4.61339 5 4.26758V14.5C5 15.8807 6.11929 17 7.5 17H13.7324C13.3866 17.5978 12.7403 18 12 18H7.5C5.567 18 4 16.433 4 14.5V6.00001Z"/></symbol>
+  <symbol id="xl-icon-format-painter" viewBox="0 0 20 20"><path fill="currentColor" d="M14.66 2.24a1.5 1.5 0 012.12.02l.96.98a1.5 1.5 0 01-.02 2.12L13.3 9.68a.5.5 0 01-.35.15h-1.59l-1.5 1.5v4.17a1.5 1.5 0 01-.44 1.06l-.5.5a.5.5 0 01-.7 0l-4.3-4.29a.5.5 0 010-.71l.5-.5A1.5 1.5 0 015.5 11h4.17l1.5-1.5V7.91a.5.5 0 01.15-.35l3.34-5.32z"/></symbol>
+
+  <!-- Font group -->
+  <symbol id="xl-icon-bold" viewBox="0 0 20 20"><path fill="currentColor" d="M6 4a1 1 0 011-1h3.5a3.5 3.5 0 012.42 6.02A3.5 3.5 0 0111.5 17H7a1 1 0 01-1-1V4zm2 1v4h2.5a1.5 1.5 0 000-3H8zm0 6v4h3.5a1.5 1.5 0 000-3H8z"/></symbol>
+  <symbol id="xl-icon-italic" viewBox="0 0 20 20"><path fill="currentColor" d="M11.5 3h-3a.5.5 0 000 1h.97L7.04 16H6a.5.5 0 000 1h3a.5.5 0 000-1h-.97L10.46 4H12a.5.5 0 000-1h-.5z"/></symbol>
+  <symbol id="xl-icon-underline" viewBox="0 0 20 20"><path fill="currentColor" d="M6.5 3a.5.5 0 01.5.5V10a3 3 0 006 0V3.5a.5.5 0 011 0V10a4 4 0 01-8 0V3.5a.5.5 0 01.5-.5zM5 16.5a.5.5 0 01.5-.5h9a.5.5 0 010 1h-9a.5.5 0 01-.5-.5z"/></symbol>
+  <symbol id="xl-icon-font-color" viewBox="0 0 20 20"><path fill="currentColor" d="M8.25 3.5a.75.75 0 01.7.49L12.94 14H11.8l-.96-2.7H7.16L6.2 14H5.06l4-10.01a.75.75 0 01.7-.49h-.45zM7.56 10.3h2.88L9 6.26 7.56 10.3zM4 16h12v1.5H4V16z"/></symbol>
+  <symbol id="xl-icon-fill-color" viewBox="0 0 20 20"><path fill="currentColor" d="M10.15 2.15a.5.5 0 01.7 0l5 5a.5.5 0 010 .7L11.7 12H6.3l-4.15-4.15a.5.5 0 010-.7l8-5zM6 13h6l-3 4.5L6 13zm10-3a2 2 0 110 4 2 2 0 010-4z"/></symbol>
+  <symbol id="xl-icon-font-increase" viewBox="0 0 20 20"><path fill="currentColor" d="M7.88 3h.24a.75.75 0 01.7.49l4.12 11.01H11.8l-1.06-3H7.26l-1.06 3H5.06l4.12-11.01A.75.75 0 019.88 3h-2zm-.22 7.5h2.68L9 6.26 7.66 10.5zM16 3.5a.5.5 0 00-1 0V5h-1.5a.5.5 0 000 1H15v1.5a.5.5 0 001 0V6h1.5a.5.5 0 000-1H16V3.5z"/></symbol>
+  <symbol id="xl-icon-font-decrease" viewBox="0 0 20 20"><path fill="currentColor" d="M7.88 3h.24a.75.75 0 01.7.49l4.12 11.01H11.8l-1.06-3H7.26l-1.06 3H5.06l4.12-11.01A.75.75 0 019.88 3h-2zm-.22 7.5h2.68L9 6.26 7.66 10.5zM13.5 5.5a.5.5 0 000 1h4a.5.5 0 000-1h-4z"/></symbol>
+  <symbol id="xl-icon-borders" viewBox="0 0 20 20"><path fill="currentColor" d="M3 4.5A1.5 1.5 0 014.5 3h11A1.5 1.5 0 0117 4.5v11a1.5 1.5 0 01-1.5 1.5h-11A1.5 1.5 0 013 15.5v-11zM4 5v4h5V5H4zm6 0v4h6V5h-6zM4 10v5h5v-5H4zm6 0v5h6v-5h-6z"/></symbol>
+
+  <!-- Alignment group -->
+  <symbol id="xl-icon-align-top" viewBox="0 0 20 20"><path fill="currentColor" d="M3 3.5a.5.5 0 01.5-.5h13a.5.5 0 010 1h-13a.5.5 0 01-.5-.5zM6 6h3v8H6V6zm5 0h3v5h-3V6z"/></symbol>
+  <symbol id="xl-icon-align-middle" viewBox="0 0 20 20"><path fill="currentColor" d="M6 3h3v14H6V3zm5 3h3v8h-3V6z"/></symbol>
+  <symbol id="xl-icon-align-bottom" viewBox="0 0 20 20"><path fill="currentColor" d="M3 16.5a.5.5 0 01.5-.5h13a.5.5 0 010 1h-13a.5.5 0 01-.5-.5zM6 6h3v8H6V6zm5 3h3v5h-3V8z"/></symbol>
+  <symbol id="xl-icon-align-left" viewBox="0 0 20 20"><path fill="currentColor" d="M2 3h16v2H2V3zm0 4h10v2H2V7zm0 4h14v2H2v-2zm0 4h8v2H2v-2z"/></symbol>
+  <symbol id="xl-icon-align-center" viewBox="0 0 20 20"><path fill="currentColor" d="M2 3h16v2H2V3zm3 4h10v2H5V7zm1 4h8v2H6v-2zm-1 4h10v2H5v-2z"/></symbol>
+  <symbol id="xl-icon-align-right" viewBox="0 0 20 20"><path fill="currentColor" d="M2 3h16v2H2V3zm6 4h10v2H8V7zm4 4h6v2h-6v-2zm-2 4h8v2H10v-2z"/></symbol>
+  <symbol id="xl-icon-merge" viewBox="0 0 20 20"><path fill="currentColor" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm1 0v10a1 1 0 001 1h10a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1zm3 4h6v2H7V9z"/></symbol>
+  <symbol id="xl-icon-wrap" viewBox="0 0 20 20"><path fill="currentColor" d="M3 4h14v1H3V4zm0 4h10.5a2.5 2.5 0 010 5H12l1.15 1.15a.5.5 0 01-.7.7l-2-2a.5.5 0 010-.7l2-2a.5.5 0 01.7.7L12 12h1.5a1.5 1.5 0 000-3H3V8zm0 7h7v1H3v-1z"/></symbol>
+  <symbol id="xl-icon-orientation" viewBox="0 0 20 20"><path fill="currentColor" d="M10.85 2.15a.5.5 0 00-.7 0l-2 2a.5.5 0 00.7.7L10 3.71V10H3.7l1.15-1.15a.5.5 0 10-.7-.7l-2 2a.5.5 0 000 .7l2 2a.5.5 0 00.7-.7L3.71 11H10v6.29l-1.15-1.14a.5.5 0 00-.7.7l2 2a.5.5 0 00.7 0l2-2a.5.5 0 00-.7-.7L11 17.29V11h6.29l-1.14 1.15a.5.5 0 00.7.7l2-2a.5.5 0 000-.7l-2-2a.5.5 0 00-.7.7L17.29 10H11V3.71l1.15 1.14a.5.5 0 00.7-.7l-2-2z"/></symbol>
+  <symbol id="xl-icon-indent-increase" viewBox="0 0 20 20"><path fill="currentColor" d="M2 4h16v1H2V4zm4 3h12v1H6V7zm0 3h12v1H6v-1zm0 3h12v1H6v-1zm-4 3h16v1H2v-1zM2.15 8.85a.5.5 0 010-.7l2-2a.5.5 0 01.7.7L3.71 8l1.14 1.15a.5.5 0 01-.7.7l-2-2z"/></symbol>
+  <symbol id="xl-icon-indent-decrease" viewBox="0 0 20 20"><path fill="currentColor" d="M2 4h16v1H2V4zm4 3h12v1H6V7zm0 3h12v1H6v-1zm0 3h12v1H6v-1zm-4 3h16v1H2v-1zM4.85 6.15a.5.5 0 010 .7L3.71 8l1.14 1.15a.5.5 0 01-.7.7l-2-2a.5.5 0 010-.7l2-2a.5.5 0 01.7 0z"/></symbol>
+
+  <!-- Number group -->
+  <symbol id="xl-icon-currency" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 100 16 8 8 0 000-16zm-.5 3v1.02A2.5 2.5 0 007 8.5c0 1.5 1.22 2.12 2.5 2.62 1.08.42 1.5.72 1.5 1.38s-.67 1-1.5 1-1.5-.35-1.5-1H7c0 1.22 1.04 2.16 2.5 2.45V16h1v-1.05c1.46-.29 2.5-1.23 2.5-2.45 0-1.5-1.22-2.12-2.5-2.62-1.08-.42-1.5-.72-1.5-1.38S9.67 7.5 10.5 7.5s1.5.35 1.5 1h1c0-1.22-1.04-2.16-2.5-2.45V5h-1z"/></symbol>
+  <symbol id="xl-icon-percent" viewBox="0 0 20 20"><path fill="currentColor" d="M7 5a2 2 0 100 4 2 2 0 000-4zM6 7a1 1 0 112 0 1 1 0 01-2 0zm7 4a2 2 0 100 4 2 2 0 000-4zm-1 2a1 1 0 112 0 1 1 0 01-2 0zm3.35-8.85a.5.5 0 00-.7 0l-10 10a.5.5 0 00.7.7l10-10a.5.5 0 000-.7z"/></symbol>
+  <symbol id="xl-icon-comma" viewBox="0 0 20 20"><path fill="currentColor" d="M9 14h2v1.5c0 1.1-.45 2.1-1.17 2.83l-.71-.71A2.99 2.99 0 0010 15.5V15H9v-1z"/></symbol>
+  <symbol id="xl-icon-increase-decimal" viewBox="0 0 20 20"><path fill="currentColor" d="M3 13h2v2H3v-2zm3.5-5L9 3l2.5 5H12l-3-6-3 6h.5zm5.5 1v6h1v-2h2v-1h-2V9zm5 2v1h-1v-1h1zm0 4v-1h-1v1h1zm-2-2v1h-1v-1h1z"/></symbol>
+  <symbol id="xl-icon-decrease-decimal" viewBox="0 0 20 20"><path fill="currentColor" d="M3 13h2v2H3v-2zm3.5-5L9 3l2.5 5H12l-3-6-3 6h.5zm8.5 5h-2v-1h2v1zm-3-3h-1v1h1v2h-1v1h1a1 1 0 001-1v-2a1 1 0 00-1-1zm4 0h-1v1h1v2h-1v1h1a1 1 0 001-1v-2a1 1 0 00-1-1z"/></symbol>
+
+  <!-- Styles group -->
+  <symbol id="xl-icon-conditional-format" viewBox="0 0 20 20"><path fill="currentColor" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm2-1a1 1 0 00-1 1v3h12V5a1 1 0 00-1-1H5zM4 10v5a1 1 0 001 1h3v-6H4zm5 0v6h6a1 1 0 001-1v-5H9zm-2 2a1 1 0 11-2 0 1 1 0 012 0z"/></symbol>
+  <symbol id="xl-icon-format-as-table" viewBox="0 0 20 20"><path fill="currentColor" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm1 2v2h5V7H4zm6 0v2h6V7h-6zM4 10v2h5v-2H4zm6 0v2h6v-2h-6zM4 13v2a1 1 0 001 1h4v-3H4zm6 0v3h5a1 1 0 001-1v-2h-6zM15 5a1 1 0 00-1-1H5a1 1 0 00-1 1v1h12V5z"/></symbol>
+  <symbol id="xl-icon-cell-styles" viewBox="0 0 20 20"><path fill="currentColor" d="M14.5 3A2.5 2.5 0 0117 5.5v2.05a2.5 2.5 0 01-.73 1.77L9.04 16.55a1.5 1.5 0 01-2.12 0l-4.47-4.47a1.5 1.5 0 010-2.12L9.68 2.73A2.5 2.5 0 0111.45 2h3.05zm-1 3.5a1 1 0 100-2 1 1 0 000 2z"/></symbol>
+
+  <!-- Cells group -->
+  <symbol id="xl-icon-insert" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 100 16 8 8 0 000-16zm-.5 4.5v3H6v1h3.5v3h1v-3H14v-1h-3.5v-3h-1z"/></symbol>
+  <symbol id="xl-icon-delete" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 100 16 8 8 0 000-16zM6 9.5h8v1H6v-1z"/></symbol>
+  <symbol id="xl-icon-format" viewBox="0 0 20 20"><path fill="currentColor" d="M6 2C4.89543 2 4 2.89543 4 4V16C4 17.1046 4.89543 18 6 18H14C15.1046 18 16 17.1046 16 16V4C16 2.89543 15.1046 2 14 2H6ZM7.5 6H12.5C12.7761 6 13 6.22386 13 6.5C13 6.77614 12.7761 7 12.5 7H7.5C7.22386 7 7 6.77614 7 6.5C7 6.22386 7.22386 6 7.5 6ZM7 13.5C7 13.2239 7.22386 13 7.5 13H12.5C12.7761 13 13 13.2239 13 13.5C13 13.7761 12.7761 14 12.5 14H7.5C7.22386 14 7 13.7761 7 13.5ZM7.5 9.5H12.5C12.7761 9.5 13 9.72386 13 10C13 10.2761 12.7761 10.5 12.5 10.5H7.5C7.22386 10.5 7 10.2761 7 10C7 9.72386 7.22386 9.5 7.5 9.5Z"/></symbol>
+
+  <!-- Editing group -->
+  <symbol id="xl-icon-autosum" viewBox="0 0 20 20"><path fill="currentColor" d="M5.15 3.5A.5.5 0 015.5 3H15v2H7.7l3.65 4.5L7.7 14H15v2H5.5a.5.5 0 01-.39-.81L9.04 10l-3.93-5.69a.5.5 0 01.04-.81z"/></symbol>
+  <symbol id="xl-icon-sort" viewBox="0 0 20 20"><path fill="currentColor" d="M6.5 2.75a.5.5 0 00-1 0v12.69l-1.85-1.59a.5.5 0 00-.65.76l2.68 2.3a.5.5 0 00.65 0l2.67-2.3a.5.5 0 00-.65-.76L6.5 15.44V2.75zM10 4h7v1h-7V4zm0 3h5.5v1H10V7zm0 3h4v1h-4v-1z"/></symbol>
+  <symbol id="xl-icon-filter" viewBox="0 0 20 20"><path fill="currentColor" d="M2 4.5A1.5 1.5 0 013.5 3h13A1.5 1.5 0 0118 4.5v1.37a1.5 1.5 0 01-.44 1.06L13 11.5V16a1.5 1.5 0 01-2.22 1.31l-2-1.11A1.5 1.5 0 018 14.89V11.5L3.44 6.93A1.5 1.5 0 013 5.87V4.5z"/></symbol>
+  <symbol id="xl-icon-find" viewBox="0 0 20 20"><path fill="currentColor" d="M13.5352 14.5961C12.4267 15.4751 11.0246 16 9.5 16C5.91015 16 3 13.0899 3 9.5C3 5.91015 5.91015 3 9.5 3C13.0899 3 16 5.91015 16 9.5C16 11.0247 15.475 12.4268 14.596 13.5353L18.0302 16.9697C18.3231 17.2626 18.3231 17.7374 18.0302 18.0303C17.764 18.2966 17.3473 18.3208 17.0537 18.1029L16.9696 18.0303L13.5352 14.5961ZM14.5 9.5C14.5 6.73858 12.2614 4.5 9.5 4.5C6.73858 4.5 4.5 6.73858 4.5 9.5C4.5 12.2614 6.73858 14.5 9.5 14.5C12.2614 14.5 14.5 12.2614 14.5 9.5Z"/></symbol>
+
+  <!-- Formula bar -->
+  <symbol id="xl-icon-fx" viewBox="0 0 20 20"><path fill="currentColor" d="M4 3a1 1 0 00-1 1v12a1 1 0 001 1h4v-2H5V5h3V3H4zm7.12 3.46L9.7 9.54l1.42 3.08a.75.75 0 11-1.36.63L8.54 10.5H7v-1.5h1.54l.94-2.17a.75.75 0 011.36.63h.28zM13 3v2h3v10h-3v2h4a1 1 0 001-1V4a1 1 0 00-1-1h-4z"/></symbol>
+
+  <!-- Titlebar / QAT icons -->
+  <symbol id="xl-icon-save" viewBox="0 0 20 20"><path fill="currentColor" d="M3 5.5A2.5 2.5 0 015.5 3h7.59a1.5 1.5 0 011.06.44l2.41 2.41a1.5 1.5 0 01.44 1.06V14.5a2.5 2.5 0 01-2.5 2.5h-9A2.5 2.5 0 013 14.5v-9zM6 4v3.5a1 1 0 001 1h4a1 1 0 001-1V4H6zm4 0v3H7V4h3zm-4 7v5h8v-5H6z"/></symbol>
+  <symbol id="xl-icon-undo" viewBox="0 0 20 20"><path fill="currentColor" d="M4.85 7.85a.5.5 0 01-.7-.7l3-3a.5.5 0 01.7 0l3 3a.5.5 0 01-.7.7L8 5.71V11a3 3 0 003 3h3a.5.5 0 010 1h-3a4 4 0 01-4-4V5.71L4.85 7.85z"/></symbol>
+  <symbol id="xl-icon-redo" viewBox="0 0 20 20"><path fill="currentColor" d="M15.15 7.85a.5.5 0 00.7-.7l-3-3a.5.5 0 00-.7 0l-3 3a.5.5 0 00.7.7L12 5.71V11a3 3 0 01-3 3H6a.5.5 0 000 1h3a4 4 0 004-4V5.71l2.15 2.14z"/></symbol>
+  <symbol id="xl-icon-share" viewBox="0 0 20 20"><path fill="currentColor" d="M13 3a3 3 0 00-2.83 4.01L6.6 9.24A3 3 0 002 11a3 3 0 003.6 2.94l3.57 2.05A3 3 0 1015.83 14a3 3 0 00-.44-4.01L11.83 7.96A3 3 0 0013 3z"/></symbol>
+  <symbol id="xl-icon-comments" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 00-7.46 10.89l-.5 2.5a1 1 0 001.17 1.17l2.5-.5A8 8 0 1010 2zm-1 5.5a.5.5 0 01.5-.5h3a.5.5 0 010 1h-3a.5.5 0 01-.5-.5zm-2 3a.5.5 0 01.5-.5h5a.5.5 0 010 1h-5a.5.5 0 01-.5-.5z"/></symbol>
+  <symbol id="xl-icon-search" viewBox="0 0 20 20"><path fill="currentColor" d="M13.5352 14.5961C12.4267 15.4751 11.0246 16 9.5 16C5.91015 16 3 13.0899 3 9.5C3 5.91015 5.91015 3 9.5 3C13.0899 3 16 5.91015 16 9.5C16 11.0247 15.475 12.4268 14.596 13.5353L18.0302 16.9697C18.3231 17.2626 18.3231 17.7374 18.0302 18.0303C17.764 18.2966 17.3473 18.3208 17.0537 18.1029L16.9696 18.0303L13.5352 14.5961ZM14.5 9.5C14.5 6.73858 12.2614 4.5 9.5 4.5C6.73858 4.5 4.5 6.73858 4.5 9.5C4.5 12.2614 6.73858 14.5 9.5 14.5C12.2614 14.5 14.5 12.2614 14.5 9.5Z"/></symbol>
+  <symbol id="xl-icon-autosave" viewBox="0 0 20 20"><path fill="currentColor" d="M10 2a8 8 0 100 16 8 8 0 000-16zm-.5 4v4.25l2.85 2.85a.5.5 0 01-.7.7l-3-3A.5.5 0 018.5 10V6a.5.5 0 011 0z"/></symbol>
+
+  <!-- Status bar / view toggles -->
+  <symbol id="xl-icon-grid-view" viewBox="0 0 20 20"><path fill="currentColor" d="M3 5a2 2 0 012-2h10a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2V5zm1 0v4h5V4H5a1 1 0 00-1 1zm6-1v5h6V5a1 1 0 00-1-1h-5zM4 10v5a1 1 0 001 1h4v-6H4zm6 6h5a1 1 0 001-1v-5h-6v6z"/></symbol>
+  <symbol id="xl-icon-page-layout" viewBox="0 0 20 20"><path fill="currentColor" d="M4 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H4zM5.5 5a.5.5 0 01.5-.5h8a.5.5 0 01.5.5v10a.5.5 0 01-.5.5H6a.5.5 0 01-.5-.5V5z"/></symbol>
+  <symbol id="xl-icon-page-break" viewBox="0 0 20 20"><path fill="currentColor" d="M4 3h12v6H4V3zm0 8h12v6H4v-6z"/></symbol>
+
+  <!-- Sheet tab nav arrows -->
+  <symbol id="xl-icon-chevron-left" viewBox="0 0 20 20"><path fill="currentColor" d="M12.35 15.35a.5.5 0 01-.7 0l-5-5a.5.5 0 010-.7l5-5a.5.5 0 01.7.7L7.71 10l4.64 4.65a.5.5 0 010 .7z"/></symbol>
+  <symbol id="xl-icon-chevron-right" viewBox="0 0 20 20"><path fill="currentColor" d="M7.65 4.65a.5.5 0 01.7 0l5 5a.5.5 0 010 .7l-5 5a.5.5 0 01-.7-.7L12.29 10 7.65 5.35a.5.5 0 010-.7z"/></symbol>
+  <symbol id="xl-icon-chevron-down" viewBox="0 0 20 20"><path fill="currentColor" d="M4.65 7.65a.5.5 0 01.7 0L10 12.29l4.65-4.64a.5.5 0 01.7.7l-5 5a.5.5 0 01-.7 0l-5-5a.5.5 0 010-.7z"/></symbol>
+
+  <!-- Misc -->
+  <symbol id="xl-icon-more" viewBox="0 0 20 20"><path fill="currentColor" d="M6 10a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm5.5 0a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zm4 1.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></symbol>
+  <symbol id="xl-icon-cancel" viewBox="0 0 20 20"><path fill="currentColor" d="M4.09 4.09a.5.5 0 01.7 0L10 9.3l5.21-5.21a.5.5 0 01.7.7L10.71 10l5.2 5.21a.5.5 0 01-.7.7L10 10.71l-5.21 5.2a.5.5 0 01-.7-.7L9.3 10 4.09 4.79a.5.5 0 010-.7z"/></symbol>
+  <symbol id="xl-icon-checkmark" viewBox="0 0 20 20"><path fill="currentColor" d="M15.85 5.15a.5.5 0 010 .7l-8 8a.5.5 0 01-.7 0l-3-3a.5.5 0 01.7-.7L7.5 12.79l7.65-7.64a.5.5 0 01.7 0z"/></symbol>
+  <symbol id="xl-icon-accessibility" viewBox="0 0 20 20"><path fill="currentColor" d="M10 4.5a1.25 1.25 0 100-2.5 1.25 1.25 0 000 2.5zM6 6l4 .5 4-.5v1l-3 .5v2l2 5h-1.5L10 11l-1.5 4H7l2-5v-2L6 7V6z"/></symbol>
+  <symbol id="xl-icon-copilot" viewBox="0 0 20 20"><path fill="currentColor" d="M10 1l1.76 3.57L15.33 6.33l-3.57 1.76L10 11.66 8.24 8.09 4.67 6.33l3.57-1.76L10 1zM4.5 10l.88 1.79L7.17 12.67l-1.79.88L4.5 15.34l-.88-1.79L1.83 12.67l1.79-.88L4.5 10zm9 2l.88 1.79 1.79.88-1.79.88L13.5 17.34l-.88-1.79-1.79-.88 1.79-.88L13.5 12z"/></symbol>
+
+  <!-- Window controls -->
+  <symbol id="xl-icon-minimize" viewBox="0 0 12 12"><path fill="currentColor" d="M2 6h8v1H2z"/></symbol>
+  <symbol id="xl-icon-maximize" viewBox="0 0 12 12"><path fill="currentColor" d="M2.5 1.5C1.95 1.5 1.5 1.95 1.5 2.5v7c0 .55.45 1 1 1h7c.55 0 1-.45 1-1v-7c0-.55-.45-1-1-1h-7zM3 3.25c0-.14.11-.25.25-.25h5.5c.14 0 .25.11.25.25v5.5c0 .14-.11.25-.25.25h-5.5c-.14 0-.25-.11-.25-.25v-5.5z"/></symbol>
+  <symbol id="xl-icon-close" viewBox="0 0 12 12"><path fill="currentColor" d="M2.15 2.15a.5.5 0 01.7 0L6 5.29l3.15-3.14a.5.5 0 01.7.7L6.71 6l3.14 3.15a.5.5 0 01-.7.7L6 6.71 2.85 9.85a.5.5 0 01-.7-.7L5.29 6 2.15 2.85a.5.5 0 010-.7z"/></symbol>
+
+  <!-- Excel app icon -->
+  <symbol id="xl-icon-excel-app" viewBox="0 0 16 16"><rect fill="#107C41" width="16" height="16" rx="2"/><path fill="#fff" d="M4.5 4L7 8l-2.5 4h2l1.5-2.5L9.5 12h2L9 8l2.5-4h-2L8 6.5 6.5 4h-2z"/></symbol>
+</svg>
+
+<!-- ======================== HTML STRUCTURE ======================== -->
+<div class="xl-bg" data-scene-component="ExcelScene" data-active-tab="home" data-view-mode="workbook">
+
+  <!-- ===== TITLEBAR (32px) ===== -->
+  <div class="xl-titlebar">
+    <div class="xl-titlebar-left">
+      <svg class="xl-app-icon"><use href="#xl-icon-excel-app"/></svg>
+      <div class="xl-autosave">
+        <span>AutoSave</span>
+        <div class="xl-autosave-toggle" data-state="on"></div>
+      </div>
+      <div class="xl-titlebar-qat">
+        <button class="xl-qat-btn" aria-label="Save"><svg><use href="#xl-icon-save"/></svg></button>
+        <button class="xl-qat-btn" aria-label="Undo"><svg><use href="#xl-icon-undo"/></svg></button>
+        <button class="xl-qat-btn" aria-label="Redo"><svg><use href="#xl-icon-redo"/></svg></button>
+      </div>
+    </div>
+    <div class="xl-titlebar-center">
+      <span class="xl-filename" data-slot="filename">{{filename}}</span>
+    </div>
+    <div class="xl-titlebar-search">
+      <svg><use href="#xl-icon-search"/></svg>
+      <span>Search</span>
+    </div>
+    <div class="xl-titlebar-right">
+      <button class="xl-tb-btn" aria-label="Comments">
+        <svg><use href="#xl-icon-comments"/></svg>
+        <span>Comments</span>
+      </button>
+      <button class="xl-tb-btn xl-share-btn" aria-label="Share">
+        <svg style="width:12px;height:12px;color:#fff"><use href="#xl-icon-share"/></svg>
+        <span>Share</span>
+      </button>
+      <div class="xl-avatar">IB</div>
+      <div class="xl-win-controls">
+        <button class="xl-win-btn" aria-label="Minimize"><svg><use href="#xl-icon-minimize"/></svg></button>
+        <button class="xl-win-btn" aria-label="Maximize"><svg><use href="#xl-icon-maximize"/></svg></button>
+        <button class="xl-win-btn xl-win-close" aria-label="Close"><svg><use href="#xl-icon-close"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RIBBON TABS (28px) ===== -->
+  <div class="xl-ribbon-tabs">
+    <button class="xl-rtab xl-rtab--file">File</button>
+    <button class="xl-rtab xl-rtab--active" data-tab="home">Home</button>
+    <button class="xl-rtab" data-tab="insert">Insert</button>
+    <button class="xl-rtab" data-tab="draw">Draw</button>
+    <button class="xl-rtab" data-tab="page-layout">Page Layout</button>
+    <button class="xl-rtab" data-tab="formulas">Formulas</button>
+    <button class="xl-rtab" data-tab="data">Data</button>
+    <button class="xl-rtab" data-tab="review">Review</button>
+    <button class="xl-rtab" data-tab="view">View</button>
+    <button class="xl-rtab" data-tab="help">Help</button>
+    <button class="xl-rtab" data-tab="automate">Automate</button>
+  </div>
+
+  <!-- ===== RIBBON CONTENT (100px) — Wave B fills via data-slot ===== -->
+  <div class="xl-ribbon-content" data-slot="ribbon-content">{{{ribbonContentHtml}}}</div>
+
+  <!-- ===== FORMULA BAR (26px) ===== -->
+  <div class="xl-formulabar">
+    <div class="xl-namebox" data-slot="namebox">{{nameBox}}</div>
+    <div class="xl-fb-btns">
+      <button class="xl-fb-btn" aria-label="Cancel"><svg><use href="#xl-icon-cancel"/></svg></button>
+      <button class="xl-fb-btn" aria-label="Enter"><svg><use href="#xl-icon-checkmark"/></svg></button>
+      <button class="xl-fb-btn xl-fb-btn--fx" aria-label="Insert function"><svg><use href="#xl-icon-fx"/></svg></button>
+    </div>
+    <div class="xl-fb-input" data-slot="formula">{{formulaText}}</div>
+  </div>
+
+  <!-- ===== GRID WRAPPER ===== -->
+  <div class="xl-grid-wrapper">
+    <!-- Top row: corner + column headers -->
+    <div style="display:flex;flex:0 0 20px">
+      <div class="xl-grid-corner"></div>
+      <div class="xl-grid-colhead">
+        <div class="xl-colh">A</div><div class="xl-colh">B</div><div class="xl-colh">C</div>
+        <div class="xl-colh">D</div><div class="xl-colh">E</div><div class="xl-colh">F</div>
+        <div class="xl-colh">G</div><div class="xl-colh">H</div><div class="xl-colh">I</div>
+        <div class="xl-colh">J</div><div class="xl-colh">K</div><div class="xl-colh">L</div>
+        <div class="xl-colh">M</div><div class="xl-colh">N</div><div class="xl-colh">O</div>
+        <div class="xl-colh">P</div><div class="xl-colh">Q</div><div class="xl-colh">R</div>
+        <div class="xl-colh">S</div><div class="xl-colh">T</div><div class="xl-colh">U</div>
+      </div>
+    </div>
+    <!-- Body row: row headers + cells -->
+    <div style="display:flex;flex:1 1 auto;min-height:0;overflow:hidden">
+      <div class="xl-grid-rowhead">
+        <div class="xl-rowh">1</div><div class="xl-rowh">2</div><div class="xl-rowh">3</div>
+        <div class="xl-rowh">4</div><div class="xl-rowh">5</div><div class="xl-rowh">6</div>
+        <div class="xl-rowh">7</div><div class="xl-rowh">8</div><div class="xl-rowh">9</div>
+        <div class="xl-rowh">10</div><div class="xl-rowh">11</div><div class="xl-rowh">12</div>
+        <div class="xl-rowh">13</div><div class="xl-rowh">14</div><div class="xl-rowh">15</div>
+        <div class="xl-rowh">16</div><div class="xl-rowh">17</div><div class="xl-rowh">18</div>
+        <div class="xl-rowh">19</div><div class="xl-rowh">20</div>
+      </div>
+      <div class="xl-grid-cells" data-slot="cells">{{{cellsHtml}}}</div>
+    </div>
+  </div>
+
+  <!-- ===== SHEET TABS (28px) ===== -->
+  <div class="xl-sheettabs">
+    <div class="xl-st-nav">
+      <button class="xl-st-btn" aria-label="Previous"><svg><use href="#xl-icon-chevron-left"/></svg></button>
+      <button class="xl-st-btn" aria-label="Next"><svg><use href="#xl-icon-chevron-right"/></svg></button>
+    </div>
+    <div class="xl-st-list" data-slot="sheet-tabs">{{{sheetTabsHtml}}}</div>
+    <button class="xl-st-add" aria-label="Add sheet">+</button>
+    <div class="xl-st-spacer"></div>
+    <div class="xl-st-scrollbar">
+      <button class="xl-st-btn" aria-label="Scroll left"><svg><use href="#xl-icon-chevron-left"/></svg></button>
+      <div class="xl-st-scrollbar-track">
+        <div class="xl-st-scrollbar-thumb" style="left:0"></div>
+      </div>
+      <button class="xl-st-btn" aria-label="Scroll right"><svg><use href="#xl-icon-chevron-right"/></svg></button>
+    </div>
+  </div>
+
+  <!-- ===== STATUS BAR (22px) ===== -->
+  <div class="xl-statusbar">
+    <div class="xl-sb-left">
+      <span class="xl-sb-mode">Ready</span>
+      <div class="xl-sb-accessibility">
+        <svg><use href="#xl-icon-accessibility"/></svg>
+        <span>Accessibility: Good to go</span>
+      </div>
+    </div>
+    <div class="xl-sb-center" data-slot="status">{{{statusHtml}}}</div>
+    <div class="xl-sb-right">
+      <button class="xl-sb-view-btn xl-sb-view-btn--active" aria-label="Normal"><svg><use href="#xl-icon-grid-view"/></svg></button>
+      <button class="xl-sb-view-btn" aria-label="Page Layout"><svg><use href="#xl-icon-page-layout"/></svg></button>
+      <button class="xl-sb-view-btn" aria-label="Page Break"><svg><use href="#xl-icon-page-break"/></svg></button>
+      <div class="xl-sb-zoom">
+        <button class="xl-sb-zoom-btn" aria-label="Zoom out">−</button>
+        <div class="xl-sb-zoom-track">
+          <div class="xl-sb-zoom-thumb" style="left:50%"></div>
+        </div>
+        <button class="xl-sb-zoom-btn" aria-label="Zoom in">+</button>
+        <span>100%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Copilot FAB -->
+  <div class="xl-copilot-fab" aria-label="Copilot">
+    <svg><use href="#xl-icon-copilot"/></svg>
+  </div>
+</div>

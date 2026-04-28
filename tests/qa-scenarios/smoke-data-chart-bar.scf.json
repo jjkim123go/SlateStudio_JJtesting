@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "smoke-data-chart-bar",
+    "title": "Smoke DataChart Bar"
+  },
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "chart-bar",
+      "duration": 4,
+      "component": "DataChart",
+      "props": {
+        "chartType": "bar",
+        "title": "Quarterly Revenue",
+        "subtitle": "Bar smoke test for the new deterministic SVG chart component.",
+        "labels": "[\"Q1\",\"Q2\",\"Q3\",\"Q4\"]",
+        "series": "[{\"name\":\"North America\",\"values\":[18,24,29,36],\"color\":\"#2563eb\"},{\"name\":\"EMEA\",\"values\":[12,17,21,27],\"color\":\"#14b8a6\"}]",
+        "unit": "$M",
+        "showLegend": true,
+        "showGridlines": true,
+        "theme": "dark",
+        "animateOnEnter": true
+      }
+    }
+  ]
+}

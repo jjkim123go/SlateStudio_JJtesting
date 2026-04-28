@@ -1,0 +1,188 @@
+<style>
+  .scene-{{sceneId}} .sd-root {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--sd-text, #f8fafc);
+    --sd-text: #f8fafc;
+    --sd-muted: rgba(248, 250, 252, 0.72);
+    --sd-accent: #ffffff;
+    --sd-brand: #0078d4;
+  }
+
+  .scene-{{sceneId}} .sd-bg {
+    position: absolute;
+    inset: -12%;
+    z-index: 0;
+    background-size: cover;
+    background-position: center;
+    transform-origin: center;
+  }
+
+  .scene-{{sceneId}} .sd-vignette {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 32%, rgba(0, 0, 0, 0.65) 100%);
+    opacity: 0;
+  }
+  .scene-{{sceneId}} .sd-root[data-style="cinematic"] .sd-vignette { opacity: 1; }
+
+  .scene-{{sceneId}} .sd-content {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 56px;
+    padding: 8% 10%;
+  }
+  .scene-{{sceneId}} .sd-root[data-style="cinematic"] .sd-content {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+    padding: 8% 12%;
+  }
+  .scene-{{sceneId}} .sd-root[data-style="brand-ribbon"] .sd-content {
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    padding: 0;
+  }
+
+  .scene-{{sceneId}} .sd-ribbon {
+    display: none;
+    flex: 0 0 30%;
+    background: var(--sd-brand);
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 8px 0 32px rgba(0, 0, 0, 0.45);
+  }
+  .scene-{{sceneId}} .sd-root[data-style="brand-ribbon"] .sd-ribbon { display: flex; }
+
+  .scene-{{sceneId}} .sd-ribbon-numeral {
+    font-size: 240px;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    opacity: 0;
+  }
+
+  .scene-{{sceneId}} .sd-numeral {
+    font-size: 220px;
+    font-weight: 900;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    color: var(--sd-accent);
+    opacity: 0;
+    flex-shrink: 0;
+  }
+  .scene-{{sceneId}} .sd-root[data-style="cinematic"] .sd-numeral { font-size: 320px; }
+  .scene-{{sceneId}} .sd-root[data-style="brand-ribbon"] .sd-numeral { display: none; }
+
+  .scene-{{sceneId}} .sd-text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-width: 0;
+  }
+  .scene-{{sceneId}} .sd-root[data-style="brand-ribbon"] .sd-text {
+    padding: 8% 8%;
+    align-self: center;
+  }
+
+  .scene-{{sceneId}} .sd-title-wrap { overflow: hidden; }
+  .scene-{{sceneId}} .sd-title {
+    margin: 0;
+    font-size: 78px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.04;
+    color: var(--sd-text);
+    clip-path: inset(0 100% 0 0);
+  }
+  .scene-{{sceneId}} .sd-root[data-style="cinematic"] .sd-title { font-size: 88px; }
+
+  .scene-{{sceneId}} .sd-subtitle {
+    margin: 0;
+    font-size: 28px;
+    line-height: 1.4;
+    color: var(--sd-muted);
+    opacity: 0;
+  }
+
+  .scene-{{sceneId}} .sd-progress {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+  }
+  .scene-{{sceneId}} .sd-root[data-style="cinematic"] .sd-progress { align-items: center; }
+
+  .scene-{{sceneId}} .sd-progress-text {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sd-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .scene-{{sceneId}} .sd-progress-track {
+    position: relative;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.18);
+    overflow: hidden;
+    width: min(360px, 60%);
+  }
+  .scene-{{sceneId}} .sd-progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: var(--sd-brand);
+    width: 0;
+  }
+</style>
+
+<div class="sd-root"
+     data-scene-component="SectionDivider"
+     data-style="{{style}}"
+     data-bg-mode="{{backgroundMode}}"
+     data-bg-color="{{backgroundColor}}"
+     data-bg-image="{{backgroundImageSrc}}"
+     data-gradient-stops="{{gradientStopsJson}}"
+     data-brand-primary="{{brandPrimary}}"
+     data-chapter-number="{{chapterNumber}}"
+     data-total-chapters="{{totalChapters}}"
+     data-numeral-scale-start="{{numeralScaleStartSec}}"
+     data-numeral-scale-duration="{{numeralScaleDurationSec}}"
+     data-title-wipe-start="{{titleWipeStartSec}}"
+     data-title-wipe-duration="{{titleWipeDurationSec}}"
+     data-subtitle-fade-start="{{subtitleFadeStartSec}}"
+     data-progress-tick-start="{{progressTickStartSec}}">
+  <div class="sd-bg"></div>
+  <div class="sd-vignette"></div>
+  <div class="sd-content">
+    <div class="sd-ribbon"><div class="sd-ribbon-numeral">{{chapterNumber}}</div></div>
+    <div class="sd-numeral">{{chapterNumber}}</div>
+    <div class="sd-text">
+      <div class="sd-title-wrap"><h2 class="sd-title">{{title}}</h2></div>
+      <p class="sd-subtitle">{{subtitle}}</p>
+      <div class="sd-progress">
+        <div class="sd-progress-text">
+          <span class="sd-progress-current">{{chapterNumber}}</span> / <span class="sd-progress-total">{{totalChapters}}</span>
+        </div>
+        <div class="sd-progress-track"><div class="sd-progress-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</div>

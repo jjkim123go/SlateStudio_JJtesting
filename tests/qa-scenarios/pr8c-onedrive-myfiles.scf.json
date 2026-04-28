@@ -1,0 +1,54 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "onedrive-myfiles-10s",
+      "duration": 10,
+      "component": "OneDriveScene",
+      "props": {
+        "variant": "default",
+        "state": "default",
+        "pageTitle": "My files",
+        "accountName": "Adele Vance",
+        "accountInitial": "A",
+        "activeNav": "My files",
+        "storageUsed": "6.6 GB used of 5 TB (1%)",
+        "quickAccess": [
+          { "name": "Contoso Sales Platforms", "color": "#107C10", "initial": "C" },
+          { "name": "Contoso Finance Team", "color": "#D13438", "initial": "C" },
+          { "name": "Platform Engineering...", "color": "#8764B8", "initial": "P" },
+          { "name": "Marketing", "color": "#0078D4", "initial": "M" },
+          { "name": "Dev Tenant", "color": "#038387", "initial": "D" },
+          { "name": "HR Portal - Videos", "color": "#107C10", "initial": "H" },
+          { "name": "Commerce Docs - C...", "color": "#038387", "initial": "C" },
+          { "name": "Identity & Access Sup...", "color": "#605E5C", "initial": "I" }
+        ],
+        "files": [
+          { "name": "Apps", "type": "folder", "modified": "February 28, 2023", "modifiedBy": "Adele Vance", "size": "2 items", "sharing": "Private" },
+          { "name": "Attachments", "type": "folder", "modified": "March 8, 2021", "modifiedBy": "Adele Vance", "size": "3 items", "sharing": "Private" },
+          { "name": "Desktop", "type": "folder", "modified": "August 27, 2020", "modifiedBy": "Adele Vance", "size": "2 items", "sharing": "Private" },
+          { "name": "Documents", "type": "folder", "modified": "August 27, 2020", "modifiedBy": "Adele Vance", "size": "48 items", "sharing": "Private" },
+          { "name": "Meetings", "type": "folder-shared", "modified": "February 9, 2022", "modifiedBy": "Adele Vance", "size": "1 item", "sharing": "Shared" },
+          { "name": "Microsoft Copilot Chat Files", "type": "folder", "modified": "September 5, 2024", "modifiedBy": "Adele Vance", "size": "1 item", "sharing": "Private" },
+          { "name": "Microsoft Teams Chat Files", "type": "folder", "modified": "June 22, 2020", "modifiedBy": "Adele Vance", "size": "105 items", "sharing": "Private" },
+          { "name": "OneNote Loop Files", "type": "folder", "modified": "May 12, 2025", "modifiedBy": "Adele Vance", "size": "1 item", "sharing": "Private" },
+          { "name": "Pictures", "type": "folder", "modified": "August 27, 2020", "modifiedBy": "Adele Vance", "size": "8 items", "sharing": "Private" },
+          { "name": "Recordings", "type": "folder-shared", "modified": "July 29, 2022", "modifiedBy": "Adele Vance", "size": "17 items", "sharing": "Shared" },
+          { "name": "Contoso-Q3-Forecast.xlsx", "type": "excel", "modified": "March 20, 2025", "modifiedBy": "Adele Vance", "size": "1.75 MB", "sharing": "Shared", "activity": "You shared this file - Mar 19, 2025" },
+          { "name": "Revenue-DvR-05-29-2025.xlsx", "type": "excel", "modified": "June 3, 2025", "modifiedBy": "Adele Vance", "size": "2.36 MB", "sharing": "Shared", "activity": "You shared this file - May 29, 2025" },
+          { "name": "Contoso-Budget-Analysis.xlsx", "type": "excel", "modified": "May 29, 2025", "modifiedBy": "Megan Bowen", "size": "2.95 MB", "sharing": "Shared", "activity": "Diego Siciliani shared with Pradeep Gupta - May 29, 2025" },
+          { "name": "FY25-BvD-Report.xlsx", "type": "excel", "modified": "December 10, 2024", "modifiedBy": "Alex Wilber", "size": "2.40 MB", "sharing": "Shared", "activity": "Nestor Wilke shared with Pradeep Gupta - Nov 27, 2024" },
+          { "name": "Contoso-Sales-Summary.xlsx", "type": "excel", "modified": "March 21, 2025", "modifiedBy": "Alex Wilber", "size": "625 KB", "sharing": "Shared", "activity": "You shared this file - Mar 20, 2025" },
+          { "name": "Monthly-MissingBilled.xlsx", "type": "excel", "modified": "January 15, 2025", "modifiedBy": "Pradeep Gupta", "size": "890 KB", "sharing": "Shared", "activity": "Lynne Robbins shared with you - Jan 14, 2025" },
+          { "name": "Quarterly-Actuals.xlsx", "type": "excel", "modified": "April 8, 2025", "modifiedBy": "Nestor Wilke", "size": "1.12 MB", "sharing": "Shared", "activity": "Miriam Graham edited - Apr 7, 2025" },
+          { "name": "FY25-Roadmap-Deck.pptx", "type": "powerpoint", "modified": "June 3, 2025", "modifiedBy": "Adele Vance", "size": "3.40 MB", "sharing": "Shared", "activity": "You shared this file - May 29, 2025" },
+          { "name": "Product-Spec-v2.docx", "type": "word", "modified": "May 29, 2025", "modifiedBy": "Megan Bowen", "size": "1.85 MB", "sharing": "Shared", "activity": "Lidia Holloway shared with Isaiah Langer - May 29, 2025" },
+          { "name": "All-Hands-Summary.pptx", "type": "powerpoint", "modified": "February 14, 2025", "modifiedBy": "Diego Siciliani", "size": "5.10 MB", "sharing": "Shared" }
+        ]
+      }
+    }
+  ]
+}

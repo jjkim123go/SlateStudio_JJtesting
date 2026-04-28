@@ -1,0 +1,31 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — EventBranding smoke test",
+    "purpose": "Validates EventBranding opener style with sponsor lockups, venue, date display text, and session ID.",
+    "duration_target_seconds": 6
+  },
+  "scenes": [
+    {
+      "id": "eb-opener",
+      "duration": 6,
+      "narrationStartSec": 0,
+      "component": "EventBranding",
+      "props": {
+        "style": "opener",
+        "eventName": "Microsoft Build 2026",
+        "series": "BRK Track",
+        "venue": "Seattle Convention Center",
+        "date": "May 6\u20138, 2026",
+        "sessionId": "BRK113",
+        "sponsorLockups": [
+          { "label": "Azure",          "logoSrc": "" },
+          { "label": "GitHub",         "logoSrc": "" },
+          { "label": "Visual Studio",  "logoSrc": "" }
+        ]
+      }
+    }
+  ]
+}

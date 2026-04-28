@@ -1,0 +1,1522 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "showcase-intro",
+      "duration": 3.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "PR 8a — Microsoft Surfaces",
+        "subtitle": "Loop · Whiteboard · Stream — 11 variants, 4 components",
+        "background": "#0F172A"
+      }
+    },
+    {
+      "id": "chapter-loop",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Loop",
+        "subtitle": "4 variants",
+        "background": "#5B2A86"
+      }
+    },
+    {
+      "id": "showcase-loop-meeting-notes",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "meetingNotes",
+        "pageTitle": "Q3 Planning — Sync Notes",
+        "pageMeta": "Updated just now · 5 contributors",
+        "attendees": [
+          "Avery Chen",
+          "Jordan Park",
+          "Sam Rivera",
+          "Morgan Lee",
+          "Taylor Quinn"
+        ],
+        "agenda": [
+          "Roadmap commitments",
+          "Open dependencies",
+          "Risk review"
+        ],
+        "discussion": "Aligned on shipping the new ingest pipeline by end of Q3. Two integration risks logged below; owners assigned.",
+        "actionItems": [
+          {
+            "text": "Draft kickoff doc",
+            "assignee": "Avery Chen",
+            "due": "Fri"
+          },
+          {
+            "text": "Review API contracts",
+            "assignee": "Jordan Park",
+            "due": "Mon"
+          },
+          {
+            "text": "Schedule stakeholder demo",
+            "assignee": "Sam Rivera",
+            "due": "Wed"
+          }
+        ],
+        "copilotSuggestions": [
+          "Summarize the discussion section",
+          "Send action items to Teams chat",
+          "Draft a status update for stakeholders"
+        ],
+        "liveCursor": {
+          "name": "Jordan",
+          "accentHex": "#E8770E"
+        }
+      }
+    },
+    {
+      "id": "showcase-loop-tasks",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "taskList",
+        "pageTitle": "Sprint 47 — Open work",
+        "pageMeta": "Updated just now · 7 active tasks",
+        "attendees": [
+          "Avery Chen",
+          "Jordan Park",
+          "Sam Rivera",
+          "Maya Lopez",
+          "Tariq Quinn"
+        ],
+        "tasks": [
+          {
+            "text": "Wire up retry policy on ingest worker",
+            "assignee": "Avery Chen",
+            "due": "Today",
+            "priority": "high"
+          },
+          {
+            "text": "Land schema migration (rev 0042)",
+            "assignee": "Jordan Park",
+            "due": "Tomorrow",
+            "priority": "high"
+          },
+          {
+            "text": "Draft postmortem for Sev3 #6021",
+            "assignee": "Sam Rivera",
+            "due": "Thu",
+            "priority": "med"
+          },
+          {
+            "text": "Triage telemetry backlog",
+            "assignee": "Maya Lopez",
+            "due": "Fri",
+            "priority": "med"
+          },
+          {
+            "text": "Write runbook for failover drill",
+            "assignee": "Tariq Quinn",
+            "due": "Mon",
+            "priority": "low"
+          },
+          {
+            "text": "Code review: PR #4421",
+            "assignee": "Avery Chen",
+            "due": "Today",
+            "priority": "med"
+          },
+          {
+            "text": "Update on-call rotation doc",
+            "assignee": "Jordan Park",
+            "due": "Wed",
+            "priority": "low"
+          }
+        ],
+        "followUps": [
+          {
+            "text": "Sync with Tariq on capacity plan",
+            "assignee": "Maya Lopez",
+            "due": "Fri",
+            "priority": "med"
+          },
+          {
+            "text": "File ICM review for Tuesday outage",
+            "assignee": "Avery Chen",
+            "due": "Tue",
+            "priority": "high"
+          }
+        ],
+        "copilotSuggestions": [
+          "Add follow-ups from Tuesday's call",
+          "Reassign overdue items",
+          "Mark completed tasks as done"
+        ]
+      }
+    },
+    {
+      "id": "showcase-loop-kanban",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "kanbanBoard",
+        "pageTitle": "Q3 Engineering Board",
+        "pageMeta": "Updated just now · 9 cards",
+        "attendees": [
+          "Avery Chen",
+          "Jordan Park",
+          "Sam Rivera",
+          "Maya Lopez",
+          "Tariq Quinn"
+        ],
+        "columns": [
+          {
+            "name": "Backlog",
+            "count": 4,
+            "tag": "planning"
+          },
+          {
+            "name": "In Progress",
+            "count": 3,
+            "tag": "active"
+          },
+          {
+            "name": "Done",
+            "count": 2,
+            "tag": "done"
+          }
+        ],
+        "cards": [
+          {
+            "col": 0,
+            "title": "Schema migration rev 0042",
+            "assignee": "Jordan Park",
+            "due": "Mon",
+            "tag": "infra"
+          },
+          {
+            "col": 0,
+            "title": "Retry policy: ingest path",
+            "assignee": "Avery Chen",
+            "due": "Tue",
+            "tag": "infra"
+          },
+          {
+            "col": 0,
+            "title": "On-call doc refresh",
+            "assignee": "Tariq Quinn",
+            "due": "Thu",
+            "tag": "docs"
+          },
+          {
+            "col": 0,
+            "title": "Sev3 postmortem #6021",
+            "assignee": "Sam Rivera",
+            "due": "Wed",
+            "tag": "review"
+          },
+          {
+            "col": 1,
+            "title": "Failover drill rehearsal",
+            "assignee": "Maya Lopez",
+            "due": "Today",
+            "tag": "ops"
+          },
+          {
+            "col": 1,
+            "title": "PR #4421 review",
+            "assignee": "Avery Chen",
+            "due": "Today",
+            "tag": "review"
+          },
+          {
+            "col": 1,
+            "title": "Telemetry triage Q3",
+            "assignee": "Jordan Park",
+            "due": "Fri",
+            "tag": "data"
+          },
+          {
+            "col": 2,
+            "title": "Capacity plan v2",
+            "assignee": "Tariq Quinn",
+            "due": "—",
+            "tag": "planning"
+          },
+          {
+            "col": 2,
+            "title": "Auth rotation runbook",
+            "assignee": "Sam Rivera",
+            "due": "—",
+            "tag": "security"
+          }
+        ],
+        "newCard": {
+          "col": 0,
+          "title": "Demo dry-run",
+          "assignee": "Maya Lopez",
+          "due": "Fri",
+          "tag": "planning"
+        },
+        "copilotSuggestions": [
+          "Add 'Demo dry-run' as follow-up?",
+          "Promote Backlog candidates to In Progress",
+          "Notify owners of moved cards"
+        ],
+        "liveCursor": {
+          "name": "Avery",
+          "accentHex": "#0078D4"
+        }
+      }
+    },
+    {
+      "id": "showcase-loop-table",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "tableDatabase",
+        "pageTitle": "Q3 Feature Launches",
+        "pageMeta": "Updated just now · 8 features tracked",
+        "attendees": [
+          "Avery Chen",
+          "Jordan Park",
+          "Sam Rivera",
+          "Maya Lopez",
+          "Tariq Quinn"
+        ],
+        "rows": [
+          {
+            "feature": "Adaptive ingest",
+            "owner": "Avery Chen",
+            "status": "On Track",
+            "date": "Sep 14",
+            "region": "WUS3",
+            "risk": "Low",
+            "mitigation": "None"
+          },
+          {
+            "feature": "Schema migration v4",
+            "owner": "Jordan Park",
+            "status": "At Risk",
+            "date": "Sep 21",
+            "region": "EUS2",
+            "risk": "High",
+            "mitigation": "Rollback drill"
+          },
+          {
+            "feature": "Failover drill",
+            "owner": "Maya Lopez",
+            "status": "On Track",
+            "date": "Sep 28",
+            "region": "WEU",
+            "risk": "Med",
+            "mitigation": "Comms plan"
+          },
+          {
+            "feature": "Cost ceilings",
+            "owner": "Tariq Quinn",
+            "status": "At Risk",
+            "date": "Oct 05",
+            "region": "WUS3",
+            "risk": "High",
+            "mitigation": "Budget review"
+          },
+          {
+            "feature": "Telemetry v3",
+            "owner": "Sam Rivera",
+            "status": "Done",
+            "date": "Aug 30",
+            "region": "EUS2",
+            "risk": "Low",
+            "mitigation": "Shipped"
+          },
+          {
+            "feature": "Auth rotation",
+            "owner": "Avery Chen",
+            "status": "On Track",
+            "date": "Oct 12",
+            "region": "WEU",
+            "risk": "Low",
+            "mitigation": "None"
+          },
+          {
+            "feature": "Capacity plan",
+            "owner": "Jordan Park",
+            "status": "Done",
+            "date": "Aug 20",
+            "region": "WUS3",
+            "risk": "Low",
+            "mitigation": "Shipped"
+          },
+          {
+            "feature": "Postmortem 6021",
+            "owner": "Sam Rivera",
+            "status": "On Track",
+            "date": "Sep 18",
+            "region": "EUS2",
+            "risk": "Med",
+            "mitigation": "Owner aligned"
+          }
+        ],
+        "copilotSuggestions": [
+          "Add Mitigation column?",
+          "Filter to At Risk only",
+          "Notify owners of slipping items"
+        ],
+        "liveCursor": {
+          "name": "Sam",
+          "accentHex": "#107C10"
+        }
+      }
+    },
+    {
+      "id": "chapter-whiteboard",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Whiteboard",
+        "subtitle": "3 variants",
+        "background": "#0E7A0D"
+      }
+    },
+    {
+      "id": "showcase-whiteboard-brainstorm",
+      "duration": 12,
+      "component": "WhiteboardScene",
+      "props": {
+        "variant": "brainstorm",
+        "boardTitle": "Q3 product ideas",
+        "stickies": [
+          {
+            "id": "title",
+            "text": "Q3 product ideas",
+            "color": "white",
+            "x": 60,
+            "y": 30,
+            "rotation": -2
+          },
+          {
+            "id": "s1",
+            "text": "Faster onboarding flow",
+            "color": "yellow",
+            "x": 220,
+            "y": 180,
+            "rotation": -3,
+            "author": "Avery",
+            "cluster": "onboarding"
+          },
+          {
+            "id": "s2",
+            "text": "Trim signup to 3 steps",
+            "color": "yellow2",
+            "x": 360,
+            "y": 230,
+            "rotation": 2,
+            "author": "Sam",
+            "cluster": "onboarding"
+          },
+          {
+            "id": "s3",
+            "text": "Welcome video on first run",
+            "color": "mint",
+            "x": 510,
+            "y": 200,
+            "rotation": -1,
+            "author": "Jordan",
+            "cluster": "onboarding"
+          },
+          {
+            "id": "s4",
+            "text": "Sample dataset auto-load",
+            "color": "lblue",
+            "x": 670,
+            "y": 260,
+            "rotation": 3,
+            "author": "Avery",
+            "cluster": "onboarding"
+          },
+          {
+            "id": "s5",
+            "text": "Cache hot scene assets",
+            "color": "green",
+            "x": 250,
+            "y": 430,
+            "rotation": 1,
+            "author": "Sam",
+            "cluster": "performance"
+          },
+          {
+            "id": "s6",
+            "text": "Lazy-load Fluent icons",
+            "color": "pink",
+            "x": 420,
+            "y": 470,
+            "rotation": -2,
+            "author": "Jordan",
+            "cluster": "performance"
+          },
+          {
+            "id": "s7",
+            "text": "Reuse rendered subclips",
+            "color": "orange",
+            "x": 590,
+            "y": 440,
+            "rotation": 3,
+            "author": "Morgan",
+            "cluster": "performance",
+            "arriveAt": 0.55
+          },
+          {
+            "id": "s8",
+            "text": "Worker-pool transcode",
+            "color": "purple",
+            "x": 740,
+            "y": 490,
+            "rotation": -3,
+            "author": "Sam",
+            "cluster": "performance",
+            "arriveAt": 0.75
+          },
+          {
+            "id": "s9",
+            "text": "Per-seat vs per-render",
+            "color": "blue",
+            "x": 320,
+            "y": 660,
+            "rotation": 2,
+            "author": "Avery",
+            "cluster": "pricing"
+          },
+          {
+            "id": "s10",
+            "text": "Free 5-min trial render",
+            "color": "red",
+            "x": 490,
+            "y": 700,
+            "rotation": -2,
+            "author": "Jordan",
+            "cluster": "pricing"
+          },
+          {
+            "id": "s11",
+            "text": "Volume tier at 100 renders",
+            "color": "gray",
+            "x": 660,
+            "y": 670,
+            "rotation": 1,
+            "author": "Morgan",
+            "cluster": "pricing",
+            "arriveAt": 0.4
+          },
+          {
+            "id": "s12",
+            "text": "Bundle TTS + Image credits",
+            "color": "yellow",
+            "x": 820,
+            "y": 720,
+            "rotation": -1,
+            "author": "Sam",
+            "cluster": "pricing",
+            "arriveAt": 0.9
+          }
+        ],
+        "clusters": [
+          {
+            "id": "onboarding",
+            "label": "Onboarding",
+            "x": 1100,
+            "y": 120
+          },
+          {
+            "id": "performance",
+            "label": "Performance",
+            "x": 1100,
+            "y": 360
+          },
+          {
+            "id": "pricing",
+            "label": "Pricing",
+            "x": 1100,
+            "y": 600
+          }
+        ],
+        "liveCursors": [
+          {
+            "name": "Avery",
+            "accentHex": "#0F6CBD",
+            "path": [
+              {
+                "x": 200,
+                "y": 200
+              },
+              {
+                "x": 500,
+                "y": 100
+              },
+              {
+                "x": 700,
+                "y": 380
+              },
+              {
+                "x": 900,
+                "y": 520
+              },
+              {
+                "x": 1080,
+                "y": 360
+              }
+            ]
+          },
+          {
+            "name": "Sam",
+            "accentHex": "#0E7A0D",
+            "path": [
+              {
+                "x": 320,
+                "y": 700
+              },
+              {
+                "x": 600,
+                "y": 800
+              },
+              {
+                "x": 760,
+                "y": 560
+              },
+              {
+                "x": 880,
+                "y": 440
+              },
+              {
+                "x": 1040,
+                "y": 600
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-whiteboard-diagram",
+      "duration": 12,
+      "component": "WhiteboardScene",
+      "props": {
+        "variant": "diagramMode",
+        "boardTitle": "Release pipeline",
+        "liveCursors": [
+          {
+            "name": "Avery",
+            "accentHex": "#0F6CBD",
+            "path": [
+              {
+                "x": 320,
+                "y": 280
+              },
+              {
+                "x": 600,
+                "y": 220
+              },
+              {
+                "x": 940,
+                "y": 360
+              },
+              {
+                "x": 1180,
+                "y": 300
+              },
+              {
+                "x": 1320,
+                "y": 260
+              }
+            ]
+          },
+          {
+            "name": "Sam",
+            "accentHex": "#0E7A0D",
+            "path": [
+              {
+                "x": 1380,
+                "y": 600
+              },
+              {
+                "x": 1100,
+                "y": 540
+              },
+              {
+                "x": 820,
+                "y": 500
+              },
+              {
+                "x": 540,
+                "y": 520
+              },
+              {
+                "x": 360,
+                "y": 480
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-whiteboard-retro",
+      "duration": 14,
+      "component": "WhiteboardScene",
+      "props": {
+        "variant": "templateRetro",
+        "boardTitle": "Sprint 42 retro",
+        "liveCursors": [
+          {
+            "name": "Avery",
+            "accentHex": "#0F6CBD",
+            "path": [
+              {
+                "x": 280,
+                "y": 240
+              },
+              {
+                "x": 560,
+                "y": 360
+              },
+              {
+                "x": 880,
+                "y": 320
+              },
+              {
+                "x": 1180,
+                "y": 380
+              },
+              {
+                "x": 1500,
+                "y": 300
+              }
+            ]
+          },
+          {
+            "name": "Maya",
+            "accentHex": "#7719AA",
+            "path": [
+              {
+                "x": 1620,
+                "y": 700
+              },
+              {
+                "x": 1280,
+                "y": 580
+              },
+              {
+                "x": 940,
+                "y": 620
+              },
+              {
+                "x": 620,
+                "y": 560
+              },
+              {
+                "x": 320,
+                "y": 660
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "chapter-stream",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Stream",
+        "subtitle": "4 variants",
+        "background": "#0F6CBD"
+      }
+    },
+    {
+      "id": "showcase-stream-player",
+      "duration": 12,
+      "component": "StreamScene",
+      "props": {
+        "variant": "playerWithTranscript",
+        "videoTitle": "Q1 All-Hands: Roadmap & Customer Wins",
+        "videoOwner": "Avery Chen",
+        "videoDate": "Apr 12, 2026",
+        "videoDuration": "12:34",
+        "chapters": [
+          {
+            "title": "Welcome",
+            "startSec": 0
+          },
+          {
+            "title": "Customer wins",
+            "startSec": 3
+          },
+          {
+            "title": "Roadmap themes",
+            "startSec": 6.5
+          },
+          {
+            "title": "Q&A",
+            "startSec": 10
+          }
+        ],
+        "chaptersJson": "[{\"title\":\"Welcome\",\"startSec\":0},{\"title\":\"Customer wins\",\"startSec\":3},{\"title\":\"Roadmap themes\",\"startSec\":6.5},{\"title\":\"Q&A\",\"startSec\":10}]",
+        "speakers": [
+          {
+            "id": "avery",
+            "name": "Avery Chen",
+            "color": "#E3008C"
+          },
+          {
+            "id": "jordan",
+            "name": "Jordan Park",
+            "color": "#5059C9"
+          },
+          {
+            "id": "sam",
+            "name": "Sam Rivera",
+            "color": "#0078D4"
+          }
+        ],
+        "speakersJson": "[{\"id\":\"avery\",\"name\":\"Avery Chen\",\"color\":\"#E3008C\"},{\"id\":\"jordan\",\"name\":\"Jordan Park\",\"color\":\"#5059C9\"},{\"id\":\"sam\",\"name\":\"Sam Rivera\",\"color\":\"#0078D4\"}]",
+        "transcriptSegments": [
+          {
+            "id": "s1",
+            "speakerId": "avery",
+            "startSec": 0.4,
+            "words": [
+              {
+                "w": "Welcome ",
+                "t0": 0.4,
+                "t1": 0.85
+              },
+              {
+                "w": "to ",
+                "t0": 0.85,
+                "t1": 1.05
+              },
+              {
+                "w": "the ",
+                "t0": 1.05,
+                "t1": 1.25
+              },
+              {
+                "w": "Q1 ",
+                "t0": 1.25,
+                "t1": 1.55
+              },
+              {
+                "w": "all-hands.",
+                "t0": 1.55,
+                "t1": 2.2
+              }
+            ]
+          },
+          {
+            "id": "s2",
+            "speakerId": "avery",
+            "startSec": 2.4,
+            "words": [
+              {
+                "w": "Today ",
+                "t0": 2.4,
+                "t1": 2.75
+              },
+              {
+                "w": "we ",
+                "t0": 2.75,
+                "t1": 2.9
+              },
+              {
+                "w": "celebrate ",
+                "t0": 2.9,
+                "t1": 3.45
+              },
+              {
+                "w": "real ",
+                "t0": 3.45,
+                "t1": 3.7
+              },
+              {
+                "w": "customer ",
+                "t0": 3.7,
+                "t1": 4.15
+              },
+              {
+                "w": "wins.",
+                "t0": 4.15,
+                "t1": 4.55
+              }
+            ]
+          },
+          {
+            "id": "s3",
+            "speakerId": "jordan",
+            "startSec": 4.7,
+            "words": [
+              {
+                "w": "Contoso ",
+                "t0": 4.7,
+                "t1": 5.2
+              },
+              {
+                "w": "shipped ",
+                "t0": 5.2,
+                "t1": 5.65
+              },
+              {
+                "w": "their ",
+                "t0": 5.65,
+                "t1": 5.85
+              },
+              {
+                "w": "rollout ",
+                "t0": 5.85,
+                "t1": 6.3
+              },
+              {
+                "w": "ahead ",
+                "t0": 6.3,
+                "t1": 6.55
+              },
+              {
+                "w": "of ",
+                "t0": 6.55,
+                "t1": 6.7
+              },
+              {
+                "w": "schedule.",
+                "t0": 6.7,
+                "t1": 7.3
+              }
+            ]
+          },
+          {
+            "id": "s4",
+            "speakerId": "jordan",
+            "startSec": 7.4,
+            "words": [
+              {
+                "w": "Adoption ",
+                "t0": 7.4,
+                "t1": 7.95
+              },
+              {
+                "w": "is ",
+                "t0": 7.95,
+                "t1": 8.1
+              },
+              {
+                "w": "up ",
+                "t0": 8.1,
+                "t1": 8.3
+              },
+              {
+                "w": "thirty ",
+                "t0": 8.3,
+                "t1": 8.7
+              },
+              {
+                "w": "percent.",
+                "t0": 8.7,
+                "t1": 9.2
+              }
+            ]
+          },
+          {
+            "id": "s5",
+            "speakerId": "sam",
+            "startSec": 9.4,
+            "words": [
+              {
+                "w": "Next ",
+                "t0": 9.4,
+                "t1": 9.65
+              },
+              {
+                "w": "quarter ",
+                "t0": 9.65,
+                "t1": 10.05
+              },
+              {
+                "w": "we ",
+                "t0": 10.05,
+                "t1": 10.2
+              },
+              {
+                "w": "double ",
+                "t0": 10.2,
+                "t1": 10.55
+              },
+              {
+                "w": "down ",
+                "t0": 10.55,
+                "t1": 10.8
+              },
+              {
+                "w": "on ",
+                "t0": 10.8,
+                "t1": 10.95
+              },
+              {
+                "w": "Copilot.",
+                "t0": 10.95,
+                "t1": 11.55
+              }
+            ]
+          }
+        ],
+        "transcriptSegmentsJson": "[{\"id\":\"s1\",\"speakerId\":\"avery\",\"startSec\":0.4,\"words\":[{\"w\":\"Welcome \",\"t0\":0.4,\"t1\":0.85},{\"w\":\"to \",\"t0\":0.85,\"t1\":1.05},{\"w\":\"the \",\"t0\":1.05,\"t1\":1.25},{\"w\":\"Q1 \",\"t0\":1.25,\"t1\":1.55},{\"w\":\"all-hands.\",\"t0\":1.55,\"t1\":2.2}]},{\"id\":\"s2\",\"speakerId\":\"avery\",\"startSec\":2.4,\"words\":[{\"w\":\"Today \",\"t0\":2.4,\"t1\":2.75},{\"w\":\"we \",\"t0\":2.75,\"t1\":2.9},{\"w\":\"celebrate \",\"t0\":2.9,\"t1\":3.45},{\"w\":\"real \",\"t0\":3.45,\"t1\":3.7},{\"w\":\"customer \",\"t0\":3.7,\"t1\":4.15},{\"w\":\"wins.\",\"t0\":4.15,\"t1\":4.55}]},{\"id\":\"s3\",\"speakerId\":\"jordan\",\"startSec\":4.7,\"words\":[{\"w\":\"Contoso \",\"t0\":4.7,\"t1\":5.2},{\"w\":\"shipped \",\"t0\":5.2,\"t1\":5.65},{\"w\":\"their \",\"t0\":5.65,\"t1\":5.85},{\"w\":\"rollout \",\"t0\":5.85,\"t1\":6.3},{\"w\":\"ahead \",\"t0\":6.3,\"t1\":6.55},{\"w\":\"of \",\"t0\":6.55,\"t1\":6.7},{\"w\":\"schedule.\",\"t0\":6.7,\"t1\":7.3}]},{\"id\":\"s4\",\"speakerId\":\"jordan\",\"startSec\":7.4,\"words\":[{\"w\":\"Adoption \",\"t0\":7.4,\"t1\":7.95},{\"w\":\"is \",\"t0\":7.95,\"t1\":8.1},{\"w\":\"up \",\"t0\":8.1,\"t1\":8.3},{\"w\":\"thirty \",\"t0\":8.3,\"t1\":8.7},{\"w\":\"percent.\",\"t0\":8.7,\"t1\":9.2}]},{\"id\":\"s5\",\"speakerId\":\"sam\",\"startSec\":9.4,\"words\":[{\"w\":\"Next \",\"t0\":9.4,\"t1\":9.65},{\"w\":\"quarter \",\"t0\":9.65,\"t1\":10.05},{\"w\":\"we \",\"t0\":10.05,\"t1\":10.2},{\"w\":\"double \",\"t0\":10.2,\"t1\":10.55},{\"w\":\"down \",\"t0\":10.55,\"t1\":10.8},{\"w\":\"on \",\"t0\":10.8,\"t1\":10.95},{\"w\":\"Copilot.\",\"t0\":10.95,\"t1\":11.55}]}]"
+      }
+    },
+    {
+      "id": "showcase-stream-chapters",
+      "duration": 12,
+      "component": "StreamScene",
+      "props": {
+        "variant": "chaptersNavigation",
+        "videoTitle": "Q1 All-Hands: Roadmap & Customer Wins",
+        "videoOwner": "Avery Chen",
+        "videoDate": "Apr 12, 2026",
+        "videoDuration": "12:34",
+        "chapters": [
+          {
+            "title": "Welcome",
+            "startSec": 0
+          },
+          {
+            "title": "Customer wins",
+            "startSec": 3
+          },
+          {
+            "title": "Roadmap themes",
+            "startSec": 6
+          },
+          {
+            "title": "Live demo",
+            "startSec": 8.5
+          },
+          {
+            "title": "Q&A",
+            "startSec": 10.5
+          }
+        ],
+        "chaptersJson": "[{\"title\":\"Welcome\",\"startSec\":0},{\"title\":\"Customer wins\",\"startSec\":3},{\"title\":\"Roadmap themes\",\"startSec\":6.0},{\"title\":\"Live demo\",\"startSec\":8.5},{\"title\":\"Q&A\",\"startSec\":10.5}]",
+        "speakers": [],
+        "speakersJson": "[]",
+        "transcriptSegments": [],
+        "transcriptSegmentsJson": "[]"
+      }
+    },
+    {
+      "id": "showcase-stream-search",
+      "duration": 12,
+      "component": "StreamScene",
+      "props": {
+        "variant": "searchResults",
+        "videoTitle": "Q1 All-Hands: Roadmap & Customer Wins",
+        "videoOwner": "Avery Chen",
+        "videoDate": "Apr 12, 2026",
+        "videoDuration": "12:34",
+        "chapters": [
+          {
+            "title": "Welcome",
+            "startSec": 0
+          },
+          {
+            "title": "Customer wins",
+            "startSec": 3
+          },
+          {
+            "title": "Roadmap themes",
+            "startSec": 6.5
+          },
+          {
+            "title": "Q&A",
+            "startSec": 10
+          }
+        ],
+        "chaptersJson": "[{\"title\":\"Welcome\",\"startSec\":0},{\"title\":\"Customer wins\",\"startSec\":3},{\"title\":\"Roadmap themes\",\"startSec\":6.5},{\"title\":\"Q&A\",\"startSec\":10}]",
+        "speakers": [
+          {
+            "id": "avery",
+            "name": "Avery Chen",
+            "color": "#E3008C"
+          },
+          {
+            "id": "jordan",
+            "name": "Jordan Park",
+            "color": "#5059C9"
+          },
+          {
+            "id": "sam",
+            "name": "Sam Rivera",
+            "color": "#0078D4"
+          },
+          {
+            "id": "maya",
+            "name": "Maya Lopez",
+            "color": "#107C10"
+          },
+          {
+            "id": "tariq",
+            "name": "Tariq Quinn",
+            "color": "#8764B8"
+          }
+        ],
+        "speakersJson": "[{\"id\":\"avery\",\"name\":\"Avery Chen\",\"color\":\"#E3008C\"},{\"id\":\"jordan\",\"name\":\"Jordan Park\",\"color\":\"#5059C9\"},{\"id\":\"sam\",\"name\":\"Sam Rivera\",\"color\":\"#0078D4\"},{\"id\":\"maya\",\"name\":\"Maya Lopez\",\"color\":\"#107C10\"},{\"id\":\"tariq\",\"name\":\"Tariq Quinn\",\"color\":\"#8764B8\"}]",
+        "transcriptSegments": [
+          {
+            "id": "s1",
+            "speakerId": "avery",
+            "startSec": 0.4,
+            "words": [
+              {
+                "w": "Welcome ",
+                "t0": 0.4,
+                "t1": 0.85
+              },
+              {
+                "w": "to ",
+                "t0": 0.85,
+                "t1": 1.05
+              },
+              {
+                "w": "the ",
+                "t0": 1.05,
+                "t1": 1.25
+              },
+              {
+                "w": "all-hands.",
+                "t0": 1.25,
+                "t1": 1.85
+              }
+            ]
+          },
+          {
+            "id": "s2",
+            "speakerId": "jordan",
+            "startSec": 2,
+            "words": [
+              {
+                "w": "Contoso ",
+                "t0": 2,
+                "t1": 2.45
+              },
+              {
+                "w": "shipped ",
+                "t0": 2.45,
+                "t1": 2.9
+              },
+              {
+                "w": "their ",
+                "t0": 2.9,
+                "t1": 3.1
+              },
+              {
+                "w": "rollout ",
+                "t0": 3.1,
+                "t1": 3.55
+              },
+              {
+                "w": "early.",
+                "t0": 3.55,
+                "t1": 4
+              }
+            ]
+          },
+          {
+            "id": "s3",
+            "speakerId": "sam",
+            "startSec": 4.2,
+            "words": [
+              {
+                "w": "Adoption ",
+                "t0": 4.2,
+                "t1": 4.7
+              },
+              {
+                "w": "is ",
+                "t0": 4.7,
+                "t1": 4.85
+              },
+              {
+                "w": "up ",
+                "t0": 4.85,
+                "t1": 5.05
+              },
+              {
+                "w": "thirty ",
+                "t0": 5.05,
+                "t1": 5.45
+              },
+              {
+                "w": "percent.",
+                "t0": 5.45,
+                "t1": 6
+              }
+            ]
+          },
+          {
+            "id": "s4",
+            "speakerId": "maya",
+            "startSec": 6.2,
+            "words": [
+              {
+                "w": "Our ",
+                "t0": 6.2,
+                "t1": 6.4
+              },
+              {
+                "w": "next ",
+                "t0": 6.4,
+                "t1": 6.65
+              },
+              {
+                "w": "rollout ",
+                "t0": 6.65,
+                "t1": 7.1
+              },
+              {
+                "w": "targets ",
+                "t0": 7.1,
+                "t1": 7.55
+              },
+              {
+                "w": "EMEA.",
+                "t0": 7.55,
+                "t1": 8.05
+              }
+            ]
+          },
+          {
+            "id": "s5",
+            "speakerId": "tariq",
+            "startSec": 8.3,
+            "words": [
+              {
+                "w": "Engineering ",
+                "t0": 8.3,
+                "t1": 8.85
+              },
+              {
+                "w": "is ",
+                "t0": 8.85,
+                "t1": 9
+              },
+              {
+                "w": "ready ",
+                "t0": 9,
+                "t1": 9.3
+              },
+              {
+                "w": "for ",
+                "t0": 9.3,
+                "t1": 9.45
+              },
+              {
+                "w": "rollout ",
+                "t0": 9.45,
+                "t1": 9.9
+              },
+              {
+                "w": "next ",
+                "t0": 9.9,
+                "t1": 10.15
+              },
+              {
+                "w": "Tuesday.",
+                "t0": 10.15,
+                "t1": 10.75
+              }
+            ]
+          },
+          {
+            "id": "s6",
+            "speakerId": "jordan",
+            "startSec": 10.9,
+            "words": [
+              {
+                "w": "Marketing ",
+                "t0": 10.9,
+                "t1": 11.35
+              },
+              {
+                "w": "lines ",
+                "t0": 11.35,
+                "t1": 11.55
+              },
+              {
+                "w": "up ",
+                "t0": 11.55,
+                "t1": 11.7
+              },
+              {
+                "w": "the ",
+                "t0": 11.7,
+                "t1": 11.8
+              },
+              {
+                "w": "rollout ",
+                "t0": 11.8,
+                "t1": 11.95
+              }
+            ]
+          }
+        ],
+        "transcriptSegmentsJson": "[{\"id\":\"s1\",\"speakerId\":\"avery\",\"startSec\":0.4,\"words\":[{\"w\":\"Welcome \",\"t0\":0.4,\"t1\":0.85},{\"w\":\"to \",\"t0\":0.85,\"t1\":1.05},{\"w\":\"the \",\"t0\":1.05,\"t1\":1.25},{\"w\":\"all-hands.\",\"t0\":1.25,\"t1\":1.85}]},{\"id\":\"s2\",\"speakerId\":\"jordan\",\"startSec\":2.0,\"words\":[{\"w\":\"Contoso \",\"t0\":2.0,\"t1\":2.45},{\"w\":\"shipped \",\"t0\":2.45,\"t1\":2.9},{\"w\":\"their \",\"t0\":2.9,\"t1\":3.1},{\"w\":\"rollout \",\"t0\":3.1,\"t1\":3.55},{\"w\":\"early.\",\"t0\":3.55,\"t1\":4.0}]},{\"id\":\"s3\",\"speakerId\":\"sam\",\"startSec\":4.2,\"words\":[{\"w\":\"Adoption \",\"t0\":4.2,\"t1\":4.7},{\"w\":\"is \",\"t0\":4.7,\"t1\":4.85},{\"w\":\"up \",\"t0\":4.85,\"t1\":5.05},{\"w\":\"thirty \",\"t0\":5.05,\"t1\":5.45},{\"w\":\"percent.\",\"t0\":5.45,\"t1\":6.0}]},{\"id\":\"s4\",\"speakerId\":\"maya\",\"startSec\":6.2,\"words\":[{\"w\":\"Our \",\"t0\":6.2,\"t1\":6.4},{\"w\":\"next \",\"t0\":6.4,\"t1\":6.65},{\"w\":\"rollout \",\"t0\":6.65,\"t1\":7.1},{\"w\":\"targets \",\"t0\":7.1,\"t1\":7.55},{\"w\":\"EMEA.\",\"t0\":7.55,\"t1\":8.05}]},{\"id\":\"s5\",\"speakerId\":\"tariq\",\"startSec\":8.3,\"words\":[{\"w\":\"Engineering \",\"t0\":8.3,\"t1\":8.85},{\"w\":\"is \",\"t0\":8.85,\"t1\":9.0},{\"w\":\"ready \",\"t0\":9.0,\"t1\":9.3},{\"w\":\"for \",\"t0\":9.3,\"t1\":9.45},{\"w\":\"rollout \",\"t0\":9.45,\"t1\":9.9},{\"w\":\"next \",\"t0\":9.9,\"t1\":10.15},{\"w\":\"Tuesday.\",\"t0\":10.15,\"t1\":10.75}]},{\"id\":\"s6\",\"speakerId\":\"jordan\",\"startSec\":10.9,\"words\":[{\"w\":\"Marketing \",\"t0\":10.9,\"t1\":11.35},{\"w\":\"lines \",\"t0\":11.35,\"t1\":11.55},{\"w\":\"up \",\"t0\":11.55,\"t1\":11.7},{\"w\":\"the \",\"t0\":11.7,\"t1\":11.8},{\"w\":\"rollout \",\"t0\":11.8,\"t1\":11.95}]}]"
+      }
+    },
+    {
+      "id": "showcase-stream-videoclip",
+      "duration": 12,
+      "component": "StreamScene",
+      "props": {
+        "variant": "videoClipMode",
+        "videoSrc": "assets/pr8a-stream-clip-test.mp4",
+        "videoTitle": "Q1 All-Hands: Roadmap & Customer Wins",
+        "videoOwner": "Avery Chen",
+        "videoDate": "Apr 12, 2026",
+        "videoDuration": "12:34",
+        "chapters": [
+          {
+            "title": "Welcome",
+            "startSec": 0
+          },
+          {
+            "title": "Customer wins",
+            "startSec": 3
+          },
+          {
+            "title": "Roadmap themes",
+            "startSec": 6.5
+          },
+          {
+            "title": "Q&A",
+            "startSec": 10
+          }
+        ],
+        "chaptersJson": "[{\"title\":\"Welcome\",\"startSec\":0},{\"title\":\"Customer wins\",\"startSec\":3},{\"title\":\"Roadmap themes\",\"startSec\":6.5},{\"title\":\"Q&A\",\"startSec\":10}]",
+        "speakers": [
+          {
+            "id": "avery",
+            "name": "Avery Chen",
+            "color": "#E3008C"
+          },
+          {
+            "id": "jordan",
+            "name": "Jordan Park",
+            "color": "#5059C9"
+          },
+          {
+            "id": "sam",
+            "name": "Sam Rivera",
+            "color": "#0078D4"
+          }
+        ],
+        "speakersJson": "[{\"id\":\"avery\",\"name\":\"Avery Chen\",\"color\":\"#E3008C\"},{\"id\":\"jordan\",\"name\":\"Jordan Park\",\"color\":\"#5059C9\"},{\"id\":\"sam\",\"name\":\"Sam Rivera\",\"color\":\"#0078D4\"}]",
+        "transcriptSegments": [
+          {
+            "id": "s1",
+            "speakerId": "avery",
+            "startSec": 0.4,
+            "words": [
+              {
+                "w": "Welcome ",
+                "t0": 0.4,
+                "t1": 0.85
+              },
+              {
+                "w": "to ",
+                "t0": 0.85,
+                "t1": 1.05
+              },
+              {
+                "w": "the ",
+                "t0": 1.05,
+                "t1": 1.25
+              },
+              {
+                "w": "Q1 ",
+                "t0": 1.25,
+                "t1": 1.55
+              },
+              {
+                "w": "all-hands.",
+                "t0": 1.55,
+                "t1": 2.2
+              }
+            ]
+          },
+          {
+            "id": "s2",
+            "speakerId": "avery",
+            "startSec": 2.4,
+            "words": [
+              {
+                "w": "Today ",
+                "t0": 2.4,
+                "t1": 2.75
+              },
+              {
+                "w": "we ",
+                "t0": 2.75,
+                "t1": 2.9
+              },
+              {
+                "w": "celebrate ",
+                "t0": 2.9,
+                "t1": 3.45
+              },
+              {
+                "w": "real ",
+                "t0": 3.45,
+                "t1": 3.7
+              },
+              {
+                "w": "customer ",
+                "t0": 3.7,
+                "t1": 4.15
+              },
+              {
+                "w": "wins.",
+                "t0": 4.15,
+                "t1": 4.55
+              }
+            ]
+          },
+          {
+            "id": "s3",
+            "speakerId": "jordan",
+            "startSec": 4.7,
+            "words": [
+              {
+                "w": "Contoso ",
+                "t0": 4.7,
+                "t1": 5.2
+              },
+              {
+                "w": "shipped ",
+                "t0": 5.2,
+                "t1": 5.65
+              },
+              {
+                "w": "their ",
+                "t0": 5.65,
+                "t1": 5.85
+              },
+              {
+                "w": "rollout ",
+                "t0": 5.85,
+                "t1": 6.3
+              },
+              {
+                "w": "ahead ",
+                "t0": 6.3,
+                "t1": 6.55
+              },
+              {
+                "w": "of ",
+                "t0": 6.55,
+                "t1": 6.7
+              },
+              {
+                "w": "schedule.",
+                "t0": 6.7,
+                "t1": 7.3
+              }
+            ]
+          },
+          {
+            "id": "s4",
+            "speakerId": "jordan",
+            "startSec": 7.4,
+            "words": [
+              {
+                "w": "Adoption ",
+                "t0": 7.4,
+                "t1": 7.95
+              },
+              {
+                "w": "is ",
+                "t0": 7.95,
+                "t1": 8.1
+              },
+              {
+                "w": "up ",
+                "t0": 8.1,
+                "t1": 8.3
+              },
+              {
+                "w": "thirty ",
+                "t0": 8.3,
+                "t1": 8.7
+              },
+              {
+                "w": "percent.",
+                "t0": 8.7,
+                "t1": 9.2
+              }
+            ]
+          },
+          {
+            "id": "s5",
+            "speakerId": "sam",
+            "startSec": 9.4,
+            "words": [
+              {
+                "w": "Next ",
+                "t0": 9.4,
+                "t1": 9.65
+              },
+              {
+                "w": "quarter ",
+                "t0": 9.65,
+                "t1": 10.05
+              },
+              {
+                "w": "we ",
+                "t0": 10.05,
+                "t1": 10.2
+              },
+              {
+                "w": "double ",
+                "t0": 10.2,
+                "t1": 10.55
+              },
+              {
+                "w": "down ",
+                "t0": 10.55,
+                "t1": 10.8
+              },
+              {
+                "w": "on ",
+                "t0": 10.8,
+                "t1": 10.95
+              },
+              {
+                "w": "Copilot.",
+                "t0": 10.95,
+                "t1": 11.55
+              }
+            ]
+          }
+        ],
+        "transcriptSegmentsJson": "[{\"id\":\"s1\",\"speakerId\":\"avery\",\"startSec\":0.4,\"words\":[{\"w\":\"Welcome \",\"t0\":0.4,\"t1\":0.85},{\"w\":\"to \",\"t0\":0.85,\"t1\":1.05},{\"w\":\"the \",\"t0\":1.05,\"t1\":1.25},{\"w\":\"Q1 \",\"t0\":1.25,\"t1\":1.55},{\"w\":\"all-hands.\",\"t0\":1.55,\"t1\":2.2}]},{\"id\":\"s2\",\"speakerId\":\"avery\",\"startSec\":2.4,\"words\":[{\"w\":\"Today \",\"t0\":2.4,\"t1\":2.75},{\"w\":\"we \",\"t0\":2.75,\"t1\":2.9},{\"w\":\"celebrate \",\"t0\":2.9,\"t1\":3.45},{\"w\":\"real \",\"t0\":3.45,\"t1\":3.7},{\"w\":\"customer \",\"t0\":3.7,\"t1\":4.15},{\"w\":\"wins.\",\"t0\":4.15,\"t1\":4.55}]},{\"id\":\"s3\",\"speakerId\":\"jordan\",\"startSec\":4.7,\"words\":[{\"w\":\"Contoso \",\"t0\":4.7,\"t1\":5.2},{\"w\":\"shipped \",\"t0\":5.2,\"t1\":5.65},{\"w\":\"their \",\"t0\":5.65,\"t1\":5.85},{\"w\":\"rollout \",\"t0\":5.85,\"t1\":6.3},{\"w\":\"ahead \",\"t0\":6.3,\"t1\":6.55},{\"w\":\"of \",\"t0\":6.55,\"t1\":6.7},{\"w\":\"schedule.\",\"t0\":6.7,\"t1\":7.3}]},{\"id\":\"s4\",\"speakerId\":\"jordan\",\"startSec\":7.4,\"words\":[{\"w\":\"Adoption \",\"t0\":7.4,\"t1\":7.95},{\"w\":\"is \",\"t0\":7.95,\"t1\":8.1},{\"w\":\"up \",\"t0\":8.1,\"t1\":8.3},{\"w\":\"thirty \",\"t0\":8.3,\"t1\":8.7},{\"w\":\"percent.\",\"t0\":8.7,\"t1\":9.2}]},{\"id\":\"s5\",\"speakerId\":\"sam\",\"startSec\":9.4,\"words\":[{\"w\":\"Next \",\"t0\":9.4,\"t1\":9.65},{\"w\":\"quarter \",\"t0\":9.65,\"t1\":10.05},{\"w\":\"we \",\"t0\":10.05,\"t1\":10.2},{\"w\":\"double \",\"t0\":10.2,\"t1\":10.55},{\"w\":\"down \",\"t0\":10.55,\"t1\":10.8},{\"w\":\"on \",\"t0\":10.8,\"t1\":10.95},{\"w\":\"Copilot.\",\"t0\":10.95,\"t1\":11.55}]}]"
+      }
+    },
+    {
+      "id": "showcase-outro",
+      "duration": 4,
+      "component": "TitleCard",
+      "props": {
+        "title": "11 variants · all green",
+        "subtitle": "Lint 0/0 · Smoke 52/52 · Wave A→D shipped",
+        "background": "#0F172A"
+      }
+    }
+  ]
+}

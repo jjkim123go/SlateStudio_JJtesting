@@ -1,0 +1,29 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — TerminologyCard smoke test",
+    "purpose": "Validates TerminologyCard with definition, analogy, contextual example, and 'do not confuse with' array.",
+    "duration_target_seconds": 7
+  },
+  "scenes": [
+    {
+      "id": "term-idempotency",
+      "duration": 7,
+      "narrationStartSec": 0,
+      "component": "TerminologyCard",
+      "props": {
+        "term": "Idempotency",
+        "pronunciation": "eye-dem-POH-ten-see",
+        "definition": "A property of an operation where applying it multiple times yields the same result as applying it once.",
+        "analogy": "Like pressing an elevator call button — pressing it five times doesn't make the elevator come faster.",
+        "contextualExample": "PUT /users/42 with the same body is idempotent; POST /users is not.",
+        "doNotConfuseWith": [
+          { "label": "Pure functions", "why": "Pure functions have no side effects at all; idempotent operations may have effects, just no additional ones on repeat." },
+          { "label": "Atomic operations", "why": "Atomicity is about all-or-nothing execution; idempotency is about repeatability." }
+        ]
+      }
+    }
+  ]
+}

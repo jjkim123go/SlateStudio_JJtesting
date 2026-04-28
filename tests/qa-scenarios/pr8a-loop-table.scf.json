@@ -1,0 +1,35 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "loop-table-12s",
+      "duration": 12,
+      "component": "LoopScene",
+      "props": {
+        "variant": "tableDatabase",
+        "pageTitle": "Q3 Feature Launches",
+        "pageMeta": "Updated just now · 8 features tracked",
+        "attendees": ["Avery Chen", "Jordan Park", "Sam Rivera", "Maya Lopez", "Tariq Quinn"],
+        "rows": [
+          { "feature": "Adaptive ingest",     "owner": "Avery Chen",  "status": "On Track", "date": "Sep 14", "region": "WUS3", "risk": "Low",  "mitigation": "None" },
+          { "feature": "Schema migration v4", "owner": "Jordan Park", "status": "At Risk",  "date": "Sep 21", "region": "EUS2", "risk": "High", "mitigation": "Rollback drill" },
+          { "feature": "Failover drill",      "owner": "Maya Lopez",  "status": "On Track", "date": "Sep 28", "region": "WEU",  "risk": "Med",  "mitigation": "Comms plan" },
+          { "feature": "Cost ceilings",       "owner": "Tariq Quinn", "status": "At Risk",  "date": "Oct 05", "region": "WUS3", "risk": "High", "mitigation": "Budget review" },
+          { "feature": "Telemetry v3",        "owner": "Sam Rivera",  "status": "Done",     "date": "Aug 30", "region": "EUS2", "risk": "Low",  "mitigation": "Shipped" },
+          { "feature": "Auth rotation",       "owner": "Avery Chen",  "status": "On Track", "date": "Oct 12", "region": "WEU",  "risk": "Low",  "mitigation": "None" },
+          { "feature": "Capacity plan",       "owner": "Jordan Park", "status": "Done",     "date": "Aug 20", "region": "WUS3", "risk": "Low",  "mitigation": "Shipped" },
+          { "feature": "Postmortem 6021",     "owner": "Sam Rivera",  "status": "On Track", "date": "Sep 18", "region": "EUS2", "risk": "Med",  "mitigation": "Owner aligned" }
+        ],
+        "copilotSuggestions": [
+          "Add Mitigation column?",
+          "Filter to At Risk only",
+          "Notify owners of slipping items"
+        ],
+        "liveCursor": { "name": "Sam", "accentHex": "#107C10" }
+      }
+    }
+  ]
+}

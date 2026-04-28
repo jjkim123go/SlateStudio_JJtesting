@@ -1,0 +1,150 @@
+<div class="ac-root" data-scene-component="AdminCenterScene" data-theme="{{theme}}" style="position:absolute;inset:0;font-family:'Segoe UI',Arial,sans-serif;overflow:hidden">
+  <style>
+    .scene-{{sceneId}} .ac-root {background:#efeeec;color:#252423}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] {background:#151413;color:#f3f2f1}
+    .scene-{{sceneId}} .ac-root .ac-shell {position:absolute;inset:24px;border-radius:24px;overflow:hidden;background:#faf9f8;box-shadow:0 28px 78px rgba(0,0,0,.22)}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-shell {background:#1f1e1d;box-shadow:0 28px 78px rgba(0,0,0,.48)}
+    .scene-{{sceneId}} .ac-root .ac-header {height:48px;background:#252423;color:#fff;display:flex;align-items:center;gap:16px;padding:0 18px}
+    .scene-{{sceneId}} .ac-root .ac-brand {font-size:18px;font-weight:700}
+    .scene-{{sceneId}} .ac-root .ac-tenant-switcher {padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08);font-size:13px;color:rgba(255,255,255,.82)}
+    .scene-{{sceneId}} .ac-root .ac-tenant-switcher::after {content:"▾";margin-left:8px;color:rgba(255,255,255,.54)}
+    .scene-{{sceneId}} .ac-root .ac-head-search {margin-left:auto;display:flex;align-items:center;gap:10px;height:34px;width:340px;border-radius:999px;background:rgba(255,255,255,.1);padding:0 14px;color:rgba(255,255,255,.6);font-size:13px}
+    .scene-{{sceneId}} .ac-root .ac-body {display:flex;height:calc(100% - 48px)}
+    .scene-{{sceneId}} .ac-root .ac-nav {width:240px;background:#f3f2f1;border-right:1px solid rgba(0,0,0,.06);padding:18px 12px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-nav {background:#201f1e;border-right-color:rgba(255,255,255,.06)}
+    .scene-{{sceneId}} .ac-root .ac-nav-item {display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;font-size:14px;font-weight:600;color:#323130;margin-bottom:6px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-nav-item {color:#f3f2f1}
+    .scene-{{sceneId}} .ac-root .ac-nav-item.ac-active {background:rgba(76,159,254,.12);box-shadow:inset 0 0 0 1px rgba(76,159,254,.2);color:#0f6cbd}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-nav-item.ac-active {color:#8ecbff}
+    .scene-{{sceneId}} .ac-root .ac-main {flex:1;padding:22px 22px 20px 22px;position:relative;background:#faf9f8}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-main {background:#1b1a19}
+    .scene-{{sceneId}} .ac-root .ac-breadcrumb {font-size:13px;color:#605e5c;margin-bottom:10px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-breadcrumb {color:#c8c6c4}
+    .scene-{{sceneId}} .ac-root .ac-page-head {display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:16px}
+    .scene-{{sceneId}} .ac-root .ac-page-title {font-size:30px;font-weight:700;letter-spacing:-.02em}
+    .scene-{{sceneId}} .ac-root .ac-toolbar {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+    .scene-{{sceneId}} .ac-root .ac-toolbar button {height:36px;padding:0 14px;border-radius:12px;border:1px solid rgba(0,0,0,.08);background:#fff;font-size:13px;font-weight:600;color:#323130}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-toolbar button {background:#252423;border-color:rgba(255,255,255,.08);color:#f3f2f1}
+    .scene-{{sceneId}} .ac-root .ac-toolbar button.ac-primary {background:#0f6cbd;color:#fff;border-color:#0f6cbd}
+    .scene-{{sceneId}} .ac-root .ac-content-grid {display:grid;grid-template-columns:1.4fr .9fr;gap:16px;height:calc(100% - 118px)}
+    .scene-{{sceneId}} .ac-root .ac-card {border-radius:18px;background:#fff;box-shadow:0 12px 30px rgba(0,0,0,.06);padding:18px;position:relative;overflow:hidden}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-card {background:#252423;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+    .scene-{{sceneId}} .ac-root .ac-card-title {font-size:14px;font-weight:700;margin-bottom:12px}
+    .scene-{{sceneId}} .ac-root .ac-users-table {border-radius:14px;overflow:hidden;border:1px solid rgba(0,0,0,.05)}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-users-table {border-color:rgba(255,255,255,.06)}
+    .scene-{{sceneId}} .ac-root .ac-users-row {display:grid;grid-template-columns:1.2fr 1.1fr .8fr .7fr .8fr}
+    .scene-{{sceneId}} .ac-root .ac-users-row > div {padding:12px 14px;background:#fff;border-bottom:1px solid rgba(0,0,0,.05);font-size:13px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-users-row > div {background:#252423;border-bottom-color:rgba(255,255,255,.06)}
+    .scene-{{sceneId}} .ac-root .ac-users-row.ac-head > div {background:#f8f7f5;font-weight:700;color:#323130}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-users-row.ac-head > div {background:#2f2e2d;color:#fff}
+    .scene-{{sceneId}} .ac-root .ac-status-ok {display:inline-flex;padding:4px 10px;border-radius:999px;background:rgba(16,124,16,.12);color:#107c10;font-weight:700}
+    .scene-{{sceneId}} .ac-root .ac-status-warning {display:inline-flex;padding:4px 10px;border-radius:999px;background:rgba(255,185,0,.16);color:#8a6d00;font-weight:700}
+    .scene-{{sceneId}} .ac-root .ac-score {font-size:56px;font-weight:800;letter-spacing:-.04em}
+    .scene-{{sceneId}} .ac-root .ac-score-sub {font-size:13px;color:#605e5c;margin-bottom:12px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-score-sub {color:#c8c6c4}
+    .scene-{{sceneId}} .ac-root .ac-checklist {display:flex;flex-direction:column;gap:12px}
+    .scene-{{sceneId}} .ac-root .ac-check {display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:#f8f7f5}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-check {background:#2e2d2c}
+    .scene-{{sceneId}} .ac-root .ac-check-icon {width:22px;height:22px;border-radius:50%;background:rgba(16,124,16,.14);color:#107c10;display:flex;align-items:center;justify-content:center;font-weight:800;opacity:0;visibility:hidden}
+    .scene-{{sceneId}} .ac-root .ac-policy-row {display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:14px;background:#f8f7f5;margin-bottom:10px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-policy-row {background:#2d2c2b}
+    .scene-{{sceneId}} .ac-root .ac-pill-host {position:absolute;left:22px;bottom:20px;z-index:8}
+    .scene-{{sceneId}} .ac-root .ac-tenant-menu {position:absolute;top:66px;left:240px;width:240px;border-radius:18px;background:#fff;box-shadow:0 18px 40px rgba(0,0,0,.16);padding:10px;opacity:0;visibility:hidden;z-index:9}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-tenant-menu {background:#2b2a29}
+    .scene-{{sceneId}} .ac-root .ac-tenant-item {padding:10px 12px;border-radius:12px;font-size:13px;font-weight:600}
+    .scene-{{sceneId}} .ac-root .ac-tenant-item.ac-selected {background:rgba(76,159,254,.12);color:#0f6cbd}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-tenant-item.ac-selected {color:#8ecbff}
+    .scene-{{sceneId}} .ac-root .ac-blade {position:absolute;top:94px;right:22px;width:360px;height:500px;border-radius:22px;background:#fff;box-shadow:0 28px 64px rgba(0,0,0,.2);padding:20px;opacity:0;visibility:hidden;z-index:10}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-blade {background:#252423;box-shadow:0 28px 64px rgba(0,0,0,.44)}
+    .scene-{{sceneId}} .ac-root .ac-blade-tabs {display:flex;gap:10px;margin-bottom:18px}
+    .scene-{{sceneId}} .ac-root .ac-blade-tab {padding:7px 12px;border-radius:999px;background:#f3f2f1;font-size:12px;font-weight:700}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-blade-tab {background:#323130}
+    .scene-{{sceneId}} .ac-root .ac-field {margin-bottom:14px}
+    .scene-{{sceneId}} .ac-root .ac-field label {display:block;font-size:12px;font-weight:700;margin-bottom:6px;color:#605e5c}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-field label {color:#d2d0ce}
+    .scene-{{sceneId}} .ac-root .ac-field div {height:40px;border-radius:12px;border:1px solid rgba(0,0,0,.08);display:flex;align-items:center;padding:0 12px;background:#fff;font-size:14px}
+    .scene-{{sceneId}} .ac-root[data-theme="dark"] .ac-field div {background:#2f2e2d;border-color:rgba(255,255,255,.08)}
+    .scene-{{sceneId}} .ac-root .ac-step-layer {position:absolute;inset:auto 0 0 0;width:0;height:0;overflow:hidden}
+  </style>
+  <div class="ac-shell">
+    <div class="ac-header">
+      <div class="ac-brand">Microsoft 365 admin center</div>
+      <div class="ac-tenant-switcher"><span class="ac-current-tenant">{{tenantName}}</span></div>
+      <div class="ac-head-search">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2"/><path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Search users, groups, billing, settings</span>
+      </div>
+    </div>
+    <div class="ac-body">
+      <div class="ac-nav">
+        <div class="ac-nav-item"><span>⌂</span><span>Home</span></div>
+        <div class="ac-nav-item ac-active"><span>👤</span><span>Users</span></div>
+        <div class="ac-nav-item"><span>👥</span><span>Teams &amp; groups</span></div>
+        <div class="ac-nav-item"><span>💳</span><span>Billing</span></div>
+        <div class="ac-nav-item"><span>⚙</span><span>Setup</span></div>
+        <div class="ac-nav-item"><span>📊</span><span>Reports</span></div>
+        <div class="ac-nav-item"><span>❤</span><span>Health</span></div>
+        <div class="ac-nav-item"><span>⋯</span><span>Settings</span></div>
+      </div>
+      <div class="ac-main">
+        <div class="ac-tenant-menu">
+          <div class="ac-tenant-item ac-selected">Contoso</div>
+          <div class="ac-tenant-item">Northwind</div>
+          <div class="ac-tenant-item">Fabrikam</div>
+        </div>
+        <div class="ac-blade">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><strong style="font-size:22px">Add a user</strong><span style="font-size:20px;color:#8a8886">×</span></div>
+          <div class="ac-blade-tabs"><div class="ac-blade-tab">Basics</div><div class="ac-blade-tab">Licenses</div><div class="ac-blade-tab">Settings</div></div>
+          <div class="ac-field"><label>Display name</label><div data-field="display-name"></div></div>
+          <div class="ac-field"><label>User name</label><div data-field="user-name"></div></div>
+          <div class="ac-field"><label>Licenses</label><div data-field="licenses"></div></div>
+        </div>
+        <div class="ac-pill-host"></div>
+        <div class="ac-breadcrumb">Home / Users / <span class="ac-breadcrumb-current">{{currentSection}}</span></div>
+        <div class="ac-page-head">
+          <div class="ac-page-title">{{currentSection}}</div>
+        </div>
+        <div class="ac-toolbar">
+          <button class="ac-primary" data-toolbar="add-user">Add user</button>
+          <button>Multi-factor authentication</button>
+          <button>Refresh</button>
+          <button>Export</button>
+          <button>Filter</button>
+          <button>Search</button>
+        </div>
+        <div class="ac-content-grid">
+          <div class="ac-card">
+            <div class="ac-card-title">Active users</div>
+            <div class="ac-users-table">
+              <div class="ac-users-row ac-head"><div>Display name</div><div>User name</div><div>Licenses</div><div>Status</div><div>Last sign-in</div></div>
+              <div class="ac-users-row"><div>Amanda Chen</div><div>amanda.chen@contoso.com</div><div>M365 E5</div><div><span class="ac-status-ok">Healthy</span></div><div>9 min ago</div></div>
+              <div class="ac-users-row"><div>Marco Silva</div><div>marco.silva@contoso.com</div><div>M365 E3</div><div><span class="ac-status-ok">Healthy</span></div><div>22 min ago</div></div>
+              <div class="ac-users-row"><div>Priya Rao</div><div>priya.rao@contoso.com</div><div>M365 E5</div><div><span class="ac-status-warning">Review</span></div><div>1 hour ago</div></div>
+              <div class="ac-users-row"><div>Alex Wong</div><div>alex.wong@contoso.com</div><div>Frontline</div><div><span class="ac-status-ok">Healthy</span></div><div>2 hours ago</div></div>
+              <div class="ac-users-row"><div>Jorge Diaz</div><div>jorge.diaz@contoso.com</div><div>M365 E5</div><div><span class="ac-status-ok">Healthy</span></div><div>Yesterday</div></div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div class="ac-card">
+              <div class="ac-card-title">Compliance score</div>
+              <div class="ac-score" data-score>86</div>
+              <div class="ac-score-sub">Trending +6 points this month</div>
+              <div class="ac-checklist">
+                <div class="ac-check"><div class="ac-check-icon">✓</div><span>Require MFA for admins</span></div>
+                <div class="ac-check"><div class="ac-check-icon">✓</div><span>Audit log search enabled</span></div>
+                <div class="ac-check"><div class="ac-check-icon">✓</div><span>Retention policies assigned</span></div>
+              </div>
+            </div>
+            <div class="ac-card">
+              <div class="ac-card-title">Policy assignments</div>
+              <div class="ac-policy-row" data-policy="Conditional Access"><div><strong>Conditional Access</strong><div style="font-size:12px;color:#605e5c">Admins · All cloud apps</div></div><button style="height:34px;padding:0 12px;border-radius:10px;border:none;background:#0f6cbd;color:#fff;font-weight:700" data-assign-button>Assign</button></div>
+              <div class="ac-policy-row" data-policy="DLP"><div><strong>DLP policy</strong><div style="font-size:12px;color:#605e5c">Exchange · OneDrive</div></div><span style="font-size:13px;font-weight:700;color:#107c10">Assigned</span></div>
+              <div class="ac-policy-row" data-policy="Retention"><div><strong>Retention labels</strong><div style="font-size:12px;color:#605e5c">SharePoint · Teams</div></div><span style="font-size:13px;font-weight:700;color:#107c10">Assigned</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="ac-step-layer">{{{stepsHtml}}}</div>
+      </div>
+    </div>
+  </div>
+</div>

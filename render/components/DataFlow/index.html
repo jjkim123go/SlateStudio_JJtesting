@@ -1,0 +1,224 @@
+<!--
+  DataFlow — Premium glassmorphic pipeline visualization
+  Purpose: governance/data-movement diagram. Stages (systems) appear as
+           glassmorphic cards, edges draw as neon-glow SVG paths, energy
+           pulse orbs travel along connections, classification banners slide.
+  Modes: "linear" (default — left-to-right row) or "mesh" (auto grid).
+
+  Props consumed (all optional):
+    title           string
+    stagesJson      JSON string of [{id, label, systemType?, classification?,
+                    encryption?, region?}]
+    edgesJson       JSON string of [{from, to, dataType, protocol?,
+                    encrypted?: boolean, gatedBy?}]
+    legendJson      JSON string of {classifications:[…], encryptionStates:[…]}
+    calloutsJson    JSON string of [{targetId, text}]
+    mode            "linear" | "mesh"
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+.scene-{{sceneId}} .df-root{
+  --df-bg-deep:#050816;
+  --df-bg-center:#0a0e27;
+  --df-text:#f0f4ff;
+  --df-muted:#7b8db5;
+  --df-accent:#38bdf8;
+  --df-accent-glow:rgba(56,189,248,0.5);
+  --df-glass-bg:rgba(255,255,255,0.06);
+  --df-glass-border:rgba(255,255,255,0.12);
+  --df-glass-shadow:rgba(56,189,248,0.08);
+  --df-edge-encrypted:#22c55e;
+  --df-edge-unencrypted:#f59e0b;
+  --df-class-public:#94a3b8;
+  --df-class-internal:#38bdf8;
+  --df-class-confidential:#a78bfa;
+  --df-class-restricted:#f472b6;
+  --df-class-pii:#f43f5e;
+  position:absolute;inset:0;padding:56px 64px 56px;
+  display:flex;flex-direction:column;gap:16px;
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  background:radial-gradient(ellipse 80% 70% at 50% 45%,var(--df-bg-center) 0%,var(--df-bg-deep) 100%);
+  color:var(--df-text);
+  overflow:hidden;
+}
+/* subtle dot grid for depth */
+.scene-{{sceneId}} .df-root::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,0.04) 1px,transparent 1px);
+  background-size:32px 32px;
+  pointer-events:none;
+}
+.scene-{{sceneId}} .df-header{
+  display:flex;flex-direction:column;gap:6px;
+  position:relative;z-index:1;
+  opacity:0;
+}
+.scene-{{sceneId}} .df-title{
+  margin:0;font-size:48px;font-weight:800;
+  letter-spacing:-0.03em;line-height:1.08;
+  color:var(--df-text);
+}
+.scene-{{sceneId}} .df-title:empty{display:none}
+.scene-{{sceneId}} .df-title-accent{
+  display:block;width:64px;height:3px;
+  margin-top:10px;border-radius:2px;
+  background:linear-gradient(90deg,var(--df-accent),transparent);
+  opacity:0;
+}
+.scene-{{sceneId}} .df-canvas-wrap{
+  flex:1;min-height:0;position:relative;
+  border-radius:20px;
+  overflow:visible;
+  z-index:1;
+}
+.scene-{{sceneId}} .df-svg{
+  position:absolute;inset:0;width:100%;height:100%;
+  display:block;overflow:visible;
+}
+/* glassmorphic node cards — styled via SVG foreignObject + CSS */
+.scene-{{sceneId}} .df-stage{opacity:0}
+.scene-{{sceneId}} .df-node-card{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:4px;
+  background:var(--df-glass-bg);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border:1px solid var(--df-glass-border);
+  border-radius:16px;
+  box-shadow:0 0 24px var(--df-glass-shadow),0 8px 32px rgba(0,0,0,0.3);
+  padding:14px 12px;
+  box-sizing:border-box;
+}
+.scene-{{sceneId}} .df-node-icon{
+  font-size:28px;line-height:1;margin-bottom:2px;
+  filter:drop-shadow(0 0 6px rgba(255,255,255,0.15));
+}
+.scene-{{sceneId}} .df-node-label{
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:24px;font-weight:700;letter-spacing:-0.02em;
+  color:var(--df-text);text-align:center;
+  line-height:1.15;
+}
+.scene-{{sceneId}} .df-node-sub{
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:14px;font-weight:500;
+  color:var(--df-muted);text-align:center;
+  line-height:1.2;
+}
+/* edge glow lines */
+.scene-{{sceneId}} .df-edge-glow{
+  fill:none;stroke:var(--df-accent);stroke-width:8;
+  stroke-linecap:round;opacity:0.25;
+  filter:url(#df-blur-{{sceneId}});
+}
+.scene-{{sceneId}} .df-edge{
+  fill:none;stroke:var(--df-accent);stroke-width:2.5;stroke-linecap:round;
+}
+.scene-{{sceneId}} .df-edge[data-encrypted="true"],
+.scene-{{sceneId}} .df-edge-glow[data-encrypted="true"]{stroke:var(--df-edge-encrypted)}
+.scene-{{sceneId}} .df-edge[data-encrypted="false"],
+.scene-{{sceneId}} .df-edge-glow[data-encrypted="false"]{stroke:var(--df-edge-unencrypted)}
+.scene-{{sceneId}} .df-edge[data-encrypted="false"]{stroke-dasharray:10 6}
+/* edge label pills */
+.scene-{{sceneId}} .df-edge-pill{opacity:0}
+.scene-{{sceneId}} .df-edge-pill-bg{
+  fill:rgba(10,14,39,0.85);
+  stroke:rgba(255,255,255,0.10);stroke-width:1;
+  rx:12;ry:12;
+}
+.scene-{{sceneId}} .df-edge-pill-text{
+  font-family:'Inter',system-ui,sans-serif;
+  fill:var(--df-muted);font-size:13px;font-weight:600;
+  letter-spacing:0.01em;
+}
+/* energy pulse orbs */
+.scene-{{sceneId}} .df-pulse{opacity:0}
+/* classification banners */
+.scene-{{sceneId}} .df-class-banner{opacity:0}
+.scene-{{sceneId}} .df-class-banner-rect{rx:8;ry:8}
+.scene-{{sceneId}} .df-class-banner-label{
+  font-family:'Inter',system-ui,sans-serif;
+  font-size:11px;font-weight:800;letter-spacing:0.14em;
+  text-transform:uppercase;fill:#0f172a;
+}
+/* locks */
+.scene-{{sceneId}} .df-lock{opacity:0;transform-box:fill-box;transform-origin:center}
+/* callouts */
+.scene-{{sceneId}} .df-callout{
+  position:absolute;max-width:260px;
+  padding:10px 14px;border-radius:12px;
+  background:rgba(10,14,39,0.88);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(56,189,248,0.3);
+  font-size:14px;line-height:1.35;color:var(--df-text);
+  box-shadow:0 0 20px rgba(56,189,248,0.1),0 12px 32px rgba(2,6,23,0.55);
+  opacity:0;pointer-events:none;
+}
+/* legend */
+.scene-{{sceneId}} .df-legend{
+  display:flex;flex-wrap:wrap;gap:18px 24px;
+  padding:14px 18px;border-radius:14px;
+  background:rgba(255,255,255,0.04);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.08);
+  opacity:0;position:relative;z-index:1;
+}
+.scene-{{sceneId}} .df-legend:empty{display:none}
+.scene-{{sceneId}} .df-legend-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.scene-{{sceneId}} .df-legend-title{
+  font-size:11px;font-weight:800;letter-spacing:0.14em;
+  text-transform:uppercase;color:var(--df-muted);
+}
+.scene-{{sceneId}} .df-legend-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:14px;font-weight:600;color:var(--df-text);
+}
+.scene-{{sceneId}} .df-legend-swatch{
+  width:14px;height:14px;border-radius:4px;
+}
+</style>
+<div class="df-root" data-scene-component="DataFlow"
+  data-df-stages="{{stagesJson}}"
+  data-df-edges="{{edgesJson}}"
+  data-df-legend="{{legendJson}}"
+  data-df-callouts="{{calloutsJson}}"
+  data-df-mode="{{mode}}">
+  <header class="df-header">
+    <h2 class="df-title">{{title}}</h2>
+    <span class="df-title-accent"></span>
+  </header>
+  <div class="df-canvas-wrap">
+    <svg class="df-svg" viewBox="0 0 1800 760" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="df-blur-{{sceneId}}" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+        </filter>
+        <filter id="df-glow-orb-{{sceneId}}" x="-200%" y="-200%" width="500%" height="500%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+        <marker id="df-arrow-{{sceneId}}" viewBox="0 0 12 10" refX="11" refY="5"
+          markerWidth="10" markerHeight="8" orient="auto-start-reverse">
+          <path d="M0,1 L10,5 L0,9 Z" fill="var(--df-accent)" opacity="0.9"/>
+        </marker>
+        <marker id="df-arrow-enc-{{sceneId}}" viewBox="0 0 12 10" refX="11" refY="5"
+          markerWidth="10" markerHeight="8" orient="auto-start-reverse">
+          <path d="M0,1 L10,5 L0,9 Z" fill="var(--df-edge-encrypted)" opacity="0.9"/>
+        </marker>
+        <marker id="df-arrow-unenc-{{sceneId}}" viewBox="0 0 12 10" refX="11" refY="5"
+          markerWidth="10" markerHeight="8" orient="auto-start-reverse">
+          <path d="M0,1 L10,5 L0,9 Z" fill="var(--df-edge-unencrypted)" opacity="0.9"/>
+        </marker>
+      </defs>
+      <g class="df-edges-layer"></g>
+      <g class="df-stages-layer"></g>
+      <g class="df-banners-layer"></g>
+      <g class="df-packets-layer"></g>
+      <g class="df-locks-layer"></g>
+    </svg>
+    <div class="df-callouts-layer" style="position:absolute;inset:0;pointer-events:none"></div>
+  </div>
+  <div class="df-legend"></div>
+</div>

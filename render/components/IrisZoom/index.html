@@ -1,0 +1,29 @@
+<style>
+.scene-{{sceneId}} .iz-root{position:absolute;inset:0;overflow:hidden;background:#000;font-family:Inter,Segoe UI,Arial,sans-serif}
+.scene-{{sceneId}} .iz-plate,.scene-{{sceneId}} .iz-overlay,.scene-{{sceneId}} .iz-ring{position:absolute;inset:0}
+.scene-{{sceneId}} .iz-outgoing{background:linear-gradient(135deg,rgba(15,23,42,0.96) 0%,rgba(30,41,59,0.84) 48%,rgba(2,6,23,0.98) 100%);background-size:cover;background-position:center center}
+.scene-{{sceneId}} .iz-incoming{background:linear-gradient(135deg,rgba(3,105,161,0.84) 0%,rgba(29,78,216,0.72) 42%,rgba(126,34,206,0.84) 100%);background-size:cover;background-position:center center}
+.scene-{{sceneId}} .iz-overlay{display:flex;flex-direction:column;justify-content:flex-end;padding:7% 7.5% 8%;background:linear-gradient(180deg,rgba(255,255,255,0.03) 0%,rgba(255,255,255,0.02) 36%,rgba(0,0,0,0.46) 100%);color:#fff}
+.scene-{{sceneId}} .iz-kicker{margin:0 0 12px;font-size:14px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.72)}
+.scene-{{sceneId}} .iz-title{margin:0;font-size:clamp(42px,5vw,94px);line-height:0.97;font-weight:800;letter-spacing:-0.04em;text-shadow:0 18px 38px rgba(0,0,0,0.38)}
+.scene-{{sceneId}} .iz-subtitle{margin:16px 0 0;max-width:54%;font-size:20px;line-height:1.45;color:rgba(255,255,255,0.84)}
+.scene-{{sceneId}} .iz-ring{pointer-events:none;z-index:3;opacity:0}
+.scene-{{sceneId}} .iz-ring::before{content:"";position:absolute;left:calc(var(--iz-x,50%) - 70px);top:calc(var(--iz-y,50%) - 70px);width:140px;height:140px;border-radius:999px;border:1px solid rgba(255,255,255,0.26);box-shadow:0 0 0 1px rgba(255,255,255,0.08),0 0 44px rgba(255,255,255,0.12)}
+</style>
+<div class="iz-root" data-scene-component="IrisZoom" data-outgoing-src="{{outgoingSrc}}" data-incoming-src="{{incomingSrc}}" data-focal-point="{{focalPoint}}" data-outgoing-label="{{outgoingLabel}}" data-incoming-label="{{incomingLabel}}" data-subline="{{subline}}">
+  <div class="iz-plate iz-incoming">
+    <div class="iz-overlay">
+      <p class="iz-kicker iz-kicker-incoming"></p>
+      <h1 class="iz-title iz-title-incoming"></h1>
+      <p class="iz-subtitle iz-subtitle-incoming"></p>
+    </div>
+  </div>
+  <div class="iz-plate iz-outgoing">
+    <div class="iz-overlay">
+      <p class="iz-kicker iz-kicker-outgoing"></p>
+      <h1 class="iz-title iz-title-outgoing"></h1>
+      <p class="iz-subtitle iz-subtitle-outgoing"></p>
+    </div>
+  </div>
+  <div class="iz-ring"></div>
+</div>

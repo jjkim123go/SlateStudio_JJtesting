@@ -1,0 +1,20 @@
+{
+  "metric1Label": "Prompt to plan",
+  "metric1Prev": 0,
+  "metric1Value": 90,
+  "metric1Unit": "s",
+  "metric1Delta": "Brief ready",
+  "metric1Note": "Structured intent becomes an approved creative direction.",
+  "metric2Label": "Components routed",
+  "metric2Prev": 0,
+  "metric2Value": 76,
+  "metric2Unit": "",
+  "metric2Delta": "Live scenes",
+  "metric2Note": "Scene plans choose deterministic components over slide art.",
+  "metric3Label": "Review checks",
+  "metric3Prev": 0,
+  "metric3Value": 8,
+  "metric3Unit": "",
+  "metric3Delta": "Rubric pass",
+  "metric3Note": "Audio, captions, pacing, and visuals are validated."
+}

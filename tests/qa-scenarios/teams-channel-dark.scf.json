@@ -1,0 +1,122 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-recording",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "teams-channel-dark",
+      "duration": 16,
+      "component": "TeamsScene",
+      "props": {
+        "theme": "dark",
+        "view": "channel_post",
+        "user": { "name": "Megan Bowen", "initials": "MB", "avatarColor": "#5B5FC7" },
+        "topBar": {
+          "currentTab": "teams",
+          "search": { "placeholder": "Search" }
+        },
+        "rail": {
+          "items": [
+            { "key": "activity", "label": "Activity", "badge": 3 },
+            { "key": "chat", "label": "Chat", "badge": 8 },
+            { "key": "teams", "label": "Teams", "active": true },
+            { "key": "calendar", "label": "Calendar" },
+            { "key": "calls", "label": "Calls" },
+            { "key": "files", "label": "Files" }
+          ]
+        },
+        "navigator": {
+          "title": "Teams",
+          "actions": ["filter", "join_create"],
+          "items": [
+            {
+              "type": "team",
+              "name": "Mark 8 Project Team",
+              "expanded": true,
+              "channels": [
+                { "name": "General" },
+                { "name": "Design", "active": true, "unread": true },
+                { "name": "Engineering" },
+                { "name": "Launch Plan" }
+              ]
+            },
+            {
+              "type": "team",
+              "name": "Sales and Marketing",
+              "expanded": false
+            },
+            {
+              "type": "team",
+              "name": "Retail",
+              "expanded": false
+            }
+          ]
+        },
+        "channel": {
+          "team": "Mark 8 Project Team",
+          "name": "Design",
+          "tabs": [
+            { "label": "Posts", "active": true },
+            { "label": "Files" },
+            { "label": "Notes" },
+            { "label": "+", "kind": "add" }
+          ]
+        },
+        "steps": [
+          { "kind": "date_divider", "label": "Today" },
+          {
+            "kind": "message",
+            "id": "p1",
+            "author": "Diego Siciliani",
+            "avatarColor": "#0078D4",
+            "status": "online",
+            "time": "9:14 AM",
+            "subject": "Design review — v2 mockups",
+            "text": "Posting the latest comp set for the Mark 8 dashboard. Please leave inline feedback by EOD Thursday."
+          },
+          {
+            "kind": "file_link",
+            "id": "p2",
+            "author": "Diego Siciliani",
+            "avatarColor": "#0078D4",
+            "time": "9:14 AM",
+            "file": { "name": "Mark8-Dashboard-v2.fig", "type": "figma", "sub": "Modified by Diego just now" }
+          },
+          {
+            "kind": "message",
+            "id": "p3",
+            "author": "Lynne Robbins",
+            "avatarColor": "#107C10",
+            "status": "online",
+            "time": "9:42 AM",
+            "text": "Love the new sidebar treatment. Quick question on the empty state — are we keeping the illustration?"
+          },
+          { "kind": "reaction", "targetStepId": "p3", "emoji": "👀", "from": "Diego Siciliani" },
+          {
+            "kind": "message_with_quote",
+            "id": "p4",
+            "author": "Diego Siciliani",
+            "avatarColor": "#0078D4",
+            "status": "online",
+            "time": "9:48 AM",
+            "quote": { "author": "Lynne Robbins", "text": "are we keeping the illustration" },
+            "text": "Yes — but recolored to the new accent. See frame 12."
+          },
+          {
+            "kind": "message",
+            "id": "p5",
+            "author": "Pradeep Gupta",
+            "avatarColor": "#D83B01",
+            "status": "away",
+            "time": "10:05 AM",
+            "text": "@Diego shipped a token update last night that should help with the contrast on the empty state."
+          },
+          { "kind": "reaction", "targetStepId": "p5", "emoji": "🙌", "from": "Lynne Robbins" }
+        ],
+        "composer": {
+          "placeholder": "Start a post"
+        }
+      }
+    }
+  ]
+}

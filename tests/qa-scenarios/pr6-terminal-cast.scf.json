@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — TerminalCast smoke test",
+    "purpose": "Validates TerminalCast with multiple commands, zoom moments, session branding, and PowerShell shell theme.",
+    "duration_target_seconds": 12
+  },
+  "scenes": [
+    {
+      "id": "tc-az-deploy",
+      "duration": 12,
+      "narrationStartSec": 0,
+      "component": "TerminalCast",
+      "props": {
+        "title": "Deploying with az containerapp",
+        "shellTheme": "powershell",
+        "speakerNote": "Watch the log streams light up as containers start.",
+        "sessionBranding": {
+          "event": "Microsoft Build 2026 — Session BRK113",
+          "accentColor": "#0078D4"
+        },
+        "commands": [
+          {
+            "prompt": "PS C:\\repo>",
+            "cmd": "az containerapp create --name web --image ghcr.io/contoso/web:1.0 --target-port 8080",
+            "output": [
+              "Creating Container App 'web'...",
+              "Provisioning revision 'web--xyz123'...",
+              "Successfully created with FQDN: web.kindforest-12345.eastus.azurecontainerapps.io"
+            ],
+            "narrationSec": 4,
+            "badge": "deploy",
+            "focus": "out"
+          },
+          {
+            "prompt": "PS C:\\repo>",
+            "cmd": "az containerapp logs show --name web --follow",
+            "output": [
+              "[INFO ] Listening on :8080",
+              "[INFO ] GET /healthz 200 in 3ms",
+              "[INFO ] GET /api/v1/items 200 in 17ms"
+            ],
+            "narrationSec": 5,
+            "badge": "logs",
+            "focus": "out"
+          }
+        ],
+        "zoomMoments": [
+          { "commandIndex": 0, "scale": 1.4 },
+          { "commandIndex": 1, "scale": 1.25 }
+        ]
+      }
+    }
+  ]
+}

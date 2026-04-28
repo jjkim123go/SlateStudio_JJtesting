@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "Disclaimer Smoke — scene-end (full interstitial)",
+    "description": "Single Disclaimer scene with scene-end placement, legal severity, the whole scene is the disclaimer, with title.",
+    "author": "Slate QA — PR5 Lane B"
+  },
+  "scenes": [
+    {
+      "id": "dcl-scene-end-smoke",
+      "component": "Disclaimer",
+      "duration": 8,
+      "props": {
+        "text": "This presentation contains **forward-looking statements** that involve risks and uncertainties.\nActual results may differ materially from those projected.\n\nAll trademarks are the property of their respective owners.",
+        "title": "Legal Disclosure",
+        "placement": "scene-end",
+        "severity": "legal",
+        "audience": "external",
+        "revealStartSec": 0,
+        "revealDurationSec": 0.5
+      }
+    }
+  ]
+}

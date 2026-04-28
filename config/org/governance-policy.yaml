@@ -1,0 +1,165 @@
+# Slate — Enterprise Governance Policy
+#
+# Organization-wide rules that apply to ALL pipelines.
+# These are separate from pipeline-level stage contracts
+# to prevent governance drift from copy-pasted config.
+#
+# Loaded by ProductionTrace at runtime for global enforcement.
+
+governance:
+  # Default budget per project (USD). Callers may override per project or via CLI.
+  default_project_budget_usd: 100.00
+
+  # Hard budget cap across entire production run (USD)
+  hard_budget_cap: 100.00
+
+  # How to handle budgets above the org hard cap: warn, clamp, or block.
+  budget_cap_enforcement: warn
+
+  # Require human-in-the-loop gates at stage boundaries
+  require_hitl_gates: true
+
+  # Require independent reviewer agent (not just self-review)
+  require_independent_review: true
+
+  # Maximum retries per stage before escalating to human
+  max_retries_per_stage: 3
+
+  # Maximum total production duration (seconds)
+  max_production_duration: 1800  # 30 minutes
+
+# Content safety and compliance
+content_safety:
+  enabled: true
+  # Block generation of content that violates these categories
+  blocked_categories:
+    - violence
+    - hate_speech
+    - sexual_content
+    - self_harm
+  # Require content safety check on all generated assets
+  check_generated_assets: true
+
+# Provider restrictions
+providers:
+  # Empty list means all providers allowed
+  forbidden_providers: []
+  # Preferred providers (used for model selection hints)
+  preferred_providers:
+    - azure_foundry
+  # Data residency requirement for API calls
+  data_residency: us
+
+# Audit and tracing
+audit:
+  # Persist production trace after every phase boundary
+  persist_after_phase: true
+  # Include input/output hashes in trace (for reproducibility)
+  include_hashes: true
+  # Retain traces for this many days (0 = forever)
+  retention_days: 90
+
+# Runtime libraries permitted inside generated render artifacts.
+# Any library injected into the HyperFrames composition (and therefore
+# distributed as part of the rendered HTML) must be enumerated here.
+runtime_libraries:
+  render_components:
+    # Animation libraries permitted in render/components/** and the
+    # composition HTML emitted by render/lib/scf-to-html.mjs.
+    allowed:
+      - name: gsap
+        version: "^3.12"
+        license: MIT
+        provider: GreenSock
+        injection: cdn
+        notes: "Injected by HyperFrames at compile time; required by component animation timelines."
+      - name: gsap-flip
+        version: "^3.12"
+        license: "GSAP Standard License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "Free for commercial use as of 2025-04-30. Load only when a component needs FLIP layout choreography. See skills/core/render/gsap-flip.md."
+      - name: shiki
+        version: "^1.0"
+        license: MIT
+        provider: shikijs
+        injection: cdn
+        notes: "Token-level syntax highlighter. Used by VSCodeScene/GitHubScene when source-code fidelity matters."
+      - name: mermaid
+        version: "^10.0"
+        license: MIT
+        provider: mermaid-js
+        injection: cdn
+        notes: "Text-to-diagram. Loaded only when a structured diagram exceeds Pillow's complexity threshold."
+      - name: chart.js
+        version: "^4.0"
+        license: MIT
+        provider: chartjs
+        injection: cdn
+        notes: "Canvas charting. Loaded only when bar/donut needs true axes/legend beyond Pillow."
+    # Hard-deny list — these libraries are explicitly forbidden in render artifacts.
+    forbidden:
+      - reason: not_applicable_to_headless_render
+        names: ["ScrollTrigger", "ScrollSmoother", "ScrollToPlugin", "Observer", "Draggable"]
+
+# Vendored design assets — icon kits and other static assets bundled with
+# render artifacts. Distinct from runtime_libraries (which are JS injected
+# at compile time). Each entry must include source URL, license, download
+# date, and SHA so audits can verify provenance.
+vendored_assets:
+  - name: fluent-system-icons
+    source: https://github.com/microsoft/fluentui-system-icons
+    license: MIT
+    copyright: "Copyright (c) Microsoft Corporation"
+    notes: "Affordance + product iconography for Microsoft surfaces. See skills/core/icons/fluent.md."
+  - name: octicons
+    source: https://github.com/primer/octicons
+    license: MIT
+    copyright: "Copyright (c) GitHub, Inc."
+    notes: "Source-control iconography for GitHubScene. See skills/core/icons/octicons.md."
+  - name: azure-architecture-icons
+    source: https://learn.microsoft.com/azure/architecture/icons/
+    license: "Microsoft trademark permitted-use (NOT open source)"
+    copyright: "Copyright (c) Microsoft Corporation"
+    restrictions:
+      - "No recoloring"
+      - "No cropping"
+      - "No flipping or rotation"
+      - "No path-level animation (entrance/exit fade only)"
+      - "Product name must appear adjacent to every icon"
+    notes: "See skills/core/icons/azure.md for full usage rules."
+
+# Skill provenance — third-party skills imported into skills/ must be
+# enumerated here so audits can verify license compatibility.
+skill_provenance:
+  - path: skills/core/animation/
+    source: https://github.com/greensock/gsap-skills
+    license: MIT
+    copyright: "Copyright (c) GreenSock"
+    imported_files: [basics.md, sequencing.md, performance.md, value-helpers.md]
+    license_file: skills/core/animation/LICENSE
+    notes: "File names Slate-flavored; content vendored verbatim from upstream gsap-{core,timeline,performance,utils}/SKILL.md."
+
+# Skill enforcement — stage-level governance for skill consultation.
+# When skills_enforcement.required = true, the agent's production trace
+# must record consultation of every skill named in the pipeline manifest's
+# `skills_required` list before the stage is allowed to advance.
+skills_enforcement:
+  required: true
+  trace_field: skills_consulted
+  fail_action: block_stage_advancement
+
+# Review rubric dimensions and minimum scores
+review:
+  dimensions:
+    - brand_compliance
+    - caption_accuracy
+    - audio_quality
+    - visual_consistency
+    - pacing
+    - content_accuracy
+    - content_redundancy
+  # Minimum score per dimension (1-3 scale)
+  min_dimension_score: 2
+  # Minimum total score (sum of all dimensions)
+  min_total_score: 14  # Out of 21 (7 dimensions × 3)

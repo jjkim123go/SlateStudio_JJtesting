@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-recording",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "teams-calendar-dark",
+      "duration": 12,
+      "component": "TeamsScene",
+      "props": {
+        "theme": "dark",
+        "view": "calendar",
+        "user": { "name": "Megan Bowen", "initials": "MB", "avatarColor": "#5B5FC7" },
+        "topBar": {
+          "currentTab": "calendar",
+          "search": { "placeholder": "Search" }
+        },
+        "rail": {
+          "items": [
+            { "key": "activity", "label": "Activity", "badge": 3 },
+            { "key": "chat", "label": "Chat", "badge": 8 },
+            { "key": "teams", "label": "Teams" },
+            { "key": "calendar", "label": "Calendar", "active": true },
+            { "key": "calls", "label": "Calls" },
+            { "key": "files", "label": "Files" }
+          ]
+        },
+        "calendar": {
+          "title": "Calendar",
+          "viewMode": "Work week",
+          "weekLabel": "April 13 – 17, 2026",
+          "actions": ["meet_now", "new_meeting"],
+          "days": ["Mon 13", "Tue 14", "Wed 15", "Thu 16", "Fri 17"],
+          "hours": ["8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM"],
+          "events": [
+            { "day": 0, "start": "9:00", "end": "9:30", "title": "Team standup", "category": "work", "color": "#5B5FC7" },
+            { "day": 0, "start": "11:00", "end": "12:00", "title": "1:1 with Diego", "category": "work", "color": "#0078D4" },
+            { "day": 1, "start": "10:00", "end": "11:30", "title": "Mark 8 design review", "category": "work", "color": "#5B5FC7", "selected": true },
+            { "day": 1, "start": "13:00", "end": "13:45", "title": "Lunch with Lynne", "category": "personal", "color": "#107C10" },
+            { "day": 2, "start": "9:00", "end": "9:30", "title": "Team standup", "category": "work", "color": "#5B5FC7" },
+            { "day": 2, "start": "14:00", "end": "15:30", "title": "Customer roundtable", "category": "work", "color": "#D83B01" },
+            { "day": 3, "start": "9:00", "end": "10:00", "title": "Sprint planning", "category": "work", "color": "#5B5FC7" },
+            { "day": 3, "start": "11:00", "end": "12:00", "title": "Focus time", "category": "focus", "color": "#605E5C" },
+            { "day": 4, "start": "10:00", "end": "11:00", "title": "Demo prep", "category": "work", "color": "#0078D4" },
+            { "day": 4, "start": "15:00", "end": "16:00", "title": "Weekly sync", "category": "work", "color": "#5B5FC7" }
+          ]
+        }
+      }
+    }
+  ]
+}

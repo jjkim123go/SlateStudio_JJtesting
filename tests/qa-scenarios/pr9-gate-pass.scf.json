@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-governance-gate",
+  "metadata": {
+    "id": "pr9-gate-pass",
+    "title": "PR 9 governance gate — external profile + pinned brand + clean content (MUST PASS)"
+  },
+  "brandPackage": "contoso@2.1",
+  "brandLintPassed": true,
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "deliveryProfile": "external"
+  },
+  "scenes": [
+    {
+      "id": "title",
+      "duration": 4,
+      "component": "TitleCard",
+      "props": {
+        "title": "Quarterly Update",
+        "subtitle": "Operational metrics overview"
+      }
+    }
+  ]
+}

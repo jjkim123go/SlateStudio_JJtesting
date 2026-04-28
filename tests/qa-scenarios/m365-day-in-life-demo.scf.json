@@ -1,0 +1,202 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "A Day in the Life with Microsoft 365 — Slate HyperFrames Surface Tour",
+    "purpose": "Demonstrate all 13 Phase-I synthetic surface components in one continuous narrative.",
+    "narrative_arc": "Morning standup (Teams) → email triage (Outlook) → review BI (Power BI) → branch off to Fabric → fix bug in VSCode → commit on GitHub → Azure deploy → verify in browser → update workbook (Excel) → present (PowerPoint) → admin compliance (Admin Center) → unwind on Windows desktop → final terminal kick.",
+    "notes_for_future_agents": "All visuals are synthetic — zero AI image / TTS cost. Scenes intentionally stripped of narration to validate the render contract first. Add a scene-level `narration` field once asset gen is approved by the user."
+  },
+  "scenes": [
+    {
+      "id": "intro",
+      "duration": 3,
+      "component": "BrandIntro",
+      "props": {
+        "logoSrc": "",
+        "companyName": "Slate",
+        "tagline": "Synthetic surfaces for the entire Microsoft stack",
+        "primaryColor": "#7c3aed"
+      }
+    },
+    {
+      "id": "title",
+      "duration": 4,
+      "component": "TitleCard",
+      "props": {
+        "title": "A day in the life — 13 surfaces, one render",
+        "subtitle": "All HyperFrames. No screenshots. No video clips. Pixel-perfect & re-renderable.",
+        "background": "#0f172a"
+      }
+    },
+
+    {
+      "id": "teams-standup",
+      "duration": 7,
+      "component": "TeamsScene",
+      "props": {
+        "team": "Product Team",
+        "channel": "General",
+        "presenterName": "Alex",
+        "stepsHtml": "<div class=\"tm-step\" data-kind=\"chat_message\" data-duration=\"0.8\" style=\"opacity:0;display:flex;gap:10px;padding:8px 4px\"><div style=\"width:36px;height:36px;border-radius:50%;background:#5b5fc7;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0\">AJ</div><div><div style=\"font-size:13px;color:#242424\"><b>Alex Johnson</b> &nbsp;<span style=\"color:#999;font-size:12px\">9:02 AM</span></div><div style=\"font-size:14px;color:#242424;margin-top:2px\">Morning all — kicking off the Slate v2 rollout today.</div></div></div><div class=\"tm-step\" data-kind=\"chat_message\" data-duration=\"0.8\" style=\"opacity:0;display:flex;gap:10px;padding:8px 4px\"><div style=\"width:36px;height:36px;border-radius:50%;background:#d13438;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex-shrink:0\">JL</div><div><div style=\"font-size:13px;color:#242424\"><b>Jordan Lee</b> &nbsp;<span style=\"color:#999;font-size:12px\">9:03 AM</span></div><div style=\"font-size:14px;color:#242424;margin-top:2px\">🚀 Let's go. Reviewing PR #128 right after standup.</div></div></div><div class=\"tm-step\" data-kind=\"reaction\" data-duration=\"0.5\" style=\"opacity:0;align-self:flex-start;margin-left:46px;padding:2px 8px;background:#fff;border:1px solid #e0e0e0;border-radius:12px;font-size:12px\">👍 3 &nbsp; 🚀 2</div><div class=\"tm-step\" data-kind=\"pause\" data-duration=\"0.6\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "outlook-triage",
+      "duration": 8,
+      "component": "OutlookScene",
+      "props": {
+        "accountName": "alex@contoso.com",
+        "accountInitial": "I",
+        "currentFolder": "Inbox",
+        "stepsHtml": "<div class=\"tm-step\" data-kind=\"inbox_arrival\" data-duration=\"0.8\" style=\"opacity:0;padding:10px 16px;border-bottom:1px solid #f3f2f1;border-left:3px solid #0078d4;background:#f3f9fd\"><div style=\"font-size:13px;font-weight:700;color:#323130\">Jordan Lee</div><div style=\"font-size:13px;color:#323130;font-weight:600;margin-top:2px\">PR #128 ready for review</div><div style=\"font-size:12px;color:#605e5c;margin-top:2px\">Hey — please take a pass at the new HyperFrames…</div></div><div class=\"tm-step\" data-kind=\"inbox_arrival\" data-duration=\"0.7\" style=\"opacity:0;padding:10px 16px;border-bottom:1px solid #f3f2f1\"><div style=\"font-size:13px;font-weight:700;color:#323130\">Azure Monitor</div><div style=\"font-size:13px;color:#323130;font-weight:600;margin-top:2px\">[Alert] storage account latency normal</div><div style=\"font-size:12px;color:#605e5c;margin-top:2px\">Resolved at 9:02 UTC.</div></div><div class=\"tm-step\" data-kind=\"inbox_arrival\" data-duration=\"0.7\" style=\"opacity:0;padding:10px 16px;border-bottom:1px solid #f3f2f1\"><div style=\"font-size:13px;font-weight:700;color:#323130\">Power BI Service</div><div style=\"font-size:13px;color:#323130;font-weight:600;margin-top:2px\">Daily KPI digest</div><div style=\"font-size:12px;color:#605e5c;margin-top:2px\">DAU +4% w/w, p95 latency steady.</div></div><div class=\"tm-step\" data-kind=\"pause\" data-duration=\"0.8\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "powerbi-kpi",
+      "duration": 7,
+      "component": "PowerBIScene",
+      "props": {
+        "theme": "light",
+        "workspaceName": "Slate Production",
+        "reportName": "Render Pipeline KPIs — Last 7 days",
+        "stepsHtml": "<div class=\"pb-step\" data-kind=\"report_load\" data-duration=\"0.8\" style=\"opacity:0;display:inline-block;margin:12px;padding:18px 22px;background:#fff;border:1px solid #e1dfdd;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);width:200px\"><div style=\"font-size:11px;color:#605e5c;text-transform:uppercase;letter-spacing:0.06em\">Renders / day</div><div style=\"font-size:32px;font-weight:700;color:#117865;margin-top:4px\">1,284</div><div style=\"font-size:12px;color:#107c10;margin-top:2px\">▲ 12.4%</div></div><div class=\"pb-step\" data-kind=\"report_load\" data-duration=\"0.8\" style=\"opacity:0;display:inline-block;margin:12px;padding:18px 22px;background:#fff;border:1px solid #e1dfdd;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);width:200px\"><div style=\"font-size:11px;color:#605e5c;text-transform:uppercase;letter-spacing:0.06em\">p95 latency</div><div style=\"font-size:32px;font-weight:700;color:#117865;margin-top:4px\">2.3<span style=\"font-size:18px;color:#605e5c\">s</span></div><div style=\"font-size:12px;color:#107c10;margin-top:2px\">▼ 0.4s</div></div><div class=\"pb-step\" data-kind=\"report_load\" data-duration=\"0.8\" style=\"opacity:0;display:inline-block;margin:12px;padding:18px 22px;background:#fff;border:1px solid #e1dfdd;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,0.06);width:200px\"><div style=\"font-size:11px;color:#605e5c;text-transform:uppercase;letter-spacing:0.06em\">Cost / video</div><div style=\"font-size:32px;font-weight:700;color:#117865;margin-top:4px\">$0.18</div><div style=\"font-size:12px;color:#107c10;margin-top:2px\">▼ $0.06</div></div><div class=\"pb-step\" data-kind=\"pause\" data-duration=\"1.2\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "fabric-pipeline",
+      "duration": 7,
+      "component": "FabricScene",
+      "props": {
+        "theme": "light",
+        "workspaceName": "Slate Telemetry",
+        "experience": "data-engineering",
+        "notebookName": "render-cost-analysis.ipynb",
+        "stepsHtml": "<div class=\"fb-step\" data-kind=\"notebook_cell_run\" data-duration=\"1.0\" style=\"opacity:0;margin:14px 18px;padding:12px 16px;background:#fff;border:1px solid #d4d4d4;border-radius:6px;font-family:'Cascadia Code',Consolas,monospace;font-size:14px;color:#323130\">df = spark.read.delta(\"/lakehouse/render_jobs\")<br>df.groupBy(\"surface\").agg(F.avg(\"cost_usd\"))</div><div class=\"fb-step\" data-kind=\"pause\" data-duration=\"0.8\" style=\"opacity:0;margin:0 18px 14px 18px;padding:10px 16px;background:#f8f8f8;border:1px solid #e1dfdd;border-radius:6px;font-family:'Cascadia Code',Consolas,monospace;font-size:13px;color:#323130\">surface=outlook  avg_cost=$0.04<br>surface=teams    avg_cost=$0.05<br>surface=vscode   avg_cost=$0.03</div><div class=\"fb-step\" data-kind=\"pause\" data-duration=\"1.2\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "vscode-fix",
+      "duration": 9,
+      "component": "VSCodeScene",
+      "props": {
+        "filename": "compose.ts",
+        "language": "TypeScript",
+        "statusbarText": "Ln 8, Col 24   UTF-8   LF   Spaces: 2",
+        "stepsHtml": "<div class=\"vs-step\" data-kind=\"open_file\" data-duration=\"0.4\" style=\"opacity:0;color:#9cdcfe;margin-bottom:6px\">// compose.ts — fixing the audio sync bug</div><div class=\"vs-step\" data-kind=\"type\" data-duration=\"1.6\" style=\"opacity:0;margin-bottom:4px\"><pre class=\"vs-type-text\" data-text=\"const offset = clip.startMs - track.startMs;\" style=\"margin:0;font:inherit;color:#d4d4d4;white-space:pre-wrap\"></pre></div><div class=\"vs-step\" data-kind=\"type\" data-duration=\"1.4\" style=\"opacity:0;margin-bottom:4px\"><pre class=\"vs-type-text\" data-text=\"audio.shift(offset);  // align to render frame\" style=\"margin:0;font:inherit;color:#d4d4d4;white-space:pre-wrap\"></pre></div><div class=\"vs-step\" data-kind=\"pill\" data-duration=\"0.5\" style=\"opacity:0;display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 12px;background:rgba(34,197,94,0.18);border:1px solid #22c55e;border-radius:999px;color:#22c55e;font-size:14px;font-family:-apple-system,sans-serif\"><span>✓</span><span>0 problems</span></div><div class=\"vs-step\" data-kind=\"pause\" data-duration=\"1.0\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "github-pr",
+      "duration": 8,
+      "component": "GitHubScene",
+      "props": {
+        "repoOwner": "contoso",
+        "repoName": "slate",
+        "prNumber": 128,
+        "prTitle": "Fix audio sync drift in compose stage",
+        "branch": "fix/audio-sync",
+        "stepsHtml": "<div class=\"gh-step\" data-kind=\"pr_open\" data-duration=\"1.0\" style=\"opacity:0;margin:12px 0;padding:10px 14px;background:#0d1117;border:1px solid #30363d;border-radius:6px;font-family:'Cascadia Code',Consolas,monospace;font-size:14px;color:#c9d1d9\"><div style=\"color:#7ee787\">+ const offset = clip.startMs - track.startMs;</div><div style=\"color:#7ee787\">+ audio.shift(offset);</div><div style=\"color:#ff7b72\">- audio.align();</div></div><div class=\"gh-step\" data-kind=\"review\" data-duration=\"0.8\" style=\"opacity:0;margin:12px 0;padding:12px 16px;background:#fff;border:1px solid #d0d7de;border-radius:6px\"><div style=\"font-size:13px\"><b>jordan-lee</b> approved · 5m ago</div><div style=\"font-size:14px;color:#1f2328;margin-top:6px\">LGTM 🚀 ship it</div></div><div class=\"gh-step\" data-kind=\"merge\" data-duration=\"0.6\" style=\"opacity:0;margin-top:8px;padding:10px 18px;background:#1f883d;color:#fff;font-weight:600;font-size:14px;border-radius:6px;display:inline-block\">✓ Merged into main</div><div class=\"gh-step\" data-kind=\"pause\" data-duration=\"1.0\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "azure-deploy",
+      "duration": 7,
+      "component": "AzurePortalScene",
+      "props": {
+        "resourceType": "Container App",
+        "resourceName": "slate-render-prod",
+        "breadcrumbHtml": "<span style=\"color:#0078d4\">Home</span> › <span style=\"color:#0078d4\">Resource groups</span> › <span style=\"color:#0078d4\">slate-prod</span> › <span>slate-render-prod</span>",
+        "stepsHtml": "<div class=\"az-step\" data-kind=\"field_input\" data-duration=\"0.8\" style=\"opacity:0;margin:12px 24px;padding:10px 14px;background:#fff;border:1px solid #d2d0ce;border-radius:4px\"><div style=\"font-size:11px;color:#605e5c;text-transform:uppercase;letter-spacing:0.06em\">Image</div><div style=\"font-size:14px;color:#323130;margin-top:2px\">contoso.azurecr.io/slate-render:v2.4.1</div></div><div class=\"az-step\" data-kind=\"click_button\" data-duration=\"0.6\" style=\"opacity:0;margin:12px 24px;padding:8px 22px;background:#0078d4;color:#fff;font-size:13px;font-weight:600;border-radius:2px;display:inline-block\">Review + create</div><div class=\"az-step\" data-kind=\"notification\" data-duration=\"0.8\" style=\"opacity:0;position:absolute;top:80px;right:24px;padding:14px 18px;background:#fff;border-left:4px solid #107c10;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.12);font-size:13px;color:#323130;max-width:320px\"><div style=\"font-weight:600\">✓ Deployment succeeded</div><div style=\"color:#605e5c;margin-top:4px\">slate-render-prod-deploy-2841</div></div><div class=\"az-step\" data-kind=\"pause\" data-duration=\"1.0\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "edge-verify",
+      "duration": 7,
+      "component": "EdgeBrowserScene",
+      "props": {
+        "url": "https://slate.contoso.com/health",
+        "pageTitle": "Slate — Health",
+        "stepsHtml": "<div class=\"ed-step\" data-kind=\"address_bar\" data-duration=\"1.2\" style=\"opacity:0\"><pre class=\"ed-url-typer\" data-text=\"https://slate.contoso.com/health\" style=\"margin:0;font:inherit\"></pre></div><div class=\"ed-step\" data-kind=\"page_load\" data-duration=\"0.6\" style=\"opacity:0;margin:40px;padding:32px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,0.08);text-align:center\"><div style=\"font-size:48px;margin-bottom:12px\">✅</div><div style=\"font-size:24px;font-weight:600;color:#107c10\">All systems operational</div><div style=\"font-size:14px;color:#605e5c;margin-top:8px\">v2.4.1 · uptime 99.97% · p95 2.3s</div></div><div class=\"ed-step\" data-kind=\"pause\" data-duration=\"1.5\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "excel-update",
+      "duration": 7,
+      "component": "ExcelScene",
+      "props": {
+        "workbookName": "Render-Costs-Q4.xlsx",
+        "sheetName": "Per-Surface",
+        "stepsHtml": "<div class=\"tm-step\" data-kind=\"cell_select\" data-duration=\"0.4\" data-cell=\"A1\" style=\"opacity:0;position:absolute;top:0;left:0;width:80px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#323130;font-weight:600;background:#fff;border:1px solid transparent\">Surface</div><div class=\"tm-step\" data-kind=\"cell_select\" data-duration=\"0.6\" data-cell=\"B1\" style=\"opacity:0;position:absolute;top:0;left:80px;width:80px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#323130;font-weight:600\">Cost</div><div class=\"tm-step\" data-kind=\"cell_select\" data-duration=\"0.6\" data-cell=\"A2\" style=\"opacity:0;position:absolute;top:24px;left:0;width:80px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px\">Outlook</div><div class=\"tm-step\" data-kind=\"cell_select\" data-duration=\"0.6\" data-cell=\"B2\" style=\"opacity:0;position:absolute;top:24px;left:80px;width:80px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px\">$0.04</div><div class=\"tm-step\" data-kind=\"chart_insert\" data-duration=\"0.8\" style=\"display:none\"></div><div class=\"tm-step\" data-kind=\"pause\" data-duration=\"1.0\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "ppt-present",
+      "duration": 7,
+      "component": "PowerPointScene",
+      "props": {
+        "deckName": "Slate v2 Launch",
+        "slideTitle": "Q4 Wins",
+        "slideNumber": "3",
+        "stepsHtml": "<div class=\"tm-step\" data-kind=\"text_type\" data-duration=\"0.8\" style=\"opacity:0;font-size:36px;font-weight:700;color:#1f1f1f;text-align:center;margin-top:80px\">13 surfaces. One render.</div><div class=\"tm-step\" data-kind=\"text_type\" data-duration=\"0.6\" style=\"opacity:0;font-size:22px;color:#404040;margin:20px 80px 0;padding-left:24px;position:relative\"><span style=\"position:absolute;left:0\">•</span> Zero AI image cost — pure HTML+GSAP</div><div class=\"tm-step\" data-kind=\"text_type\" data-duration=\"0.6\" style=\"opacity:0;font-size:22px;color:#404040;margin:12px 80px 0;padding-left:24px;position:relative\"><span style=\"position:absolute;left:0\">•</span> Re-render any time, any theme, any locale</div><div class=\"tm-step\" data-kind=\"text_type\" data-duration=\"0.6\" style=\"opacity:0;font-size:22px;color:#404040;margin:12px 80px 0;padding-left:24px;position:relative\"><span style=\"position:absolute;left:0\">•</span> Brand-compliant by construction</div><div class=\"tm-step\" data-kind=\"pause\" data-duration=\"1.4\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "admin-compliance",
+      "duration": 6,
+      "component": "AdminCenterScene",
+      "props": {
+        "theme": "light",
+        "tenantName": "Contoso",
+        "currentSection": "Active users",
+        "stepsHtml": "<div class=\"ac-step\" data-kind=\"user_create\" data-duration=\"0.6\" style=\"opacity:0;margin:0 16px;padding:10px 14px;border-bottom:1px solid #edebe9;display:flex;gap:12px;align-items:center\"><div style=\"width:28px;height:28px;border-radius:50%;background:#0078d4;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600\">AJ</div><div style=\"flex:1;font-size:13px;color:#323130\">Alex Johnson</div><div style=\"font-size:12px;color:#107c10\">✓ MFA</div></div><div class=\"ac-step\" data-kind=\"user_create\" data-duration=\"0.6\" style=\"opacity:0;margin:0 16px;padding:10px 14px;border-bottom:1px solid #edebe9;display:flex;gap:12px;align-items:center\"><div style=\"width:28px;height:28px;border-radius:50%;background:#d13438;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600\">JL</div><div style=\"flex:1;font-size:13px;color:#323130\">Jordan Lee</div><div style=\"font-size:12px;color:#107c10\">✓ MFA</div></div><div class=\"ac-step\" data-kind=\"compliance_check\" data-duration=\"0.6\" style=\"opacity:0;position:absolute;top:80px;right:24px;padding:14px 18px;background:#fff;border-left:4px solid #107c10;border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,0.12);font-size:13px;color:#323130;max-width:300px\"><div style=\"font-weight:600\">✓ Compliance check passed</div><div style=\"color:#605e5c;margin-top:4px\">All users meet baseline policy</div></div><div class=\"ac-step\" data-kind=\"pause\" data-duration=\"1.4\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "windows-unwind",
+      "duration": 6,
+      "component": "WindowsScene",
+      "props": {
+        "theme": "dark",
+        "wallpaperGradient": "radial-gradient(ellipse at top, #4f46e5 0%, #1e1b4b 60%, #0f0a2e 100%)",
+        "clockTime": "5:42 PM",
+        "stepsHtml": "<div class=\"win-step\" data-kind=\"notification_toast\" data-duration=\"0.8\" style=\"opacity:0;position:absolute;bottom:80px;right:24px;width:340px;padding:14px 18px;background:rgba(40,40,40,0.95);backdrop-filter:blur(20px);border-radius:8px;border:1px solid rgba(255,255,255,0.1);color:#fff;font-size:13px\"><div style=\"font-weight:600;color:#fff\">🎬 Slate</div><div style=\"color:rgba(255,255,255,0.85);margin-top:4px\">Render complete — \"M365 day-in-life\" exported (84.2 MB)</div></div><div class=\"win-step\" data-kind=\"pause\" data-duration=\"2.0\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "terminal-final",
+      "duration": 7,
+      "component": "TerminalScene",
+      "props": {
+        "titlebar": "user@workstation ~/projects/slate",
+        "linesHtml": "<div class=\"ts-line\" data-kind=\"cmd\" data-duration=\"1.4\" style=\"opacity:0\"><pre class=\"ts-cmd-text\" data-text=\"slate render m365-demo --output day-in-life.mp4\" style=\"margin:0;font:inherit;color:#c9d1d9\"></pre></div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:#7ee787\">✓ 13 scenes rendered</div><div class=\"ts-line\" data-kind=\"out\" data-duration=\"0.4\" style=\"opacity:0;color:#7ee787\">✓ 84.2 MB · 81 seconds · zero AI cost</div><div class=\"ts-line\" data-kind=\"pill\" data-duration=\"0.5\" data-variant=\"success\" style=\"opacity:0\">✓ Done</div><div class=\"ts-line\" data-kind=\"pause\" data-duration=\"1.5\" style=\"display:none\"></div>"
+      }
+    },
+
+    {
+      "id": "outro",
+      "duration": 4,
+      "component": "BrandOutro",
+      "props": {
+        "logoSrc": "",
+        "companyName": "Slate",
+        "tagline": "Synthetic surfaces. Real videos.",
+        "ctaText": "github.com/contoso/slate",
+        "primaryColor": "#7c3aed"
+      }
+    }
+  ]
+}

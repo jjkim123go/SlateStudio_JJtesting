@@ -1,0 +1,488 @@
+<style>
+.scene-{{sceneId}} .bs-bg {
+  --bs-text:        #242424;
+  --bs-text-secondary: #616161;
+  --bs-text-muted:  #8a8a8a;
+  --bs-divider:     #e1dfdd;
+  --bs-divider-soft:#edebe9;
+  --bs-brand:       #5C2E91;
+  --bs-welcome:     #036580;
+  --bs-public-blue: #0078D4;
+  --bs-pill-pub-bg: #E0F2F4;
+  --bs-pill-pub-fg: #036580;
+  --bs-pill-dur-bg: #F2F2F2;
+  --bs-pill-dur-fg: #424242;
+  --bs-shadow-sm: 0 1px 2px rgba(0,0,0,0.06);
+  --bs-shadow-card: 0 2px 6px rgba(0,0,0,0.08);
+  --bs-shadow-modal: 0 16px 48px rgba(0,0,0,0.22);
+  --bs-shadow-public: 0 16px 48px rgba(0,0,0,0.12);
+  --bs-bg-grad: linear-gradient(120deg, #DCE8F4 0%, #E5DAF2 35%, #F4DDEB 65%, #F8E8DA 100%);
+  --bs-public-bg: #F3F2F1;
+
+  position: absolute; inset: 0;
+  background: var(--bs-bg-grad);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--bs-text);
+  overflow: hidden;
+}
+
+.scene-{{sceneId}} .bs-bg[data-variant="public-page"] {
+  background: var(--bs-public-bg);
+}
+
+/* ---------- icons ---------- */
+.scene-{{sceneId}} .bs-bg .bs-icon-12 { width: 12px; height: 12px; fill: currentColor; }
+.scene-{{sceneId}} .bs-bg .bs-icon-16 { width: 16px; height: 16px; fill: currentColor; }
+.scene-{{sceneId}} .bs-bg .bs-icon-32 { width: 32px; height: 32px; fill: currentColor; }
+
+/* ---------- suite bar ---------- */
+.scene-{{sceneId}} .bs-bg .bs-suite {
+  position: relative;
+  display: flex; align-items: center; gap: 8px;
+  height: 48px; padding: 0 16px;
+  background: rgba(255,255,255,0.55);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255,255,255,0.6);
+  z-index: 5;
+}
+.scene-{{sceneId}} .bs-bg .bs-suite-waffle {
+  width: 32px; height: 32px;
+  background: transparent; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  color: var(--bs-text);
+}
+.scene-{{sceneId}} .bs-bg .bs-suite-title {
+  font-size: 15px; font-weight: 600;
+  color: var(--bs-text);
+  margin-left: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-suite-flex { flex: 1 1 auto; }
+.scene-{{sceneId}} .bs-bg .bs-suite-icon {
+  width: 32px; height: 32px;
+  background: transparent; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--bs-text-secondary); border-radius: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-bell-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.scene-{{sceneId}} .bs-bg .bs-bell-dot {
+  position: absolute; top: -6px; right: -8px;
+  min-width: 16px; height: 16px; padding: 0 4px;
+  background: var(--bs-public-blue); color: #fff;
+  border-radius: 8px; font-size: 10px; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid #fff;
+}
+.scene-{{sceneId}} .bs-bg .bs-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600; color: #fff;
+  margin-left: 4px;
+}
+
+/* ---------- canvas ---------- */
+.scene-{{sceneId}} .bs-bg .bs-canvas {
+  position: absolute; left: 0; right: 0; top: 48px; bottom: 0;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .bs-bg[data-show-suite="0"] .bs-canvas { top: 0; }
+
+/* ============================================================== */
+/* HOME variant                                                   */
+/* ============================================================== */
+.scene-{{sceneId}} .bs-bg .bs-home {
+  padding: 36px 48px 0;
+  height: 100%;
+  display: flex; flex-direction: column; gap: 32px;
+}
+.scene-{{sceneId}} .bs-bg .bs-home-header {
+  position: relative;
+  padding-right: 220px;
+  min-height: 60px;
+}
+.scene-{{sceneId}} .bs-bg .bs-home-welcome {
+  margin: 0;
+  font-size: 32px; font-weight: 600;
+  color: var(--bs-welcome);
+  line-height: 1.1;
+}
+.scene-{{sceneId}} .bs-bg .bs-home-subtitle {
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-home-getstarted {
+  position: absolute; top: 0; right: 0;
+  padding: 10px 16px;
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(0,0,0,0.05);
+  border-radius: 6px;
+  font-size: 14px; font-weight: 600; color: var(--bs-text);
+  cursor: pointer;
+  box-shadow: var(--bs-shadow-sm);
+}
+
+/* sections */
+.scene-{{sceneId}} .bs-bg .bs-section {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.scene-{{sceneId}} .bs-bg .bs-section-head {
+  display: flex; align-items: flex-start;
+  gap: 16px;
+}
+.scene-{{sceneId}} .bs-bg .bs-section-titles { flex: 1 1 auto; min-width: 0; }
+.scene-{{sceneId}} .bs-bg .bs-section-title {
+  margin: 0;
+  font-size: 18px; font-weight: 600; color: var(--bs-text);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .bs-bg .bs-section-copy {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  color: var(--bs-text-secondary);
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-section-subtitle {
+  margin-top: 4px;
+  font-size: 13px; color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-section-actions {
+  display: inline-flex; align-items: center; gap: 4px;
+  flex: 0 0 auto;
+}
+.scene-{{sceneId}} .bs-bg .bs-action {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px;
+  background: transparent; border: none; cursor: pointer;
+  font-size: 13px; color: var(--bs-text);
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-action-icon { color: var(--bs-text-secondary); display: inline-flex; }
+.scene-{{sceneId}} .bs-bg .bs-action-icon-only { width: 32px; padding: 0; justify-content: center; color: var(--bs-text-secondary); }
+.scene-{{sceneId}} .bs-bg .bs-action-caret { color: var(--bs-text-secondary); display: inline-flex; margin-left: 2px; }
+
+/* card grid */
+.scene-{{sceneId}} .bs-bg .bs-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 510px));
+  gap: 24px;
+  align-items: stretch;
+}
+.scene-{{sceneId}} .bs-bg .bs-card {
+  background: #fff;
+  border: 1px solid var(--bs-divider-soft);
+  border-radius: 8px;
+  padding: 16px 20px;
+  display: flex; flex-direction: column;
+  min-height: 140px;
+  box-shadow: var(--bs-shadow-card);
+}
+.scene-{{sceneId}} .bs-bg .bs-card-head {
+  display: flex; align-items: center; gap: 8px;
+}
+.scene-{{sceneId}} .bs-bg .bs-card-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+}
+.scene-{{sceneId}} .bs-bg .bs-card-title {
+  font-size: 15px; font-weight: 600; color: var(--bs-text);
+  flex: 1 1 auto; min-width: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.scene-{{sceneId}} .bs-bg .bs-card-flex { flex: 1 1 0; min-width: 0; display: none; }
+.scene-{{sceneId}} .bs-bg .bs-card-mini {
+  width: 26px; height: 26px;
+  background: transparent; border: none; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--bs-text-secondary); border-radius: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-card-blurb {
+  margin-top: 8px;
+  font-size: 13px; color: var(--bs-text-secondary);
+  line-height: 1.4;
+  flex: 1 1 auto;
+}
+.scene-{{sceneId}} .bs-bg .bs-card-pills {
+  margin-top: 12px;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.scene-{{sceneId}} .bs-bg .bs-pill {
+  display: inline-flex; align-items: center;
+  height: 22px; padding: 0 10px;
+  border-radius: 11px;
+  font-size: 12px; font-weight: 500;
+}
+.scene-{{sceneId}} .bs-bg .bs-pill-vis {
+  background: var(--bs-pill-pub-bg); color: var(--bs-pill-pub-fg);
+}
+.scene-{{sceneId}} .bs-bg .bs-pill-dur {
+  background: #fff; color: var(--bs-pill-dur-fg);
+  border: 1px solid var(--bs-divider);
+}
+
+/* empty/create card */
+.scene-{{sceneId}} .bs-bg .bs-card-empty {
+  align-items: center; justify-content: center;
+  text-align: center;
+  background: rgba(255,255,255,0.7);
+}
+.scene-{{sceneId}} .bs-bg .bs-create-icon {
+  position: relative;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #c4c4c4;
+  margin-bottom: 8px;
+}
+.scene-{{sceneId}} .bs-bg .bs-create-plus {
+  position: absolute; top: -4px; right: -10px;
+  width: 18px; height: 18px;
+  background: #fff;
+  border: 1px solid var(--bs-divider);
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-create-plus svg { width: 10px; height: 10px; }
+.scene-{{sceneId}} .bs-bg .bs-create-label {
+  font-size: 14px; font-weight: 500; color: var(--bs-text);
+}
+
+/* ============================================================== */
+/* PUBLIC-PAGE variant                                            */
+/* ============================================================== */
+.scene-{{sceneId}} .bs-bg .bs-public {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  padding: 32px;
+  box-sizing: border-box;
+}
+.scene-{{sceneId}} .bs-bg .bs-public-card {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  width: 1180px;
+  min-height: 620px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--bs-shadow-public);
+}
+.scene-{{sceneId}} .bs-bg .bs-public-side {
+  padding: 36px 32px;
+  background: #fafafa;
+  border-right: 1px solid var(--bs-divider-soft);
+  display: flex; flex-direction: column; gap: 14px;
+}
+.scene-{{sceneId}} .bs-bg .bs-public-org {
+  font-size: 13px; font-weight: 600;
+  color: var(--bs-public-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.scene-{{sceneId}} .bs-bg .bs-public-title {
+  margin: 0;
+  font-size: 26px; font-weight: 600; color: var(--bs-text);
+  line-height: 1.2;
+}
+.scene-{{sceneId}} .bs-bg .bs-public-meta {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-public-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-public-blurb {
+  margin: 8px 0 0;
+  font-size: 14px; color: var(--bs-text-secondary);
+  line-height: 1.5;
+}
+
+.scene-{{sceneId}} .bs-bg .bs-public-pick {
+  display: grid;
+  grid-template-columns: 1fr 220px;
+  gap: 32px;
+  padding: 36px 36px;
+  background: #fff;
+}
+.scene-{{sceneId}} .bs-bg .bs-cal {
+  display: flex; flex-direction: column; gap: 12px;
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-month {
+  font-size: 16px; font-weight: 600; color: var(--bs-text);
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-nav {
+  width: 28px; height: 28px;
+  background: transparent; border: 1px solid var(--bs-divider);
+  border-radius: 4px; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-dh {
+  height: 28px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 600;
+  color: var(--bs-text-secondary);
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-cell {
+  height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--bs-text);
+  border-radius: 4px;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid transparent;
+}
+.scene-{{sceneId}} .bs-bg .bs-cal-out { color: transparent; cursor: default; }
+.scene-{{sceneId}} .bs-bg .bs-cal-today { border-color: var(--bs-public-blue); color: var(--bs-public-blue); font-weight: 600; }
+.scene-{{sceneId}} .bs-bg .bs-cal-sel {
+  background: var(--bs-public-blue); color: #fff; font-weight: 600;
+}
+
+.scene-{{sceneId}} .bs-bg .bs-times { display: flex; flex-direction: column; gap: 8px; }
+.scene-{{sceneId}} .bs-bg .bs-times-head {
+  font-size: 13px; font-weight: 600; color: var(--bs-text);
+  margin-bottom: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-times-grid {
+  display: flex; flex-direction: column; gap: 8px;
+  max-height: 420px; overflow: hidden;
+}
+.scene-{{sceneId}} .bs-bg .bs-slot {
+  height: 36px; padding: 0 12px;
+  background: #fff;
+  border: 1px solid var(--bs-public-blue);
+  color: var(--bs-public-blue);
+  border-radius: 4px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  text-align: center;
+}
+.scene-{{sceneId}} .bs-bg .bs-slot-sel {
+  background: var(--bs-public-blue); color: #fff;
+}
+
+/* ============================================================== */
+/* CREATE-MODAL state                                             */
+/* ============================================================== */
+.scene-{{sceneId}} .bs-bg .bs-scrim {
+  position: absolute; inset: 0;
+  background: rgba(15,15,20,0.45);
+  z-index: 20;
+}
+.scene-{{sceneId}} .bs-bg .bs-modal {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 560px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: var(--bs-shadow-modal);
+  overflow: hidden;
+  z-index: 21;
+  display: flex; flex-direction: column;
+}
+.scene-{{sceneId}} .bs-bg .bs-modal-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--bs-divider-soft);
+}
+.scene-{{sceneId}} .bs-bg .bs-modal-title {
+  margin: 0; font-size: 18px; font-weight: 600; color: var(--bs-text);
+}
+.scene-{{sceneId}} .bs-bg .bs-modal-close {
+  width: 28px; height: 28px;
+  background: transparent; border: none; cursor: pointer;
+  color: var(--bs-text-secondary);
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .bs-bg .bs-modal-body {
+  padding: 16px 20px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.scene-{{sceneId}} .bs-bg .bs-field {
+  display: flex; flex-direction: column; gap: 6px;
+  min-width: 0;
+}
+.scene-{{sceneId}} .bs-bg .bs-field-label {
+  font-size: 12px; font-weight: 600; color: var(--bs-text);
+}
+.scene-{{sceneId}} .bs-bg .bs-field-input {
+  height: 32px; padding: 0 10px;
+  background: #fff;
+  border: 1px solid var(--bs-divider);
+  border-radius: 4px;
+  font-size: 13px; color: var(--bs-text);
+  font-family: inherit;
+  outline: none;
+}
+.scene-{{sceneId}} .bs-bg .bs-field-textarea {
+  height: auto; padding: 8px 10px;
+  resize: none;
+  line-height: 1.4;
+}
+.scene-{{sceneId}} .bs-bg .bs-field-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.scene-{{sceneId}} .bs-bg .bs-modal-foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: 8px;
+  padding: 12px 20px;
+  border-top: 1px solid var(--bs-divider-soft);
+}
+.scene-{{sceneId}} .bs-bg .bs-btn {
+  height: 32px; padding: 0 16px;
+  background: #fff; color: var(--bs-text);
+  border: 1px solid var(--bs-divider);
+  border-radius: 4px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .bs-bg .bs-btn-primary {
+  background: var(--bs-public-blue); color: #fff;
+  border-color: var(--bs-public-blue);
+}
+
+/* ---------- initial animation states ---------- */
+.scene-{{sceneId}} .bs-bg .bs-suite,
+.scene-{{sceneId}} .bs-bg .bs-home-header,
+.scene-{{sceneId}} .bs-bg .bs-public-card { opacity: 0; }
+
+.scene-{{sceneId}} .bs-bg .bs-section,
+.scene-{{sceneId}} .bs-bg .bs-card,
+.scene-{{sceneId}} .bs-bg .bs-cal,
+.scene-{{sceneId}} .bs-bg .bs-times,
+.scene-{{sceneId}} .bs-bg .bs-slot { opacity: 0; transform: translateY(8px); }
+
+.scene-{{sceneId}} .bs-bg .bs-scrim,
+.scene-{{sceneId}} .bs-bg .bs-modal { opacity: 0; }
+</style>
+
+<div class="scene-{{sceneId}} bs-bg"
+     data-variant="{{variant}}"
+     data-state="{{state}}"
+     data-show-suite="{{showSuiteBar}}"
+     data-modal="{{dataModal}}">
+
+  {{{suiteBarHtml}}}
+
+  <div class="bs-canvas">
+    {{{bodyHtml}}}
+  </div>
+
+  {{{modalHtml}}}
+
+  <script type="application/json" data-region="bookings-meta">{
+    "sceneId": "{{sceneId}}",
+    "variant": "{{variant}}",
+    "state": "{{state}}",
+    "hasModal": {{hasModal}}
+  }</script>
+</div>

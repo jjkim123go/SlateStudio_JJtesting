@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Node/HyperFrames
+node_modules/
+render/output/
+render/.cache/
+render/.debug/
+*.tsbuildinfo
+
+# Output
+output/
+projects/
+renders/
+work-*/
+*.mp4
+*.mov
+*.wav
+*.mp3
+
+# Root-level ad-hoc visual audit/frame grabs
+/_audit_*.png
+/_check_*.png
+/_cmp_*.png
+/_f[0-9]*.png
+/_frame*.png
+/_src_*.png
+/_scene*_block.txt
+
+# Test artifacts (stub-generated files)
+foundry_img_*.png
+foundry_tts_*.wav
+foundry_video_*.mp4
+
+# Root-level ad-hoc test scripts (not part of test suite)
+/test_*.py
+
+# Environment
+.env
+.env.local
+config/azure.local.yaml
+config/*.local.yaml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# QA Reports (generated)
+tests/qa-reports/*.md
+
+test_output/
+
+# Internal session logs (not committed)
+.internal/
+.playwright-mcp/
+

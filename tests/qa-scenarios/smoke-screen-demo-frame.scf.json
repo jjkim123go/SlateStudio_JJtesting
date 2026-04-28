@@ -1,0 +1,73 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "ScreenDemoFrame Smoke Test",
+    "purpose": "Verify ScreenDemoFrame component renders all 5 chrome variants without errors."
+  },
+  "scenes": [
+    {
+      "id": "browser-light",
+      "duration": 4,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "browser",
+        "urlBar": "https://portal.azure.com",
+        "theme": "light",
+        "shadow": "true",
+        "cornerRadius": 12,
+        "scale": 0.88
+      }
+    },
+    {
+      "id": "macos-dark",
+      "duration": 4,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "macos-window",
+        "windowTitle": "Visual Studio Code",
+        "theme": "dark",
+        "shadow": "true",
+        "cornerRadius": 10,
+        "scale": 0.9
+      }
+    },
+    {
+      "id": "phone-portrait",
+      "duration": 4,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "phone-portrait",
+        "theme": "dark",
+        "scale": 0.55
+      }
+    },
+    {
+      "id": "phone-landscape",
+      "duration": 3,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "phone-landscape",
+        "theme": "light",
+        "scale": 0.55
+      }
+    },
+    {
+      "id": "tablet",
+      "duration": 3,
+      "component": "ScreenDemoFrame",
+      "props": {
+        "src": "",
+        "frameStyle": "tablet",
+        "theme": "dark",
+        "shadow": "false",
+        "scale": 0.65
+      }
+    }
+  ]
+}

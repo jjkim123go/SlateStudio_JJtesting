@@ -1,0 +1,27 @@
+<!--
+  SwirlVortex — full-screen bridge transition.
+  Outgoing content rotates and scales toward a center vortex point, briefly
+  forms brand-colored radial bands, then unfurls outward into the incoming content.
+
+  Props consumed:
+    outgoingColor     CSS color for outgoing (default #1a1a2e)
+    incomingColor     CSS color for incoming (default #0078D4)
+    brandColor        CSS color for the vortex bands (default brand primary)
+    bandCount         number of radial bands in the vortex (default 6)
+    vortexRotation    total rotation degrees for the vortex (default 720)
+-->
+<style>
+.scene-{{sceneId}} .svx-root{position:absolute;inset:0;overflow:hidden;background:#000;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+.scene-{{sceneId}} .svx-layer{position:absolute;inset:0;will-change:transform,opacity}
+.scene-{{sceneId}} .svx-outgoing{background:var(--svx-out-color,#1a1a2e)}
+.scene-{{sceneId}} .svx-incoming{background:var(--svx-in-color,var(--brand-primary,#0078D4));opacity:0}
+.scene-{{sceneId}} .svx-vortex{position:absolute;inset:-50%;width:200%;height:200%;opacity:0;will-change:transform,opacity}
+.scene-{{sceneId}} .svx-band{position:absolute;top:0;left:50%;width:50%;height:100%;transform-origin:0% 50%}
+</style>
+<div class="svx-root" data-scene-component="SwirlVortex"
+     style="--svx-out-color:{{outgoingColor}};--svx-in-color:{{incomingColor}};--svx-brand:{{brandColor}}"
+     data-band-count="{{bandCount}}" data-vortex-rotation="{{vortexRotation}}">
+  <div class="svx-layer svx-incoming"></div>
+  <div class="svx-vortex"></div>
+  <div class="svx-layer svx-outgoing"></div>
+</div>

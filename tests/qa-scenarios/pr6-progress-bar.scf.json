@@ -1,0 +1,33 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — ProgressBar smoke test",
+    "purpose": "Validates ProgressBar in segmented style with weighted sections, currentSectionId, and milestones.",
+    "duration_target_seconds": 6
+  },
+  "scenes": [
+    {
+      "id": "progress-segmented",
+      "duration": 6,
+      "narrationStartSec": 0,
+      "component": "ProgressBar",
+      "props": {
+        "style": "segmented",
+        "showNumbers": true,
+        "sections": [
+          { "id": "intro",   "label": "Introduction",       "shortLabel": "Intro",   "weight": 1 },
+          { "id": "concept", "label": "Core Concepts",      "shortLabel": "Concepts","weight": 2 },
+          { "id": "demo",    "label": "Live Demo",          "shortLabel": "Demo",    "weight": 3 },
+          { "id": "qa",      "label": "Questions & Wrap-up","shortLabel": "Q&A",     "weight": 1 }
+        ],
+        "currentSectionId": "demo",
+        "milestones": [
+          { "sectionId": "concept", "label": "Half-way" },
+          { "sectionId": "qa",      "label": "Almost done" }
+        ]
+      }
+    }
+  ]
+}

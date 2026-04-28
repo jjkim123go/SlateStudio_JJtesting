@@ -1,0 +1,21 @@
+{
+  "name": "@slate/hyperframes-renderer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HyperFrames-based video rendering engine for Slate. Compiles SCF JSON to HyperFrames HTML compositions and renders to MP4 via @hyperframes/producer.",
+  "type": "module",
+  "scripts": {
+    "render": "node render.mjs",
+    "smoke": "node tests/smoke.test.mjs",
+    "apply-patches": "node scripts/apply-producer-patches.mjs",
+    "postinstall": "node scripts/apply-producer-patches.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@hyperframes/core": "0.4.3",
+    "@hyperframes/engine": "0.4.3",
+    "@hyperframes/producer": "^0.4.3"
+  }
+}

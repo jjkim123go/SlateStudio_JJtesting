@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — Quiz smoke test",
+    "purpose": "Validates Quiz component (single-answer mode) with options array, reveal, explanation, and score badge.",
+    "duration_target_seconds": 8
+  },
+  "scenes": [
+    {
+      "id": "quiz-jit-vs-aot",
+      "duration": 8,
+      "narrationStartSec": 0,
+      "component": "Quiz",
+      "props": {
+        "question": "Which compilation strategy runs at application startup?",
+        "options": [
+          { "id": "opt-jit", "label": "Just-In-Time (JIT)", "explanation": "JIT compiles methods on first call, not at startup." },
+          { "id": "opt-aot", "label": "Ahead-Of-Time (AOT)", "explanation": "AOT compiles before the app runs — at build time, not startup." },
+          { "id": "opt-startup", "label": "ReadyToRun startup compilation", "explanation": "Correct — ReadyToRun pre-compiles IL to native at startup." },
+          { "id": "opt-interp", "label": "Interpretation only", "explanation": "Interpretation skips compilation entirely." }
+        ],
+        "correctOptionId": "opt-startup",
+        "mode": "single",
+        "revealAnswerAtSec": 4,
+        "teacherNote": "Tip: ReadyToRun is .NET's hybrid AOT/JIT model.",
+        "scoreBadge": { "current": 3, "total": 5 }
+      }
+    }
+  ]
+}

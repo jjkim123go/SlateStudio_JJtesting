@@ -1,0 +1,650 @@
+<!--
+  ============================================================================
+  LoopScene — Microsoft Loop synthetic chrome (Wave A, PR 8a)
+  ============================================================================
+
+  Design lineage: Loop web app, light-mode desktop. Provenance: Wave 0 recon
+  brief (loop.microsoft.com Apr 2026 reference). Class prefix: loop-.
+
+  SLOT CONTRACT (animation.js fills these per data-variant):
+    [data-slot="canvas-body"]   — variant-specific page interior
+    [data-slot="copilot-panel"] — right-edge slide-in Copilot side panel
+
+  VARIANT ATTRIBUTES on root .loop-root (set by animation.js):
+    data-variant="meetingNotes" — Wave A canonical variant
+
+  CHROME REGIONS (invariant across variants — built statically here):
+    .loop-appbar        — top app bar (workspace pill, command bar, avatars)
+    .loop-rail          — left navigation rail with Workspaces/Pages/etc.
+    .loop-canvas-frame  — main scrollable page area
+    .loop-copilot-fab   — floating bottom-right Copilot diamond (pulses)
+
+  SR #15 compliance: all glyphs are Fluent UI 2 Filled SVG paths or
+  hand-authored SVG; no emoji-as-icon. Decorative emoji inside fictional
+  page content (e.g. attendee avatar fallbacks) are colored circles, not
+  emoji.
+
+  PII: synthetic content only. Names: Avery Chen, Jordan Park, Sam Rivera,
+  Morgan Lee, Taylor Quinn (all fictional).
+============================================================================ -->
+
+<style data-component="LoopScene">
+.scene-{{sceneId}} .loop-root{
+  --loop-purple:#4F52B2;
+  --loop-purple-hover:#3D4191;
+  --loop-purple-tint:rgba(79,82,178,0.06);
+  --loop-purple-stroke:rgba(79,82,178,0.24);
+  --loop-bg-canvas:#FFFFFF;
+  --loop-bg-chrome:#FAFAFA;
+  --loop-bg-hover:#F5F5F5;
+  --loop-divider:rgba(0,0,0,0.06);
+  --loop-fg-1:#242424;
+  --loop-fg-2:#616161;
+  --loop-fg-3:#8A8886;
+  --loop-shadow-8:0 0 2px rgba(0,0,0,0.12), 0 4px 8px rgba(0,0,0,0.14);
+  --loop-shadow-2:0 0 2px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.10);
+  position:absolute;inset:0;
+  background:var(--loop-bg-chrome);
+  font-family:"Segoe UI Variable","Segoe UI",system-ui,-apple-system,sans-serif;
+  color:var(--loop-fg-1);
+  overflow:hidden;
+  display:grid;
+  grid-template-columns:64px 1fr;
+  grid-template-rows:48px 1fr;
+}
+
+/* Top app bar — spans full width */
+.scene-{{sceneId}} .loop-appbar{
+  grid-column:1 / span 2;
+  grid-row:1;
+  background:#FFFFFF;
+  border-bottom:1px solid var(--loop-divider);
+  display:flex;align-items:center;
+  padding:0 16px;
+  gap:16px;
+  z-index:5;
+}
+.scene-{{sceneId}} .loop-brand{
+  display:flex;align-items:center;gap:10px;
+  width:200px;flex-shrink:0;
+}
+.scene-{{sceneId}} .loop-brand-knot{
+  width:22px;height:22px;
+  display:inline-block;
+}
+.scene-{{sceneId}} .loop-brand-word{
+  font-size:16px;font-weight:600;color:var(--loop-fg-1);
+  letter-spacing:-0.005em;
+}
+.scene-{{sceneId}} .loop-workspace-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:4px 10px 4px 4px;
+  background:var(--loop-bg-hover);
+  border-radius:14px;
+  font-size:12px;color:var(--loop-fg-2);
+  font-weight:500;
+}
+.scene-{{sceneId}} .loop-workspace-swatch{
+  width:18px;height:18px;border-radius:4px;
+  background:linear-gradient(135deg,#4F52B2 0%,#7B5CC4 100%);
+  color:#fff;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+}
+.scene-{{sceneId}} .loop-cmdbar{
+  flex:1;max-width:560px;height:30px;
+  margin:0 auto;
+  background:var(--loop-bg-hover);
+  border-radius:6px;
+  display:flex;align-items:center;
+  padding:0 12px;gap:8px;
+  font-size:13px;color:var(--loop-fg-3);
+}
+.scene-{{sceneId}} .loop-appbar-right{
+  display:flex;align-items:center;gap:12px;
+  margin-left:auto;
+}
+.scene-{{sceneId}} .loop-avatar-stack{
+  display:flex;align-items:center;
+}
+.scene-{{sceneId}} .loop-avatar-stack .loop-avatar{
+  margin-left:-6px;
+  border:2px solid #FFFFFF;
+}
+.scene-{{sceneId}} .loop-avatar-stack .loop-avatar:first-child{margin-left:0}
+.scene-{{sceneId}} .loop-avatar{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:600;color:#FFFFFF;
+  position:relative;
+  flex-shrink:0;
+}
+.scene-{{sceneId}} .loop-avatar[data-presence="1"]::after{
+  content:"";position:absolute;
+  width:8px;height:8px;border-radius:50%;
+  background:#13A10E;
+  bottom:-1px;right:-1px;
+  border:2px solid #FFFFFF;
+}
+.scene-{{sceneId}} .loop-iconbtn{
+  width:32px;height:32px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--loop-fg-2);
+  cursor:default;
+}
+.scene-{{sceneId}} .loop-copilot-mini{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,#4F52B2 0%,#0078D4 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:#FFFFFF;
+  box-shadow:0 1px 2px rgba(79,82,178,0.35);
+}
+
+/* Left rail */
+.scene-{{sceneId}} .loop-rail{
+  grid-column:1;grid-row:2;
+  background:var(--loop-bg-chrome);
+  border-right:1px solid var(--loop-divider);
+  padding:12px 0;
+  display:flex;flex-direction:column;align-items:center;
+  gap:6px;
+}
+.scene-{{sceneId}} .loop-rail-create{
+  width:40px;height:40px;
+  border-radius:10px;
+  background:var(--loop-purple);
+  color:#FFFFFF;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;font-weight:300;line-height:1;
+  margin-bottom:8px;
+  box-shadow:0 1px 2px rgba(79,82,178,0.30);
+}
+.scene-{{sceneId}} .loop-rail-item{
+  width:40px;height:40px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--loop-fg-2);
+  position:relative;
+}
+.scene-{{sceneId}} .loop-rail-item[data-active="1"]{
+  background:var(--loop-purple-tint);
+  color:var(--loop-purple);
+}
+.scene-{{sceneId}} .loop-rail-item[data-active="1"]::before{
+  content:"";position:absolute;
+  left:-4px;top:8px;width:3px;height:24px;
+  background:var(--loop-purple);
+  border-radius:2px;
+}
+
+/* Canvas frame holds the variant-specific body */
+.scene-{{sceneId}} .loop-canvas-frame{
+  grid-column:2;grid-row:2;
+  background:var(--loop-bg-canvas);
+  overflow:hidden;
+  position:relative;
+}
+.scene-{{sceneId}} .loop-canvas-body{
+  max-width:860px;
+  margin:0 auto;
+  padding:48px 64px 64px;
+  position:relative;
+}
+
+/* MeetingNotes variant body (built by animation.js) */
+.scene-{{sceneId}} .loop-mn-breadcrumb{
+  display:flex;align-items:center;gap:6px;
+  font-size:13px;color:var(--loop-fg-2);
+  margin-bottom:16px;
+}
+.scene-{{sceneId}} .loop-mn-breadcrumb-sep{
+  color:var(--loop-fg-3);
+}
+.scene-{{sceneId}} .loop-mn-title{
+  font-size:32px;font-weight:600;line-height:1.25;
+  color:var(--loop-fg-1);
+  margin:0 0 6px;
+}
+.scene-{{sceneId}} .loop-mn-meta{
+  font-size:12px;color:var(--loop-fg-3);
+  margin-bottom:32px;
+}
+.scene-{{sceneId}} .loop-mn-section{
+  margin-bottom:28px;
+}
+.scene-{{sceneId}} .loop-mn-h2{
+  font-size:18px;font-weight:600;
+  color:var(--loop-fg-1);
+  margin:0 0 12px;
+}
+.scene-{{sceneId}} .loop-mn-attendees{
+  display:flex;flex-wrap:wrap;gap:8px;
+}
+.scene-{{sceneId}} .loop-mn-attendee-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:3px 10px 3px 3px;
+  background:var(--loop-bg-hover);
+  border-radius:14px;
+  font-size:12px;color:var(--loop-fg-1);
+  font-weight:500;
+}
+.scene-{{sceneId}} .loop-mn-attendee-pill .loop-avatar{
+  width:22px;height:22px;font-size:10px;
+}
+.scene-{{sceneId}} .loop-mn-bullet{
+  display:flex;align-items:flex-start;gap:10px;
+  padding:6px 0;
+  font-size:15px;line-height:1.5;
+  color:var(--loop-fg-1);
+}
+.scene-{{sceneId}} .loop-mn-bullet::before{
+  content:"";flex-shrink:0;
+  width:5px;height:5px;border-radius:50%;
+  background:var(--loop-fg-2);
+  margin-top:9px;
+}
+.scene-{{sceneId}} .loop-mn-task{
+  display:flex;align-items:center;gap:12px;
+  padding:8px 8px;
+  border-radius:6px;
+  font-size:14px;
+  position:relative;
+}
+.scene-{{sceneId}} .loop-mn-task + .loop-mn-task{
+  border-top:1px solid var(--loop-divider);
+}
+.scene-{{sceneId}} .loop-mn-checkbox{
+  width:18px;height:18px;
+  border:1.5px solid #C7C6C4;
+  border-radius:4px;
+  flex-shrink:0;
+  position:relative;
+  background:#FFFFFF;
+}
+.scene-{{sceneId}} .loop-mn-checkbox[data-done="1"]{
+  background:var(--loop-purple);
+  border-color:var(--loop-purple);
+}
+.scene-{{sceneId}} .loop-mn-checkbox-tick{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.scene-{{sceneId}} .loop-mn-checkbox-tick path{
+  stroke:#FFFFFF;stroke-width:2.4;
+  stroke-linecap:round;stroke-linejoin:round;
+  fill:none;
+}
+.scene-{{sceneId}} .loop-mn-task-text{
+  flex:1;color:var(--loop-fg-1);
+  position:relative;
+  display:inline-block;
+}
+.scene-{{sceneId}} .loop-mn-task-strike{
+  position:absolute;left:0;top:50%;
+  height:1.5px;width:100%;
+  background:var(--loop-fg-2);
+  transform-origin:left center;
+  transform:scaleX(0);
+  pointer-events:none;
+}
+.scene-{{sceneId}} .loop-mn-task-assignee{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:2px 8px 2px 2px;
+  background:var(--loop-bg-hover);
+  border-radius:12px;
+  font-size:11px;font-weight:500;color:var(--loop-fg-2);
+}
+.scene-{{sceneId}} .loop-mn-task-assignee .loop-avatar{
+  width:18px;height:18px;font-size:9px;
+}
+.scene-{{sceneId}} .loop-mn-task-due{
+  font-size:11px;color:var(--loop-fg-3);
+  padding:2px 8px;
+  border:1px solid var(--loop-divider);
+  border-radius:10px;
+}
+
+/* Live cursor (cursor flight hero) */
+.scene-{{sceneId}} .loop-cursor{
+  position:absolute;
+  width:24px;height:24px;
+  pointer-events:none;
+  opacity:0;
+  z-index:8;
+  transform:translate(-2px,-2px);
+}
+.scene-{{sceneId}} .loop-cursor-arrow{
+  width:18px;height:18px;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+}
+.scene-{{sceneId}} .loop-cursor-pill{
+  position:absolute;left:14px;top:14px;
+  padding:2px 8px;
+  border-radius:10px;
+  font-size:11px;font-weight:600;color:#FFFFFF;
+  white-space:nowrap;
+  box-shadow:0 1px 2px rgba(0,0,0,0.18);
+}
+
+/* Right-edge Copilot panel (slides in) */
+.scene-{{sceneId}} .loop-copilot-panel{
+  position:absolute;
+  top:0;right:0;bottom:0;
+  width:300px;
+  background:#FFFFFF;
+  border-left:1px solid var(--loop-divider);
+  box-shadow:var(--loop-shadow-8);
+  transform:translateX(100%);
+  opacity:0;
+  z-index:9;
+  display:flex;flex-direction:column;
+}
+.scene-{{sceneId}} .loop-copilot-panel-head{
+  padding:14px 16px;
+  border-bottom:1px solid var(--loop-divider);
+  display:flex;align-items:center;gap:10px;
+}
+.scene-{{sceneId}} .loop-copilot-diamond-sm{
+  width:24px;height:24px;border-radius:50%;
+  background:linear-gradient(135deg,#4F52B2 0%,#0078D4 100%);
+  display:flex;align-items:center;justify-content:center;color:#FFFFFF;
+  flex-shrink:0;
+}
+.scene-{{sceneId}} .loop-copilot-status{
+  font-size:13px;font-weight:600;color:var(--loop-fg-1);
+}
+.scene-{{sceneId}} .loop-copilot-body{
+  padding:14px 16px;
+  flex:1;
+}
+.scene-{{sceneId}} .loop-copilot-suggest{
+  font-size:13px;line-height:1.55;
+  color:var(--loop-fg-1);
+  margin-bottom:10px;
+  padding-left:18px;
+  position:relative;
+  white-space:pre-wrap;
+}
+.scene-{{sceneId}} .loop-copilot-suggest::before{
+  content:"";position:absolute;
+  left:4px;top:8px;width:5px;height:5px;border-radius:50%;
+  background:var(--loop-purple);
+}
+.scene-{{sceneId}} .loop-copilot-tok{
+  display:inline;
+  opacity:0;
+}
+
+/* Floating Copilot diamond bottom-right */
+.scene-{{sceneId}} .loop-copilot-fab{
+  position:absolute;
+  right:24px;bottom:24px;
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,#4F52B2 0%,#0078D4 100%);
+  display:flex;align-items:center;justify-content:center;
+  color:#FFFFFF;
+  box-shadow:0 2px 8px rgba(79,82,178,0.40);
+  z-index:6;
+}
+.scene-{{sceneId}} .loop-copilot-fab-halo{
+  position:absolute;inset:-6px;
+  border-radius:50%;
+  border:2px solid rgba(79,82,178,0.40);
+  opacity:0;
+  pointer-events:none;
+}
+
+/* ===== Variant: taskList ===== */
+.scene-{{sceneId}} .loop-tasks-list{
+  display:flex;flex-direction:column;gap:6px;
+  margin-top:8px;
+}
+.scene-{{sceneId}} .loop-tasks-row{
+  display:grid;
+  grid-template-columns:24px 1fr auto auto 14px;
+  align-items:center;
+  gap:14px;
+  padding:10px 14px;
+  background:#FFFFFF;
+  border:1px solid var(--loop-stroke-1);
+  border-radius:8px;
+}
+.scene-{{sceneId}} .loop-tasks-text{
+  position:relative;
+  font-size:14.5px;line-height:1.45;
+  color:var(--loop-fg-1);
+}
+.scene-{{sceneId}} .loop-tasks-tok{
+  opacity:0;display:inline;
+}
+.scene-{{sceneId}} .loop-tasks-priority{
+  display:inline-block;width:10px;height:10px;
+  border-radius:50%;
+}
+.scene-{{sceneId}} .loop-tasks-priority[data-priority="high"]{ background:#D13438; }
+.scene-{{sceneId}} .loop-tasks-priority[data-priority="med"] { background:#E8770E; }
+.scene-{{sceneId}} .loop-tasks-priority[data-priority="low"] { background:#3FA34D; }
+
+/* ===== Variant: kanbanBoard ===== */
+.scene-{{sceneId}} .loop-kb-board{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;
+  margin-top:14px;
+}
+.scene-{{sceneId}} .loop-kb-col{
+  background:#F4F6FA;
+  border:1px solid var(--loop-stroke-1);
+  border-radius:10px;
+  padding:12px;
+  min-height:380px;
+  display:flex;flex-direction:column;
+}
+.scene-{{sceneId}} .loop-kb-col-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 4px 10px 4px;
+  border-bottom:1px solid var(--loop-stroke-1);
+  margin-bottom:10px;
+}
+.scene-{{sceneId}} .loop-kb-col-name{
+  font-size:13.5px;font-weight:600;color:var(--loop-fg-1);
+  text-transform:uppercase;letter-spacing:0.4px;
+}
+.scene-{{sceneId}} .loop-kb-col-count{
+  font-size:12px;color:var(--loop-fg-2);
+  background:#FFFFFF;border:1px solid var(--loop-stroke-1);
+  border-radius:10px;padding:1px 8px;
+}
+.scene-{{sceneId}} .loop-kb-col-slot{
+  display:flex;flex-direction:column;gap:8px;
+}
+.scene-{{sceneId}} .loop-kb-card{
+  background:#FFFFFF;
+  border:1px solid var(--loop-stroke-1);
+  border-radius:8px;
+  padding:10px 12px;
+  box-shadow:0 1px 2px rgba(0,0,0,0.06);
+  cursor:default;
+}
+.scene-{{sceneId}} .loop-kb-card-title{
+  font-size:13.5px;font-weight:600;color:var(--loop-fg-1);
+  margin-bottom:8px;line-height:1.35;
+}
+.scene-{{sceneId}} .loop-kb-card-meta{
+  display:flex;align-items:center;gap:8px;
+}
+.scene-{{sceneId}} .loop-kb-card-tag{
+  font-size:11.5px;color:var(--loop-fg-2);
+  background:#EEF1F6;border-radius:10px;padding:2px 8px;
+  margin-left:auto;
+}
+
+/* ===== Variant: tableDatabase ===== */
+.scene-{{sceneId}} .loop-tbl-chips{
+  display:flex;gap:8px;
+  margin:8px 0 12px 0;
+}
+.scene-{{sceneId}} .loop-tbl-chip{
+  font-size:12.5px;color:var(--loop-fg-2);
+  background:#FFFFFF;border:1px solid var(--loop-stroke-1);
+  border-radius:14px;padding:4px 12px;
+  cursor:default;
+}
+.scene-{{sceneId}} .loop-tbl-chip[data-active="1"]{
+  background:#0078D4;color:#FFFFFF;border-color:#0078D4;
+}
+.scene-{{sceneId}} .loop-tbl{
+  display:flex;flex-direction:column;
+  background:#FFFFFF;
+  border:1px solid var(--loop-stroke-1);
+  border-radius:8px;
+  overflow:hidden;
+}
+.scene-{{sceneId}} .loop-tbl-row{
+  display:grid;
+  grid-template-columns:1.6fr 1fr 0.9fr 0.8fr 0.6fr 0.6fr 1.1fr;
+  gap:8px;
+  padding:9px 12px;
+  border-bottom:1px solid var(--loop-stroke-1);
+  align-items:center;
+  font-size:13px;
+  color:var(--loop-fg-1);
+}
+.scene-{{sceneId}} .loop-tbl-row:last-child{ border-bottom:none; }
+.scene-{{sceneId}} .loop-tbl-row.loop-tbl-head{
+  background:#F4F6FA;
+  font-weight:600;font-size:11.5px;
+  color:var(--loop-fg-2);
+  text-transform:uppercase;letter-spacing:0.4px;
+}
+.scene-{{sceneId}} .loop-tbl-cell{
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.scene-{{sceneId}} .loop-tbl-owner{
+  display:flex;align-items:center;gap:6px;
+}
+.scene-{{sceneId}} .loop-tbl-badge{
+  display:inline-block;font-size:11.5px;font-weight:600;
+  padding:2px 9px;border-radius:10px;
+}
+.scene-{{sceneId}} .loop-tbl-badge[data-state="On Track"]{ background:#DEECF9;color:#0F4880; }
+.scene-{{sceneId}} .loop-tbl-badge[data-state="At Risk"] { background:#FCE8C7;color:#8A4B00; }
+.scene-{{sceneId}} .loop-tbl-badge[data-state="Done"]    { background:#DFF6DD;color:#0E700E; }
+.scene-{{sceneId}} .loop-tbl-newcol{
+  background:rgba(0,120,212,0.04);
+}
+</style>
+
+<div class="loop-root" data-scene-component="LoopScene">
+
+  <!-- Top app bar -->
+  <div class="loop-appbar" data-slot="appbar">
+    <div class="loop-brand">
+      <!-- Loop infinity-knot mark — hand-authored SVG (not Fluent set) -->
+      <svg class="loop-brand-knot" viewBox="0 0 24 24" aria-hidden="true">
+        <defs>
+          <linearGradient id="loop-knot-grad-{{sceneId}}" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7B5CC4"/>
+            <stop offset="100%" stop-color="#4F52B2"/>
+          </linearGradient>
+        </defs>
+        <path d="M7.2 7.2c2.4-2.4 6.2-2.4 8.6 0 1.4 1.4 1.4 3.7 0 5.1-1.4 1.4-3.7 1.4-5.1 0-.8-.8-.8-2.1 0-2.9s2.1-.8 2.9 0M16.8 16.8c-2.4 2.4-6.2 2.4-8.6 0-1.4-1.4-1.4-3.7 0-5.1 1.4-1.4 3.7-1.4 5.1 0 .8.8.8 2.1 0 2.9s-2.1.8-2.9 0"
+          stroke="url(#loop-knot-grad-{{sceneId}})" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      </svg>
+      <span class="loop-brand-word">Loop</span>
+    </div>
+
+    <div class="loop-workspace-pill">
+      <span class="loop-workspace-swatch">P</span>
+      <span data-slot="workspace-name">Platform Team</span>
+    </div>
+
+    <div class="loop-cmdbar">
+      <!-- Fluent Filled: Search -->
+      <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+        <path d="M9 3a6 6 0 1 1-3.74 10.69l-3.03 3.04a.75.75 0 0 1-1.13-.98l.07-.08 3.04-3.03A6 6 0 0 1 9 3Zm0 1.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9Z"/>
+      </svg>
+      <span>Search Loop</span>
+    </div>
+
+    <div class="loop-appbar-right">
+      <div class="loop-avatar-stack" data-slot="appbar-avatars">
+        <!-- 5 avatars filled by animation.js -->
+      </div>
+
+      <div class="loop-iconbtn" title="Notifications">
+        <!-- Fluent Filled: Alert -->
+        <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+          <path d="M10 2a5 5 0 0 1 5 5v2.6l1.3 2.6c.3.6-.1 1.3-.8 1.3H4.5c-.7 0-1.1-.7-.8-1.3L5 9.6V7a5 5 0 0 1 5-5Zm2 13a2 2 0 1 1-4 0h4Z"/>
+        </svg>
+      </div>
+
+      <div class="loop-copilot-mini" title="Copilot">
+        <!-- Fluent Filled: Sparkle (Copilot diamond) -->
+        <svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+          <path d="M10 1.5c.3 0 .5.2.6.5l1.1 3.4c.4 1.1 1.3 2 2.4 2.4l3.4 1.1c.5.2.5.9 0 1.1l-3.4 1.1c-1.1.4-2 1.3-2.4 2.4l-1.1 3.4c-.2.5-.9.5-1.1 0l-1.1-3.4c-.4-1.1-1.3-2-2.4-2.4L2.5 10.6c-.5-.2-.5-.9 0-1.1l3.4-1.1c1.1-.4 2-1.3 2.4-2.4L9.4 2c.1-.3.3-.5.6-.5Z"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- Left navigation rail -->
+  <div class="loop-rail" data-slot="rail">
+    <div class="loop-rail-create" title="Create">+</div>
+
+    <div class="loop-rail-item" data-active="1" title="Workspaces">
+      <!-- Fluent Filled: Apps (stacked layers/grid for Workspaces) -->
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+        <path d="M3 4a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 9 4v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 3 7V4Zm8 0a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 17 4v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 11 7V4ZM3 12a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 9 12v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 3 15v-3Zm8 0a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 17 12v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 11 15v-3Z"/>
+      </svg>
+    </div>
+
+    <div class="loop-rail-item" title="Pages">
+      <!-- Fluent Filled: Document -->
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+        <path d="M5 2.5A2.5 2.5 0 0 0 2.5 5v10A2.5 2.5 0 0 0 5 17.5h7A2.5 2.5 0 0 0 14.5 15V8.4a2 2 0 0 0-.6-1.4l-3.4-3.4a2 2 0 0 0-1.4-.6H5Zm5 1.6L13 7.5h-2A1 1 0 0 1 10 6.5V4.1Z"/>
+      </svg>
+    </div>
+
+    <div class="loop-rail-item" title="Notifications">
+      <!-- Fluent Filled: Alert (rail variant) -->
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+        <path d="M10 2a5 5 0 0 1 5 5v2.6l1.3 2.6c.3.6-.1 1.3-.8 1.3H4.5c-.7 0-1.1-.7-.8-1.3L5 9.6V7a5 5 0 0 1 5-5Zm2 13a2 2 0 1 1-4 0h4Z"/>
+      </svg>
+    </div>
+
+    <div class="loop-rail-item" title="Templates">
+      <!-- Fluent Filled: Grid -->
+      <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+        <path d="M3 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5Zm8 0a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2V5Zm-8 8a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2Zm8 0a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2v-2Z"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Main canvas + variant body slot + floating Copilot affordances -->
+  <div class="loop-canvas-frame" data-slot="canvas-frame">
+    <div class="loop-canvas-body" data-slot="canvas-body">
+      <!-- Variant body built by animation.js from SCENE_PROPS -->
+    </div>
+
+    <!-- Right-edge Copilot panel (slides in mid-scene) -->
+    <div class="loop-copilot-panel" data-slot="copilot-panel">
+      <div class="loop-copilot-panel-head">
+        <span class="loop-copilot-diamond-sm">
+          <svg width="14" height="14" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+            <path d="M10 1.5c.3 0 .5.2.6.5l1.1 3.4c.4 1.1 1.3 2 2.4 2.4l3.4 1.1c.5.2.5.9 0 1.1l-3.4 1.1c-1.1.4-2 1.3-2.4 2.4l-1.1 3.4c-.2.5-.9.5-1.1 0l-1.1-3.4c-.4-1.1-1.3-2-2.4-2.4L2.5 10.6c-.5-.2-.5-.9 0-1.1l3.4-1.1c1.1-.4 2-1.3 2.4-2.4L9.4 2c.1-.3.3-.5.6-.5Z"/>
+          </svg>
+        </span>
+        <span class="loop-copilot-status" data-slot="copilot-status">Copilot is thinking…</span>
+      </div>
+      <div class="loop-copilot-body" data-slot="copilot-body">
+        <!-- Suggestion lines built by animation.js -->
+      </div>
+    </div>
+
+    <!-- Floating bottom-right Copilot diamond (pulses) -->
+    <div class="loop-copilot-fab" data-slot="copilot-fab">
+      <span class="loop-copilot-fab-halo"></span>
+      <svg width="22" height="22" viewBox="0 0 20 20" aria-hidden="true" fill="currentColor">
+        <path d="M10 1.5c.3 0 .5.2.6.5l1.1 3.4c.4 1.1 1.3 2 2.4 2.4l3.4 1.1c.5.2.5.9 0 1.1l-3.4 1.1c-1.1.4-2 1.3-2.4 2.4l-1.1 3.4c-.2.5-.9.5-1.1 0l-1.1-3.4c-.4-1.1-1.3-2-2.4-2.4L2.5 10.6c-.5-.2-.5-.9 0-1.1l3.4-1.1c1.1-.4 2-1.3 2.4-2.4L9.4 2c.1-.3.3-.5.6-.5Z"/>
+      </svg>
+    </div>
+  </div>
+
+</div>

@@ -1,0 +1,73 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "lists-row-selected-10s",
+      "duration": 10,
+      "component": "ListsScene",
+      "props": {
+        "state": "row-selected",
+        "selectedRowIndex": 0,
+        "iconColor": "teal",
+        "listName": "Customer escalations",
+        "breadcrumb": "Customer Engineering",
+        "activeView": "Open this week",
+        "accountInitial": "S",
+        "searchPlaceholder": "Search escalations",
+        "columns": [
+          { "name": "Title",     "width": 280 },
+          { "name": "Account",   "width": 200 },
+          { "name": "Severity",  "width": 130 },
+          { "name": "Owner",     "width": 180, "sort": "asc" },
+          { "name": "Opened",    "width": 130 },
+          { "name": "Notes",     "width": "flex" }
+        ],
+        "rows": [
+          {
+            "cells": {
+              "Title": "Latency regression in Brazil South",
+              "Account": "Fabrikam Industries",
+              "Severity": { "type": "pill", "value": "High", "color": "red" },
+              "Owner": { "type": "person", "name": "Brigitte Marin" },
+              "Opened": "Apr 11",
+              "Notes": { "type": "rich", "html": "<strong>Customer impact:</strong> p95 +180ms.<br/><a>Mitigation plan</a>" }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Quota exhaustion — Premium SKU",
+              "Account": "Northwind Traders",
+              "Severity": { "type": "pill", "value": "Medium", "color": "amber" },
+              "Owner": { "type": "person", "name": "Kenji Watanabe" },
+              "Opened": "Apr 10",
+              "Notes": { "type": "rich", "html": "Working with capacity to extend quota to Q3." }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Onboarding friction — Conditional Access",
+              "Account": "Contoso Pharma",
+              "Severity": { "type": "pill", "value": "Low", "color": "gray" },
+              "Owner": { "type": "person", "name": "Anika Patel" },
+              "Opened": "Apr 09",
+              "Notes": { "type": "rich", "html": "Doc updates pending review." }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Data residency clarification",
+              "Account": "Tailwind Aviation",
+              "Severity": { "type": "pill", "value": "Resolved", "color": "green" },
+              "Owner": { "type": "person", "name": "Diego Romero" },
+              "Opened": "Apr 08",
+              "Notes": { "type": "rich", "html": "Closed — <a>compliance memo sent</a>." }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PageTurnProps",
+  "type": "object",
+  "properties": {
+    "direction": {
+      "type": "string",
+      "enum": ["left-to-right", "right-to-left"],
+      "default": "left-to-right",
+      "description": "Which edge acts as the page hinge."
+    },
+    "outgoingSrc": {
+      "type": "string",
+      "default": "",
+      "description": "Optional path or URL for the outgoing face artwork."
+    },
+    "incomingSrc": {
+      "type": "string",
+      "default": "",
+      "description": "Optional path or URL for the incoming face artwork."
+    },
+    "frontLabel": {
+      "type": "string",
+      "default": "Previous act",
+      "description": "Small label on the outgoing page face."
+    },
+    "backLabel": {
+      "type": "string",
+      "default": "Next act",
+      "description": "Small label on the revealed face."
+    },
+    "frontSubtitle": {
+      "type": "string",
+      "default": "A tactile bridge that folds the outgoing moment into the next chapter.",
+      "description": "Supporting copy for the outgoing face."
+    },
+    "backSubtitle": {
+      "type": "string",
+      "default": "The incoming scene arrives on the reverse side, already waiting behind the sheet.",
+      "description": "Supporting copy for the revealed face."
+    },
+    "paperTint": {
+      "type": "string",
+      "default": "#f5f1e8",
+      "description": "Base tint for the paper stock."
+    },
+    "accentColor": {
+      "type": "string",
+      "default": "#0078D4",
+      "description": "Accent color used in the incoming badge."
+    }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,136 @@
+<!--
+  EventBranding — Event / conference branding scene.
+  Props: eventName, series, venue, date, sessionId, themeArtSrc,
+         sponsorLockups (array → data island), style
+  Data-island: eb-sponsors-{{sceneId}}
+  Class prefix: eb-
+  Provenance: proposal §3.8 (Education + Event pack), Lane B PR 6
+-->
+<style>
+.scene-{{sceneId}} .eb-root {
+  position: absolute; inset: 0; overflow: hidden;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #f8fafc;
+}
+.scene-{{sceneId}} .eb-bg {
+  position: absolute; inset: -8%; z-index: 0;
+  background-size: cover; background-position: center;
+  transform-origin: center; opacity: 0;
+}
+.scene-{{sceneId}} .eb-overlay {
+  position: absolute; inset: 0; z-index: 1;
+  background: linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 50%, rgba(0,0,0,0.55) 100%);
+  opacity: 0;
+}
+.scene-{{sceneId}} .eb-content {
+  position: absolute; inset: 0; z-index: 2;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: 8% 10%; text-align: center;
+}
+.scene-{{sceneId}} .eb-event-name {
+  margin: 0; font-size: 82px; font-weight: 900;
+  letter-spacing: -0.03em; line-height: 1.05; opacity: 0;
+}
+.scene-{{sceneId}} .eb-series {
+  margin: 12px 0 0; font-size: 26px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(248,250,252,0.7); opacity: 0;
+}
+.scene-{{sceneId}} .eb-series:empty { display: none; }
+.scene-{{sceneId}} .eb-meta {
+  margin: 20px 0 0; font-size: 30px; font-weight: 600;
+  color: rgba(248,250,252,0.85); opacity: 0;
+  display: flex; gap: 20px; align-items: center;
+}
+.scene-{{sceneId}} .eb-meta-sep {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(248,250,252,0.4); flex-shrink: 0;
+}
+.scene-{{sceneId}} .eb-venue:empty ~ .eb-meta-sep,
+.scene-{{sceneId}} .eb-meta-sep + .eb-venue:empty { display: none; }
+.scene-{{sceneId}} .eb-session {
+  display: inline-block; margin: 20px 0 0;
+  padding: 6px 22px; border-radius: 20px;
+  font-size: 18px; font-weight: 700; letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.15); color: #fff; opacity: 0;
+}
+.scene-{{sceneId}} .eb-session:empty { display: none; }
+.scene-{{sceneId}} .eb-sponsors {
+  position: absolute; bottom: 5%; left: 0; right: 0; z-index: 3;
+  display: flex; justify-content: center; align-items: center;
+  gap: 40px; opacity: 0;
+}
+.scene-{{sceneId}} .eb-sponsor {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  opacity: 0;
+}
+.scene-{{sceneId}} .eb-sponsor-logo {
+  height: 36px; max-width: 120px; object-fit: contain;
+}
+.scene-{{sceneId}} .eb-sponsor-label {
+  font-size: 12px; color: rgba(248,250,252,0.55); font-weight: 500;
+}
+.scene-{{sceneId}} .eb-accent-line {
+  position: absolute; bottom: 0; left: 0; z-index: 4;
+  height: 3px; width: 0;
+}
+
+/* === BUMPER === */
+.scene-{{sceneId}} .eb-root[data-style="bumper"] .eb-event-name { font-size: 64px; }
+.scene-{{sceneId}} .eb-root[data-style="bumper"] .eb-series,
+.scene-{{sceneId}} .eb-root[data-style="bumper"] .eb-meta,
+.scene-{{sceneId}} .eb-root[data-style="bumper"] .eb-sponsors { display: none; }
+
+/* === LOWER-FRAME === */
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-bg,
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-overlay,
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-sponsors,
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-series { display: none; }
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-content {
+  top: auto; bottom: 0; height: 12%;
+  flex-direction: row; justify-content: flex-start; align-items: center;
+  padding: 0 40px; text-align: left; gap: 24px;
+  background: rgba(15,23,42,0.88);
+  border-top: 1px solid rgba(148,163,184,0.18);
+}
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-event-name {
+  font-size: 28px; opacity: 1; flex-shrink: 0;
+}
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-meta {
+  font-size: 18px; margin: 0; opacity: 1;
+}
+.scene-{{sceneId}} .eb-root[data-style="lower-frame"] .eb-session {
+  font-size: 14px; margin: 0; padding: 4px 14px; opacity: 1;
+}
+</style>
+
+<div class="eb-root"
+     data-scene-component="EventBranding"
+     data-style="{{style}}"
+     data-theme-art="{{themeArtSrc}}">
+  <div class="eb-bg">{{{_lottieThemeArtContainer}}}</div>
+  <div class="eb-overlay"></div>
+  <div class="eb-content">
+    <h1 class="eb-event-name">{{eventName}}</h1>
+    <div class="eb-series">{{series}}</div>
+    <div class="eb-meta">
+      <span class="eb-date">{{date}}</span>
+      <span class="eb-meta-sep"></span>
+      <span class="eb-venue">{{venue}}</span>
+    </div>
+    <div class="eb-session">{{sessionId}}</div>
+  </div>
+  <div class="eb-sponsors"></div>
+  <div class="eb-accent-line"></div>
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="eb-grad-{{sceneId}}" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#0078d4"/>
+        <stop offset="100%" stop-color="#5c2d91"/>
+      </linearGradient>
+    </defs>
+  </svg>
+  <script type="application/json" id="eb-sponsors-{{sceneId}}">{{{sponsorLockupsJson}}}</script>
+  {{{_lottieThemeArtDataIsland}}}
+</div>

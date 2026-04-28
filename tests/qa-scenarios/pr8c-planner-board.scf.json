@@ -1,0 +1,78 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "planner-board-10s",
+      "duration": 10,
+      "component": "PlannerScene",
+      "props": {
+        "variant": "board",
+        "state": "default",
+        "planName": "Livesite – Radar Controls",
+        "breadcrumb": "My plans",
+        "activeTab": "Board",
+        "groupBy": "Bucket",
+        "accountInitial": "A",
+        "buckets": [
+          {
+            "name": "No bucket",
+            "hasHelpIcon": true,
+            "tasks": [
+              {
+                "title": "Confirm runbook owners for Cosmos rollover",
+                "recurrence": true,
+                "priority": "important",
+                "assignees": [{ "name": "Priya Singh" }, { "name": "Marco Costa" }],
+                "dueText": "Due Apr 28"
+              },
+              {
+                "title": "Draft postmortem for ICM 8842110",
+                "labels": [{ "color": "#5B5FC7" }, { "color": "#E8770E" }],
+                "assignees": [{ "name": "Hannah Ito" }]
+              },
+              {
+                "title": "Validate Tier-1 capacity buffer",
+                "priority": "urgent",
+                "assignees": [{ "name": "Lena Park" }]
+              }
+            ]
+          },
+          {
+            "name": "In progress",
+            "tasks": [
+              {
+                "title": "Migrate ingestion pipeline to v3 schema",
+                "labels": [{ "color": "#3FB984" }],
+                "assignees": [{ "name": "Owen Tanaka" }, { "name": "Damon West" }],
+                "dueText": "Due May 02"
+              },
+              {
+                "title": "Roll out new alert deduper to West US 2",
+                "recurrence": true,
+                "assignees": [{ "name": "Ravi Kumar" }]
+              }
+            ]
+          },
+          {
+            "name": "Done",
+            "tasks": [
+              {
+                "title": "Patch token-rotation bug in auth service",
+                "priority": "low",
+                "assignees": [{ "name": "Aisha Mansour" }]
+              },
+              {
+                "title": "Publish Q2 reliability scorecard",
+                "labels": [{ "color": "#5B5FC7" }],
+                "assignees": [{ "name": "Hannah Ito" }, { "name": "Marco Costa" }]
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

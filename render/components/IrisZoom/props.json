@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IrisZoomProps",
+  "type": "object",
+  "properties": {
+    "focalPoint": {
+      "type": "string",
+      "default": "50% 50%",
+      "description": "Center point for the iris close/open, expressed as '<x>% <y>%'."
+    },
+    "outgoingSrc": {
+      "type": "string",
+      "default": "",
+      "description": "Optional path or URL for the outgoing scene artwork."
+    },
+    "incomingSrc": {
+      "type": "string",
+      "default": "",
+      "description": "Optional path or URL for the incoming scene artwork."
+    },
+    "outgoingLabel": {
+      "type": "string",
+      "default": "Current focus",
+      "description": "Small label shown on the outgoing scene."
+    },
+    "incomingLabel": {
+      "type": "string",
+      "default": "Next focus",
+      "description": "Small label shown on the revealed scene."
+    },
+    "subline": {
+      "type": "string",
+      "default": "The outgoing scene contracts into a precise focal point before the next image blooms open.",
+      "description": "Shared supporting copy for both states."
+    }
+  },
+  "additionalProperties": false
+}

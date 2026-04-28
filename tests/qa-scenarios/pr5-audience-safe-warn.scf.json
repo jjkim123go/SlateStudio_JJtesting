@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "AudienceSafe Smoke — warn severity",
+    "description": "Single AudienceSafe scene with warn severity, fictional-customer classification, top-left placement, pulse animation.",
+    "author": "Slate QA — PR5 Lane B"
+  },
+  "scenes": [
+    {
+      "id": "as-warn-smoke",
+      "component": "AudienceSafe",
+      "duration": 8,
+      "props": {
+        "classification": "fictional-customer",
+        "watermarkText": "Fictional customer — illustrative example",
+        "placement": "top-left",
+        "severity": "warn",
+        "icon": "⚠",
+        "appearStartSec": 0.3,
+        "appearDurationSec": 0.6,
+        "pulseStartSec": 1.2
+      }
+    }
+  ]
+}

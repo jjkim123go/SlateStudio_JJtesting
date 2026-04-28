@@ -1,0 +1,14 @@
+/*
+ * WhiteboardScene — supplemental styles (Wave A, PR 8a)
+ *
+ * Most styles live in the scene-scoped <style data-component="WhiteboardScene">
+ * block in index.html (scoped via .scene-{{sceneId}} per CONTRACT §3.3).
+ * This file holds only animation-state classes that JS toggles via class
+ * mutation rather than inline style.
+ *
+ * Class prefix: wb-
+ */
+
+/* No additional rules currently required; all styling is scene-scoped in
+   index.html. File reserved for future state classes (e.g. wb-sticky--lifted)
+   that may need !important specificity guards. */

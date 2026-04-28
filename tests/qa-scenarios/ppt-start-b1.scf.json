@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "pipeline": "synthetic-app-fidelity",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "ppt-start-b1",
+      "duration": 5,
+      "component": "PowerPointScene",
+      "props": {
+        "mode": "edit",
+        "filename": "PowerPoint",
+        "ribbonContentHtml": "",
+        "thumbnailsHtml": "",
+        "canvasHtml": "<style>\n.b1p-start{position:absolute;inset:0;display:flex;background:#fff;font-family:'Segoe UI',sans-serif}\n.b1p-start-left{width:280px;background:#C43E1C;color:#fff;display:flex;flex-direction:column;padding:40px 28px}\n.b1p-start-logo{font-size:22px;font-weight:700;margin-bottom:24px;display:flex;align-items:center;gap:8px}\n.b1p-start-logo svg{width:28px;height:28px;fill:#fff}\n.b1p-start-menu{display:flex;flex-direction:column;gap:12px;margin-top:8px}\n.b1p-start-menu-item{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;cursor:pointer;font-size:14px}\n.b1p-start-menu-item:hover,.b1p-start-menu-item.b1p-active{background:rgba(255,255,255,0.15)}\n.b1p-start-menu-item.b1p-active{font-weight:600}\n.b1p-start-right{flex:1;padding:36px 48px;overflow-y:auto}\n.b1p-start-section{margin-bottom:32px}\n.b1p-start-section h2{font-size:16px;font-weight:600;color:#333;margin:0 0 16px}\n.b1p-tmpl-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}\n.b1p-tmpl-card{border:1px solid #e1e1e1;border-radius:6px;overflow:hidden;cursor:pointer}\n.b1p-tmpl-card:hover{border-color:#C43E1C}\n.b1p-tmpl-preview{height:90px;display:flex;align-items:center;justify-content:center;font-size:12px;color:#666}\n.b1p-tmpl-label{padding:8px 10px;font-size:12px;color:#444;border-top:1px solid #e1e1e1;background:#fafafa}\n.b1p-recent-list{display:flex;flex-direction:column;gap:6px}\n.b1p-recent-row{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:4px;font-size:13px;color:#333}\n.b1p-recent-row:hover{background:#f3f2f1}\n.b1p-recent-date{margin-left:auto;font-size:11px;color:#888}\n</style>\n<div class=\"b1p-start\">\n  <div class=\"b1p-start-left\">\n    <div class=\"b1p-start-logo\">\n      <svg viewBox=\"0 0 24 24\"><rect x=\"1\" y=\"1\" width=\"10\" height=\"10\" rx=\"1\" fill=\"#fff\"/><rect x=\"13\" y=\"1\" width=\"10\" height=\"10\" rx=\"1\" fill=\"#fff\" opacity=\".7\"/><rect x=\"1\" y=\"13\" width=\"10\" height=\"10\" rx=\"1\" fill=\"#fff\" opacity=\".7\"/><rect x=\"13\" y=\"13\" width=\"10\" height=\"10\" rx=\"1\" fill=\"#fff\" opacity=\".4\"/></svg>\n      PowerPoint\n    </div>\n    <div class=\"b1p-start-menu\">\n      <div class=\"b1p-start-menu-item b1p-active\"><svg style=\"width:18px;height:18px\"><use href=\"#ppt-icon-new-slide\"/></svg> Home</div>\n      <div class=\"b1p-start-menu-item\"><svg style=\"width:18px;height:18px\"><use href=\"#ppt-icon-new-slide\"/></svg> New</div>\n      <div class=\"b1p-start-menu-item\"><svg style=\"width:18px;height:18px\"><use href=\"#ppt-icon-save\"/></svg> Open</div>\n    </div>\n  </div>\n  <div class=\"b1p-start-right\">\n    <div class=\"b1p-start-section\">\n      <h2>New</h2>\n      <div class=\"b1p-tmpl-grid\">\n        <div class=\"b1p-tmpl-card\"><div class=\"b1p-tmpl-preview\" style=\"background:#fff;border:2px dashed #ccc\">+ Blank</div><div class=\"b1p-tmpl-label\">Blank Presentation</div></div>\n        <div class=\"b1p-tmpl-card\"><div class=\"b1p-tmpl-preview\" style=\"background:linear-gradient(135deg,#1a365d,#2a5298);color:#fff\">Aa</div><div class=\"b1p-tmpl-label\">Corporate</div></div>\n        <div class=\"b1p-tmpl-card\"><div class=\"b1p-tmpl-preview\" style=\"background:linear-gradient(135deg,#667eea,#764ba2);color:#fff\">Aa</div><div class=\"b1p-tmpl-label\">Modern</div></div>\n        <div class=\"b1p-tmpl-card\"><div class=\"b1p-tmpl-preview\" style=\"background:linear-gradient(135deg,#f5af19,#f12711);color:#fff\">Aa</div><div class=\"b1p-tmpl-label\">Bold</div></div>\n      </div>\n    </div>\n    <div class=\"b1p-start-section\">\n      <h2>Recent</h2>\n      <div class=\"b1p-recent-list\">\n        <div class=\"b1p-recent-row\"><svg style=\"width:16px;height:16px;color:#C43E1C\"><use href=\"#ppt-icon-create-pdf\"/></svg> Q4 Business Review.pptx<span class=\"b1p-recent-date\">Today</span></div>\n        <div class=\"b1p-recent-row\"><svg style=\"width:16px;height:16px;color:#C43E1C\"><use href=\"#ppt-icon-create-pdf\"/></svg> Sprint 24 Demo.pptx<span class=\"b1p-recent-date\">Yesterday</span></div>\n        <div class=\"b1p-recent-row\"><svg style=\"width:16px;height:16px;color:#C43E1C\"><use href=\"#ppt-icon-create-pdf\"/></svg> Platform Architecture.pptx<span class=\"b1p-recent-date\">Dec 15</span></div>\n        <div class=\"b1p-recent-row\"><svg style=\"width:16px;height:16px;color:#C43E1C\"><use href=\"#ppt-icon-create-pdf\"/></svg> FY26 Strategy Draft.pptx<span class=\"b1p-recent-date\">Dec 10</span></div>\n      </div>\n    </div>\n  </div>\n</div>",
+        "notesText": "",
+        "statusPosition": ""
+      }
+    }
+  ]
+}

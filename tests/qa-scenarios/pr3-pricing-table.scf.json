@@ -1,0 +1,24 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 3 — PricingTable smoke test",
+    "purpose": "Validates PricingTable component compilation with realistic 3-tier SaaS pricing data, recommended-tier highlight, and disclaimer.",
+    "duration_target_seconds": 9
+  },
+  "scenes": [
+    {
+      "id": "pricing-grid",
+      "duration": 9,
+      "narrationStartSec": 0,
+      "component": "PricingTable",
+      "props": {
+        "title": "Plans for every team",
+        "tiersJson": "[{\"id\":\"free\",\"name\":\"Free\",\"price\":\"$0\",\"billing\":\"forever\",\"features\":[\"Up to 5 projects\",\"1 GB storage\",\"Community support\",\"Basic analytics\"],\"ctaLabel\":\"Get started\"},{\"id\":\"pro\",\"name\":\"Pro\",\"price\":\"$12\",\"billing\":\"per user / month\",\"features\":[\"Unlimited projects\",\"100 GB storage\",\"Priority email support\",\"Advanced analytics\",\"SSO via Google or Microsoft\",\"Custom integrations\"],\"ctaLabel\":\"Start free trial\"},{\"id\":\"enterprise\",\"name\":\"Enterprise\",\"price\":\"Custom\",\"features\":[\"Everything in Pro\",\"SAML SSO + SCIM provisioning\",\"99.9% uptime SLA\",\"Dedicated success manager\",\"Custom data residency\"],\"ctaLabel\":\"Contact sales\"}]",
+        "recommendedTierId": "pro",
+        "disclaimer": "Prices in USD. Annual billing saves 20%. Taxes may apply."
+      }
+    }
+  ]
+}

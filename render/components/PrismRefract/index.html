@@ -1,0 +1,52 @@
+<style>
+.scene-{{sceneId}} .pr-root{position:absolute;inset:0;overflow:hidden;background:radial-gradient(circle at 50% 28%,rgba(255,255,255,0.08),transparent 28%),linear-gradient(135deg,#02040a 0%,#0a1324 50%,#020308 100%);font-family:Inter,Segoe UI,Arial,sans-serif}
+.scene-{{sceneId}} .pr-root,.scene-{{sceneId}} .pr-plate,.scene-{{sceneId}} .pr-band,.scene-{{sceneId}} .pr-slice,.scene-{{sceneId}} .pr-tint,.scene-{{sceneId}} .pr-flare,.scene-{{sceneId}} .pr-copy{position:absolute}
+.scene-{{sceneId}} .pr-plate{inset:0;background-size:cover;background-position:center center}
+.scene-{{sceneId}} .pr-outgoing{background-image:linear-gradient(135deg,rgba(15,23,42,0.96) 0%,rgba(15,23,42,0.84) 44%,rgba(2,6,23,0.98) 100%)}
+.scene-{{sceneId}} .pr-incoming{background-image:linear-gradient(135deg,rgba(37,99,235,0.24) 0%,rgba(14,165,233,0.16) 36%,rgba(168,85,247,0.22) 100%);filter:blur(14px) saturate(1.18);opacity:0}
+.scene-{{sceneId}} .pr-copy{left:6%;bottom:7%;max-width:42%;z-index:3;color:#fff}
+.scene-{{sceneId}} .pr-kicker{margin:0 0 14px;font-size:14px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.72)}
+.scene-{{sceneId}} .pr-title{margin:0;font-size:clamp(42px,5vw,92px);line-height:0.96;font-weight:800;letter-spacing:-0.04em;text-shadow:0 16px 34px rgba(0,0,0,0.35)}
+.scene-{{sceneId}} .pr-subtitle{margin:16px 0 0;font-size:20px;line-height:1.45;color:rgba(255,255,255,0.84)}
+.scene-{{sceneId}} .pr-bands{position:absolute;inset:-12% -10%;transform:rotate(-24deg);transform-origin:50% 50%;z-index:2}
+.scene-{{sceneId}} .pr-band{top:-8%;bottom:-8%;width:18%;overflow:hidden;clip-path:polygon(18% 0,100% 0,82% 100%,0 100%);border-radius:18px;will-change:transform,opacity,filter}
+.scene-{{sceneId}} .pr-band[data-band="0"]{left:-2%}
+.scene-{{sceneId}} .pr-band[data-band="1"]{left:10%}
+.scene-{{sceneId}} .pr-band[data-band="2"]{left:22%}
+.scene-{{sceneId}} .pr-band[data-band="3"]{left:34%}
+.scene-{{sceneId}} .pr-band[data-band="4"]{left:46%}
+.scene-{{sceneId}} .pr-band[data-band="5"]{left:58%}
+.scene-{{sceneId}} .pr-band[data-band="6"]{left:70%}
+.scene-{{sceneId}} .pr-band[data-band="7"]{left:82%}
+.scene-{{sceneId}} .pr-slice{inset:-2%;background-size:800% 100%;background-repeat:no-repeat;filter:contrast(1.06) saturate(1.06)}
+.scene-{{sceneId}} .pr-tint{inset:0;background:linear-gradient(180deg,rgba(255,255,255,0.28) 0%,var(--pr-color) 46%,rgba(0,0,0,0.12) 100%);mix-blend-mode:screen;opacity:0.9}
+.scene-{{sceneId}} .pr-band[data-band="0"] .pr-slice{background-position:0% 50%}
+.scene-{{sceneId}} .pr-band[data-band="1"] .pr-slice{background-position:14.285% 50%}
+.scene-{{sceneId}} .pr-band[data-band="2"] .pr-slice{background-position:28.57% 50%}
+.scene-{{sceneId}} .pr-band[data-band="3"] .pr-slice{background-position:42.855% 50%}
+.scene-{{sceneId}} .pr-band[data-band="4"] .pr-slice{background-position:57.14% 50%}
+.scene-{{sceneId}} .pr-band[data-band="5"] .pr-slice{background-position:71.425% 50%}
+.scene-{{sceneId}} .pr-band[data-band="6"] .pr-slice{background-position:85.71% 50%}
+.scene-{{sceneId}} .pr-band[data-band="7"] .pr-slice{background-position:100% 50%}
+.scene-{{sceneId}} .pr-flare{inset:14% 8%;border-radius:50%;background:radial-gradient(circle at 40% 50%,rgba(255,255,255,0.34),rgba(255,255,255,0.06) 26%,rgba(255,255,255,0) 60%);mix-blend-mode:screen;opacity:0;z-index:1;filter:blur(10px)}
+</style>
+<div class="pr-root" data-scene-component="PrismRefract" data-outgoing-src="{{outgoingSrc}}" data-incoming-src="{{incomingSrc}}" data-headline="{{headline}}" data-subline="{{subline}}">
+  <div class="pr-plate pr-outgoing"></div>
+  <div class="pr-plate pr-incoming"></div>
+  <div class="pr-flare"></div>
+  <div class="pr-copy">
+    <p class="pr-kicker">Prism transition</p>
+    <h1 class="pr-title"></h1>
+    <p class="pr-subtitle"></p>
+  </div>
+  <div class="pr-bands">
+    <div class="pr-band" data-band="0" style="--pr-color:#ff2453"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="1" style="--pr-color:#ff8a1d"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="2" style="--pr-color:#ffd83b"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="3" style="--pr-color:#5de27f"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="4" style="--pr-color:#37d6ff"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="5" style="--pr-color:#336cff"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="6" style="--pr-color:#7d46ff"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+    <div class="pr-band" data-band="7" style="--pr-color:#ff40cf"><div class="pr-slice"></div><div class="pr-tint"></div></div>
+  </div>
+</div>

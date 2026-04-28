@@ -1,0 +1,81 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "lists-menu-open-10s",
+      "duration": 10,
+      "component": "ListsScene",
+      "props": {
+        "state": "menu-open",
+        "selectedRowIndex": 1,
+        "iconColor": "orange",
+        "listName": "Asset registry",
+        "breadcrumb": "Facilities",
+        "activeView": "All assets",
+        "accountInitial": "M",
+        "searchPlaceholder": "Search assets",
+        "columns": [
+          { "name": "Asset tag",   "width": 140 },
+          { "name": "Name",        "width": 240, "sort": "asc" },
+          { "name": "Location",    "width": 180 },
+          { "name": "Owner",       "width": 200 },
+          { "name": "Condition",   "width": 130 },
+          { "name": "Last audit",  "width": 140 },
+          { "name": "Next service", "width": "flex" }
+        ],
+        "rows": [
+          {
+            "cells": {
+              "Asset tag": "ASS-00131",
+              "Name": "Conf room AV bridge — Kestrel",
+              "Location": "Bldg 121 / 4F",
+              "Owner": { "type": "person", "name": "Iris Hammond" },
+              "Condition": { "type": "pill", "value": "Healthy", "color": "green" },
+              "Last audit": "Mar 22",
+              "Next service": { "type": "rich", "html": "Scheduled <strong>Apr 28</strong>" }
+            }
+          },
+          {
+            "cells": {
+              "Asset tag": "ASS-00214",
+              "Name": "Lab UPS 6kVA — rack B7",
+              "Location": "Bldg 88 / Lab",
+              "Owner": { "type": "person", "name": "Sven Lindqvist" },
+              "Condition": { "type": "pill", "value": "Needs check", "color": "amber" },
+              "Last audit": "Feb 14",
+              "Next service": { "type": "rich", "html": "<strong>Overdue</strong> — open ticket <a>FAC-7712</a>" }
+            }
+          },
+          {
+            "cells": {
+              "Asset tag": "ASS-00337",
+              "Name": "Print MFD — Reception north",
+              "Location": "Bldg 121 / Lobby",
+              "Owner": { "type": "person", "name": "Reema Khoury" },
+              "Condition": { "type": "pill", "value": "Healthy", "color": "green" },
+              "Last audit": "Apr 02",
+              "Next service": "Jul 02"
+            }
+          }
+        ],
+        "contextMenu": [
+          { "label": "Share",            "icon": "share" },
+          { "label": "Copy link",        "icon": "copyLink" },
+          { "label": "Comment",          "icon": "comment" },
+          { "label": "Manage access",    "icon": "manageAccess" },
+          { "label": "Integrate",        "icon": "integrate", "hasSubmenu": true },
+          { "divider": true },
+          { "label": "Edit in grid view", "icon": "edit" },
+          { "label": "Alert me",         "icon": "alert" },
+          { "label": "Manage my alerts", "icon": "alertAdd" },
+          { "divider": true },
+          { "label": "Details",          "icon": "details" },
+          { "label": "More",             "icon": "more", "hasSubmenu": true }
+        ]
+      }
+    }
+  ]
+}

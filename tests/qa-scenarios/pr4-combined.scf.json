@@ -1,0 +1,93 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr4-combined",
+    "title": "PR 4 Combined — Roadmap → BurnDown → OKRStatus → ReleaseNotes (end-to-end render gate)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "rm-q1",
+      "duration": 8,
+      "component": "Roadmap",
+      "props": {
+        "title": "FY26 Q1 Roadmap",
+        "horizonStart": "2026-01-01",
+        "horizonEnd": "2026-03-31",
+        "swimlanes": [
+          { "id": "platform", "label": "Platform", "owner": "Maya" },
+          { "id": "growth",   "label": "Growth",   "owner": "Jordan" }
+        ],
+        "milestones": [
+          { "id": "m1", "title": "Approval routing GA", "date": "2026-02-12", "swimlaneId": "platform", "status": "done" },
+          { "id": "m2", "title": "Self-serve onboarding", "date": "2026-03-04", "swimlaneId": "platform", "status": "in_progress" },
+          { "id": "m3", "title": "Enterprise tier launch", "date": "2026-03-28", "swimlaneId": "growth", "status": "at_risk", "dependencyIds": ["m1"] }
+        ],
+        "todayMarker": { "date": "2026-02-20", "label": "Today" },
+        "legend": [
+          { "status": "done", "label": "Done" },
+          { "status": "in_progress", "label": "In progress" },
+          { "status": "at_risk", "label": "At risk" }
+        ]
+      }
+    },
+    {
+      "id": "bd-sprint",
+      "duration": 7,
+      "component": "BurnDown",
+      "props": {
+        "title": "Sprint 47 burn-down",
+        "xLabel": "Day",
+        "yLabel": "Points",
+        "plan":     [{"x":1,"y":40},{"x":2,"y":36},{"x":3,"y":32},{"x":4,"y":28},{"x":5,"y":20},{"x":6,"y":12},{"x":7,"y":0}],
+        "actual":   [{"x":1,"y":40},{"x":2,"y":38},{"x":3,"y":34},{"x":4,"y":31}],
+        "forecast": [{"x":4,"y":31},{"x":5,"y":24},{"x":6,"y":15},{"x":7,"y":4}],
+        "todayIndex": 3,
+        "goalLine": 0,
+        "highlights": [
+          {"x":3,"label":"Scope cut","kind":"recover"}
+        ]
+      }
+    },
+    {
+      "id": "okr-snap",
+      "duration": 9,
+      "component": "OKRStatus",
+      "props": {
+        "objective": "Land enterprise self-serve onboarding",
+        "owner": "Maya Thompson",
+        "timeframe": "Q1 FY26",
+        "status": "at-risk",
+        "themeMode": "cards",
+        "keyResults": [
+          { "id": "1", "title": "Reduce TTV to 5 days", "baseline": 14, "current": 8, "target": 5, "unit": "days", "progressPct": 75, "status": "on-track", "sparkline": [14,12,10,9,8] },
+          { "id": "2", "title": "Migrate 18 lighthouse customers", "baseline": 0, "current": 9, "target": 18, "unit": "accounts", "status": "at-risk" }
+        ]
+      }
+    },
+    {
+      "id": "rn-ga",
+      "duration": 7,
+      "component": "ReleaseNotes",
+      "props": {
+        "version": "v2.4.0",
+        "releaseDate": "2026-04-12",
+        "channel": "GA",
+        "themeVariant": "cards",
+        "features": [
+          { "title": "Approval routing policies", "body": "Reusable approver presets with audit-ready conditions.", "pill": "Flagship" }
+        ],
+        "fixes": [
+          { "title": "Resolved duplicate notification sends.", "severity": "high" }
+        ],
+        "breakingChanges": [
+          { "title": "Legacy approval-policy IDs removed.", "mitigation": "Regenerate from v2.4 SDK." }
+        ],
+        "links": [
+          { "label": "Full changelog", "url": "https://contoso.example/releases/v2-4-0" }
+        ]
+      }
+    }
+  ]
+}

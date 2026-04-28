@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — PresenterBug smoke test",
+    "purpose": "Validates PresenterBug with photo, social handles cycling, pronouns, and bottom-left placement.",
+    "duration_target_seconds": 8
+  },
+  "scenes": [
+    {
+      "id": "bug-speaker-1",
+      "duration": 8,
+      "narrationStartSec": 0,
+      "component": "PresenterBug",
+      "props": {
+        "name": "Dr. Maya Patel",
+        "title": "Principal Engineer, Azure Container Apps",
+        "company": "Microsoft",
+        "pronouns": "she/her",
+        "placement": "bottom-left",
+        "social": [
+          { "label": "X",       "handle": "@mayapatel" },
+          { "label": "GitHub",  "handle": "mayapatel" },
+          { "label": "LinkedIn","handle": "in/maya-patel-eng" }
+        ]
+      }
+    }
+  ]
+}

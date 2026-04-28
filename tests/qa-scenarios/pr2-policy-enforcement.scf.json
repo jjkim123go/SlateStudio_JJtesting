@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "metadata": {
+    "title": "PolicyEnforcement Smoke Test — PR2 Lane B",
+    "description": "Single PolicyEnforcement scene with 4 checks (1 fail) and deny decision. Validates stamp stagger, fail emphasis, and decision gate animation.",
+    "author": "Slate QA"
+  },
+  "scenes": [
+    {
+      "id": "policy-smoke",
+      "component": "PolicyEnforcement",
+      "duration": 10,
+      "props": {
+        "title": "Production Database Access Policy",
+        "layout": "funnel",
+        "requestHtml": "<div class=\"pe-request-label\">Incoming Request</div><div class=\"pe-request-body\"><span class=\"pe-actor\">Carol Reyes</span> requests access to <span class=\"pe-resource\">Prod-DB-West</span></div>",
+        "checksHtml": "<div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"pass\">✓</div><div><div class=\"pe-check-name\">Identity Verified</div><div class=\"pe-check-detail\">Entra ID SSO token valid</div></div></div><div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"pass\">✓</div><div><div class=\"pe-check-name\">MFA Confirmed</div><div class=\"pe-check-detail\">TOTP code matched at 09:31 UTC</div></div></div><div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"fail\">✗</div><div><div class=\"pe-check-name\">Geo-fence</div><div class=\"pe-check-detail\">IP 203.0.113.42 outside allowed CIDR</div></div></div><div class=\"pe-check\"><div class=\"pe-stamp\" data-outcome=\"pass\">✓</div><div><div class=\"pe-check-name\">Role: DB-Reader</div><div class=\"pe-check-detail\">RBAC role assigned via PIM</div></div></div>",
+        "decisionHtml": "<div class=\"pe-decision-icon\">🚫</div><div><div class=\"pe-decision-text\">Deny</div><div class=\"pe-decision-reason\">Geo-fence check failed — connect via corporate VPN and retry</div></div>",
+        "ruleCitationHtml": "NIST 800-53 · AC-6 v2",
+        "auditRefHtml": ""
+      }
+    }
+  ]
+}

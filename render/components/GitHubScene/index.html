@@ -1,0 +1,734 @@
+<!--
+  ============================================================================
+  GitHubScene — github.com light theme, dual variant — PR 10e Wave A
+  ============================================================================
+
+  SLOT CONTRACT (Wave B passes via SCF props):
+    {{searchPlaceholder}}     — Top-bar search box placeholder
+    {{repoOwner}}             — Repo owner text (e.g. "contoso")
+    {{repoName}}              — Repo name text (e.g. "billing-service")
+    {{repoBranchHtml}}        — Branch chip ("main")
+    {{starsCount}}            — Star count text (e.g. "1.2k")
+    {{forksCount}}            — Fork count text
+    {{watchersCount}}         — Watchers count text
+    {{repoTabsHtml}}          — Code/Issues/PR/Actions/Projects/Wiki/Security/Insights
+    {{bodyHtml}}              — Variant body (repo-home OR pr-diff)
+    {{footerStatusHtml}}      — Optional footer
+
+  VARIANT ATTRIBUTES on .gh-root:
+    data-variant="repo-home"  — repo home page (file tree + about + readme)
+    data-variant="pr-diff"    — pull-request page (sub-tabs + diff + thread)
+    data-theme="light"        (only light variant in scope for PR 10e)
+
+  CHROME REGIONS:
+    .gh-topbar       60px — global header (logo, search, +, bell, avatar)
+    .gh-repo-header  84px — repo title + counts + tabs
+    .gh-body         flex — variant slot
+    .gh-footer       28px — optional
+
+  Standing Rule #15: Octicons (filled style). Single-path solid fills.
+    Window controls n/a (no chrome wrapper — this is the github.com page itself).
+  ============================================================================ -->
+
+<style data-component="GitHubScene">
+/* ============================================================================
+   DENSITY SPEC (measured at 1920×1080):
+     Topbar             60px
+     Repo header        84px (title row 38px + tab strip 46px)
+     Repo tab font      14px
+     Body font          14px
+     Code/diff font     12px SFMono / Cascadia Mono
+     File-tree row      32px
+     Diff line height   20px
+   ============================================================================ */
+
+.scene-{{sceneId}} .gh-root {
+  --gh-bg:           #f6f8fa;
+  --gh-surface:      #ffffff;
+  --gh-header:       #ffffff;
+  --gh-text:         #1f2328;
+  --gh-text-sec:     #656d76;
+  --gh-text-mute:    #818b98;
+  --gh-border:       #d0d7de;
+  --gh-border-mute:  #d8dee4;
+  --gh-link:         #0969da;
+  --gh-link-hover:   #0550ae;
+  --gh-accent:       #0969da;
+  --gh-success:      #1a7f37;
+  --gh-success-bg:   #dafbe1;
+  --gh-success-emp:  #2da44e;
+  --gh-danger:       #cf222e;
+  --gh-danger-bg:    #ffebe9;
+  --gh-merged:       #8250df;
+  --gh-warn:         #9a6700;
+  --gh-warn-bg:      #fff8c5;
+  --gh-btn-bg:       #f6f8fa;
+  --gh-btn-bg-hover: #f3f4f6;
+  --gh-btn-border:   rgba(31,35,40,0.15);
+  --gh-diff-add-bg:    #dafbe1;
+  --gh-diff-add-emph:  #aceebb;
+  --gh-diff-rm-bg:     #ffebe9;
+  --gh-diff-rm-emph:   #ffcecb;
+  --gh-shadow:       0 30px 80px rgba(0,0,0,0.35), 0 0 0 1px rgba(0,0,0,0.06);
+
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 40px;
+  background: linear-gradient(135deg, #1a2332 0%, #24292f 50%, #303841 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  color: var(--gh-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+.scene-{{sceneId}} .gh-window {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: var(--gh-bg);
+  border-radius: 8px;
+  box-shadow: var(--gh-shadow);
+  overflow: hidden;
+  opacity: 0;
+}
+
+/* ── Topbar (60px) ── */
+.scene-{{sceneId}} .gh-topbar {
+  display: flex; align-items: center;
+  flex: 0 0 60px; height: 60px;
+  background: var(--gh-header);
+  border-bottom: 1px solid var(--gh-border);
+  padding: 0 16px;
+  gap: 12px;
+}
+.scene-{{sceneId}} .gh-topbar-mark {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  color: var(--gh-text);
+  flex-shrink: 0;
+}
+.scene-{{sceneId}} .gh-topbar-mark svg { width: 32px; height: 32px; }
+.scene-{{sceneId}} .gh-topbar-search {
+  display: flex; align-items: center; gap: 8px;
+  flex: 0 1 320px;
+  height: 28px; padding: 0 10px;
+  background: var(--gh-bg);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--gh-text-sec);
+}
+.scene-{{sceneId}} .gh-topbar-search svg { width: 14px; height: 14px; opacity: 0.6; }
+.scene-{{sceneId}} .gh-topbar-search-kbd {
+  margin-left: auto;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 11px; color: var(--gh-text-mute);
+  border: 1px solid var(--gh-border);
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+.scene-{{sceneId}} .gh-topbar-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .gh-topbar-actions { display: inline-flex; align-items: center; gap: 6px; }
+.scene-{{sceneId}} .gh-topbar-iconbtn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  background: transparent; border: 0; padding: 0; border-radius: 6px;
+  color: var(--gh-text); cursor: pointer;
+}
+.scene-{{sceneId}} .gh-topbar-iconbtn:hover { background: var(--gh-btn-bg); }
+.scene-{{sceneId}} .gh-topbar-iconbtn svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .gh-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: linear-gradient(135deg, #0969da, #54aeff);
+  color: #fff; font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── Repo header (84px) ── */
+.scene-{{sceneId}} .gh-repo-header {
+  display: flex; flex-direction: column;
+  flex: 0 0 84px;
+  background: var(--gh-header);
+  border-bottom: 1px solid var(--gh-border);
+  padding: 0 24px;
+}
+.scene-{{sceneId}} .gh-repo-title-row {
+  display: flex; align-items: center;
+  flex: 0 0 38px; height: 38px;
+  gap: 8px; padding-top: 4px;
+  font-size: 16px;
+}
+.scene-{{sceneId}} .gh-repo-mark { display: inline-flex; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-repo-mark svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .gh-repo-owner { color: var(--gh-link); font-weight: 600; }
+.scene-{{sceneId}} .gh-repo-slash { color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-repo-name { color: var(--gh-link); font-weight: 600; }
+.scene-{{sceneId}} .gh-repo-public {
+  margin-left: 6px;
+  font-size: 12px; color: var(--gh-text-sec);
+  border: 1px solid var(--gh-border);
+  border-radius: 12px;
+  padding: 1px 8px;
+}
+.scene-{{sceneId}} .gh-repo-actions {
+  margin-left: auto;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.scene-{{sceneId}} .gh-repo-chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 28px; padding: 0 10px;
+  font-size: 12px; color: var(--gh-text);
+  background: var(--gh-btn-bg);
+  border: 1px solid var(--gh-btn-border);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .gh-repo-chip svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .gh-repo-chip-count {
+  margin-left: 4px; padding-left: 8px;
+  border-left: 1px solid var(--gh-border);
+  color: var(--gh-text); font-weight: 600;
+}
+.scene-{{sceneId}} .gh-repo-tabs {
+  display: flex; align-items: stretch;
+  flex: 0 0 46px; height: 46px;
+  gap: 0; margin: 0 -8px;
+}
+.scene-{{sceneId}} .gh-repo-tab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 12px;
+  margin: 0 4px;
+  font-size: 14px; color: var(--gh-text);
+  position: relative; cursor: pointer;
+  height: 100%;
+  border-radius: 6px 6px 0 0;
+}
+.scene-{{sceneId}} .gh-repo-tab:hover { background: rgba(208,215,222,0.32); }
+.scene-{{sceneId}} .gh-repo-tab svg { width: 16px; height: 16px; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-repo-tab--active { font-weight: 600; }
+.scene-{{sceneId}} .gh-repo-tab--active::after {
+  content: ""; position: absolute;
+  left: 8px; right: 8px; bottom: 0; height: 3px;
+  background: #fd8c73;
+  border-radius: 2px;
+}
+.scene-{{sceneId}} .gh-repo-tab-count {
+  font-size: 12px; padding: 1px 6px;
+  background: rgba(175,184,193,0.2);
+  border-radius: 10px;
+  color: var(--gh-text);
+  font-weight: 500;
+}
+
+/* ── Body ── */
+.scene-{{sceneId}} .gh-body {
+  flex: 1 1 auto; min-height: 0;
+  background: var(--gh-bg);
+  overflow: hidden;
+}
+
+/* ── Variant: repo-home ── */
+.scene-{{sceneId}} .gh-rh {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 296px;
+  gap: 24px;
+  padding: 24px;
+  height: 100%;
+  box-sizing: border-box;
+}
+.scene-{{sceneId}} .gh-rh-main { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.scene-{{sceneId}} .gh-rh-aside { min-width: 0; display: flex; flex-direction: column; gap: 16px; }
+.scene-{{sceneId}} .gh-rh-action-bar {
+  display: flex; align-items: center; gap: 8px;
+}
+.scene-{{sceneId}} .gh-rh-branch {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px;
+  background: var(--gh-btn-bg);
+  border: 1px solid var(--gh-btn-border);
+  border-radius: 6px;
+  font-size: 14px; color: var(--gh-text);
+  font-weight: 500;
+}
+.scene-{{sceneId}} .gh-rh-branch svg { width: 16px; height: 16px; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-rh-branch-chev { width: 12px; height: 12px; opacity: 0.7; }
+.scene-{{sceneId}} .gh-rh-action-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .gh-rh-codebtn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 14px;
+  background: #2da44e; color: #ffffff;
+  border: 1px solid rgba(31,35,40,0.15);
+  border-radius: 6px;
+  font-size: 14px; font-weight: 500;
+}
+.scene-{{sceneId}} .gh-rh-codebtn svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .gh-rh-files {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .gh-rh-file-head {
+  display: flex; align-items: center;
+  height: 40px; padding: 0 16px;
+  background: var(--gh-bg);
+  border-bottom: 1px solid var(--gh-border);
+  font-size: 12px; color: var(--gh-text-sec);
+  gap: 12px;
+}
+.scene-{{sceneId}} .gh-rh-file-head-author {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--gh-text);
+}
+.scene-{{sceneId}} .gh-rh-file-head-author .gh-avatar { width: 20px; height: 20px; font-size: 9px; }
+.scene-{{sceneId}} .gh-rh-file-head-msg { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.scene-{{sceneId}} .gh-rh-file-head-meta { color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-rh-file-row {
+  display: flex; align-items: center;
+  height: 32px; padding: 0 16px;
+  border-bottom: 1px solid var(--gh-border-mute);
+  font-size: 14px;
+  gap: 12px;
+}
+.scene-{{sceneId}} .gh-rh-file-row:last-child { border-bottom: 0; }
+.scene-{{sceneId}} .gh-rh-file-row:hover { background: var(--gh-bg); }
+.scene-{{sceneId}} .gh-rh-file-icon { display: inline-flex; color: #54aeff; }
+.scene-{{sceneId}} .gh-rh-file-icon svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .gh-rh-file-icon--folder { color: #54aeff; }
+.scene-{{sceneId}} .gh-rh-file-icon--file { color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-rh-file-name {
+  flex: 0 0 240px;
+  color: var(--gh-text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .gh-rh-file-name a, .scene-{{sceneId}} .gh-rh-file-name { text-decoration: none; }
+.scene-{{sceneId}} .gh-rh-file-msg {
+  flex: 1 1 auto; min-width: 0;
+  color: var(--gh-text-sec);
+  font-size: 13px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .gh-rh-file-time {
+  flex: 0 0 auto;
+  color: var(--gh-text-sec);
+  font-size: 12px;
+}
+.scene-{{sceneId}} .gh-rh-readme {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .gh-rh-readme-head {
+  display: flex; align-items: center;
+  height: 40px; padding: 0 16px;
+  background: var(--gh-bg);
+  border-bottom: 1px solid var(--gh-border);
+  font-size: 14px; color: var(--gh-text); font-weight: 600;
+  gap: 6px;
+}
+.scene-{{sceneId}} .gh-rh-readme-head svg { width: 16px; height: 16px; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-rh-readme-body {
+  padding: 24px 32px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--gh-text);
+}
+.scene-{{sceneId}} .gh-rh-readme-body h1 {
+  font-size: 28px; margin: 0 0 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--gh-border);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .gh-rh-readme-body h2 {
+  font-size: 20px; margin: 18px 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--gh-border);
+  font-weight: 600;
+}
+.scene-{{sceneId}} .gh-rh-readme-body p { margin: 6px 0; }
+.scene-{{sceneId}} .gh-rh-readme-body code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: rgba(175,184,193,0.2);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+.scene-{{sceneId}} .gh-rh-badge-row { display: flex; gap: 4px; flex-wrap: wrap; margin: 8px 0 12px; }
+.scene-{{sceneId}} .gh-rh-badge {
+  display: inline-flex; align-items: center;
+  height: 20px; padding: 0 6px;
+  font-size: 11px;
+  border-radius: 3px;
+  color: #ffffff;
+}
+.scene-{{sceneId}} .gh-rh-badge--build  { background: #2da44e; }
+.scene-{{sceneId}} .gh-rh-badge--cov    { background: #1f6feb; }
+.scene-{{sceneId}} .gh-rh-badge--lic    { background: #6e7681; }
+
+/* About card */
+.scene-{{sceneId}} .gh-rh-about {
+  border-bottom: 1px solid var(--gh-border-mute);
+  padding-bottom: 16px;
+  font-size: 14px;
+}
+.scene-{{sceneId}} .gh-rh-about-head {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 16px; font-weight: 600;
+  margin-bottom: 8px;
+}
+.scene-{{sceneId}} .gh-rh-about-text { color: var(--gh-text); margin: 0 0 12px; }
+.scene-{{sceneId}} .gh-rh-about-meta { color: var(--gh-text-sec); display: flex; flex-direction: column; gap: 6px; font-size: 13px; }
+.scene-{{sceneId}} .gh-rh-about-meta-row { display: flex; align-items: center; gap: 6px; }
+.scene-{{sceneId}} .gh-rh-about-meta-row svg { width: 14px; height: 14px; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-rh-about-topics { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 10px; }
+.scene-{{sceneId}} .gh-rh-topic {
+  display: inline-flex; align-items: center;
+  height: 22px; padding: 0 10px;
+  font-size: 12px;
+  background: #ddf4ff; color: #0969da;
+  border-radius: 12px;
+}
+
+/* ── Variant: pr-diff ── */
+.scene-{{sceneId}} .gh-pr {
+  padding: 24px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex; flex-direction: column; gap: 16px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .gh-pr-head { display: flex; flex-direction: column; gap: 8px; }
+.scene-{{sceneId}} .gh-pr-title {
+  font-size: 22px; color: var(--gh-text);
+  font-weight: 400;
+  line-height: 1.3;
+}
+.scene-{{sceneId}} .gh-pr-num { color: var(--gh-text-sec); font-weight: 300; margin-left: 6px; }
+.scene-{{sceneId}} .gh-pr-meta { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-pr-status {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 12px;
+  background: var(--gh-success-emp); color: #ffffff;
+  border-radius: 14px;
+  font-size: 13px; font-weight: 500;
+}
+.scene-{{sceneId}} .gh-pr-status svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .gh-pr-subtabs {
+  display: flex; align-items: stretch;
+  border-bottom: 1px solid var(--gh-border);
+  gap: 8px;
+  margin-bottom: -1px;
+}
+.scene-{{sceneId}} .gh-pr-subtab {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px;
+  font-size: 14px; color: var(--gh-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 6px 6px 0 0;
+  margin-bottom: -1px;
+  position: relative;
+}
+.scene-{{sceneId}} .gh-pr-subtab svg { width: 16px; height: 16px; color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-pr-subtab--active {
+  background: var(--gh-bg);
+  border-color: var(--gh-border);
+  border-bottom-color: var(--gh-bg);
+  font-weight: 600;
+  color: var(--gh-text);
+}
+.scene-{{sceneId}} .gh-pr-subtab-count {
+  font-size: 12px; padding: 1px 6px;
+  background: rgba(175,184,193,0.2);
+  border-radius: 10px;
+}
+.scene-{{sceneId}} .gh-pr-files {
+  flex: 1 1 auto; min-height: 0;
+  display: flex; flex-direction: column; gap: 14px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .gh-pr-file {
+  background: var(--gh-surface);
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .gh-pr-file-head {
+  display: flex; align-items: center;
+  height: 38px; padding: 0 12px;
+  background: var(--gh-bg);
+  border-bottom: 1px solid var(--gh-border);
+  gap: 8px;
+  font-size: 13px;
+}
+.scene-{{sceneId}} .gh-pr-file-chev { color: var(--gh-text-sec); display: inline-flex; }
+.scene-{{sceneId}} .gh-pr-file-chev svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .gh-pr-file-stat-add { color: var(--gh-success); font-weight: 600; font-family: ui-monospace, SFMono-Regular, monospace; }
+.scene-{{sceneId}} .gh-pr-file-stat-rm  { color: var(--gh-danger); font-weight: 600; font-family: ui-monospace, SFMono-Regular, monospace; }
+.scene-{{sceneId}} .gh-pr-file-name {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px; color: var(--gh-text); font-weight: 600;
+}
+.scene-{{sceneId}} .gh-pr-file-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .gh-pr-file-action {
+  display: inline-flex; align-items: center;
+  width: 26px; height: 26px;
+  background: transparent; border: 0;
+  color: var(--gh-text-sec);
+  justify-content: center;
+}
+.scene-{{sceneId}} .gh-pr-file-action svg { width: 14px; height: 14px; }
+.scene-{{sceneId}} .gh-pr-diff {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--gh-text);
+}
+.scene-{{sceneId}} .gh-pr-diff-row { display: flex; min-height: 20px; }
+.scene-{{sceneId}} .gh-pr-diff-num {
+  flex: 0 0 50px;
+  padding: 0 10px;
+  text-align: right;
+  color: rgba(31,35,40,0.5);
+  user-select: none;
+  background: var(--gh-bg);
+  border-right: 1px solid var(--gh-border-mute);
+}
+.scene-{{sceneId}} .gh-pr-diff-num--right { background: var(--gh-bg); }
+.scene-{{sceneId}} .gh-pr-diff-marker {
+  flex: 0 0 16px;
+  text-align: center;
+  user-select: none;
+  color: rgba(31,35,40,0.5);
+}
+.scene-{{sceneId}} .gh-pr-diff-code {
+  flex: 1 1 auto;
+  padding: 0 10px;
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .gh-pr-diff-row--add { background: var(--gh-diff-add-bg); }
+.scene-{{sceneId}} .gh-pr-diff-row--add .gh-pr-diff-num { background: #ccffd8; color: var(--gh-success); }
+.scene-{{sceneId}} .gh-pr-diff-row--rm  { background: var(--gh-diff-rm-bg); }
+.scene-{{sceneId}} .gh-pr-diff-row--rm  .gh-pr-diff-num { background: #ffd7d5; color: var(--gh-danger); }
+.scene-{{sceneId}} .gh-pr-diff-hunk {
+  background: #ddf4ff;
+  color: var(--gh-text-sec);
+  padding: 4px 14px;
+  font-size: 12px;
+}
+.scene-{{sceneId}} .gh-pr-comment {
+  margin: 0 12px 12px;
+  border: 1px solid var(--gh-border);
+  border-radius: 6px;
+  background: var(--gh-bg);
+}
+.scene-{{sceneId}} .gh-pr-comment-head {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--gh-border);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .gh-pr-comment-head .gh-avatar { width: 20px; height: 20px; font-size: 10px; }
+.scene-{{sceneId}} .gh-pr-comment-author { font-weight: 600; color: var(--gh-text); }
+.scene-{{sceneId}} .gh-pr-comment-time { color: var(--gh-text-sec); }
+.scene-{{sceneId}} .gh-pr-comment-body {
+  padding: 12px;
+  font-size: 14px;
+  color: var(--gh-text);
+  line-height: 1.5;
+  background: var(--gh-surface);
+}
+.scene-{{sceneId}} .gh-pr-comment-body code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  background: rgba(175,184,193,0.2);
+  padding: 1px 5px; border-radius: 3px; font-size: 12px;
+}
+
+/* ── Footer ── */
+.scene-{{sceneId}} .gh-footer {
+  display: none;
+  flex: 0 0 28px; height: 28px;
+  padding: 0 16px;
+  align-items: center;
+  font-size: 11px; color: var(--gh-text-sec);
+  border-top: 1px solid var(--gh-border);
+  background: var(--gh-surface);
+}
+
+/* ── Global icon coloring + defensive guards ── */
+.scene-{{sceneId}} .gh-root svg { fill: currentColor; }
+.scene-{{sceneId}} .gh-rh svg:not([width]),
+.scene-{{sceneId}} .gh-pr svg:not([width]),
+.scene-{{sceneId}} .gh-repo-header svg:not([width]),
+.scene-{{sceneId}} .gh-topbar svg:not([width]) {
+  width: 16px; height: 16px; flex-shrink: 0;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SVG SYMBOL MANIFEST — Octicons (filled style, single-path solid fills)
+     Standing Rule #15: NO `stroke=` inside <symbol> blocks.
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<defs>
+  <symbol id="gh-icon-mark" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 1C5.923 1 1 5.923 1 12c0 4.867 3.149 8.979 7.521 10.436.55.096.756-.233.756-.522 0-.262-.013-1.128-.013-2.049-2.764.509-3.479-.674-3.699-1.292-.124-.317-.66-1.293-1.127-1.554-.385-.207-.936-.715-.014-.729.866-.014 1.485.797 1.691 1.128.99 1.663 2.571 1.196 3.204.907.096-.715.385-1.196.701-1.471-2.448-.275-5.005-1.224-5.005-5.432 0-1.196.426-2.186 1.128-2.956-.111-.275-.496-1.402.11-2.915 0 0 .921-.288 3.024 1.128a10.193 10.193 0 0 1 2.75-.371c.936 0 1.871.123 2.75.371 2.104-1.43 3.025-1.128 3.025-1.128.605 1.513.221 2.64.111 2.915.701.77 1.127 1.747 1.127 2.956 0 4.222-2.571 5.157-5.019 5.432.399.344.743 1.004.743 2.035 0 1.471-.014 2.654-.014 3.025 0 .289.206.632.756.522C19.851 20.979 23 16.854 23 12c0-6.077-4.922-11-11-11Z"/>
+  </symbol>
+  <symbol id="gh-icon-search" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.75.75 0 1 1-1.06 1.06l-3.04-3.04ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"/>
+  </symbol>
+  <symbol id="gh-icon-bell" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 16a2 2 0 0 0 1.985-1.75c.017-.137-.097-.25-.235-.25h-3.5c-.138 0-.252.113-.235.25A2 2 0 0 0 8 16ZM3 5a5 5 0 0 1 10 0v2.947c0 .05.012.098.035.142l1.793 3.408A1.017 1.017 0 0 1 13.929 13H2.07a1.017 1.017 0 0 1-.9-1.503l1.794-3.408a.305.305 0 0 0 .035-.142Z"/>
+  </symbol>
+  <symbol id="gh-icon-plus" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M7.75 2a.75.75 0 0 1 .75.75V7h4.25a.75.75 0 0 1 0 1.5H8.5v4.25a.75.75 0 0 1-1.5 0V8.5H2.75a.75.75 0 0 1 0-1.5H7V2.75A.75.75 0 0 1 7.75 2Z"/>
+  </symbol>
+  <symbol id="gh-icon-repo" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"/>
+  </symbol>
+  <symbol id="gh-icon-code" viewBox="0 0 16 16">
+    <path fill="currentColor" d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="gh-icon-issue-opened" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 9.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
+    <path fill="currentColor" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Z"/>
+  </symbol>
+  <symbol id="gh-icon-pull-request" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354ZM3.75 2.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm0 9.5a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Zm8.25.75a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Z"/>
+  </symbol>
+  <symbol id="gh-icon-play" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm-1.696 4.314A.5.5 0 0 0 5.5 4.75v6.5a.5.5 0 0 0 .804.396l4.572-3.25a.5.5 0 0 0 0-.792Z"/>
+  </symbol>
+  <symbol id="gh-icon-table" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Zm6.5-.25v3h8v-3a.25.25 0 0 0-.25-.25Zm8 4.5h-8v3h8Zm0 4.5h-8v3.75h7.75a.25.25 0 0 0 .25-.25ZM5 14.5V10.75H1.5v3.5c0 .138.112.25.25.25Zm-3.5-5.25H5v-3H1.5Zm0-4.5H5v-3H1.75a.25.25 0 0 0-.25.25Z"/>
+  </symbol>
+  <symbol id="gh-icon-book" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M0 1.75A.75.75 0 0 1 .75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0 1 11.006 1h4.245a.75.75 0 0 1 .75.75v10.5a.75.75 0 0 1-.75.75h-4.507a2.25 2.25 0 0 0-1.591.659l-.622.621a.75.75 0 0 1-1.06 0l-.622-.621A2.25 2.25 0 0 0 5.258 13H.75a.75.75 0 0 1-.75-.75Z"/>
+  </symbol>
+  <symbol id="gh-icon-shield-check" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M7.467.133a1.748 1.748 0 0 1 1.066 0l5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667ZM10.78 6.28a.749.749 0 0 0-.018-1.042.749.749 0 0 0-1.042-.018L6.75 8.19 5.28 6.72a.749.749 0 0 0-1.042.018.749.749 0 0 0-.018 1.042l2 2a.75.75 0 0 0 1.06 0Z"/>
+  </symbol>
+  <symbol id="gh-icon-graph" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M1.5 1.75V13.5h13.75a.75.75 0 0 1 0 1.5H.75a.75.75 0 0 1-.75-.75V1.75a.75.75 0 0 1 1.5 0Zm14.28 2.53-5.25 5.25a.75.75 0 0 1-1.06 0L7 7.06 4.28 9.78a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042l3.25-3.25a.75.75 0 0 1 1.06 0L10 7.94l4.72-4.72a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042Z"/>
+  </symbol>
+  <symbol id="gh-icon-star" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"/>
+  </symbol>
+  <symbol id="gh-icon-fork" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"/>
+  </symbol>
+  <symbol id="gh-icon-eye" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.83.88 9.576.43 8.898a1.62 1.62 0 0 1 0-1.798c.45-.677 1.367-1.931 2.637-3.022C4.33 2.992 6.019 2 8 2Zm0 4a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/>
+  </symbol>
+  <symbol id="gh-icon-folder" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M1.75 1A1.75 1.75 0 0 0 0 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0 0 16 13.25v-8.5A1.75 1.75 0 0 0 14.25 3H7.5a.25.25 0 0 1-.2-.1l-.9-1.2C6.07 1.26 5.55 1 5 1Z"/>
+  </symbol>
+  <symbol id="gh-icon-file" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 1.75C2 .784 2.784 0 3.75 0h6.586c.464 0 .909.184 1.237.513l2.914 2.914c.329.328.513.773.513 1.237v9.586A1.75 1.75 0 0 1 13.25 16h-9.5A1.75 1.75 0 0 1 2 14.25Zm1.75-.25a.25.25 0 0 0-.25.25v12.5c0 .138.112.25.25.25h9.5a.25.25 0 0 0 .25-.25V6h-2.75A1.75 1.75 0 0 1 9 4.25V1.5Zm6.75.062V4.25c0 .138.112.25.25.25h2.688l-.011-.013-2.914-2.914-.013-.011Z"/>
+  </symbol>
+  <symbol id="gh-icon-git-branch" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Zm-6 0a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Zm8.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"/>
+  </symbol>
+  <symbol id="gh-icon-chevron-down" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M12.78 5.22a.749.749 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06 0L3.22 6.28a.749.749 0 1 1 1.06-1.06L8 8.939l3.72-3.719a.749.749 0 0 1 1.06 0Z"/>
+  </symbol>
+  <symbol id="gh-icon-chevron-right" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M6.22 3.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="gh-icon-download" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06Z"/>
+  </symbol>
+  <symbol id="gh-icon-comment-discussion" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M1.75 1h8.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 10.25 10H7.061l-2.574 2.573A1.458 1.458 0 0 1 2 11.543V10h-.25A1.75 1.75 0 0 1 0 8.25v-5.5C0 1.784.784 1 1.75 1ZM14.5 4.75v5.5a1.75 1.75 0 0 1-1.75 1.75h-.25v1.543a1.458 1.458 0 0 1-2.487 1.03L7.439 12H13a.75.75 0 0 0 .75-.75V4.75c0-.414.336-.75.75-.75Z"/>
+  </symbol>
+  <symbol id="gh-icon-checklist" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.5 1.75a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 1.5 0Zm5.5.75a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75Zm0 5a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6A.75.75 0 0 1 8 7.5Zm0 5a.75.75 0 0 1 .75-.75h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1-.75-.75ZM5.78 5.97a.749.749 0 0 0-1.06 0L3.5 7.19l-.22-.22a.749.749 0 1 0-1.06 1.06l.75.75a.749.749 0 0 0 1.06 0l1.75-1.75a.749.749 0 0 0 0-1.06Zm0 5a.749.749 0 0 0-1.06 0L3.5 12.19l-.22-.22a.749.749 0 1 0-1.06 1.06l.75.75a.749.749 0 0 0 1.06 0l1.75-1.75a.749.749 0 0 0 0-1.06Z"/>
+  </symbol>
+  <symbol id="gh-icon-file-diff" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3.75 0A1.75 1.75 0 0 0 2 1.75v12.5C2 15.216 2.784 16 3.75 16h8.5A1.75 1.75 0 0 0 14 14.25V4.847a1.75 1.75 0 0 0-.513-1.238L10.39.513A1.75 1.75 0 0 0 9.153 0Zm5 5a.75.75 0 0 1 .75.75v1.75h1.75a.75.75 0 0 1 0 1.5H9.5v1.75a.75.75 0 0 1-1.5 0V9H6.25a.75.75 0 0 1 0-1.5H8V5.75A.75.75 0 0 1 8.75 5Zm-3 7.25h6a.75.75 0 0 1 0 1.5h-6a.75.75 0 0 1 0-1.5Z"/>
+  </symbol>
+  <symbol id="gh-icon-check-circle" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0Zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.061L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05Z"/>
+  </symbol>
+  <symbol id="gh-icon-x-circle" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2.344 2.343h-.001a8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746Zm1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275ZM6.03 4.97 8 6.94l1.97-1.97a.749.749 0 1 1 1.06 1.06L9.06 8l1.97 1.97a.749.749 0 1 1-1.06 1.06L8 9.06l-1.97 1.97a.749.749 0 1 1-1.06-1.06L6.94 8 4.97 6.03a.749.749 0 1 1 1.06-1.06Z"/>
+  </symbol>
+  <symbol id="gh-icon-dot" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 4a4 4 0 1 1 0 8 4 4 0 0 1 0-8Z"/>
+  </symbol>
+  <symbol id="gh-icon-kebab" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM1.5 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm13 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"/>
+  </symbol>
+  <symbol id="gh-icon-copy" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M0 6.75C0 5.784.784 5 1.75 5h1.5a.75.75 0 0 1 0 1.5h-1.5a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-1.5a.75.75 0 0 1 1.5 0v1.5A1.75 1.75 0 0 1 9.25 16h-7.5A1.75 1.75 0 0 1 0 14.25Z"/>
+    <path fill="currentColor" d="M5 1.75C5 .784 5.784 0 6.75 0h7.5C15.216 0 16 .784 16 1.75v7.5A1.75 1.75 0 0 1 14.25 11h-7.5A1.75 1.75 0 0 1 5 9.25Zm1.75-.25a.25.25 0 0 0-.25.25v7.5c0 .138.112.25.25.25h7.5a.25.25 0 0 0 .25-.25v-7.5a.25.25 0 0 0-.25-.25Z"/>
+  </symbol>
+  <symbol id="gh-icon-history" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12Zm0 1.5a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15ZM7.25 4a.75.75 0 0 1 1.5 0v3.55l2.74 1.65a.75.75 0 0 1-.78 1.28L7.86 8.86A.75.75 0 0 1 7.5 8.25V4.25Z"/>
+  </symbol>
+</defs>
+</svg>
+
+<div class="gh-root" data-scene-component="GitHubScene" data-variant="{{variant}}" data-theme="{{theme}}" style="position:absolute;inset:0">
+  <div class="gh-window">
+
+    <!-- ═══ TOPBAR ═══ -->
+    <div class="gh-topbar">
+      <div class="gh-topbar-mark"><svg aria-hidden="true"><use href="#gh-icon-mark"/></svg></div>
+      <div class="gh-topbar-search">
+        <svg aria-hidden="true"><use href="#gh-icon-search"/></svg>
+        <span>{{searchPlaceholder}}</span>
+        <span class="gh-topbar-search-kbd">/</span>
+      </div>
+      <div class="gh-topbar-spacer"></div>
+      <div class="gh-topbar-actions">
+        <button class="gh-topbar-iconbtn" aria-label="New"><svg aria-hidden="true"><use href="#gh-icon-plus"/></svg></button>
+        <button class="gh-topbar-iconbtn" aria-label="Notifications"><svg aria-hidden="true"><use href="#gh-icon-bell"/></svg></button>
+        <div class="gh-avatar" aria-label="Account">A</div>
+      </div>
+    </div>
+
+    <!-- ═══ REPO HEADER ═══ -->
+    <div class="gh-repo-header">
+      <div class="gh-repo-title-row">
+        <span class="gh-repo-mark"><svg aria-hidden="true"><use href="#gh-icon-repo"/></svg></span>
+        <span class="gh-repo-owner">{{repoOwner}}</span>
+        <span class="gh-repo-slash">/</span>
+        <span class="gh-repo-name">{{repoName}}</span>
+        <span class="gh-repo-public">Public</span>
+        <div class="gh-repo-actions">
+          <button class="gh-repo-chip">
+            <svg aria-hidden="true"><use href="#gh-icon-eye"/></svg>
+            Watch
+            <span class="gh-repo-chip-count">{{watchersCount}}</span>
+          </button>
+          <button class="gh-repo-chip">
+            <svg aria-hidden="true"><use href="#gh-icon-fork"/></svg>
+            Fork
+            <span class="gh-repo-chip-count">{{forksCount}}</span>
+          </button>
+          <button class="gh-repo-chip">
+            <svg aria-hidden="true"><use href="#gh-icon-star"/></svg>
+            Star
+            <span class="gh-repo-chip-count">{{starsCount}}</span>
+          </button>
+        </div>
+      </div>
+      <div class="gh-repo-tabs" data-slot="tabs">{{{repoTabsHtml}}}</div>
+    </div>
+
+    <!-- ═══ BODY (variant slot) ═══ -->
+    <div class="gh-body" data-slot="body">{{{bodyHtml}}}</div>
+
+    <!-- ═══ FOOTER (hidden by default) ═══ -->
+    <div class="gh-footer" data-slot="footer">{{{footerStatusHtml}}}</div>
+
+  </div>
+</div>

@@ -1,0 +1,63 @@
+{
+  "version": "1.0",
+  "pipeline": "tech-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "wb-brainstorm",
+      "duration": 12,
+      "component": "WhiteboardScene",
+      "props": {
+        "variant": "brainstorm",
+        "boardTitle": "Q3 product ideas",
+        "stickies": [
+          { "id": "title",  "text": "Q3 product ideas", "color": "white",  "x": 60,   "y": 30,  "rotation": -2 },
+
+          { "id": "s1",  "text": "Faster onboarding flow",       "color": "yellow",  "x": 220,  "y": 180, "rotation":  -3, "author": "Avery",  "cluster": "onboarding" },
+          { "id": "s2",  "text": "Trim signup to 3 steps",       "color": "yellow2", "x": 360,  "y": 230, "rotation":   2, "author": "Sam",    "cluster": "onboarding" },
+          { "id": "s3",  "text": "Welcome video on first run",   "color": "mint",    "x": 510,  "y": 200, "rotation":  -1, "author": "Jordan", "cluster": "onboarding" },
+          { "id": "s4",  "text": "Sample dataset auto-load",     "color": "lblue",   "x": 670,  "y": 260, "rotation":   3, "author": "Avery",  "cluster": "onboarding" },
+
+          { "id": "s5",  "text": "Cache hot scene assets",       "color": "green",   "x": 250,  "y": 430, "rotation":   1, "author": "Sam",    "cluster": "performance" },
+          { "id": "s6",  "text": "Lazy-load Fluent icons",       "color": "pink",    "x": 420,  "y": 470, "rotation":  -2, "author": "Jordan", "cluster": "performance" },
+          { "id": "s7",  "text": "Reuse rendered subclips",      "color": "orange",  "x": 590,  "y": 440, "rotation":   3, "author": "Morgan", "cluster": "performance", "arriveAt": 0.55 },
+          { "id": "s8",  "text": "Worker-pool transcode",        "color": "purple",  "x": 740,  "y": 490, "rotation":  -3, "author": "Sam",    "cluster": "performance", "arriveAt": 0.75 },
+
+          { "id": "s9",  "text": "Per-seat vs per-render",       "color": "blue",    "x": 320,  "y": 660, "rotation":   2, "author": "Avery",  "cluster": "pricing" },
+          { "id": "s10", "text": "Free 5-min trial render",      "color": "red",     "x": 490,  "y": 700, "rotation":  -2, "author": "Jordan", "cluster": "pricing" },
+          { "id": "s11", "text": "Volume tier at 100 renders",   "color": "gray",    "x": 660,  "y": 670, "rotation":   1, "author": "Morgan", "cluster": "pricing", "arriveAt": 0.40 },
+          { "id": "s12", "text": "Bundle TTS + Image credits",   "color": "yellow",  "x": 820,  "y": 720, "rotation":  -1, "author": "Sam",    "cluster": "pricing", "arriveAt": 0.90 }
+        ],
+        "clusters": [
+          { "id": "onboarding",  "label": "Onboarding",  "x": 1100, "y": 120 },
+          { "id": "performance", "label": "Performance", "x": 1100, "y": 360 },
+          { "id": "pricing",     "label": "Pricing",     "x": 1100, "y": 600 }
+        ],
+        "liveCursors": [
+          {
+            "name": "Avery",
+            "accentHex": "#0F6CBD",
+            "path": [
+              { "x": 200, "y": 200 },
+              { "x": 500, "y": 100 },
+              { "x": 700, "y": 380 },
+              { "x": 900, "y": 520 },
+              { "x": 1080, "y": 360 }
+            ]
+          },
+          {
+            "name": "Sam",
+            "accentHex": "#0E7A0D",
+            "path": [
+              { "x": 320, "y": 700 },
+              { "x": 600, "y": 800 },
+              { "x": 760, "y": 560 },
+              { "x": 880, "y": 440 },
+              { "x": 1040, "y": 600 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

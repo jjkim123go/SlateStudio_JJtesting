@@ -1,0 +1,32 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 6 — AskTheAudience smoke test",
+    "purpose": "Validates AskTheAudience live-poll bars viz with 4 results, response count, source attribution.",
+    "duration_target_seconds": 8
+  },
+  "scenes": [
+    {
+      "id": "ata-live-bars",
+      "duration": 8,
+      "narrationStartSec": 0,
+      "component": "AskTheAudience",
+      "props": {
+        "question": "Which deployment cadence does your team ship?",
+        "viz": "bars",
+        "pollState": "live",
+        "source": "Mentimeter",
+        "responseCount": 247,
+        "ctaNote": "Vote at menti.com — code 8421",
+        "results": [
+          { "label": "Multiple per day",   "pct": 18, "count": 44,  "accent": "#10B981" },
+          { "label": "Daily",              "pct": 31, "count": 77,  "accent": "#0078D4" },
+          { "label": "Weekly",             "pct": 36, "count": 89,  "accent": "#7C3AED" },
+          { "label": "Monthly or slower",  "pct": 15, "count": 37,  "accent": "#F59E0B" }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,1820 @@
+{
+  "$schema": "../../schemas/scf-v1.0.schema.json",
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "showcase-intro",
+      "duration": 3.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "PR 8c — Productivity Surfaces",
+        "subtitle": "Lists · Planner · OneDrive · Forms · Bookings — 16 variants, 5 components",
+        "background": "#0F172A"
+      }
+    },
+    {
+      "id": "chapter-lists",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Lists",
+        "subtitle": "3 variants",
+        "background": "#038387"
+      }
+    },
+    {
+      "id": "showcase-lists-default",
+      "duration": 10,
+      "component": "ListsScene",
+      "props": {
+        "state": "default",
+        "iconColor": "purple",
+        "listName": "Incidents list",
+        "breadcrumb": "Cosmos BDP",
+        "activeView": "All Items",
+        "accountInitial": "A",
+        "searchPlaceholder": "Search this list",
+        "columns": [
+          {
+            "name": "Title",
+            "width": 220,
+            "sort": null
+          },
+          {
+            "name": "ICM Link",
+            "width": 110,
+            "sort": null
+          },
+          {
+            "name": "Start Time",
+            "width": 130,
+            "sort": "desc"
+          },
+          {
+            "name": "ETA",
+            "width": 110,
+            "sort": null
+          },
+          {
+            "name": "Status",
+            "width": 130,
+            "sort": null
+          },
+          {
+            "name": "Contact",
+            "width": 170,
+            "sort": null
+          },
+          {
+            "name": "Additional Contact",
+            "width": 180,
+            "sort": null
+          },
+          {
+            "name": "Details",
+            "width": "flex"
+          }
+        ],
+        "rows": [
+          {
+            "cells": {
+              "Title": "Ingestion delay on Tier-1 cluster",
+              "ICM Link": {
+                "type": "link",
+                "text": "ICM 8842110"
+              },
+              "Start Time": "Apr 14, 9:42 AM",
+              "ETA": "Apr 14, 12:00 PM",
+              "Status": {
+                "type": "pill",
+                "value": "On-going",
+                "color": "teal"
+              },
+              "Contact": {
+                "type": "person",
+                "name": "Priya Singh"
+              },
+              "Additional Contact": {
+                "type": "person",
+                "name": "Marco Costa"
+              },
+              "Details": {
+                "type": "rich",
+                "html": "<strong>Symptom:</strong> queue depth &gt;1.2M.<br/><strong>Mitigation:</strong> scale-out in progress. <a>Runbook</a>"
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Stale dashboards in West US 2",
+              "ICM Link": {
+                "type": "link",
+                "text": "ICM 8841997"
+              },
+              "Start Time": "Apr 14, 8:15 AM",
+              "ETA": "—",
+              "Status": {
+                "type": "pill",
+                "value": "Mitigated",
+                "color": "amber"
+              },
+              "Contact": {
+                "type": "person",
+                "name": "Hannah Ito"
+              },
+              "Additional Contact": {
+                "type": "person",
+                "name": "Ravi Kumar"
+              },
+              "Details": {
+                "type": "rich",
+                "html": "Cache warmer restarted. Watching for next refresh window."
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Auth token rotation review",
+              "ICM Link": {
+                "type": "link",
+                "text": "ICM 8841750"
+              },
+              "Start Time": "Apr 13, 6:30 PM",
+              "ETA": "Apr 14, 5:00 PM",
+              "Status": {
+                "type": "pill",
+                "value": "Resolved",
+                "color": "green"
+              },
+              "Contact": {
+                "type": "person",
+                "name": "Lena Park"
+              },
+              "Additional Contact": "—",
+              "Details": {
+                "type": "rich",
+                "html": "<ul><li>Rotated KV secret</li><li>Notified downstream</li></ul>"
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Capacity alert — Storage account contoso-prod-01",
+              "ICM Link": {
+                "type": "link",
+                "text": "ICM 8840922"
+              },
+              "Start Time": "Apr 13, 2:11 PM",
+              "ETA": "Apr 15",
+              "Status": {
+                "type": "pill",
+                "value": "On-going",
+                "color": "teal"
+              },
+              "Contact": {
+                "type": "person",
+                "name": "Damon West"
+              },
+              "Additional Contact": {
+                "type": "person",
+                "name": "Aisha Mansour"
+              },
+              "Details": {
+                "type": "rich",
+                "html": "Quota increase ticket filed. Awaiting approval from capacity team."
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Pipeline retry storm — eu-west region",
+              "ICM Link": {
+                "type": "link",
+                "text": "ICM 8840014"
+              },
+              "Start Time": "Apr 13, 11:02 AM",
+              "ETA": "—",
+              "Status": {
+                "type": "pill",
+                "value": "Resolved",
+                "color": "green"
+              },
+              "Contact": {
+                "type": "person",
+                "name": "Owen Tanaka"
+              },
+              "Additional Contact": "—",
+              "Details": {
+                "type": "rich",
+                "html": "Backoff config tuned, retry rate normalized within 30 min."
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-lists-row-selected",
+      "duration": 10,
+      "component": "ListsScene",
+      "props": {
+        "state": "row-selected",
+        "selectedRowIndex": 0,
+        "iconColor": "teal",
+        "listName": "Customer escalations",
+        "breadcrumb": "Customer Engineering",
+        "activeView": "Open this week",
+        "accountInitial": "S",
+        "searchPlaceholder": "Search escalations",
+        "columns": [
+          {
+            "name": "Title",
+            "width": 280
+          },
+          {
+            "name": "Account",
+            "width": 200
+          },
+          {
+            "name": "Severity",
+            "width": 130
+          },
+          {
+            "name": "Owner",
+            "width": 180,
+            "sort": "asc"
+          },
+          {
+            "name": "Opened",
+            "width": 130
+          },
+          {
+            "name": "Notes",
+            "width": "flex"
+          }
+        ],
+        "rows": [
+          {
+            "cells": {
+              "Title": "Latency regression in Brazil South",
+              "Account": "Fabrikam Industries",
+              "Severity": {
+                "type": "pill",
+                "value": "High",
+                "color": "red"
+              },
+              "Owner": {
+                "type": "person",
+                "name": "Brigitte Marin"
+              },
+              "Opened": "Apr 11",
+              "Notes": {
+                "type": "rich",
+                "html": "<strong>Customer impact:</strong> p95 +180ms.<br/><a>Mitigation plan</a>"
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Quota exhaustion — Premium SKU",
+              "Account": "Northwind Traders",
+              "Severity": {
+                "type": "pill",
+                "value": "Medium",
+                "color": "amber"
+              },
+              "Owner": {
+                "type": "person",
+                "name": "Kenji Watanabe"
+              },
+              "Opened": "Apr 10",
+              "Notes": {
+                "type": "rich",
+                "html": "Working with capacity to extend quota to Q3."
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Onboarding friction — Conditional Access",
+              "Account": "Contoso Pharma",
+              "Severity": {
+                "type": "pill",
+                "value": "Low",
+                "color": "gray"
+              },
+              "Owner": {
+                "type": "person",
+                "name": "Anika Patel"
+              },
+              "Opened": "Apr 09",
+              "Notes": {
+                "type": "rich",
+                "html": "Doc updates pending review."
+              }
+            }
+          },
+          {
+            "cells": {
+              "Title": "Data residency clarification",
+              "Account": "Tailwind Aviation",
+              "Severity": {
+                "type": "pill",
+                "value": "Resolved",
+                "color": "green"
+              },
+              "Owner": {
+                "type": "person",
+                "name": "Diego Romero"
+              },
+              "Opened": "Apr 08",
+              "Notes": {
+                "type": "rich",
+                "html": "Closed — <a>compliance memo sent</a>."
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-lists-menu-open",
+      "duration": 10,
+      "component": "ListsScene",
+      "props": {
+        "state": "menu-open",
+        "selectedRowIndex": 1,
+        "iconColor": "orange",
+        "listName": "Asset registry",
+        "breadcrumb": "Facilities",
+        "activeView": "All assets",
+        "accountInitial": "M",
+        "searchPlaceholder": "Search assets",
+        "columns": [
+          {
+            "name": "Asset tag",
+            "width": 140
+          },
+          {
+            "name": "Name",
+            "width": 240,
+            "sort": "asc"
+          },
+          {
+            "name": "Location",
+            "width": 180
+          },
+          {
+            "name": "Owner",
+            "width": 200
+          },
+          {
+            "name": "Condition",
+            "width": 130
+          },
+          {
+            "name": "Last audit",
+            "width": 140
+          },
+          {
+            "name": "Next service",
+            "width": "flex"
+          }
+        ],
+        "rows": [
+          {
+            "cells": {
+              "Asset tag": "ASS-00131",
+              "Name": "Conf room AV bridge — Kestrel",
+              "Location": "Bldg 121 / 4F",
+              "Owner": {
+                "type": "person",
+                "name": "Iris Hammond"
+              },
+              "Condition": {
+                "type": "pill",
+                "value": "Healthy",
+                "color": "green"
+              },
+              "Last audit": "Mar 22",
+              "Next service": {
+                "type": "rich",
+                "html": "Scheduled <strong>Apr 28</strong>"
+              }
+            }
+          },
+          {
+            "cells": {
+              "Asset tag": "ASS-00214",
+              "Name": "Lab UPS 6kVA — rack B7",
+              "Location": "Bldg 88 / Lab",
+              "Owner": {
+                "type": "person",
+                "name": "Sven Lindqvist"
+              },
+              "Condition": {
+                "type": "pill",
+                "value": "Needs check",
+                "color": "amber"
+              },
+              "Last audit": "Feb 14",
+              "Next service": {
+                "type": "rich",
+                "html": "<strong>Overdue</strong> — open ticket <a>FAC-7712</a>"
+              }
+            }
+          },
+          {
+            "cells": {
+              "Asset tag": "ASS-00337",
+              "Name": "Print MFD — Reception north",
+              "Location": "Bldg 121 / Lobby",
+              "Owner": {
+                "type": "person",
+                "name": "Reema Khoury"
+              },
+              "Condition": {
+                "type": "pill",
+                "value": "Healthy",
+                "color": "green"
+              },
+              "Last audit": "Apr 02",
+              "Next service": "Jul 02"
+            }
+          }
+        ],
+        "contextMenu": [
+          {
+            "label": "Share",
+            "icon": "share"
+          },
+          {
+            "label": "Copy link",
+            "icon": "copyLink"
+          },
+          {
+            "label": "Comment",
+            "icon": "comment"
+          },
+          {
+            "label": "Manage access",
+            "icon": "manageAccess"
+          },
+          {
+            "label": "Integrate",
+            "icon": "integrate",
+            "hasSubmenu": true
+          },
+          {
+            "divider": true
+          },
+          {
+            "label": "Edit in grid view",
+            "icon": "edit"
+          },
+          {
+            "label": "Alert me",
+            "icon": "alert"
+          },
+          {
+            "label": "Manage my alerts",
+            "icon": "alertAdd"
+          },
+          {
+            "divider": true
+          },
+          {
+            "label": "Details",
+            "icon": "details"
+          },
+          {
+            "label": "More",
+            "icon": "more",
+            "hasSubmenu": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "chapter-planner",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Planner",
+        "subtitle": "3 variants",
+        "background": "#31752F"
+      }
+    },
+    {
+      "id": "showcase-planner-board",
+      "duration": 10,
+      "component": "PlannerScene",
+      "props": {
+        "variant": "board",
+        "state": "default",
+        "planName": "Livesite – Radar Controls",
+        "breadcrumb": "My plans",
+        "activeTab": "Board",
+        "groupBy": "Bucket",
+        "accountInitial": "A",
+        "buckets": [
+          {
+            "name": "No bucket",
+            "hasHelpIcon": true,
+            "tasks": [
+              {
+                "title": "Confirm runbook owners for Cosmos rollover",
+                "recurrence": true,
+                "priority": "important",
+                "assignees": [
+                  {
+                    "name": "Priya Singh"
+                  },
+                  {
+                    "name": "Marco Costa"
+                  }
+                ],
+                "dueText": "Due Apr 28"
+              },
+              {
+                "title": "Draft postmortem for ICM 8842110",
+                "labels": [
+                  {
+                    "color": "#5B5FC7"
+                  },
+                  {
+                    "color": "#E8770E"
+                  }
+                ],
+                "assignees": [
+                  {
+                    "name": "Hannah Ito"
+                  }
+                ]
+              },
+              {
+                "title": "Validate Tier-1 capacity buffer",
+                "priority": "urgent",
+                "assignees": [
+                  {
+                    "name": "Lena Park"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "In progress",
+            "tasks": [
+              {
+                "title": "Migrate ingestion pipeline to v3 schema",
+                "labels": [
+                  {
+                    "color": "#3FB984"
+                  }
+                ],
+                "assignees": [
+                  {
+                    "name": "Owen Tanaka"
+                  },
+                  {
+                    "name": "Damon West"
+                  }
+                ],
+                "dueText": "Due May 02"
+              },
+              {
+                "title": "Roll out new alert deduper to West US 2",
+                "recurrence": true,
+                "assignees": [
+                  {
+                    "name": "Ravi Kumar"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Done",
+            "tasks": [
+              {
+                "title": "Patch token-rotation bug in auth service",
+                "priority": "low",
+                "assignees": [
+                  {
+                    "name": "Aisha Mansour"
+                  }
+                ]
+              },
+              {
+                "title": "Publish Q2 reliability scorecard",
+                "labels": [
+                  {
+                    "color": "#5B5FC7"
+                  }
+                ],
+                "assignees": [
+                  {
+                    "name": "Hannah Ito"
+                  },
+                  {
+                    "name": "Marco Costa"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-planner-task-open",
+      "duration": 10,
+      "component": "PlannerScene",
+      "props": {
+        "variant": "board",
+        "state": "task-open",
+        "planName": "Livesite – Radar Controls",
+        "breadcrumb": "My plans",
+        "activeTab": "Board",
+        "groupBy": "Bucket",
+        "accountInitial": "A",
+        "buckets": [
+          {
+            "name": "No bucket",
+            "hasHelpIcon": true,
+            "tasks": [
+              {
+                "title": "Confirm runbook owners for Cosmos rollover",
+                "recurrence": true,
+                "priority": "important",
+                "assignees": [
+                  {
+                    "name": "Priya Singh"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "In progress",
+            "tasks": [
+              {
+                "title": "Migrate ingestion pipeline to v3 schema",
+                "assignees": [
+                  {
+                    "name": "Owen Tanaka"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "selectedTask": {
+          "title": "Confirm runbook owners for Cosmos rollover",
+          "createdMeta": "Created by Aisha Mansour · 2 days ago",
+          "status": "Not started",
+          "priority": "important",
+          "startDate": "Apr 22, 2026",
+          "dueDate": "Apr 28, 2026",
+          "repeat": "Weekly on Monday",
+          "bucket": "No bucket",
+          "checklistItems": [
+            {
+              "text": "Identify primary on-call for each region",
+              "done": true
+            },
+            {
+              "text": "Verify secondary on-call coverage",
+              "done": false
+            },
+            {
+              "text": "Confirm runbook URLs are current",
+              "done": false
+            }
+          ],
+          "notes": "Coordinate with the SRE rotation lead before Friday so handoff hits the next on-call cycle.",
+          "showChat": true
+        }
+      }
+    },
+    {
+      "id": "showcase-planner-charts",
+      "duration": 10,
+      "component": "PlannerScene",
+      "props": {
+        "variant": "charts",
+        "state": "default",
+        "planName": "Livesite – Radar Controls",
+        "breadcrumb": "My plans",
+        "activeTab": "Charts",
+        "groupBy": "Bucket",
+        "accountInitial": "A",
+        "chartCards": [
+          {
+            "title": "Tasks left",
+            "type": "donut",
+            "value": 24,
+            "label": "Total tasks",
+            "legend": [
+              {
+                "label": "Not started",
+                "value": "9",
+                "color": "#A6A6A6"
+              },
+              {
+                "label": "In progress",
+                "value": "8",
+                "color": "#5B5FC7"
+              },
+              {
+                "label": "Late",
+                "value": "3",
+                "color": "#D13438"
+              },
+              {
+                "label": "Completed",
+                "value": "4",
+                "color": "#3FB984"
+              }
+            ]
+          },
+          {
+            "title": "Status by priority",
+            "type": "bar",
+            "bars": [
+              {
+                "label": "Urgent",
+                "value": 4,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 2
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 1
+                  },
+                  {
+                    "name": "Late",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "label": "Important",
+                "value": 8,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 3
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 4
+                  },
+                  {
+                    "name": "Late",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "label": "Medium",
+                "value": 4,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 2
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 2
+                  }
+                ]
+              },
+              {
+                "label": "Low",
+                "value": 4,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 2
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 1
+                  },
+                  {
+                    "name": "Completed",
+                    "value": 1
+                  }
+                ]
+              }
+            ],
+            "legend": [
+              {
+                "label": "Not started",
+                "value": "9",
+                "color": "#A6A6A6"
+              },
+              {
+                "label": "In progress",
+                "value": "8",
+                "color": "#5B5FC7"
+              },
+              {
+                "label": "Late",
+                "value": "2",
+                "color": "#D13438"
+              },
+              {
+                "label": "Completed",
+                "value": "1",
+                "color": "#3FB984"
+              }
+            ]
+          },
+          {
+            "title": "Status by bucket",
+            "type": "bar",
+            "bars": [
+              {
+                "label": "No bucket",
+                "value": 6,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 4
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 2
+                  }
+                ]
+              },
+              {
+                "label": "In progress",
+                "value": 8,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 3
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 4
+                  },
+                  {
+                    "name": "Late",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "label": "Done",
+                "value": 4,
+                "segments": [
+                  {
+                    "name": "Completed",
+                    "value": 4
+                  }
+                ]
+              }
+            ],
+            "legend": [
+              {
+                "label": "Not started",
+                "value": "7",
+                "color": "#A6A6A6"
+              },
+              {
+                "label": "In progress",
+                "value": "6",
+                "color": "#5B5FC7"
+              },
+              {
+                "label": "Late",
+                "value": "1",
+                "color": "#D13438"
+              },
+              {
+                "label": "Completed",
+                "value": "4",
+                "color": "#3FB984"
+              }
+            ]
+          },
+          {
+            "title": "Status by members",
+            "type": "bar",
+            "bars": [
+              {
+                "label": "Priya Singh",
+                "value": 4,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 2
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 1
+                  },
+                  {
+                    "name": "Completed",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "label": "Marco Costa",
+                "value": 3,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 1
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 2
+                  }
+                ]
+              },
+              {
+                "label": "Hannah Ito",
+                "value": 4,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 1
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 2
+                  },
+                  {
+                    "name": "Completed",
+                    "value": 1
+                  }
+                ]
+              },
+              {
+                "label": "Owen Tanaka",
+                "value": 2,
+                "segments": [
+                  {
+                    "name": "Not Started",
+                    "value": 1
+                  },
+                  {
+                    "name": "In progress",
+                    "value": 1
+                  }
+                ]
+              }
+            ],
+            "legend": [
+              {
+                "label": "Not started",
+                "value": "5",
+                "color": "#A6A6A6"
+              },
+              {
+                "label": "In progress",
+                "value": "6",
+                "color": "#5B5FC7"
+              },
+              {
+                "label": "Completed",
+                "value": "2",
+                "color": "#3FB984"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "chapter-onedrive",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "OneDrive",
+        "subtitle": "3 variants",
+        "background": "#0364B8"
+      }
+    },
+    {
+      "id": "showcase-onedrive-myfiles",
+      "duration": 10,
+      "component": "OneDriveScene",
+      "props": {
+        "variant": "default",
+        "state": "default",
+        "pageTitle": "My files",
+        "accountName": "Adele Vance",
+        "accountInitial": "A",
+        "activeNav": "My files",
+        "storageUsed": "6.6 GB used of 5 TB (1%)",
+        "quickAccess": [
+          {
+            "name": "Contoso Sales Platforms",
+            "color": "#107C10",
+            "initial": "C"
+          },
+          {
+            "name": "Contoso Finance Team",
+            "color": "#D13438",
+            "initial": "C"
+          },
+          {
+            "name": "Platform Engineering...",
+            "color": "#8764B8",
+            "initial": "P"
+          },
+          {
+            "name": "Marketing",
+            "color": "#0078D4",
+            "initial": "M"
+          },
+          {
+            "name": "Dev Tenant",
+            "color": "#038387",
+            "initial": "D"
+          },
+          {
+            "name": "HR Portal - Videos",
+            "color": "#107C10",
+            "initial": "H"
+          },
+          {
+            "name": "Commerce Docs - C...",
+            "color": "#038387",
+            "initial": "C"
+          },
+          {
+            "name": "Identity & Access Sup...",
+            "color": "#605E5C",
+            "initial": "I"
+          }
+        ],
+        "files": [
+          {
+            "name": "Apps",
+            "type": "folder",
+            "modified": "February 28, 2023",
+            "modifiedBy": "Adele Vance",
+            "size": "2 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Attachments",
+            "type": "folder",
+            "modified": "March 8, 2021",
+            "modifiedBy": "Adele Vance",
+            "size": "3 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Desktop",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "2 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Documents",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "48 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Meetings",
+            "type": "folder-shared",
+            "modified": "February 9, 2022",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Shared"
+          },
+          {
+            "name": "Microsoft Copilot Chat Files",
+            "type": "folder",
+            "modified": "September 5, 2024",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Private"
+          },
+          {
+            "name": "Microsoft Teams Chat Files",
+            "type": "folder",
+            "modified": "June 22, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "105 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "OneNote Loop Files",
+            "type": "folder",
+            "modified": "May 12, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Private"
+          },
+          {
+            "name": "Pictures",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "8 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Recordings",
+            "type": "folder-shared",
+            "modified": "July 29, 2022",
+            "modifiedBy": "Adele Vance",
+            "size": "17 items",
+            "sharing": "Shared"
+          },
+          {
+            "name": "Contoso-Q3-Forecast.xlsx",
+            "type": "excel",
+            "modified": "March 20, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "1.75 MB",
+            "sharing": "Shared",
+            "activity": "You shared this file - Mar 19, 2025"
+          },
+          {
+            "name": "Revenue-DvR-05-29-2025.xlsx",
+            "type": "excel",
+            "modified": "June 3, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "2.36 MB",
+            "sharing": "Shared",
+            "activity": "You shared this file - May 29, 2025"
+          },
+          {
+            "name": "Contoso-Budget-Analysis.xlsx",
+            "type": "excel",
+            "modified": "May 29, 2025",
+            "modifiedBy": "Megan Bowen",
+            "size": "2.95 MB",
+            "sharing": "Shared",
+            "activity": "Diego Siciliani shared with Pradeep Gupta - May 29, 2025"
+          },
+          {
+            "name": "FY25-BvD-Report.xlsx",
+            "type": "excel",
+            "modified": "December 10, 2024",
+            "modifiedBy": "Alex Wilber",
+            "size": "2.40 MB",
+            "sharing": "Shared",
+            "activity": "Nestor Wilke shared with Pradeep Gupta - Nov 27, 2024"
+          },
+          {
+            "name": "Contoso-Sales-Summary.xlsx",
+            "type": "excel",
+            "modified": "March 21, 2025",
+            "modifiedBy": "Alex Wilber",
+            "size": "625 KB",
+            "sharing": "Shared",
+            "activity": "You shared this file - Mar 20, 2025"
+          },
+          {
+            "name": "Monthly-MissingBilled.xlsx",
+            "type": "excel",
+            "modified": "January 15, 2025",
+            "modifiedBy": "Pradeep Gupta",
+            "size": "890 KB",
+            "sharing": "Shared",
+            "activity": "Lynne Robbins shared with you - Jan 14, 2025"
+          },
+          {
+            "name": "Quarterly-Actuals.xlsx",
+            "type": "excel",
+            "modified": "April 8, 2025",
+            "modifiedBy": "Nestor Wilke",
+            "size": "1.12 MB",
+            "sharing": "Shared",
+            "activity": "Miriam Graham edited - Apr 7, 2025"
+          },
+          {
+            "name": "FY25-Roadmap-Deck.pptx",
+            "type": "powerpoint",
+            "modified": "June 3, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "3.40 MB",
+            "sharing": "Shared",
+            "activity": "You shared this file - May 29, 2025"
+          },
+          {
+            "name": "Product-Spec-v2.docx",
+            "type": "word",
+            "modified": "May 29, 2025",
+            "modifiedBy": "Megan Bowen",
+            "size": "1.85 MB",
+            "sharing": "Shared",
+            "activity": "Lidia Holloway shared with Isaiah Langer - May 29, 2025"
+          },
+          {
+            "name": "All-Hands-Summary.pptx",
+            "type": "powerpoint",
+            "modified": "February 14, 2025",
+            "modifiedBy": "Diego Siciliani",
+            "size": "5.10 MB",
+            "sharing": "Shared"
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-onedrive-context-menu",
+      "duration": 10,
+      "component": "OneDriveScene",
+      "props": {
+        "variant": "selected",
+        "state": "context-menu",
+        "pageTitle": "My files",
+        "accountName": "Adele Vance",
+        "accountInitial": "A",
+        "activeNav": "My files",
+        "selectedCount": 1,
+        "quickAccess": [
+          {
+            "name": "Contoso Sales Platforms",
+            "color": "#107C10",
+            "initial": "C"
+          },
+          {
+            "name": "Contoso Finance Team",
+            "color": "#D13438",
+            "initial": "C"
+          },
+          {
+            "name": "Platform Engineering...",
+            "color": "#8764B8",
+            "initial": "P"
+          },
+          {
+            "name": "Marketing",
+            "color": "#0078D4",
+            "initial": "M"
+          },
+          {
+            "name": "Dev Tenant",
+            "color": "#038387",
+            "initial": "D"
+          },
+          {
+            "name": "HR Portal - Videos",
+            "color": "#107C10",
+            "initial": "H"
+          },
+          {
+            "name": "Commerce Docs - C...",
+            "color": "#038387",
+            "initial": "C"
+          },
+          {
+            "name": "Identity & Access Sup...",
+            "color": "#605E5C",
+            "initial": "I"
+          }
+        ],
+        "files": [
+          {
+            "name": "Apps",
+            "type": "folder",
+            "modified": "February 28, 2023",
+            "modifiedBy": "Adele Vance",
+            "size": "2 items",
+            "sharing": "Private",
+            "selected": true,
+            "contextMenuAnchor": true
+          },
+          {
+            "name": "Attachments",
+            "type": "folder",
+            "modified": "March 8, 2021",
+            "modifiedBy": "Adele Vance",
+            "size": "3 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Desktop",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "2 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Documents",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "48 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Meetings",
+            "type": "folder-shared",
+            "modified": "February 9, 2022",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Shared"
+          },
+          {
+            "name": "Microsoft Copilot Chat Files",
+            "type": "folder",
+            "modified": "September 5, 2024",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Private"
+          },
+          {
+            "name": "Microsoft Teams Chat Files",
+            "type": "folder",
+            "modified": "June 22, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "105 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "OneNote Loop Files",
+            "type": "folder",
+            "modified": "May 12, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Private"
+          },
+          {
+            "name": "Pictures",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "8 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Recordings",
+            "type": "folder-shared",
+            "modified": "July 29, 2022",
+            "modifiedBy": "Adele Vance",
+            "size": "17 items",
+            "sharing": "Shared"
+          },
+          {
+            "name": "Contoso-Q3-Forecast.xlsx",
+            "type": "excel",
+            "modified": "March 20, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "1.75 MB",
+            "sharing": "Shared"
+          },
+          {
+            "name": "Revenue-DvR-05-29-2025.xlsx",
+            "type": "excel",
+            "modified": "June 3, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "2.36 MB",
+            "sharing": "Shared"
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-onedrive-share-dialog",
+      "duration": 10,
+      "component": "OneDriveScene",
+      "props": {
+        "variant": "selected",
+        "state": "share-dialog",
+        "pageTitle": "My files",
+        "accountName": "Adele Vance",
+        "accountInitial": "A",
+        "activeNav": "My files",
+        "selectedCount": 1,
+        "shareTarget": "Apps",
+        "showFeedbackCard": true,
+        "quickAccess": [
+          {
+            "name": "Contoso Sales Platforms",
+            "color": "#107C10",
+            "initial": "C"
+          },
+          {
+            "name": "Contoso Finance Team",
+            "color": "#D13438",
+            "initial": "C"
+          },
+          {
+            "name": "Platform Engineering...",
+            "color": "#8764B8",
+            "initial": "P"
+          },
+          {
+            "name": "Marketing",
+            "color": "#0078D4",
+            "initial": "M"
+          },
+          {
+            "name": "Dev Tenant",
+            "color": "#038387",
+            "initial": "D"
+          },
+          {
+            "name": "HR Portal - Videos",
+            "color": "#107C10",
+            "initial": "H"
+          },
+          {
+            "name": "Commerce Docs - C...",
+            "color": "#038387",
+            "initial": "C"
+          },
+          {
+            "name": "Identity & Access Sup...",
+            "color": "#605E5C",
+            "initial": "I"
+          }
+        ],
+        "files": [
+          {
+            "name": "Apps",
+            "type": "folder",
+            "modified": "February 28, 2023",
+            "modifiedBy": "Adele Vance",
+            "size": "2 items",
+            "sharing": "Private",
+            "selected": true
+          },
+          {
+            "name": "Attachments",
+            "type": "folder",
+            "modified": "March 8, 2021",
+            "modifiedBy": "Adele Vance",
+            "size": "3 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Desktop",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "2 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Documents",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "48 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Meetings",
+            "type": "folder-shared",
+            "modified": "February 9, 2022",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Shared"
+          },
+          {
+            "name": "Microsoft Copilot Chat Files",
+            "type": "folder",
+            "modified": "September 5, 2024",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Private"
+          },
+          {
+            "name": "Microsoft Teams Chat Files",
+            "type": "folder",
+            "modified": "June 22, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "105 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "OneNote Loop Files",
+            "type": "folder",
+            "modified": "May 12, 2025",
+            "modifiedBy": "Adele Vance",
+            "size": "1 item",
+            "sharing": "Private"
+          },
+          {
+            "name": "Pictures",
+            "type": "folder",
+            "modified": "August 27, 2020",
+            "modifiedBy": "Adele Vance",
+            "size": "8 items",
+            "sharing": "Private"
+          },
+          {
+            "name": "Recordings",
+            "type": "folder-shared",
+            "modified": "July 29, 2022",
+            "modifiedBy": "Adele Vance",
+            "size": "17 items",
+            "sharing": "Shared"
+          }
+        ]
+      }
+    },
+    {
+      "id": "chapter-forms",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Forms",
+        "subtitle": "4 variants",
+        "background": "#2C5234"
+      }
+    },
+    {
+      "id": "showcase-forms-home",
+      "duration": 10,
+      "component": "FormsScene",
+      "props": {
+        "variant": "home",
+        "state": "default",
+        "accountInitial": "I",
+        "welcomeTitle": "Welcome to Microsoft Forms!",
+        "welcomeSubtitle": "Collect better data and make better decisions.",
+        "scenarioPrompt": "Choose a scenario and start with well-crafted templates.",
+        "scenarios": [
+          {
+            "title": "Workflow Solution",
+            "illustration": "workflow",
+            "subtitle": "Streamline your work flow: collect info, send reminders, view summaries. All set!"
+          },
+          {
+            "title": "Registration",
+            "illustration": "registration",
+            "subtitle": "Event sign-ups, class enrollment, volunteer coordination."
+          },
+          {
+            "title": "Research",
+            "illustration": "research",
+            "subtitle": "Surveys, polls, and feedback to gather actionable insights."
+          },
+          {
+            "title": "Quiz",
+            "illustration": "quiz",
+            "subtitle": "Assess knowledge, grade automatically, and share results."
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-forms-gallery",
+      "duration": 10,
+      "component": "FormsScene",
+      "props": {
+        "variant": "gallery",
+        "state": "default",
+        "accountInitial": "I",
+        "galleryTitle": "Work seamlessly with advanced solutions",
+        "featurePills": [
+          "Powerful Questions",
+          "Flexible Settings",
+          "Targeted Reminders",
+          "Instant Results"
+        ],
+        "templateCards": [
+          {
+            "title": "Evaluate job satisfaction and engagement",
+            "image": "linear-gradient(135deg,#E8C8A8,#D8B898)"
+          },
+          {
+            "title": "Pre-Sales Inquiry Satisfaction Survey",
+            "image": "linear-gradient(135deg,#9FBFE0,#6E9DCB)"
+          },
+          {
+            "title": "Gathering Feedback on Work-Life Flexibility",
+            "image": "linear-gradient(135deg,#E89465,#D87037)"
+          },
+          {
+            "title": "Assess IT Service Satisfaction",
+            "image": "linear-gradient(135deg,#5B5FC7,#7E5FE4)"
+          },
+          {
+            "title": "Evaluate Customer Satisfaction",
+            "image": "linear-gradient(135deg,#E25E9A,#D44C95)"
+          },
+          {
+            "title": "Review Training Quality and Effectiveness",
+            "image": "linear-gradient(135deg,#3B5BA5,#3F7BCB)"
+          },
+          {
+            "title": "Get feedback on manager support",
+            "image": "linear-gradient(135deg,#A45CB8,#8C3FA3)"
+          },
+          {
+            "title": "Analyze Vehicle Owner Satisfaction",
+            "image": "linear-gradient(135deg,#5DA988,#3F8C6E)"
+          },
+          {
+            "title": "Employee satisfaction survey",
+            "image": "linear-gradient(135deg,#C9A86B,#A88848)"
+          },
+          {
+            "title": "Event registration",
+            "image": "linear-gradient(135deg,#6E9DCB,#4A78A6)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "showcase-forms-builder",
+      "duration": 10,
+      "component": "FormsScene",
+      "props": {
+        "variant": "builder",
+        "state": "more-solutions",
+        "accountInitial": "I",
+        "formName": "Employee satisfaction survey",
+        "savedLabel": "Saved",
+        "heroTitle": "Employee satisfaction survey",
+        "heroSubtitle": "You are invited!",
+        "sectionLabel": "Section 1",
+        "formSection": {
+          "title": "Profile",
+          "question": "What is your role?",
+          "options": [
+            "Individual contributor",
+            "Team lead",
+            "Manager",
+            "Senior executive"
+          ]
+        },
+        "sidePanel": {
+          "moreSolutions": [
+            {
+              "title": "Evaluate job satisfaction and engagement",
+              "image": "linear-gradient(135deg,#9FBFE0,#6E9DCB)"
+            },
+            {
+              "title": "Pre-Sales Inquiry Satisfaction Survey",
+              "image": "linear-gradient(135deg,#E89465,#D87037)"
+            },
+            {
+              "title": "Gathering Feedback on Work-Life Flexibility",
+              "image": "linear-gradient(135deg,#E25E9A,#D44C95)"
+            },
+            {
+              "title": "Assess IT Service Satisfaction",
+              "image": "linear-gradient(135deg,#3B5BA5,#3F7BCB)"
+            },
+            {
+              "title": "Evaluate Customer Satisfaction",
+              "image": "linear-gradient(135deg,#5DA988,#3F8C6E)"
+            },
+            {
+              "title": "Review Training Quality and Effectiveness",
+              "image": "linear-gradient(135deg,#A45CB8,#8C3FA3)"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "showcase-forms-preview",
+      "duration": 10,
+      "component": "FormsScene",
+      "props": {
+        "variant": "preview",
+        "state": "default",
+        "accountInitial": "I",
+        "activeDevice": "Computer",
+        "previewTitle": "Employee satisfaction survey",
+        "previewSubtitle": "You are invited!",
+        "previewCtaLabel": "Start now"
+      }
+    },
+    {
+      "id": "chapter-bookings",
+      "duration": 2.5,
+      "component": "TitleCard",
+      "props": {
+        "title": "Bookings",
+        "subtitle": "3 variants",
+        "background": "#1F6068"
+      }
+    },
+    {
+      "id": "showcase-bookings-home",
+      "duration": 10,
+      "component": "BookingsScene",
+      "props": {
+        "variant": "home",
+        "state": "default",
+        "accountInitial": "I",
+        "welcomeName": "Alex Johnson",
+        "welcomeSubtitle": "Work smarter with Bookings and skip the back and forth.",
+        "getStartedLabel": "0/3 Get started",
+        "personalTitle": "Personal booking page",
+        "personalSubtitle": "Easily share your availability with your own booking page.",
+        "meetingCards": [
+          {
+            "title": "15 minutes meeting",
+            "description": "Happy to connect. Feel free to book time with me so we can delve into any subject of your choice.",
+            "visibility": "Public",
+            "duration": "15 min",
+            "iconColor": "#0078D4"
+          },
+          {
+            "title": "30 minutes meeting",
+            "description": "Book time with me to discuss needs, explore solutions and collaborate efficiently.",
+            "visibility": "Public",
+            "duration": "30 min",
+            "iconColor": "#C50F1F"
+          }
+        ],
+        "sharedTitle": "Shared booking pages",
+        "sharedSubtitle": "Invite your team and get people to book time with you and your team.",
+        "sharedCards": []
+      }
+    },
+    {
+      "id": "showcase-bookings-public-page",
+      "duration": 10,
+      "component": "BookingsScene",
+      "props": {
+        "variant": "public-page",
+        "state": "default",
+        "orgName": "Contoso",
+        "serviceTitle": "30 minutes meeting",
+        "serviceBlurb": "Book time with me to discuss needs, explore solutions and collaborate efficiently.",
+        "monthLabel": "November 2026",
+        "selectedDate": "Tue, Nov 17",
+        "timeSlots": [
+          "9:00 AM",
+          "9:30 AM",
+          "10:00 AM",
+          "10:30 AM",
+          "11:00 AM",
+          "11:30 AM",
+          "1:00 PM",
+          "1:30 PM",
+          "2:00 PM",
+          "2:30 PM"
+        ],
+        "selectedSlot": "10:00 AM"
+      }
+    },
+    {
+      "id": "showcase-bookings-create-modal",
+      "duration": 10,
+      "component": "BookingsScene",
+      "props": {
+        "variant": "home",
+        "state": "create-modal",
+        "accountInitial": "I",
+        "welcomeName": "Alex Johnson",
+        "welcomeSubtitle": "Work smarter with Bookings and skip the back and forth.",
+        "meetingCards": [
+          {
+            "title": "15 minutes meeting",
+            "description": "Happy to connect. Feel free to book time with me so we can delve into any subject of your choice.",
+            "visibility": "Public",
+            "duration": "15 min",
+            "iconColor": "#0078D4"
+          },
+          {
+            "title": "30 minutes meeting",
+            "description": "Book time with me to discuss needs, explore solutions and collaborate efficiently.",
+            "visibility": "Public",
+            "duration": "30 min",
+            "iconColor": "#C50F1F"
+          }
+        ],
+        "modalTitle": "Create meeting type"
+      }
+    },
+    {
+      "id": "showcase-outro",
+      "duration": 4,
+      "component": "TitleCard",
+      "props": {
+        "title": "16 variants · all green",
+        "subtitle": "Lint 0/63 · Smoke 68/68 · Wave A→D shipped",
+        "background": "#0F172A"
+      }
+    }
+  ]
+}

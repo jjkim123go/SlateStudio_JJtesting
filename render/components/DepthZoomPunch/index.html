@@ -1,0 +1,33 @@
+<!--
+  DepthZoomPunch — full-screen bridge transition.
+  Outgoing content depth-zooms forward (scale up, blur up, opacity down),
+  brief white flash at midpoint, then incoming content zooms in from depth
+  (scale small→1, blur down, opacity up). Camera-punch feel.
+
+  Props consumed:
+    outgoingImageSrc   image for the outgoing scene (optional — solid color if absent)
+    incomingImageSrc   image for the incoming scene (optional — solid color if absent)
+    outgoingColor      CSS color fallback for outgoing (default #1a1a2e)
+    incomingColor      CSS color fallback for incoming (default #0078D4)
+    flashColor         CSS color for the midpoint flash (default #ffffff)
+    flashDuration      flash duration in seconds (default 0.06)
+    maxBlur            peak blur in px (default 20)
+-->
+<style>
+.scene-{{sceneId}} .dzp-root{position:absolute;inset:0;overflow:hidden;background:#000;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+.scene-{{sceneId}} .dzp-layer{position:absolute;inset:0;will-change:transform,filter,opacity}
+.scene-{{sceneId}} .dzp-outgoing{background:var(--dzp-out-color,#1a1a2e)}
+.scene-{{sceneId}} .dzp-incoming{background:var(--dzp-in-color,var(--brand-primary,#0078D4));opacity:0}
+.scene-{{sceneId}} .dzp-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.scene-{{sceneId}} .dzp-flash{position:absolute;inset:0;background:var(--dzp-flash-color,#ffffff);opacity:0;z-index:3}
+</style>
+<div class="dzp-root" data-scene-component="DepthZoomPunch"
+     style="--dzp-out-color:{{outgoingColor}};--dzp-in-color:{{incomingColor}};--dzp-flash-color:{{flashColor}}">
+  <div class="dzp-layer dzp-incoming">
+    <img class="dzp-img dzp-in-img" src="{{incomingImageSrc}}" alt="" />
+  </div>
+  <div class="dzp-layer dzp-outgoing">
+    <img class="dzp-img dzp-out-img" src="{{outgoingImageSrc}}" alt="" />
+  </div>
+  <div class="dzp-flash"></div>
+</div>

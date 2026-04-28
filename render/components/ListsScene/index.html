@@ -1,0 +1,608 @@
+<!--
+  ListsScene — Wave A Chrome Shell (PR 8c — Productivity Surfaces)
+  Models the modern Microsoft Lists desktop chrome (single-list grid view).
+  All selectors scoped: .scene-{{sceneId}} .ls-bg .ls-*
+
+  Variant switching via data-attributes on .ls-bg:
+    [data-state]      : default | row-selected | menu-open
+    [data-icon-color] : purple | teal | red | orange | green | blue | pink | gray
+
+  Slot HTML emitted by render/lib/lists-scene-transformer.mjs:
+    {{{commandBarHtml}}}        — left cluster of action buttons
+    {{{commandBarRightHtml}}}   — right cluster (selection status OR Details/Collapse)
+    {{{columnsHeaderHtml}}}     — flex row of column headers
+    {{{rowsHtml}}}              — stack of data rows
+    {{{contextMenuHtml}}}       — empty unless state=menu-open
+--><!-- ============================================================================
+     DENSITY SPEC — measured from output/pr8c-references/lists/raw-02-grid.png
+     and raw-03-row-detail.png. Wave B agents: ground-truth numbers, do not deviate.
+     ============================================================================
+     Titlebar height:           48px       brand: #742774
+     Command bar height:        40px       bg: #f3f2f1 (Fluent neutral lighter)
+     Header strip height:       80px       white, contains icon chip + title + view
+     Column header height:      40px       white, sticky-top
+     Default row height:        76px       generous (Lists default density)
+     Bottom utility bar:        32px       subtle "Turn on details pane" hint
+
+     Title color:               #fff (on purple), #242424 (on white)
+     Body text:                 #242424
+     Secondary text:            #616161
+     Tertiary text:             #8a8886
+     Divider:                   #e1dfdd
+     Hover row bg:              #faf9f8
+     Selected row bg:           #f3f2f1
+
+     Pill geometry: padding 4px 10px, border-radius 4px, font-size 12px
+     Person chip:   padding 2px 8px 2px 2px, border-radius 12px, avatar 20×20
+
+     Font: "Segoe UI", system-ui, -apple-system, Roboto, sans-serif
+     Font-size titlebar text:    14px
+     Font-size cmd-bar buttons:  14px
+     Font-size title:            22px (semibold)
+     Font-size breadcrumb:       12px
+     Font-size column header:    13px (semibold)
+     Font-size row text:         14px
+
+     Brand: #742774  ·  Brand light: #f3eaf3  ·  Brand on hover bg: #ebe1eb
+     ============================================================================ --><style data-component="ListsScene">
+/* ---------- Theme tokens ---------- */
+.scene-{{sceneId}} .ls-bg {
+  --ls-bg: #ffffff;
+  --ls-surface: #ffffff;
+  --ls-surface-hover: #faf9f8;
+  --ls-surface-selected: #f3f2f1;
+  --ls-chrome-bg: #f3f2f1;
+  --ls-divider: #e1dfdd;
+  --ls-divider-light: #edebe9;
+  --ls-text-primary: #242424;
+  --ls-text-secondary: #616161;
+  --ls-text-tertiary: #8a8886;
+  --ls-text-on-accent: #ffffff;
+  --ls-brand: #742774;
+  --ls-brand-dark: #5b1f5b;
+  --ls-brand-light: #f3eaf3;
+  --ls-link: #2564cf;
+  --ls-focus: #2564cf;
+
+  /* Pill tones */
+  --ls-pill-success-bg: #e6f4ea;     --ls-pill-success-fg: #0e6027;
+  --ls-pill-warning-bg: #fff4ce;     --ls-pill-warning-fg: #8a6914;
+  --ls-pill-danger-bg:  #fde7e9;     --ls-pill-danger-fg:  #a4262c;
+  --ls-pill-info-bg:    #cce4e4;     --ls-pill-info-fg:    #0f6f6f;
+  --ls-pill-info-alt-bg:#f3eaf3;     --ls-pill-info-alt-fg:#742774;
+  --ls-pill-neutral-bg: #f3f2f1;     --ls-pill-neutral-fg: #424242;
+
+  /* Header chip palette (data-icon-color) */
+  --ls-chip-purple-bg: #742774;
+  --ls-chip-teal-bg:   #038387;
+  --ls-chip-red-bg:    #a4262c;
+  --ls-chip-orange-bg: #ca5010;
+  --ls-chip-green-bg:  #0e7a39;
+  --ls-chip-blue-bg:   #0078d4;
+  --ls-chip-pink-bg:   #c239b3;
+  --ls-chip-gray-bg:   #605e5c;
+
+  position: absolute;
+  inset: 0;
+  background: var(--ls-bg);
+  font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Roboto, sans-serif;
+  color: var(--ls-text-primary);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- Titlebar (purple) ---------- */
+.scene-{{sceneId}} .ls-titlebar {
+  flex: 0 0 48px;
+  background: var(--ls-brand);
+  color: var(--ls-text-on-accent);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+}
+.scene-{{sceneId}} .ls-tb-waffle {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .ls-tb-waffle:hover { background: rgba(255,255,255,0.08); }
+.scene-{{sceneId}} .ls-tb-waffle-grid {
+  display: grid; grid-template-columns: repeat(3, 4px); gap: 3px;
+}
+.scene-{{sceneId}} .ls-tb-waffle-grid > i {
+  width: 4px; height: 4px; background: #fff; border-radius: 1px;
+}
+.scene-{{sceneId}} .ls-tb-wordmark {
+  font-size: 16px; font-weight: 600; letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .ls-tb-search {
+  flex: 0 1 480px;
+  margin: 0 auto;
+  height: 32px;
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 4px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 12px;
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+}
+.scene-{{sceneId}} .ls-tb-search-icon { width: 16px; height: 16px; opacity: 0.85; }
+.scene-{{sceneId}} .ls-tb-right {
+  display: flex; align-items: center; gap: 4px; margin-left: auto;
+}
+.scene-{{sceneId}} .ls-tb-iconbtn {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  color: #fff;
+}
+.scene-{{sceneId}} .ls-tb-iconbtn:hover { background: rgba(255,255,255,0.10); }
+.scene-{{sceneId}} .ls-tb-iconbtn .ls-icon { fill: #fff; width: 18px; height: 18px; }
+.scene-{{sceneId}} .ls-tb-avatar {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  background: #b3a4b3;
+  color: var(--ls-brand-dark);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 600;
+  margin-left: 8px;
+}
+
+/* ---------- Command bar ---------- */
+.scene-{{sceneId}} .ls-cmdbar {
+  flex: 0 0 40px;
+  background: var(--ls-chrome-bg);
+  border-bottom: 1px solid var(--ls-divider);
+  display: flex; align-items: center;
+  padding: 0 12px;
+  gap: 2px;
+}
+.scene-{{sceneId}} .ls-cmdbar-left { display: flex; align-items: center; gap: 2px; }
+.scene-{{sceneId}} .ls-cmdbar-right { display: flex; align-items: center; gap: 2px; margin-left: auto; }
+
+.scene-{{sceneId}} .ls-cmd-btn {
+  height: 32px;
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 10px;
+  background: transparent;
+  border: 0;
+  border-radius: 4px;
+  color: var(--ls-text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .ls-cmd-btn:hover { background: rgba(0,0,0,0.04); }
+.scene-{{sceneId}} .ls-cmd-icon { display: inline-flex; }
+.scene-{{sceneId}} .ls-cmd-icon .ls-icon { width: 16px; height: 16px; fill: var(--ls-text-primary); }
+.scene-{{sceneId}} .ls-cmd-label { font-size: 14px; line-height: 1; }
+.scene-{{sceneId}} .ls-cmd-chev { font-size: 10px; color: var(--ls-text-secondary); margin-left: 2px; }
+.scene-{{sceneId}} .ls-cmd-overflow { padding: 0 8px; }
+
+.scene-{{sceneId}} .ls-sel-status {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 10px;
+  height: 32px;
+  background: var(--ls-brand-light);
+  color: var(--ls-brand-dark);
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-right: 4px;
+}
+.scene-{{sceneId}} .ls-sel-x { font-size: 11px; opacity: 0.7; }
+
+/* ---------- Header strip ---------- */
+.scene-{{sceneId}} .ls-header {
+  flex: 0 0 80px;
+  background: #fff;
+  border-bottom: 1px solid var(--ls-divider);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+}
+.scene-{{sceneId}} .ls-header-icon {
+  width: 44px; height: 44px;
+  border-radius: 6px;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 44px;
+  background: var(--ls-chip-purple-bg);
+}
+.scene-{{sceneId}} .ls-bg[data-icon-color="purple"] .ls-header-icon { background: var(--ls-chip-purple-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="teal"]   .ls-header-icon { background: var(--ls-chip-teal-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="red"]    .ls-header-icon { background: var(--ls-chip-red-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="orange"] .ls-header-icon { background: var(--ls-chip-orange-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="green"]  .ls-header-icon { background: var(--ls-chip-green-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="blue"]   .ls-header-icon { background: var(--ls-chip-blue-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="pink"]   .ls-header-icon { background: var(--ls-chip-pink-bg); }
+.scene-{{sceneId}} .ls-bg[data-icon-color="gray"]   .ls-header-icon { background: var(--ls-chip-gray-bg); }
+.scene-{{sceneId}} .ls-header-icon-svg { width: 28px; height: 28px; }
+
+.scene-{{sceneId}} .ls-header-titles { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.scene-{{sceneId}} .ls-header-breadcrumb {
+  font-size: 12px;
+  color: var(--ls-text-secondary);
+  letter-spacing: 0;
+}
+.scene-{{sceneId}} .ls-header-title-row {
+  display: flex; align-items: center; gap: 10px;
+}
+.scene-{{sceneId}} .ls-header-title {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--ls-text-primary);
+  line-height: 1.15;
+}
+.scene-{{sceneId}} .ls-header-star { color: #e0bd0c; font-size: 18px; }
+
+.scene-{{sceneId}} .ls-header-actions {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 4px;
+}
+.scene-{{sceneId}} .ls-header-iconbtn {
+  width: 32px; height: 32px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+}
+.scene-{{sceneId}} .ls-header-iconbtn:hover { background: rgba(0,0,0,0.04); }
+.scene-{{sceneId}} .ls-header-iconbtn .ls-icon { width: 16px; height: 16px; fill: var(--ls-text-primary); }
+
+.scene-{{sceneId}} .ls-view-selector {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 32px; padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ls-text-primary);
+  position: relative;
+}
+.scene-{{sceneId}} .ls-view-selector:hover { background: rgba(0,0,0,0.04); }
+.scene-{{sceneId}} .ls-view-selector::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 28px; bottom: 4px;
+  height: 2px;
+  background: var(--ls-brand);
+  border-radius: 1px;
+}
+.scene-{{sceneId}} .ls-view-chev { font-size: 10px; color: var(--ls-text-secondary); }
+
+/* ---------- Grid ---------- */
+.scene-{{sceneId}} .ls-grid {
+  flex: 1 1 auto;
+  display: flex; flex-direction: column;
+  min-height: 0;
+  background: #fff;
+}
+
+.scene-{{sceneId}} .ls-grid-cols {
+  flex: 0 0 40px;
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--ls-divider);
+  padding-left: 56px;   /* aligns with row-checkbox column gutter */
+  background: #fff;
+  position: sticky; top: 0; z-index: 2;
+}
+.scene-{{sceneId}} .ls-col {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 16px 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ls-text-primary);
+  border-right: 1px solid transparent;
+  position: relative;
+  user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .ls-col:hover { background: rgba(0,0,0,0.02); }
+/* Column resize handle — thin draggable line on right edge like real Lists */
+.scene-{{sceneId}} .ls-col::after {
+  content: "";
+  position: absolute;
+  right: 0; top: 8px; bottom: 8px;
+  width: 2px;
+  background: var(--ls-divider);
+  border-radius: 1px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.scene-{{sceneId}} .ls-col:hover::after { opacity: 1; }
+.scene-{{sceneId}} .ls-col-name { overflow: hidden; text-overflow: ellipsis; }
+.scene-{{sceneId}} .ls-col-sort {
+  font-size: 12px;
+  color: var(--ls-text-primary);
+  font-weight: 700;
+  flex: 0 0 auto;
+}
+
+.scene-{{sceneId}} .ls-grid-rows {
+  flex: 1 1 auto;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+
+.scene-{{sceneId}} .ls-row {
+  flex: 0 0 76px;
+  display: flex;
+  align-items: stretch;
+  border-bottom: 1px solid var(--ls-divider-light);
+  background: #fff;
+  position: relative;
+  transition: background-color 120ms ease;
+}
+.scene-{{sceneId}} .ls-row:hover { background: var(--ls-surface-hover); }
+/* Row overflow "..." shown on hover — matches reference raw-03 */
+.scene-{{sceneId}} .ls-row-overflow {
+  position: absolute;
+  right: 8px; top: 8px;
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  display: inline-flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transition: opacity 80ms ease;
+  background: var(--ls-surface);
+}
+.scene-{{sceneId}} .ls-row:hover .ls-row-overflow { opacity: 1; }
+.scene-{{sceneId}} .ls-row-overflow .ls-icon { width: 14px; height: 14px; fill: var(--ls-text-secondary); }
+.scene-{{sceneId}} .ls-row[data-selected="1"] { background: var(--ls-surface-selected); }
+.scene-{{sceneId}} .ls-row[data-selected="1"]::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--ls-brand);
+}
+
+.scene-{{sceneId}} .ls-row-checkbox {
+  flex: 0 0 56px;
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .ls-cb-svg { width: 16px; height: 16px; }
+
+.scene-{{sceneId}} .ls-row-cells {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+}
+
+.scene-{{sceneId}} .ls-cell {
+  display: flex; align-items: center;
+  padding: 8px 16px 8px 12px;
+  font-size: 14px;
+  color: var(--ls-text-primary);
+  border-right: 1px solid transparent;
+  min-width: 0;
+}
+.scene-{{sceneId}} .ls-cell-text {
+  overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  line-height: 1.35;
+}
+.scene-{{sceneId}} .ls-cell-rich {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ls-text-primary);
+  overflow: hidden;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+}
+.scene-{{sceneId}} .ls-cell-rich a { color: var(--ls-link); text-decoration: underline; }
+.scene-{{sceneId}} .ls-cell-rich strong { font-weight: 600; }
+.scene-{{sceneId}} .ls-cell-rich ul { padding-left: 16px; margin: 2px 0; }
+.scene-{{sceneId}} .ls-cell-rich li { margin: 1px 0; }
+.scene-{{sceneId}} .ls-cell-icons { display: flex; gap: 6px; }
+.scene-{{sceneId}} .ls-cell-icons .ls-icon { width: 14px; height: 14px; fill: var(--ls-text-secondary); }
+
+/* Pill */
+.scene-{{sceneId}} .ls-pill {
+  display: inline-flex; align-items: center;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  background: var(--ls-pill-neutral-bg);
+  color: var(--ls-pill-neutral-fg);
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .ls-pill[data-tone="success"]  { background: var(--ls-pill-success-bg);  color: var(--ls-pill-success-fg); }
+.scene-{{sceneId}} .ls-pill[data-tone="warning"]  { background: var(--ls-pill-warning-bg);  color: var(--ls-pill-warning-fg); }
+.scene-{{sceneId}} .ls-pill[data-tone="danger"]   { background: var(--ls-pill-danger-bg);   color: var(--ls-pill-danger-fg); }
+.scene-{{sceneId}} .ls-pill[data-tone="info"]     { background: var(--ls-pill-info-bg);     color: var(--ls-pill-info-fg); }
+.scene-{{sceneId}} .ls-pill[data-tone="info-alt"] { background: var(--ls-pill-info-alt-bg); color: var(--ls-pill-info-alt-fg); }
+.scene-{{sceneId}} .ls-pill[data-tone="neutral"]  { background: var(--ls-pill-neutral-bg);  color: var(--ls-pill-neutral-fg); }
+
+/* Person chip */
+.scene-{{sceneId}} .ls-person {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 2px 10px 2px 2px;
+  border-radius: 12px;
+  background: var(--ls-pill-neutral-bg);
+  font-size: 13px;
+  color: var(--ls-text-primary);
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ls-person-avatar {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--ls-brand);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  flex: 0 0 20px;
+}
+.scene-{{sceneId}} .ls-person-name { overflow: hidden; text-overflow: ellipsis; }
+
+/* Link */
+.scene-{{sceneId}} .ls-link {
+  color: var(--ls-link);
+  text-decoration: underline;
+  font-size: 14px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+
+/* ---------- Bottom utility bar ---------- */
+.scene-{{sceneId}} .ls-bottom-bar {
+  flex: 0 0 32px;
+  border-top: 1px solid var(--ls-divider);
+  background: #fff;
+  display: flex; align-items: center;
+  padding: 0 24px;
+  font-size: 12px;
+  color: var(--ls-text-secondary);
+}
+
+/* ---------- Context menu overlay ---------- */
+.scene-{{sceneId}} .ls-context-menu {
+  position: absolute;
+  width: 220px;
+  background: #fff;
+  border: 1px solid var(--ls-divider);
+  border-radius: 4px;
+  box-shadow: 0 6.4px 14.4px rgba(0,0,0,0.13), 0 1.2px 3.6px rgba(0,0,0,0.10);
+  padding: 4px 0;
+  z-index: 50;
+  font-size: 14px;
+  color: var(--ls-text-primary);
+  pointer-events: none;
+  opacity: 0;
+}
+.scene-{{sceneId}} .ls-bg[data-state="menu-open"] .ls-context-menu { opacity: 1; }
+.scene-{{sceneId}} .ls-cm-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 6px 12px;
+  height: 32px;
+  cursor: pointer;
+}
+.scene-{{sceneId}} .ls-cm-item:hover { background: var(--ls-surface-hover); }
+.scene-{{sceneId}} .ls-cm-icon { width: 16px; display: inline-flex; justify-content: center; }
+.scene-{{sceneId}} .ls-cm-icon .ls-icon { width: 16px; height: 16px; fill: var(--ls-text-primary); }
+.scene-{{sceneId}} .ls-cm-icon-spacer { display: inline-block; width: 16px; }
+.scene-{{sceneId}} .ls-cm-label { flex: 1 1 auto; }
+.scene-{{sceneId}} .ls-cm-chevron { color: var(--ls-text-secondary); font-size: 14px; line-height: 1; }
+.scene-{{sceneId}} .ls-cm-divider {
+  height: 1px;
+  background: var(--ls-divider-light);
+  margin: 4px 8px;
+}
+
+/* ---------- Selection-state visual emphasis ---------- */
+.scene-{{sceneId}} .ls-bg[data-state="row-selected"] .ls-row[data-selected="1"],
+.scene-{{sceneId}} .ls-bg[data-state="menu-open"]  .ls-row[data-selected="1"] {
+  background: var(--ls-surface-selected);
+  box-shadow: inset 3px 0 0 var(--ls-brand);
+}
+
+/* ---------- Initial animation hooks ---------- */
+.scene-{{sceneId}} .ls-bg { opacity: 0; }
+.scene-{{sceneId}} .ls-row { opacity: 0; transform: translateY(6px); }
+.scene-{{sceneId}} .ls-context-menu { transform: translateY(-4px); }
+</style>
+
+<div class="ls-bg"
+     data-state="{{state}}"
+     data-icon-color="{{iconColor}}"
+     data-row-count="{{rowCount}}">
+
+  <!-- ============ TITLEBAR (purple) ============ -->
+  <div class="ls-titlebar" data-region="titlebar">
+    <div class="ls-tb-waffle" aria-label="App launcher">
+      <div class="ls-tb-waffle-grid"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="ls-tb-wordmark">Microsoft Lists</div>
+    <div class="ls-tb-search" role="search">
+      <svg class="ls-tb-search-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M11.5 6.5a5 5 0 1 1-10 0 5 5 0 0 1 10 0Zm-1.39 4.32a6 6 0 1 1 .7-.7l3.14 3.13a.5.5 0 1 1-.7.7l-3.14-3.13Z" fill="#fff"/></svg>
+      <span>{{searchPlaceholder}}</span>
+    </div>
+    <div class="ls-tb-right">
+      <div class="ls-tb-iconbtn" aria-label="Notifications">
+        <svg class="ls-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a5 5 0 0 0-5 5v2.59L1.71 10.3A.75.75 0 0 0 2.24 11.6h11.52a.75.75 0 0 0 .53-1.3L13 8.6V6a5 5 0 0 0-5-5Zm0 14a2 2 0 0 0 2-2H6a2 2 0 0 0 2 2Z"/></svg>
+      </div>
+      <div class="ls-tb-iconbtn" aria-label="Settings">
+        <svg class="ls-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M9.55 1.5l.4 1.6 1.6.66 1.5-.7 1.4 1.4-.7 1.5.66 1.6 1.6.4v2l-1.6.4-.66 1.6.7 1.5-1.4 1.4-1.5-.7-1.6.66-.4 1.6h-2l-.4-1.6-1.6-.66-1.5.7-1.4-1.4.7-1.5L1.4 9.55l-1.6-.4v-2l1.6-.4.66-1.6-.7-1.5L2.76 2.26l1.5.7L5.86 2.3l.4-1.6h2Zm-1 4.5a2 2 0 1 0 0 4 2 2 0 0 0 0-4Z"/></svg>
+      </div>
+      <div class="ls-tb-iconbtn" aria-label="Help">
+        <svg class="ls-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm0 11.5a.9.9 0 1 1 0-1.8.9.9 0 0 1 0 1.8ZM9 9c0 .5-.3.7-.7 1-.4.3-.4.5-.4.8h-1c0-.7.3-1.1.8-1.5.4-.3.5-.5.5-.8 0-.4-.3-.7-.8-.7s-.9.3-1 .8h-1A2 2 0 0 1 8 5.5C9.2 5.5 10 6.2 10 7.2 10 8 9.6 8.4 9 9Z"/></svg>
+      </div>
+      <div class="ls-tb-avatar" aria-label="Account">{{accountInitial}}</div>
+    </div>
+  </div>
+
+  <!-- ============ COMMAND BAR ============ -->
+  <div class="ls-cmdbar" data-region="cmdbar">
+    <div class="ls-cmdbar-left">
+      {{{commandBarHtml}}}
+    </div>
+    <div class="ls-cmdbar-right">
+      {{{commandBarRightHtml}}}
+    </div>
+  </div>
+
+  <!-- ============ HEADER STRIP ============ -->
+  <div class="ls-header" data-region="header">
+    <div class="ls-header-icon">
+      {{{headerIconSvg}}}
+    </div>
+    <div class="ls-header-titles">
+      <div class="ls-header-breadcrumb">{{breadcrumb}}</div>
+      <div class="ls-header-title-row">
+        <span class="ls-header-title">{{listName}}</span>
+        <span class="ls-header-star" aria-label="Favorited">★</span>
+      </div>
+    </div>
+    <div class="ls-header-actions">
+      <div class="ls-header-iconbtn" aria-label="Filter">
+        <svg class="ls-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 3.75A.75.75 0 0 1 2.75 3h10.5a.75.75 0 0 1 .58 1.22L9 9.62v3.13a.75.75 0 0 1-1.18.6l-2-1.43A.75.75 0 0 1 5.5 11.3V9.63L1.42 4.22A.75.75 0 0 1 2 3.75Z"/></svg>
+      </div>
+      <div class="ls-header-iconbtn" aria-label="Group">
+        <svg class="ls-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 4a.5.5 0 0 0 0 1h11a.5.5 0 0 0 0-1h-11Zm2 4a.5.5 0 0 0 0 1h7a.5.5 0 0 0 0-1h-7Zm2 4a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3Z"/></svg>
+      </div>
+      <div class="ls-header-iconbtn" aria-label="Sort">
+        <svg class="ls-icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4.5 1.5a.75.75 0 0 1 .75.75v9.69l1.97-1.97a.75.75 0 0 1 1.06 1.06l-3.25 3.25a.75.75 0 0 1-1.06 0L.72 11.03a.75.75 0 1 1 1.06-1.06l1.97 1.97V2.25a.75.75 0 0 1 .75-.75Zm7 13a.75.75 0 0 1-.75-.75V4.06L8.78 6.03a.75.75 0 0 1-1.06-1.06l3.25-3.25a.75.75 0 0 1 1.06 0l3.25 3.25a.75.75 0 1 1-1.06 1.06l-1.97-1.97v9.69a.75.75 0 0 1-.75.75Z"/></svg>
+      </div>
+      <div class="ls-view-selector">
+        <span>{{activeView}}</span>
+        <span class="ls-view-chev">▾</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ DATA GRID ============ -->
+  <div class="ls-grid" data-region="grid">
+    <div class="ls-grid-cols" role="row">
+      {{{columnsHeaderHtml}}}
+    </div>
+    <div class="ls-grid-rows" role="rowgroup">
+      {{{rowsHtml}}}
+    </div>
+  </div>
+
+  <!-- ============ BOTTOM UTILITY BAR ============ -->
+  <div class="ls-bottom-bar" data-region="bottom">
+    <span>Turn on the details pane to see and edit details.</span>
+  </div>
+
+  <!-- ============ CONTEXT MENU OVERLAY (only when state=menu-open) ============ -->
+  {{{contextMenuHtml}}}
+
+  <!-- ============ JSON ISLAND (smoke harness validates parse) ============ -->
+  <script type="application/json" data-region="lists-meta">
+{
+  "listName": "{{listName}}",
+  "state": "{{state}}",
+  "iconColor": "{{iconColor}}",
+  "rowCount": {{rowCount}}
+}
+  </script>
+</div>

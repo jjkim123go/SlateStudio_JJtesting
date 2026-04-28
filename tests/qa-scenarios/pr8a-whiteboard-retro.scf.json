@@ -1,0 +1,40 @@
+{
+  "version": "1.0",
+  "pipeline": "tech-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "wb-retro",
+      "duration": 14,
+      "component": "WhiteboardScene",
+      "props": {
+        "variant": "templateRetro",
+        "boardTitle": "Sprint 42 retro",
+        "liveCursors": [
+          {
+            "name": "Avery",
+            "accentHex": "#0F6CBD",
+            "path": [
+              { "x": 280,  "y": 240 },
+              { "x": 560,  "y": 360 },
+              { "x": 880,  "y": 320 },
+              { "x": 1180, "y": 380 },
+              { "x": 1500, "y": 300 }
+            ]
+          },
+          {
+            "name": "Maya",
+            "accentHex": "#7719AA",
+            "path": [
+              { "x": 1620, "y": 700 },
+              { "x": 1280, "y": 580 },
+              { "x": 940,  "y": 620 },
+              { "x": 620,  "y": 560 },
+              { "x": 320,  "y": 660 }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

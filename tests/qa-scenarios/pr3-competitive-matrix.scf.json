@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "quality": "standard" },
+  "metadata": {
+    "title": "PR 3 — CompetitiveMatrix smoke test",
+    "purpose": "Validates CompetitiveMatrix component compilation with 3 products × 6 features, mixed yes/partial/no/n-a ratings, highlight column, disclaimer, and footnotes.",
+    "duration_target_seconds": 10
+  },
+  "scenes": [
+    {
+      "id": "compare-us",
+      "duration": 10,
+      "narrationStartSec": 0,
+      "component": "CompetitiveMatrix",
+      "props": {
+        "title": "How we compare",
+        "productsJson": "[{\"id\":\"contoso\",\"name\":\"Contoso\",\"logoSrc\":\"assets/logos/contoso.png\",\"isUs\":true},{\"id\":\"acme\",\"name\":\"Acme\",\"logoSrc\":\"assets/logos/acme.png\"},{\"id\":\"globex\",\"name\":\"Globex\",\"logoSrc\":\"assets/logos/globex.png\"}]",
+        "featuresJson": "[{\"id\":\"sso\",\"label\":\"SAML SSO\",\"category\":\"Security\",\"ratings\":{\"contoso\":\"yes\",\"acme\":{\"value\":\"partial\",\"note\":\"Enterprise tier only\"},\"globex\":\"no\"}},{\"id\":\"scim\",\"label\":\"SCIM provisioning\",\"category\":\"Security\",\"ratings\":{\"contoso\":\"yes\",\"acme\":\"no\",\"globex\":\"partial\"}},{\"id\":\"audit\",\"label\":\"Audit log export\",\"category\":\"Compliance\",\"ratings\":{\"contoso\":\"yes\",\"acme\":\"no\",\"globex\":{\"value\":\"yes\",\"note\":\"30-day retention\"}}},{\"id\":\"residency\",\"label\":\"EU data residency\",\"category\":\"Compliance\",\"ratings\":{\"contoso\":\"yes\",\"acme\":\"yes\",\"globex\":\"no\"}},{\"id\":\"sla\",\"label\":\"99.9% uptime SLA\",\"category\":\"Reliability\",\"ratings\":{\"contoso\":\"yes\",\"acme\":\"partial\",\"globex\":\"n/a\"}},{\"id\":\"api\",\"label\":\"Public REST API\",\"category\":\"Platform\",\"ratings\":{\"contoso\":\"yes\",\"acme\":\"yes\",\"globex\":\"yes\"}}]",
+        "highlightProductId": "contoso",
+        "disclaimer": "Comparison as of Q3 2025. Based on publicly available product documentation.",
+        "footnotesJson": "[\"Acme partial SSO requires the Enterprise tier add-on.\",\"Globex audit log retention is capped at 30 days; longer windows require a separate archival product.\"]"
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-governance-gate",
+  "metadata": {
+    "id": "pr9-gate-fail",
+    "title": "PR 9 governance gate — external profile + PII (MUST FAIL with exit code 10)"
+  },
+  "brandPackage": "contoso@2.1",
+  "brandLintPassed": true,
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "deliveryProfile": "external"
+  },
+  "scenes": [
+    {
+      "id": "leak",
+      "duration": 4,
+      "component": "TitleCard",
+      "props": {
+        "title": "Customer record export",
+        "subtitle": "Reference id: aef34c12-b890-4e21-8f3a-9c5d7e1f2b34"
+      }
+    }
+  ]
+}

@@ -1,0 +1,1652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Slate Composition</title>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+
+<style>
+:root { color-scheme: dark; }
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; width:1920px; height:1080px; background:#000; overflow:hidden; font-family:Inter,Inter,-apple-system,BlinkMacSystemFont,sans-serif; }
+.scene { opacity: 0; }
+
+</style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="animated-explainer"
+  data-start="0"
+  data-duration="4"
+  data-width="1920"
+  data-height="1080"
+  style="position:relative;width:1920px;height:1080px;background:#000;overflow:hidden">
+<div class="scene scene-vscode-chat-left"
+    data-composition-id="vscode-chat-left"
+    data-start="0"
+    data-duration="4"
+    data-track-index="1"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <!--
+  ============================================================================
+  VSCodeScene — High-Fidelity Chrome Shell (Wave A, PR 10d)
+  ============================================================================
+
+  SLOT CONTRACT — Wave B agents fill these named regions:
+  ┌────────────────────────────────────┬────────────────────────────────────┐
+  │ data-slot="primary-sidebar-title"  │ Uppercase header text              │
+  │                                    │   ("EXPLORER", "SOURCE CONTROL"…)  │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="primary-sidebar-body"   │ Panel body HTML — file tree,       │
+  │                                    │   SCM list, chat sessions, etc.    │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="secondary-sidebar-title"│ Uppercase header (right sidebar)   │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="secondary-sidebar-body" │ Panel body for secondary sidebar   │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="tab-list"               │ <div class="vs-tab"> children      │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="breadcrumb"             │ Inline breadcrumb HTML             │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="code-content"           │ Pre-rendered code lines (HTML)     │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="panel-tabs"             │ Bottom panel tab strip HTML        │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="panel-body"             │ Bottom panel body HTML             │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="statusbar-left"         │ Left status bar segments HTML      │
+  ├────────────────────────────────────┼────────────────────────────────────┤
+  │ data-slot="statusbar-right"        │ Right status bar segments HTML     │
+  └────────────────────────────────────┴────────────────────────────────────┘
+
+  VARIANT ATTRIBUTES on root .vs-bg:
+    data-show-secondary="true|false"   — toggle right sidebar (default false)
+    data-show-panel="true|false"       — toggle bottom panel (default false)
+    data-show-minimap="true|false"     — toggle minimap (default true)
+    data-show-breadcrumb="true|false"  — toggle breadcrumb row (default true)
+    data-active-activity="explorer|search|scm|run|extensions|chat"
+                                       — which activity bar icon shows the
+                                         2px left bar highlight
+
+  CHROME REGIONS (Wave A owns these):
+    .vs-titlebar         — Windows menu bar + center search + window controls
+    .vs-activitybar      — left 48px activity icon column
+    .vs-primary-sidebar  — left sidebar (Explorer/SCM/Extensions/Chat body)
+    .vs-editor-area      — tabstrip + breadcrumb + code area + minimap
+    .vs-secondary-sidebar — right sidebar (hidden by default)
+    .vs-panel            — bottom panel (terminal/output/problems)
+    .vs-statusbar        — bottom 22px status bar
+============================================================================ -->
+
+<style data-component="VSCodeScene">
+/* ============================================================================
+   DENSITY SPECIFICATION — measured from refs/ at 1920×1080 viewport.
+   Wave B agents MUST use these values.
+   ============================================================================
+   TITLEBAR (Windows-style, integrated menu bar):
+     Total height ............... 30px
+     App icon ................... 16×16px
+     Menu bar item font-size .... 12px  (Segoe UI)
+     Menu bar item padding ...... 0 8px
+     Center search/quick-pick ... 32px tall × 580px max-width pill
+     Quick-pick font-size ....... 12px
+     Layout-toggle icon size .... 16×16px (4 icons before window controls)
+     Window control button ...... 46×30px each (min · max · close)
+     Window control glyph ....... 10×10px stroke=1px (Windows convention)
+
+   ACTIVITY BAR (left, vertical):
+     Width ...................... 48px
+     Top padding ................ 0 (icons start 8px down)
+     Icon size .................. 24×24px
+     Icon button vertical pad ... 12px (so each item is 48px square)
+     Active-icon left bar ....... 2px wide × full height  (#0078d4)
+     Bottom group gap ........... pushes accounts + settings to bottom
+
+   PRIMARY SIDEBAR:
+     Default width .............. 280px
+     Header height .............. 35px
+     Header label font-size ..... 11px  uppercase letter-spacing 0.5px
+     Header action icon ......... 16×16px
+     Body font-size ............. 13px
+     Tree row height ............ 22px
+     Tree indent unit ........... 8px (chevron + 8px)
+     Tree icon size ............. 16×16px
+     Section header (collapsible) 22px tall, font-size 11px uppercase
+
+   EDITOR TABSTRIP:
+     Total height ............... 35px
+     Tab font-size .............. 13px
+     Tab horizontal padding ..... 0 10px
+     Tab close icon ............. 16×16px
+     Tab top stripe (active) .... 1px solid #0078d4
+     Tab inactive bg ............ #2d2d2d
+     Tab active bg .............. #1e1e1e
+
+   BREADCRUMB ROW:
+     Total height ............... 22px
+     Background ................. #1e1e1e
+     Font-size .................. 12px
+     Color (segments) ........... #cccccc
+     Color (path-sep chevron) ... #858585
+     Chevron size ............... 12×12px
+     Item gap ................... 4px
+
+   CODE AREA:
+     Editor bg .................. #1e1e1e
+     Gutter width ............... 56px (right-aligned line numbers)
+     Gutter font-size ........... 14px (Cascadia Code, Consolas)
+     Gutter color ............... #858585
+     Code font-size ............. 14px
+     Code line-height ........... 1.55
+     Code font .................. "Cascadia Code", "Consolas", monospace
+
+   MINIMAP:
+     Width ...................... 90px
+     Background ................. #1e1e1e (slightly more transparent rows)
+
+   PANEL (bottom — terminal/output):
+     Total height ............... 240px
+     Tab strip height ........... 35px
+     Tab font-size .............. 11px uppercase letter-spacing 0.6px
+     Tab padding ................ 0 10px
+     Active tab underline ....... 1px #e7e7e7 bottom border
+     Body font-size ............. 13px
+     Body font .................. "Cascadia Code", "Consolas", monospace
+     Body padding ............... 8px 14px
+
+   STATUS BAR:
+     Total height ............... 22px
+     Background (default) ....... #007acc
+     Font-size .................. 12px (Segoe UI)
+     Color ...................... #ffffff
+     Item padding ............... 0 8px
+     Item gap ................... 0 (each item is its own padded segment)
+     Icon size .................. 14×14px
+
+   COLORS (Dark Modern):
+     Editor bg .................. #1e1e1e
+     Titlebar bg ................ #3c3c3c
+     Activity bar bg ............ #333333
+     Sidebar bg ................. #252526
+     Status bar bg .............. #007acc
+     Tab inactive ............... #2d2d2d
+     Tab active ................. #1e1e1e
+     Tab top stripe ............. #0078d4
+     Text primary ............... #cccccc
+     Text secondary ............. #858585
+     Text active ................ #ffffff
+     Accent ..................... #0078d4
+     Border ..................... rgba(255,255,255,0.06)
+     Selection .................. #264f78
+     Active row bg .............. #37373d
+     Hover bg ................... #2a2d2e
+     Quick-pick fill ............ #3c3c3c (titlebar same)
+     Quick-pick border .......... #1e1e1e
+   ============================================================================ */
+
+/* ── Theme tokens & reset (scoped to wrapper) ── */
+.vs-bg {
+  --vs-editor: #1e1e1e;
+  --vs-titlebar: #3c3c3c;
+  --vs-activitybar: #333333;
+  --vs-sidebar: #252526;
+  --vs-statusbar: #007acc;
+  --vs-tab-inactive: #2d2d2d;
+  --vs-tab-active: #1e1e1e;
+  --vs-tab-stripe: #0078d4;
+  --vs-text: #cccccc;
+  --vs-text-sec: #858585;
+  --vs-text-active: #ffffff;
+  --vs-accent: #0078d4;
+  --vs-border: rgba(255,255,255,0.06);
+  --vs-divider: rgba(255,255,255,0.08);
+  --vs-selection: #264f78;
+  --vs-row-active: #37373d;
+  --vs-hover: #2a2d2e;
+  --vs-shadow: 0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.06);
+  --vs-quickpick: #3c3c3c;
+  --vs-quickpick-border: rgba(0,0,0,0.6);
+  --vs-error: #f48771;
+  --vs-warn: #cca700;
+  --vs-info: #75beff;
+  --vs-badge-bg: #4d4d4d;
+
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 28px 40px;
+  background: #0d1117;
+  font-family: "Segoe UI Variable", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--vs-text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+
+/* ── Window frame ── */
+.vs-window {
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  background: var(--vs-editor);
+  border-radius: 8px;
+  box-shadow: var(--vs-shadow);
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* TITLEBAR (30px)                                                         */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-titlebar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 30px;
+  height: 30px;
+  background: var(--vs-titlebar);
+  font-size: 12px;
+  color: var(--vs-text);
+  user-select: none;
+  position: relative;
+  z-index: 5;
+}
+
+.vs-tb-app {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 36px; height: 30px;
+  flex: 0 0 36px;
+}
+.vs-tb-app svg { width: 16px; height: 16px; }
+
+.vs-tb-menu {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex: 0 0 auto;
+}
+.vs-tb-menu-item {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 8px;
+  font-size: 12px;
+  color: var(--vs-text);
+  cursor: default;
+}
+.vs-tb-menu-item:hover { background: rgba(255,255,255,0.06); }
+
+.vs-tb-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 16px;
+}
+.vs-tb-quickpick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 580px;
+  height: 22px;
+  padding: 0 8px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--vs-quickpick-border);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--vs-text);
+  cursor: text;
+}
+.vs-tb-quickpick svg { width: 14px; height: 14px; color: var(--vs-text-sec); flex: 0 0 14px; }
+.vs-tb-quickpick-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vs-tb-layout {
+  display: flex;
+  align-items: center;
+  height: 30px;
+  flex: 0 0 auto;
+  padding: 0 4px;
+}
+.vs-tb-layout-btn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 30px; height: 22px;
+  margin: 0 1px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--vs-text);
+  cursor: pointer;
+}
+.vs-tb-layout-btn svg { width: 16px; height: 16px; }
+.vs-tb-layout-btn:hover { background: rgba(255,255,255,0.08); }
+
+.vs-tb-wincontrols {
+  display: flex;
+  align-items: stretch;
+  height: 30px;
+  flex: 0 0 auto;
+  margin-left: 4px;
+}
+.vs-tb-winbtn {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 46px; height: 30px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--vs-text);
+  cursor: pointer;
+}
+.vs-tb-winbtn svg { width: 10px; height: 10px; }
+.vs-tb-winbtn:hover { background: rgba(255,255,255,0.08); }
+.vs-tb-winbtn--close:hover { background: #e81123; color: #fff; }
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* MAIN BODY  (activity bar | primary sidebar | editor | secondary sidebar) */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.vs-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.vs-content-row {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* ACTIVITY BAR (left, 48px)                                               */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-activitybar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 48px;
+  width: 48px;
+  background: var(--vs-activitybar);
+  border-right: 1px solid var(--vs-border);
+}
+.vs-ab-group {
+  display: flex;
+  flex-direction: column;
+}
+.vs-ab-group--bottom { margin-top: auto; }
+
+.vs-ab-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px; height: 48px;
+  color: var(--vs-text);
+  opacity: 0.7;
+  cursor: pointer;
+}
+.vs-ab-item svg { width: 24px; height: 24px; }
+.vs-ab-item:hover { opacity: 1; }
+.vs-ab-item--active { opacity: 1; color: var(--vs-text-active); }
+.vs-ab-item--active::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--vs-text-active);
+}
+
+/* Variant: which activity icon shows the active stripe */
+.vs-bg[data-active-activity="explorer"]    .vs-ab-explorer    { opacity: 1; color: var(--vs-text-active); }
+.vs-bg[data-active-activity="explorer"]    .vs-ab-explorer::before    { content: ""; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--vs-text-active); }
+.vs-bg[data-active-activity="search"]      .vs-ab-search      { opacity: 1; color: var(--vs-text-active); }
+.vs-bg[data-active-activity="search"]      .vs-ab-search::before      { content: ""; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--vs-text-active); }
+.vs-bg[data-active-activity="scm"]         .vs-ab-scm         { opacity: 1; color: var(--vs-text-active); }
+.vs-bg[data-active-activity="scm"]         .vs-ab-scm::before         { content: ""; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--vs-text-active); }
+.vs-bg[data-active-activity="run"]         .vs-ab-run         { opacity: 1; color: var(--vs-text-active); }
+.vs-bg[data-active-activity="run"]         .vs-ab-run::before         { content: ""; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--vs-text-active); }
+.vs-bg[data-active-activity="extensions"]  .vs-ab-extensions  { opacity: 1; color: var(--vs-text-active); }
+.vs-bg[data-active-activity="extensions"]  .vs-ab-extensions::before  { content: ""; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--vs-text-active); }
+.vs-bg[data-active-activity="chat"]        .vs-ab-chat        { opacity: 1; color: var(--vs-text-active); }
+.vs-bg[data-active-activity="chat"]        .vs-ab-chat::before        { content: ""; position:absolute; left:0; top:0; bottom:0; width:2px; background: var(--vs-text-active); }
+
+/* Activity bar badge (e.g. SCM change count) */
+.vs-ab-badge {
+  position: absolute;
+  bottom: 6px; right: 8px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  border-radius: 8px;
+  background: var(--vs-accent);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* PRIMARY SIDEBAR (left, 280px default)                                   */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-primary-sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 280px;
+  width: 280px;
+  background: var(--vs-sidebar);
+  border-right: 1px solid var(--vs-border);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.vs-side-header {
+  display: flex;
+  align-items: center;
+  flex: 0 0 35px;
+  height: 35px;
+  padding: 0 16px 0 20px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--vs-text);
+}
+.vs-side-header-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vs-side-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+.vs-side-action {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--vs-text);
+  cursor: pointer;
+  opacity: 0.85;
+}
+.vs-side-action svg { width: 16px; height: 16px; }
+.vs-side-action:hover { background: rgba(255,255,255,0.08); opacity: 1; }
+
+.vs-side-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  font-size: 13px;
+  color: var(--vs-text);
+}
+
+/* ── Tree primitives (used inside .vs-side-body) ── */
+.vs-tree-row {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 16px 0 8px;
+  gap: 4px;
+  white-space: nowrap;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--vs-text);
+}
+.vs-tree-row:hover { background: var(--vs-hover); }
+.vs-tree-row.is-active { background: var(--vs-row-active); color: var(--vs-text-active); }
+.vs-tree-row.is-selected { background: var(--vs-selection); color: var(--vs-text-active); }
+.vs-tree-chevron {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 12px; height: 22px;
+  flex: 0 0 12px;
+  color: var(--vs-text-sec);
+}
+.vs-tree-chevron svg { width: 12px; height: 12px; }
+.vs-tree-icon {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+}
+.vs-tree-icon svg { width: 16px; height: 16px; }
+.vs-tree-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vs-tree-badge {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  min-width: 16px; height: 16px;
+  padding: 0 5px;
+  border-radius: 8px;
+  background: var(--vs-badge-bg);
+  color: var(--vs-text-active);
+  font-size: 10px;
+  font-weight: 600;
+  flex: 0 0 auto;
+  line-height: 1;
+}
+.vs-tree-badge.is-modified { background: transparent; color: #e2c08d; font-weight: 600; }
+.vs-tree-badge.is-untracked { background: transparent; color: #73c991; font-weight: 600; }
+.vs-tree-badge.is-deleted { background: transparent; color: var(--vs-error); font-weight: 600; }
+.vs-tree-badge.is-error  { background: var(--vs-error);  color:#fff; }
+
+/* ── Section header inside sidebar (collapsible group) ── */
+.vs-side-section {
+  display: flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 16px 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--vs-text);
+  cursor: pointer;
+  gap: 4px;
+}
+.vs-side-section .vs-tree-chevron { color: var(--vs-text); }
+.vs-side-section-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vs-side-section-count {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--vs-badge-bg);
+  color: var(--vs-text-active);
+  padding: 1px 6px;
+  border-radius: 8px;
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* EDITOR AREA                                                             */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-editor-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  background: var(--vs-editor);
+}
+
+/* ── Tab strip ── */
+.vs-tabstrip {
+  display: flex;
+  flex: 0 0 35px;
+  height: 35px;
+  background: var(--vs-tab-inactive);
+  border-bottom: 1px solid var(--vs-border);
+  position: relative;
+  overflow: hidden;
+}
+.vs-tabstrip-tabs {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+}
+.vs-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 35px;
+  padding: 0 10px;
+  background: var(--vs-tab-inactive);
+  color: var(--vs-text-sec);
+  border-right: 1px solid var(--vs-border);
+  font-size: 13px;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  flex: 0 0 auto;
+  max-width: 220px;
+}
+.vs-tab--active {
+  background: var(--vs-tab-active);
+  color: var(--vs-text-active);
+}
+.vs-tab--active::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 1px;
+  background: var(--vs-tab-stripe);
+}
+.vs-tab-icon {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+}
+.vs-tab-icon svg { width: 16px; height: 16px; }
+.vs-tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.vs-tab-close {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 16px; height: 16px;
+  flex: 0 0 16px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--vs-text-sec);
+  cursor: pointer;
+}
+.vs-tab-close svg { width: 12px; height: 12px; }
+.vs-tab--active .vs-tab-close { color: var(--vs-text); }
+.vs-tab-close:hover { background: rgba(255,255,255,0.1); color: var(--vs-text-active); }
+.vs-tab-dirty {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--vs-text);
+  flex: 0 0 8px;
+}
+
+.vs-tabstrip-actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  padding: 0 6px;
+  background: var(--vs-tab-inactive);
+}
+.vs-tabstrip-action {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 28px; height: 28px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--vs-text);
+  cursor: pointer;
+  opacity: 0.85;
+}
+.vs-tabstrip-action svg { width: 16px; height: 16px; }
+.vs-tabstrip-action:hover { background: rgba(255,255,255,0.08); opacity: 1; }
+
+/* ── Breadcrumb row ── */
+.vs-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex: 0 0 22px;
+  height: 22px;
+  padding: 0 16px;
+  background: var(--vs-editor);
+  font-size: 12px;
+  color: var(--vs-text);
+  border-bottom: 1px solid var(--vs-border);
+  overflow: hidden;
+  white-space: nowrap;
+}
+.vs-bg[data-show-breadcrumb="false"] .vs-breadcrumb { display: none; }
+
+.vs-bc-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 4px;
+  color: var(--vs-text);
+  cursor: pointer;
+}
+.vs-bc-item svg { width: 14px; height: 14px; }
+.vs-bc-sep {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 12px; height: 12px;
+  color: var(--vs-text-sec);
+  margin: 0 2px;
+}
+.vs-bc-sep svg { width: 12px; height: 12px; }
+
+/* ── Code area (gutter + body + minimap) ── */
+.vs-codearea {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--vs-editor);
+  position: relative;
+  overflow: hidden;
+}
+.vs-gutter {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 56px;
+  width: 56px;
+  padding: 4px 12px 0 0;
+  text-align: right;
+  font-family: "Cascadia Code", "Cascadia Mono", "Consolas", "SF Mono", monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--vs-text-sec);
+  user-select: none;
+}
+.vs-gutter-line { height: 21.7px; }
+.vs-codebody {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 4px 0 0 16px;
+  overflow: hidden;
+  font-family: "Cascadia Code", "Cascadia Mono", "Consolas", "SF Mono", monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--vs-text);
+  white-space: pre;
+}
+.vs-code-line { display: block; min-height: 21.7px; }
+
+/* token colors (Dark Modern approximation) */
+.vs-tk-kw      { color: #569cd6; }
+.vs-tk-ctl     { color: #c586c0; }
+.vs-tk-fn      { color: #dcdcaa; }
+.vs-tk-type    { color: #4ec9b0; }
+.vs-tk-str     { color: #ce9178; }
+.vs-tk-num     { color: #b5cea8; }
+.vs-tk-com     { color: #6a9955; font-style: italic; }
+.vs-tk-prop    { color: #9cdcfe; }
+.vs-tk-var     { color: #9cdcfe; }
+.vs-tk-punct   { color: #cccccc; }
+.vs-tk-tag     { color: #569cd6; }
+.vs-tk-attr    { color: #9cdcfe; }
+.vs-tk-html-text { color: #cccccc; }
+.vs-tk-add     { color: #b5cea8; }
+.vs-tk-del     { color: #f48771; }
+
+/* diff lines */
+.vs-diff-add  { background: rgba(155,185,85,0.15); display: block; }
+.vs-diff-del  { background: rgba(244,71,71,0.18); display: block; }
+.vs-diff-hunk { color: #569cd6; display: block; }
+
+/* ── Minimap ── */
+.vs-minimap {
+  flex: 0 0 90px;
+  width: 90px;
+  background: var(--vs-editor);
+  border-left: 1px solid var(--vs-border);
+  position: relative;
+  overflow: hidden;
+}
+.vs-bg[data-show-minimap="false"] .vs-minimap { display: none; }
+.vs-minimap-inner {
+  position: absolute;
+  inset: 4px 4px 4px 4px;
+  display: flex; flex-direction: column;
+  gap: 1px;
+}
+.vs-minimap-row {
+  height: 2px;
+  background: rgba(204,204,204,0.18);
+  border-radius: 1px;
+}
+.vs-minimap-row.is-kw      { background: rgba(86,156,214,0.55); }
+.vs-minimap-row.is-com     { background: rgba(106,153,85,0.55); }
+.vs-minimap-row.is-str     { background: rgba(206,145,120,0.55); }
+.vs-minimap-row.is-empty   { background: transparent; }
+.vs-minimap-viewport {
+  position: absolute;
+  left: 0; right: 0;
+  top: 30%; height: 35%;
+  background: rgba(255,255,255,0.06);
+  border-top: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* SECONDARY SIDEBAR (right, hidden by default)                            */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-secondary-sidebar {
+  display: none;
+  flex-direction: column;
+  flex: 0 0 320px;
+  width: 320px;
+  background: var(--vs-sidebar);
+  border-left: 1px solid var(--vs-border);
+  min-width: 0;
+  overflow: hidden;
+}
+.vs-bg[data-show-secondary="true"] .vs-secondary-sidebar {
+  display: flex;
+}
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* PANEL (bottom, hidden by default)                                       */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-panel {
+  display: none;
+  flex-direction: column;
+  flex: 0 0 240px;
+  height: 240px;
+  background: var(--vs-editor);
+  border-top: 1px solid var(--vs-border);
+}
+.vs-bg[data-show-panel="true"] .vs-panel {
+  display: flex;
+}
+
+.vs-panel-tabs {
+  display: flex;
+  align-items: center;
+  flex: 0 0 35px;
+  height: 35px;
+  padding: 0 8px 0 16px;
+  background: var(--vs-editor);
+  border-bottom: 1px solid var(--vs-border);
+}
+.vs-panel-tabs-list {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  align-items: center;
+  gap: 0;
+  height: 35px;
+  overflow: hidden;
+}
+.vs-panel-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 35px;
+  padding: 0 10px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--vs-text-sec);
+  background: transparent;
+  border: 0;
+  position: relative;
+  cursor: pointer;
+}
+.vs-panel-tab .vs-panel-tab-count {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  min-width: 16px; height: 14px;
+  padding: 0 5px;
+  border-radius: 7px;
+  background: var(--vs-badge-bg);
+  color: var(--vs-text-active);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.vs-panel-tab--active {
+  color: var(--vs-text-active);
+}
+.vs-panel-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 8px; right: 8px; bottom: 0;
+  height: 1px;
+  background: var(--vs-text-active);
+}
+.vs-panel-tabs-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+.vs-panel-tabs-action {
+  display: inline-flex;
+  align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  border-radius: 4px;
+  background: transparent;
+  border: 0; padding: 0;
+  color: var(--vs-text);
+  cursor: pointer;
+  opacity: 0.85;
+}
+.vs-panel-tabs-action svg { width: 16px; height: 16px; }
+.vs-panel-tabs-action:hover { background: rgba(255,255,255,0.08); opacity: 1; }
+
+.vs-panel-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 8px 14px;
+  font-family: "Cascadia Code", "Cascadia Mono", "Consolas", "SF Mono", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--vs-text);
+  overflow: hidden;
+  white-space: pre-wrap;
+}
+.vs-panel-body .vs-prompt { color: #4ec9b0; }
+.vs-panel-body .vs-prompt-path { color: #569cd6; }
+.vs-panel-body .vs-prompt-arrow { color: #c586c0; }
+.vs-panel-body .vs-out-err { color: var(--vs-error); }
+.vs-panel-body .vs-out-warn { color: var(--vs-warn); }
+.vs-panel-body .vs-out-ok   { color: #73c991; }
+
+/* ════════════════════════════════════════════════════════════════════════ */
+/* STATUS BAR (22px)                                                        */
+/* ════════════════════════════════════════════════════════════════════════ */
+.vs-statusbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 22px;
+  height: 22px;
+  background: var(--vs-statusbar);
+  color: var(--vs-text-active);
+  font-size: 12px;
+  font-family: "Segoe UI Variable", "Segoe UI", -apple-system, system-ui, sans-serif;
+  user-select: none;
+}
+.vs-sb-left, .vs-sb-right {
+  display: flex;
+  align-items: center;
+  height: 22px;
+}
+.vs-sb-left { flex: 1 1 auto; min-width: 0; }
+.vs-sb-right { flex: 0 0 auto; }
+
+.vs-sb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.vs-sb-item:hover { background: rgba(255,255,255,0.12); }
+.vs-sb-item svg { width: 14px; height: 14px; }
+.vs-sb-item-icon-only { padding: 0 6px; }
+
+/* ── Global icon coloring ── */
+.vs-bg svg { fill: currentColor; }
+.vs-bg svg[aria-hidden] { pointer-events: none; }
+
+/* ── PR 10d v2 defensive guard ── 
+   Slot-injected HTML (extension list, MCP rows, PROBLEMS rows, chat composer)
+   uses inline-styled wrappers without component-internal class hooks. If such
+   an <svg> ever ships without explicit width/height attrs, the browser falls
+   back to the SVG default ~300×150 box and overflows its parent. This guard
+   forces any unsized <svg> inside the side/panel slot bodies to render as a
+   16px inline icon. Class-targeted rules above (.vs-tree-icon svg etc.) all
+   set width/height in CSS not as attrs, so the :not([width]) selector still
+   matches them — but every chrome class rule above has higher specificity
+   than this one, so this rule only takes effect for raw inline SVGs. */
+.vs-side-body svg:not([width]),
+.vs-panel-body svg:not([width]),
+.vs-chat-body svg:not([width]) {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SVG SYMBOL MANIFEST — Fluent UI 2 Filled icons (24×24)
+     Window control glyphs (min/max/close) use 1px strokes per Windows convention.
+     All other symbols are FILL-ONLY (Standing Rule #15, PR 10c).
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+<defs>
+  <!-- App / brand -->
+  <symbol id="vscode-icon-app" viewBox="0 0 24 24">
+    <path fill="#0078d4" d="M16.5 2.25 6.5 11.5l-3-2.25-2 1.5L4 13l-2.5 2.25 2 1.5 3-2.25 10 9.25 5-2.5V4.75l-5-2.5Zm0 5 -6.5 5.75 6.5 5.75V7.25Z"/>
+  </symbol>
+
+  <!-- Activity bar icons -->
+  <symbol id="vscode-icon-explorer" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M3.5 4A2.5 2.5 0 0 0 1 6.5v11A2.5 2.5 0 0 0 3.5 20h17a2.5 2.5 0 0 0 2.5-2.5V9.25A2.25 2.25 0 0 0 20.75 7h-9.06l-1.62-1.62A2.5 2.5 0 0 0 8.31 4H3.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-search" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M10 2.75a7.25 7.25 0 0 1 5.63 11.81l5.15 5.16a.75.75 0 0 1-1.06 1.06l-5.16-5.15A7.25 7.25 0 1 1 10 2.75Zm0 1.5a5.75 5.75 0 1 0 0 11.5 5.75 5.75 0 0 0 0-11.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-scm" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M6.75 3a3 3 0 0 1 .75 5.91v6.18A3.001 3.001 0 0 1 11.5 18h2.25A2.25 2.25 0 0 0 16 15.75V8.91a3.001 3.001 0 1 1 1.5 0v6.84A3.75 3.75 0 0 1 13.75 19.5h-2.25a1.5 1.5 0 0 0-1.5 1.5h-.005A3 3 0 1 1 6 15.09V8.91A3.001 3.001 0 0 1 6.75 3Zm0 1.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm10.5 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Zm-10.5 12a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z"/>
+  </symbol>
+  <symbol id="vscode-icon-run" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M9 4.75a.75.75 0 0 1 1.13-.65l9.5 5.75a.75.75 0 0 1 0 1.3l-9.5 5.75A.75.75 0 0 1 9 16.25V4.75Zm-2 13a3.75 3.75 0 0 0 1.61 3.08l-1.18 1.42a.75.75 0 0 0 1.14.97l1.36-1.63A3.74 3.74 0 0 0 13.75 21a3.74 3.74 0 0 0 3.82.59l1.36 1.63a.75.75 0 1 0 1.14-.97l-1.18-1.42A3.75 3.75 0 0 0 20.5 17.75V14h-13v3.75Z"/>
+  </symbol>
+  <symbol id="vscode-icon-extensions" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M14.5 2a3 3 0 0 0-3 3v.75H7.25A2.25 2.25 0 0 0 5 8v3.5h-.5a2.5 2.5 0 0 0 0 5H5V20a2 2 0 0 0 2 2h3.5v-.5a2.5 2.5 0 0 1 5 0V22H19a2 2 0 0 0 2-2v-4.25a.75.75 0 0 0-.75-.75H19.5a2.5 2.5 0 0 1 0-5h.75a.75.75 0 0 0 .75-.75V8a2.25 2.25 0 0 0-2.25-2.25H17V5a3 3 0 0 0-3-3h-.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-chat" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 2.75A9.25 9.25 0 0 0 4.07 16.83l-1.04 3.6a1 1 0 0 0 1.24 1.24l3.6-1.04A9.25 9.25 0 1 0 12 2.75Zm-3.5 8.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Zm3.5 0a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Zm3.5 0a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-accounts" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M17.75 14a2.25 2.25 0 0 1 2.25 2.25v.92a3.75 3.75 0 0 1-1.42 2.94C16.84 21.66 14.66 22.5 12 22.5c-2.66 0-4.83-.84-6.57-2.4A3.75 3.75 0 0 1 4 17.18v-.93A2.25 2.25 0 0 1 6.25 14h11.5ZM12 2a5 5 0 1 1 0 10 5 5 0 0 1 0-10Z"/>
+  </symbol>
+  <symbol id="vscode-icon-settings" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.43-6.43a2.43 2.43 0 0 1 2.86 0l.97.71a.93.93 0 0 0 .82.16l1.16-.31a2.43 2.43 0 0 1 2.97 1.72l.31 1.16a.93.93 0 0 0 .59.6l1.15.31a2.43 2.43 0 0 1 1.72 2.97l-.31 1.16a.93.93 0 0 0 .16.82l.71.97a2.43 2.43 0 0 1 0 2.86l-.71.97a.93.93 0 0 0-.16.82l.31 1.16a2.43 2.43 0 0 1-1.72 2.97l-1.16.31a.93.93 0 0 0-.59.6l-.31 1.15a2.43 2.43 0 0 1-2.97 1.72l-1.16-.31a.93.93 0 0 0-.82.16l-.97.71a2.43 2.43 0 0 1-2.86 0l-.97-.71a.93.93 0 0 0-.82-.16l-1.16.31a2.43 2.43 0 0 1-2.97-1.72l-.31-1.16a.93.93 0 0 0-.6-.59l-1.15-.31a2.43 2.43 0 0 1-1.72-2.97l.31-1.16a.93.93 0 0 0-.16-.82l-.71-.97a2.43 2.43 0 0 1 0-2.86l.71-.97a.93.93 0 0 0 .16-.82l-.31-1.16A2.43 2.43 0 0 1 3.04 5.79l1.16-.31a.93.93 0 0 0 .59-.6l.31-1.15a2.43 2.43 0 0 1 2.97-1.72l1.16.31a.93.93 0 0 0 .82-.16l.97-.71Z"/>
+  </symbol>
+
+  <!-- Layout-toggle icons (titlebar right) -->
+  <symbol id="vscode-icon-toggle-primary" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H5Zm0 1.5h4v13H5A1.5 1.5 0 0 1 3.5 17V7A1.5 1.5 0 0 1 5 5.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-toggle-panel" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H5Zm0 1.5h14A1.5 1.5 0 0 1 20.5 7v7.5h-17V7A1.5 1.5 0 0 1 5 5.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-toggle-secondary" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H5Zm14 1.5A1.5 1.5 0 0 1 20.5 7v10a1.5 1.5 0 0 1-1.5 1.5h-4v-13Z"/>
+  </symbol>
+  <symbol id="vscode-icon-customize-layout" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M3 4.75A2.75 2.75 0 0 1 5.75 2h12.5A2.75 2.75 0 0 1 21 4.75v14.5A2.75 2.75 0 0 1 18.25 22H5.75A2.75 2.75 0 0 1 3 19.25V4.75Zm1.5 5.25v9.25c0 .69.56 1.25 1.25 1.25H11V10H4.5Zm8 0v10.5h5.75c.69 0 1.25-.56 1.25-1.25V10h-7Zm0-1.5h7V4.75c0-.69-.56-1.25-1.25-1.25h-5.75V8.5Zm-1.5 0V3.5H5.75c-.69 0-1.25.56-1.25 1.25V8.5H11Z"/>
+  </symbol>
+
+  <!-- Window controls (Windows-style — STROKE allowed by spec exception) -->
+  <symbol id="vscode-icon-window-min" viewBox="0 0 10 10">
+    <line x1="0" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+  <symbol id="vscode-icon-window-max" viewBox="0 0 10 10">
+    <rect x="0.5" y="0.5" width="9" height="9" fill="none" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+  <symbol id="vscode-icon-window-close" viewBox="0 0 10 10">
+    <line x1="0" y1="0" x2="10" y2="10" stroke="currentColor" stroke-width="1"/>
+    <line x1="10" y1="0" x2="0" y2="10" stroke="currentColor" stroke-width="1"/>
+  </symbol>
+
+  <!-- Chevrons & directional -->
+  <symbol id="vscode-icon-chevron-right" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M8.47 4.22a.75.75 0 0 1 1.06 0l7.25 7.25a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 1 1-1.06-1.06L15.19 12 8.47 5.28a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="vscode-icon-chevron-down" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M4.22 8.47a.75.75 0 0 1 1.06 0L12 15.19l6.72-6.72a.75.75 0 1 1 1.06 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L4.22 9.53a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="vscode-icon-chevron-right-tree" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M9 6l6 6-6 6V6Z"/>
+  </symbol>
+  <symbol id="vscode-icon-chevron-down-tree" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M6 9l6 6 6-6H6Z"/>
+  </symbol>
+
+  <!-- File / folder -->
+  <symbol id="vscode-icon-folder" viewBox="0 0 24 24">
+    <path fill="#dcb67a" d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.18a2 2 0 0 1 1.42.59l1.41 1.41h7A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5v-11Z"/>
+  </symbol>
+  <symbol id="vscode-icon-folder-open" viewBox="0 0 24 24">
+    <path fill="#dcb67a" d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.18a2 2 0 0 1 1.42.59L11.51 6h7A2.5 2.5 0 0 1 21 8.5V10H3V6.5Zm0 5h18l-1.6 7.04A2 2 0 0 1 17.45 20H4.55a2 2 0 0 1-1.95-1.46L3 11.5Z"/>
+  </symbol>
+
+  <!-- File-type "badge" icons (colored squares with letter labels — common across VS Code icon themes) -->
+  <symbol id="vscode-icon-file-md" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#519aba"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="700" fill="#fff">MD</text>
+  </symbol>
+  <symbol id="vscode-icon-file-js" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#cbcb41"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="700" fill="#1e1e1e">JS</text>
+  </symbol>
+  <symbol id="vscode-icon-file-ts" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#3178c6"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="700" fill="#fff">TS</text>
+  </symbol>
+  <symbol id="vscode-icon-file-json" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#cbcb41"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="8" font-weight="700" fill="#1e1e1e">JSON</text>
+  </symbol>
+  <symbol id="vscode-icon-file-html" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#e44d26"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="8" font-weight="700" fill="#fff">HTML</text>
+  </symbol>
+  <symbol id="vscode-icon-file-css" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#1572b6"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="700" fill="#fff">CSS</text>
+  </symbol>
+  <symbol id="vscode-icon-file-py" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#3572a5"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="9" font-weight="700" fill="#fff">PY</text>
+  </symbol>
+  <symbol id="vscode-icon-file-mjs" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#cbcb41"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="8" font-weight="700" fill="#1e1e1e">MJS</text>
+  </symbol>
+  <symbol id="vscode-icon-file-yaml" viewBox="0 0 24 24">
+    <rect x="2" y="4" width="20" height="16" rx="2" fill="#cb171e"/>
+    <text x="12" y="16" text-anchor="middle" font-family="Segoe UI,sans-serif" font-size="8" font-weight="700" fill="#fff">YAML</text>
+  </symbol>
+  <symbol id="vscode-icon-file-generic" viewBox="0 0 24 24">
+    <path fill="#cccccc" d="M5 3.75A1.75 1.75 0 0 1 6.75 2h7.5l5.25 5.25v13A1.75 1.75 0 0 1 17.75 22H6.75A1.75 1.75 0 0 1 5 20.25V3.75Z"/>
+  </symbol>
+
+  <!-- Toolbar / action icons -->
+  <symbol id="vscode-icon-add" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 4.25a.75.75 0 0 1 .75.75v6.25H19a.75.75 0 0 1 0 1.5h-6.25V19a.75.75 0 0 1-1.5 0v-6.25H5a.75.75 0 0 1 0-1.5h6.25V5a.75.75 0 0 1 .75-.75Z"/>
+  </symbol>
+  <symbol id="vscode-icon-close" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5.22 5.22a.75.75 0 0 1 1.06 0L12 10.94l5.72-5.72a.75.75 0 1 1 1.06 1.06L13.06 12l5.72 5.72a.75.75 0 1 1-1.06 1.06L12 13.06l-5.72 5.72a.75.75 0 1 1-1.06-1.06L10.94 12 5.22 6.28a.75.75 0 0 1 0-1.06Z"/>
+  </symbol>
+  <symbol id="vscode-icon-ellipsis" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M6 12a1.75 1.75 0 1 1-3.5 0A1.75 1.75 0 0 1 6 12Zm7.75 0a1.75 1.75 0 1 1-3.5 0 1.75 1.75 0 0 1 3.5 0ZM19.75 13.75a1.75 1.75 0 1 0 0-3.5 1.75 1.75 0 0 0 0 3.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-refresh" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 4a8 8 0 0 0-7.78 9.83l-1.16.34A.5.5 0 0 0 3.49 15h3.27a.5.5 0 0 0 .49-.4l.7-3.2a.5.5 0 0 0-.62-.59l-1.16.34A6.5 6.5 0 0 1 17.7 7.4a.75.75 0 1 0 1.18-.93A7.99 7.99 0 0 0 12 4Zm8.51 5.07a.5.5 0 0 0-.49.4l-.7 3.2a.5.5 0 0 0 .62.59l1.16-.34A6.5 6.5 0 0 1 6.3 16.6a.75.75 0 1 0-1.18.93A8 8 0 0 0 19.78 10.17l1.16-.34a.5.5 0 0 0-.43-.76h-2Z"/>
+  </symbol>
+  <symbol id="vscode-icon-collapse-all" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M3 5.5A2.5 2.5 0 0 1 5.5 3h6A2.5 2.5 0 0 1 14 5.5v2H8.5A2.5 2.5 0 0 0 6 10v3.5H5.5A2.5 2.5 0 0 1 3 11V5.5Zm7 5A2.5 2.5 0 0 1 12.5 8h6A2.5 2.5 0 0 1 21 10.5v6a2.5 2.5 0 0 1-2.5 2.5h-6a2.5 2.5 0 0 1-2.5-2.5v-6Zm2 .5v5h5v-5h-5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-new-file" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5 3.75A1.75 1.75 0 0 1 6.75 2h6L18 7.25v3.5a4.5 4.5 0 0 0-5.5 6.84V20.25A1.75 1.75 0 0 1 10.75 22H6.75A1.75 1.75 0 0 1 5 20.25V3.75ZM18 12a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 1.5a.5.5 0 0 1 .5.5v1.5H20a.5.5 0 0 1 0 1h-1.5V18a.5.5 0 0 1-1 0v-1.5H16a.5.5 0 0 1 0-1h1.5V14a.5.5 0 0 1 .5-.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-new-folder" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M3 6.5A2.5 2.5 0 0 1 5.5 4h3.18a2 2 0 0 1 1.42.59l1.41 1.41h7A2.5 2.5 0 0 1 21 8.5v3.21a4.5 4.5 0 0 0-5.5 6.79H5.5A2.5 2.5 0 0 1 3 16V6.5Zm17 9a4 4 0 1 0-8 0 4 4 0 0 0 8 0Zm-3.5-2a.5.5 0 0 0-1 0v1.5H14a.5.5 0 0 0 0 1h1.5V17.5a.5.5 0 0 0 1 0V16H18a.5.5 0 0 0 0-1h-1.5v-1.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-split" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M5 4a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H5Zm6.25 1.5h7.75A1.5 1.5 0 0 1 20.5 7v10a1.5 1.5 0 0 1-1.5 1.5h-7.75v-13Z"/>
+  </symbol>
+  <symbol id="vscode-icon-arrow-down" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 3a.75.75 0 0 1 .75.75v13.69l5.22-5.22a.75.75 0 1 1 1.06 1.06l-6.5 6.5a.75.75 0 0 1-1.06 0l-6.5-6.5a.75.75 0 0 1 1.06-1.06l5.22 5.22V3.75A.75.75 0 0 1 12 3Z"/>
+  </symbol>
+  <symbol id="vscode-icon-arrow-up" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 21a.75.75 0 0 1-.75-.75V6.56l-5.22 5.22a.75.75 0 1 1-1.06-1.06l6.5-6.5a.75.75 0 0 1 1.06 0l6.5 6.5a.75.75 0 1 1-1.06 1.06l-5.22-5.22v13.69A.75.75 0 0 1 12 21Z"/>
+  </symbol>
+  <symbol id="vscode-icon-sync" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 4.5a7.5 7.5 0 0 1 6.96 4.7l1.4-1.4a.75.75 0 1 1 1.06 1.06L18.5 11.78l-2.92-2.92a.75.75 0 0 1 1.06-1.06l1.61 1.61A6 6 0 0 0 6.5 11.5a.75.75 0 0 1-1.5 0A7.5 7.5 0 0 1 12 4.5Zm0 15a7.5 7.5 0 0 1-6.96-4.7l-1.4 1.4a.75.75 0 1 1-1.06-1.06L5.5 12.22l2.92 2.92a.75.75 0 1 1-1.06 1.06l-1.61-1.61A6 6 0 0 0 17.5 12.5a.75.75 0 0 1 1.5 0A7.5 7.5 0 0 1 12 19.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-check" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M20.78 5.97a.75.75 0 0 1 0 1.06l-11 11a.75.75 0 0 1-1.06 0l-5.5-5.5a.75.75 0 1 1 1.06-1.06L9.25 16.44l10.47-10.47a.75.75 0 0 1 1.06 0Z"/>
+  </symbol>
+  <symbol id="vscode-icon-discard" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M9 3a3 3 0 0 0-3 3v1H4a1 1 0 1 0 0 2h.06l.85 11.05A3 3 0 0 0 7.9 23h8.2a3 3 0 0 0 2.99-2.95L19.94 9H20a1 1 0 1 0 0-2h-2V6a3 3 0 0 0-3-3H9Z"/>
+  </symbol>
+  <symbol id="vscode-icon-stage" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 3a.75.75 0 0 1 .75.75v9.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3.75A.75.75 0 0 1 12 3ZM4.75 19h14.5a.75.75 0 0 1 0 1.5H4.75a.75.75 0 0 1 0-1.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-unstage" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M12 21a.75.75 0 0 1-.75-.75v-9.69l-3.22 3.22a.75.75 0 1 1-1.06-1.06l4.5-4.5a.75.75 0 0 1 1.06 0l4.5 4.5a.75.75 0 1 1-1.06 1.06l-3.22-3.22v9.69A.75.75 0 0 1 12 21ZM4.75 5h14.5a.75.75 0 0 1 0-1.5H4.75a.75.75 0 0 0 0 1.5Z"/>
+  </symbol>
+
+  <!-- Status bar icons -->
+  <symbol id="vscode-icon-git-branch" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M11.75 2.5a1.75 1.75 0 1 0 .25 3.48v.52a1.5 1.5 0 0 1-1.5 1.5H7.5A2.5 2.5 0 0 0 5 10.5v.52a1.75 1.75 0 1 0 1 0v-.52A1.5 1.5 0 0 1 7.5 9h3a2.5 2.5 0 0 0 2.5-2.5v-.52a1.75 1.75 0 0 0-1.25-3.48ZM4.25 2.5a1.75 1.75 0 1 0 1 0V13a1.75 1.75 0 1 0 1 0V2.5a1.75 1.75 0 0 0-1-1.75 1.75 1.75 0 0 0-1 1.75Z"/>
+  </symbol>
+  <symbol id="vscode-icon-error" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm-.75 3.5h1.5v5h-1.5v-5Zm.75 8a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"/>
+  </symbol>
+  <symbol id="vscode-icon-warning" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M7.13 1.62a1 1 0 0 1 1.74 0l6.4 11.25a1 1 0 0 1-.87 1.5H1.6a1 1 0 0 1-.87-1.5L7.13 1.62Zm.12 4.13v4h1.5v-4h-1.5Zm.75 6.75a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
+  </symbol>
+  <symbol id="vscode-icon-bell" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1a4 4 0 0 0-4 4v2.5L2.5 10h11L12 7.5V5a4 4 0 0 0-4-4Zm-1.5 11a1.5 1.5 0 1 0 3 0h-3Z"/>
+  </symbol>
+  <symbol id="vscode-icon-copilot" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1.5a1.25 1.25 0 0 1 1.18.84l1.06 3.16h3.26a1.25 1.25 0 0 1 .74 2.26l-2.64 1.92.97 3.15a1.25 1.25 0 0 1-1.93 1.38L8 12.3l-2.64 1.91a1.25 1.25 0 0 1-1.93-1.38l.97-3.15-2.64-1.92a1.25 1.25 0 0 1 .74-2.26h3.26l1.06-3.16A1.25 1.25 0 0 1 8 1.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-feedback" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M3 3a1.5 1.5 0 0 0-1.5 1.5v6A1.5 1.5 0 0 0 3 12h2.5l2 2.5 2-2.5H13a1.5 1.5 0 0 0 1.5-1.5v-6A1.5 1.5 0 0 0 13 3H3Z"/>
+  </symbol>
+  <symbol id="vscode-icon-cloud" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M5 4.5a4 4 0 0 1 7.7 1.04A3 3 0 0 1 12 11.5H4.5A3.5 3.5 0 0 1 5 4.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-sync-sb" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 2a6 6 0 0 1 5.6 3.84l.95-.94a.5.5 0 1 1 .7.7l-1.85 1.85a.5.5 0 0 1-.7 0l-1.85-1.85a.5.5 0 1 1 .7-.7l.99.99A5 5 0 0 0 3 8a.5.5 0 0 1-1 0 6 6 0 0 1 6-6Zm0 12a6 6 0 0 1-5.6-3.84l-.95.94a.5.5 0 1 1-.7-.7l1.85-1.85a.5.5 0 0 1 .7 0l1.85 1.85a.5.5 0 1 1-.7.7L3.46 10.1A5 5 0 0 0 13 8a.5.5 0 0 1 1 0 6 6 0 0 1-6 6Z"/>
+  </symbol>
+  <symbol id="vscode-icon-zap" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M9 1 3 9h4l-1 6 6-8H8l1-6Z"/>
+  </symbol>
+
+  <!-- Generic icons used by panel/SCM body content -->
+  <symbol id="vscode-icon-terminal" viewBox="0 0 24 24">
+    <path fill="currentColor" d="M3 5.75A2.75 2.75 0 0 1 5.75 3h12.5A2.75 2.75 0 0 1 21 5.75v12.5A2.75 2.75 0 0 1 18.25 21H5.75A2.75 2.75 0 0 1 3 18.25V5.75ZM7.22 9.22a.75.75 0 0 1 1.06 0L11 11.94l-2.72 2.72a.75.75 0 1 1-1.06-1.06L8.94 12 7.22 10.28a.75.75 0 0 1 0-1.06Zm5.78 5.28h4a.75.75 0 0 1 0 1.5h-4a.75.75 0 0 1 0-1.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-search-input" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M10.82 11.88a4.5 4.5 0 1 1 1.06-1.06l2.9 2.9a.75.75 0 1 1-1.06 1.06l-2.9-2.9ZM11.5 7.5a3.5 3.5 0 1 0-7 0 3.5 3.5 0 0 0 7 0Z"/>
+  </symbol>
+  <symbol id="vscode-icon-filter" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 3.5A.5.5 0 0 1 2.5 3h11a.5.5 0 0 1 .39.81L9.5 9.36V13a.5.5 0 0 1-.78.42l-2-1.33A.5.5 0 0 1 6.5 11.67V9.36L2.11 3.81A.5.5 0 0 1 2 3.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-send" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M14.5 1.5 1.5 7l5 2 2 5L14.5 1.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-attach" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M11.5 4 6 9.5a2 2 0 1 0 2.83 2.83l5.5-5.5a3.5 3.5 0 1 0-4.95-4.95L3.88 7.7a5 5 0 1 0 7.07 7.07L14 11.65l-1.06-1.06-3.06 3.06a3.5 3.5 0 1 1-4.95-4.95l5.5-5.5a2 2 0 1 1 2.83 2.83L7.77 11.5a.5.5 0 1 1-.71-.71L11.5 6.34 11.5 4Z"/>
+  </symbol>
+  <symbol id="vscode-icon-mic" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1a2.5 2.5 0 0 0-2.5 2.5v4a2.5 2.5 0 1 0 5 0v-4A2.5 2.5 0 0 0 8 1ZM4 7.5a.5.5 0 0 0-1 0 5 5 0 0 0 4.5 4.98V14H6a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1H8.5v-1.52A5 5 0 0 0 13 7.5a.5.5 0 0 0-1 0 4 4 0 1 1-8 0Z"/>
+  </symbol>
+  <symbol id="vscode-icon-history" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1a7 7 0 1 0 0 14A7 7 0 0 0 8 1Zm.5 3.25a.75.75 0 0 0-1.5 0v4.5c0 .41.34.75.75.75h3a.75.75 0 0 0 0-1.5H8.5V4.25Z"/>
+  </symbol>
+  <symbol id="vscode-icon-server" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M2 3.5A1.5 1.5 0 0 1 3.5 2h9A1.5 1.5 0 0 1 14 3.5v3A1.5 1.5 0 0 1 12.5 8h-9A1.5 1.5 0 0 1 2 6.5v-3Zm0 6A1.5 1.5 0 0 1 3.5 8h9A1.5 1.5 0 0 1 14 9.5v3a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 12.5v-3ZM4 5a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1Zm0 6a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1Z"/>
+  </symbol>
+  <symbol id="vscode-icon-package" viewBox="0 0 16 16">
+    <path fill="currentColor" d="M8 1.5a.5.5 0 0 1 .22.05l5.5 2.75a.5.5 0 0 1 .28.45v6.5a.5.5 0 0 1-.28.45l-5.5 2.75a.5.5 0 0 1-.44 0l-5.5-2.75a.5.5 0 0 1-.28-.45v-6.5a.5.5 0 0 1 .28-.45l5.5-2.75A.5.5 0 0 1 8 1.5Z"/>
+  </symbol>
+  <symbol id="vscode-icon-verified" viewBox="0 0 16 16">
+    <path fill="#3794ff" d="M8 1 5.5 3H2.5v3L1 8l1.5 2v3h3L8 15l2.5-2h3v-3L15 8l-1.5-2V3h-3L8 1Zm-.78 9.78L4.5 8.06l1.06-1.06 1.66 1.66 3.22-3.22 1.06 1.06-4.28 4.28Z"/>
+  </symbol>
+</defs>
+</svg>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HTML STRUCTURE — Chrome shell with named slots
+     ═══════════════════════════════════════════════════════════════════════════ -->
+<div class="vs-bg" data-scene-component="VSCodeScene"
+     data-show-secondary="false"
+     data-show-panel="true"
+     data-show-minimap="true"
+     data-show-breadcrumb="true"
+     data-active-activity="chat">
+  <div class="vs-window">
+
+    <!-- ═══ TITLEBAR (30px) ═══ -->
+    <div class="vs-titlebar">
+      <span class="vs-tb-app" aria-hidden="true">
+        <svg><use href="#vscode-icon-app"/></svg>
+      </span>
+      <div class="vs-tb-menu">
+        <span class="vs-tb-menu-item">File</span>
+        <span class="vs-tb-menu-item">Edit</span>
+        <span class="vs-tb-menu-item">Selection</span>
+        <span class="vs-tb-menu-item">View</span>
+        <span class="vs-tb-menu-item">Go</span>
+        <span class="vs-tb-menu-item">Run</span>
+        <span class="vs-tb-menu-item">Terminal</span>
+        <span class="vs-tb-menu-item">Help</span>
+      </div>
+      <div class="vs-tb-center">
+        <div class="vs-tb-quickpick">
+          <svg aria-hidden="true"><use href="#vscode-icon-search"/></svg>
+          <span class="vs-tb-quickpick-text">contoso-app — Visual Studio Code</span>
+        </div>
+      </div>
+      <div class="vs-tb-layout">
+        <button class="vs-tb-layout-btn" aria-label="Toggle Primary Side Bar">
+          <svg aria-hidden="true"><use href="#vscode-icon-toggle-primary"/></svg>
+        </button>
+        <button class="vs-tb-layout-btn" aria-label="Toggle Panel">
+          <svg aria-hidden="true"><use href="#vscode-icon-toggle-panel"/></svg>
+        </button>
+        <button class="vs-tb-layout-btn" aria-label="Toggle Secondary Side Bar">
+          <svg aria-hidden="true"><use href="#vscode-icon-toggle-secondary"/></svg>
+        </button>
+        <button class="vs-tb-layout-btn" aria-label="Customize Layout">
+          <svg aria-hidden="true"><use href="#vscode-icon-customize-layout"/></svg>
+        </button>
+      </div>
+      <div class="vs-tb-wincontrols">
+        <button class="vs-tb-winbtn" aria-label="Minimize">
+          <svg aria-hidden="true"><use href="#vscode-icon-window-min"/></svg>
+        </button>
+        <button class="vs-tb-winbtn" aria-label="Maximize">
+          <svg aria-hidden="true"><use href="#vscode-icon-window-max"/></svg>
+        </button>
+        <button class="vs-tb-winbtn vs-tb-winbtn--close" aria-label="Close">
+          <svg aria-hidden="true"><use href="#vscode-icon-window-close"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ═══ BODY (activity bar + content) ═══ -->
+    <div class="vs-body">
+
+      <!-- ── Activity bar (left, 48px) ── -->
+      <div class="vs-activitybar">
+        <div class="vs-ab-group">
+          <div class="vs-ab-item vs-ab-explorer" aria-label="Explorer">
+            <svg aria-hidden="true"><use href="#vscode-icon-explorer"/></svg>
+          </div>
+          <div class="vs-ab-item vs-ab-search" aria-label="Search">
+            <svg aria-hidden="true"><use href="#vscode-icon-search"/></svg>
+          </div>
+          <div class="vs-ab-item vs-ab-scm" aria-label="Source Control">
+            <svg aria-hidden="true"><use href="#vscode-icon-scm"/></svg>
+            <span class="vs-ab-badge">3</span>
+          </div>
+          <div class="vs-ab-item vs-ab-run" aria-label="Run and Debug">
+            <svg aria-hidden="true"><use href="#vscode-icon-run"/></svg>
+          </div>
+          <div class="vs-ab-item vs-ab-extensions" aria-label="Extensions">
+            <svg aria-hidden="true"><use href="#vscode-icon-extensions"/></svg>
+          </div>
+          <div class="vs-ab-item vs-ab-chat" aria-label="Chat">
+            <svg aria-hidden="true"><use href="#vscode-icon-chat"/></svg>
+          </div>
+        </div>
+        <div class="vs-ab-group vs-ab-group--bottom">
+          <div class="vs-ab-item" aria-label="Accounts">
+            <svg aria-hidden="true"><use href="#vscode-icon-accounts"/></svg>
+          </div>
+          <div class="vs-ab-item" aria-label="Settings">
+            <svg aria-hidden="true"><use href="#vscode-icon-settings"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Primary sidebar ── -->
+      <aside class="vs-primary-sidebar">
+        <div class="vs-side-header">
+          <span class="vs-side-header-title" data-slot="primary-sidebar-title">CHAT</span>
+          <span class="vs-side-actions"><button class="vs-side-action" aria-label="add"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-add"/></svg></button><button class="vs-side-action" aria-label="history"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-history"/></svg></button><button class="vs-side-action" aria-label="ellipsis"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-ellipsis"/></svg></button></span>
+        </div>
+        <div class="vs-side-body" data-slot="primary-sidebar-body">
+          <div style="padding:12px 16px;font-size:12px;color:var(--vs-text-sec);border-bottom:1px solid var(--vs-divider)">CHAT (Copilot)</div><div style="padding:12px 14px;display:flex;flex-direction:column;gap:14px"><div style="display:flex;gap:10px"><div style="width:24px;height:24px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;flex:0 0 24px">A</div><div style="flex:1"><div style="font-size:12px;color:var(--vs-text);margin-bottom:4px">Add a login flow that uses JWT and bcrypt.</div></div></div><div style="display:flex;gap:10px"><div style="width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7e57ff,#3aa8ff);display:flex;align-items:center;justify-content:center;color:#fff;flex:0 0 24px"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-copilot"/></svg></div><div style="flex:1;font-size:12px;color:var(--vs-text);line-height:1.6"><div style="margin-bottom:6px">I&rsquo;ll add an <code style="background:#1e1e1e;padding:1px 4px;border-radius:3px;font-family:'Cascadia Code',monospace;font-size:11px">AuthService</code> class with a <code style="background:#1e1e1e;padding:1px 4px;border-radius:3px;font-family:'Cascadia Code',monospace;font-size:11px">login()</code> method that signs a JWT after checking the bcrypt hash:</div><div style="background:#1e1e1e;border:1px solid var(--vs-border);border-radius:4px;padding:8px 10px;font-family:'Cascadia Code',monospace;font-size:11px;line-height:1.5;color:var(--vs-text)"><span style="color:#569cd6">async</span> <span style="color:#dcdcaa">login</span>(email, password) {<br/>&nbsp;&nbsp;<span style="color:#569cd6">const</span> user = <span style="color:#569cd6">await</span> findUser(email);<br/>&nbsp;&nbsp;<span style="color:#569cd6">if</span> (!user) <span style="color:#569cd6">return</span> <span style="color:#569cd6">null</span>;<br/>&nbsp;&nbsp;...<br/>}</div><div style="margin-top:6px">I&rsquo;ve applied the change to <span style="color:var(--vs-info)">src/auth/auth.ts</span>. Want me to add a test?</div></div></div></div><div style="margin-top:auto;padding:10px 12px;border-top:1px solid var(--vs-divider);background:var(--vs-sidebar)"><div style="background:#1e1e1e;border:1px solid var(--vs-border);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:6px"><div style="font-size:12px;color:var(--vs-text-sec)">Ask Copilot a question or type / for commands</div><div style="display:flex;align-items:center;gap:6px;justify-content:flex-end"><button class="vs-side-action" aria-label="Attach"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-attach"/></svg></button><button class="vs-side-action" aria-label="Mic"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-mic"/></svg></button><button class="vs-side-action" aria-label="Send" style="color:var(--vs-accent)"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-send"/></svg></button></div></div></div>
+        </div>
+      </aside>
+
+      <!-- ── Editor area + (optional) bottom panel ── -->
+      <div class="vs-content">
+        <div class="vs-content-row">
+          <section class="vs-editor-area">
+
+            <!-- Tab strip -->
+            <div class="vs-tabstrip">
+              <div class="vs-tabstrip-tabs" data-slot="tab-list">
+                <div class="vs-tab vs-tab--active"><span class="vs-tab-icon"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-file-ts"/></svg></span><span class="vs-tab-label">auth.ts</span><span class="vs-tab-dirty"></span></div><div class="vs-tab"><span class="vs-tab-icon"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-file-ts"/></svg></span><span class="vs-tab-label">login.ts</span><button class="vs-tab-close" aria-label="Close"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-close"/></svg></button></div>
+              </div>
+              <div class="vs-tabstrip-actions">
+                <button class="vs-tabstrip-action" aria-label="Split editor">
+                  <svg aria-hidden="true"><use href="#vscode-icon-split"/></svg>
+                </button>
+                <button class="vs-tabstrip-action" aria-label="More actions">
+                  <svg aria-hidden="true"><use href="#vscode-icon-ellipsis"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Breadcrumb -->
+            <div class="vs-breadcrumb" data-slot="breadcrumb">
+              <span class="vs-bc-item"><span style="display:inline-flex;width:14px;height:14px"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-folder"/></svg></span><span>contoso-app</span></span><span class="vs-bc-sep"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-chevron-right"/></svg></span><span class="vs-bc-item"><span style="display:inline-flex;width:14px;height:14px"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-folder"/></svg></span><span>src</span></span><span class="vs-bc-sep"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-chevron-right"/></svg></span><span class="vs-bc-item"><span style="display:inline-flex;width:14px;height:14px"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-folder"/></svg></span><span>auth</span></span><span class="vs-bc-sep"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-chevron-right"/></svg></span><span class="vs-bc-item"><span style="display:inline-flex;width:14px;height:14px"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-file-ts"/></svg></span><span>auth.ts</span></span>
+            </div>
+
+            <!-- Code area: gutter + body + minimap -->
+            <div class="vs-codearea">
+              <div class="vs-gutter"><span class="vs-gutter-line">1</span><span class="vs-gutter-line">2</span><span class="vs-gutter-line">3</span><span class="vs-gutter-line">4</span><span class="vs-gutter-line">5</span><span class="vs-gutter-line">6</span><span class="vs-gutter-line">7</span><span class="vs-gutter-line">8</span><span class="vs-gutter-line">9</span><span class="vs-gutter-line">10</span><span class="vs-gutter-line">11</span><span class="vs-gutter-line">12</span><span class="vs-gutter-line">13</span><span class="vs-gutter-line">14</span><span class="vs-gutter-line">15</span><span class="vs-gutter-line">16</span><span class="vs-gutter-line">17</span><span class="vs-gutter-line">18</span><span class="vs-gutter-line">19</span><span class="vs-gutter-line">20</span><span class="vs-gutter-line">21</span><span class="vs-gutter-line">22</span><span class="vs-gutter-line">23</span></div>
+              <div class="vs-codebody" data-slot="code-content"><span class="vs-code-line"><span class="vs-tk-com">// Authentication service</span></span><span class="vs-code-line"><span class="vs-tk-kw">import</span> { <span class="vs-tk-var">sign</span>, <span class="vs-tk-var">verify</span> } <span class="vs-tk-kw">from</span> <span class="vs-tk-str">'jsonwebtoken'</span>;</span><span class="vs-code-line"><span class="vs-tk-kw">import</span> { <span class="vs-tk-var">hash</span>, <span class="vs-tk-var">compare</span> } <span class="vs-tk-kw">from</span> <span class="vs-tk-str">'bcrypt'</span>;</span><span class="vs-code-line"></span><span class="vs-code-line"><span class="vs-tk-kw">export</span> <span class="vs-tk-kw">class</span> <span class="vs-tk-type">AuthService</span> {</span><span class="vs-code-line">  <span class="vs-tk-kw">private</span> <span class="vs-tk-var">secret</span>: <span class="vs-tk-type">string</span>;</span><span class="vs-code-line"></span><span class="vs-code-line">  <span class="vs-tk-kw">constructor</span>(<span class="vs-tk-var">secret</span>: <span class="vs-tk-type">string</span>) {</span><span class="vs-code-line">    <span class="vs-tk-kw">this</span>.<span class="vs-tk-prop">secret</span> = <span class="vs-tk-var">secret</span>;</span><span class="vs-code-line">  }</span><span class="vs-code-line"></span><span class="vs-code-line">  <span class="vs-tk-kw">async</span> <span class="vs-tk-fn">login</span>(<span class="vs-tk-var">email</span>: <span class="vs-tk-type">string</span>, <span class="vs-tk-var">password</span>: <span class="vs-tk-type">string</span>) {</span><span class="vs-code-line">    <span class="vs-tk-kw">const</span> <span class="vs-tk-var">user</span> = <span class="vs-tk-kw">await</span> <span class="vs-tk-fn">findUser</span>(<span class="vs-tk-var">email</span>);</span><span class="vs-code-line">    <span class="vs-tk-kw">if</span> (!<span class="vs-tk-var">user</span>) <span class="vs-tk-kw">return</span> <span class="vs-tk-kw">null</span>;</span><span class="vs-code-line">    <span class="vs-tk-kw">const</span> <span class="vs-tk-var">ok</span> = <span class="vs-tk-kw">await</span> <span class="vs-tk-fn">compare</span>(<span class="vs-tk-var">password</span>, <span class="vs-tk-var">user</span>.<span class="vs-tk-prop">hash</span>);</span><span class="vs-code-line">    <span class="vs-tk-kw">if</span> (!<span class="vs-tk-var">ok</span>) <span class="vs-tk-kw">return</span> <span class="vs-tk-kw">null</span>;</span><span class="vs-code-line">    <span class="vs-tk-kw">return</span> <span class="vs-tk-fn">sign</span>({ <span class="vs-tk-prop">sub</span>: <span class="vs-tk-var">user</span>.<span class="vs-tk-prop">id</span> }, <span class="vs-tk-kw">this</span>.<span class="vs-tk-prop">secret</span>);</span><span class="vs-code-line">  }</span><span class="vs-code-line"></span><span class="vs-code-line">  <span class="vs-tk-fn">verify</span>(<span class="vs-tk-var">token</span>: <span class="vs-tk-type">string</span>) {</span><span class="vs-code-line">    <span class="vs-tk-kw">return</span> <span class="vs-tk-fn">verify</span>(<span class="vs-tk-var">token</span>, <span class="vs-tk-kw">this</span>.<span class="vs-tk-prop">secret</span>);</span><span class="vs-code-line">  }</span><span class="vs-code-line">}</span></div>
+              <div class="vs-minimap">
+                <div class="vs-minimap-inner"><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-com"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-empty"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-var"></div><div class="vs-minimap-row is-empty"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-prop"></div><div class="vs-minimap-row is-empty"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-var"></div><div class="vs-minimap-row is-var"></div><div class="vs-minimap-row is-var"></div><div class="vs-minimap-row is-var"></div><div class="vs-minimap-row is-var"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-empty"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-kw"></div><div class="vs-minimap-row is-empty"></div><div class="vs-minimap-row is-kw"></div></div>
+                <div class="vs-minimap-viewport"></div>
+              </div>
+            </div>
+
+          </section>
+
+          <!-- ── Secondary sidebar (right, hidden by default) ── -->
+          <aside class="vs-secondary-sidebar">
+            <div class="vs-side-header">
+              <span class="vs-side-header-title" data-slot="secondary-sidebar-title"></span>
+              <span class="vs-side-actions"></span>
+            </div>
+            <div class="vs-side-body" data-slot="secondary-sidebar-body">
+              
+            </div>
+          </aside>
+        </div>
+
+        <!-- ── Bottom panel (terminal/output/problems) ── -->
+        <div class="vs-panel">
+          <div class="vs-panel-tabs">
+            <div class="vs-panel-tabs-list" data-slot="panel-tabs">
+              <button class="vs-panel-tab">Problems <span class="vs-panel-tab-count">2</span></button><button class="vs-panel-tab">Output</button><button class="vs-panel-tab">Debug Console</button><button class="vs-panel-tab vs-panel-tab--active">Terminal</button><button class="vs-panel-tab">Ports</button>
+            </div>
+            <div class="vs-panel-tabs-actions">
+              <button class="vs-panel-tabs-action" aria-label="New terminal">
+                <svg aria-hidden="true"><use href="#vscode-icon-add"/></svg>
+              </button>
+              <button class="vs-panel-tabs-action" aria-label="More">
+                <svg aria-hidden="true"><use href="#vscode-icon-ellipsis"/></svg>
+              </button>
+              <button class="vs-panel-tabs-action" aria-label="Close panel">
+                <svg aria-hidden="true"><use href="#vscode-icon-close"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="vs-panel-body" data-slot="panel-body"><span class="vs-prompt">PS</span> <span class="vs-prompt-path">~/projects/contoso-app</span> <span class="vs-prompt-arrow">&gt;</span> npm test
+
+> contoso-app@1.0.0 test
+> jest --coverage
+
+ PASS  src/auth/auth.test.ts
+  AuthService
+    <span class="vs-out-ok">&#10003;</span> issues a JWT for valid credentials (24 ms)
+    <span class="vs-out-ok">&#10003;</span> rejects bad password (8 ms)
+    <span class="vs-out-ok">&#10003;</span> rejects unknown email (5 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+<span class="vs-prompt">PS</span> <span class="vs-prompt-path">~/projects/contoso-app</span> <span class="vs-prompt-arrow">&gt;</span> <span style="background:rgba(255,255,255,0.6);width:7px;height:14px;display:inline-block;vertical-align:middle"></span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ STATUS BAR (22px) ═══ -->
+    <div class="vs-statusbar">
+      <div class="vs-sb-left" data-slot="statusbar-left"><span class="vs-sb-item"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-git-branch"/></svg><span>main*</span></span><span class="vs-sb-item"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-sync-sb"/></svg><span>↓ 0 ↑ 1</span></span><span class="vs-sb-item"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-error"/></svg><span>0</span></span><span class="vs-sb-item"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-warning"/></svg><span>1</span></span><span class="vs-sb-item"><span>Copilot ready</span></span></div>
+      <div class="vs-sb-right" data-slot="statusbar-right"><span class="vs-sb-item"><span>Ln 13, Col 28</span></span><span class="vs-sb-item"><span>Spaces: 2</span></span><span class="vs-sb-item"><span>UTF-8</span></span><span class="vs-sb-item"><span>LF</span></span><span class="vs-sb-item"><span>TypeScript</span></span><span class="vs-sb-item"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-feedback"/></svg></span><span class="vs-sb-item"><svg width="16" height="16" aria-hidden="true"><use href="#vscode-icon-bell"/></svg></span></div>
+    </div>
+
+  </div>
+</div>
+
+  </div>
+  
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+window.__slateFontsReady = !document.fonts;
+if (document.fonts) {
+  document.fonts.ready.then(function(){ window.__slateFontsReady = true; document.documentElement.setAttribute('data-fonts-ready', 'true'); });
+}
+const master = gsap.timeline({ paused: true });
+
+// Per-scene visibility — only the active scene is shown at any time
+master.set('.scene-vscode-chat-left', { opacity: 0 }, 0);
+master.set('.scene-vscode-chat-left', { opacity: 1 }, 0);
+master.set('.scene-vscode-chat-left', { opacity: 0 }, 4);
+
+// Per-layer visibility — layers with startTime/endTime are revealed/hidden
+// at composition-time. CSS-id selectors are escaped for GSAP (it accepts
+// '#id' selectors directly). Initial opacity is also set inline on the
+// element so the very first seeked frame does not flash content that
+// should still be hidden.
+
+
+window.__timelines["animated-explainer"] = master;
+
+// vscode-chat-left
+(function(){
+const SCENE_ID="vscode-chat-left";
+const SCENE_START=0;
+const SCENE_DURATION=4;
+const SCENE_PROPS={"showSecondary":"false","showPanel":"true","showMinimap":"true","showBreadcrumb":"true","activeActivity":"chat","titlebarText":"contoso-app — Visual Studio Code","scmBadgeHtml":"<span class=\"vs-ab-badge\">3</span>","primarySidebarTitle":"CHAT","primarySidebarActionsHtml":"<button class=\"vs-side-action\" aria-label=\"add\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-add\"/></svg></button><button class=\"vs-side-action\" aria-label=\"history\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-history\"/></svg></button><button class=\"vs-side-action\" aria-label=\"ellipsis\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-ellipsis\"/></svg></button>","primarySidebarBodyHtml":"<div style=\"padding:12px 16px;font-size:12px;color:var(--vs-text-sec);border-bottom:1px solid var(--vs-divider)\">CHAT (Copilot)</div><div style=\"padding:12px 14px;display:flex;flex-direction:column;gap:14px\"><div style=\"display:flex;gap:10px\"><div style=\"width:24px;height:24px;border-radius:50%;background:#0d6efd;display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;flex:0 0 24px\">A</div><div style=\"flex:1\"><div style=\"font-size:12px;color:var(--vs-text);margin-bottom:4px\">Add a login flow that uses JWT and bcrypt.</div></div></div><div style=\"display:flex;gap:10px\"><div style=\"width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#7e57ff,#3aa8ff);display:flex;align-items:center;justify-content:center;color:#fff;flex:0 0 24px\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-copilot\"/></svg></div><div style=\"flex:1;font-size:12px;color:var(--vs-text);line-height:1.6\"><div style=\"margin-bottom:6px\">I&rsquo;ll add an <code style=\"background:#1e1e1e;padding:1px 4px;border-radius:3px;font-family:'Cascadia Code',monospace;font-size:11px\">AuthService</code> class with a <code style=\"background:#1e1e1e;padding:1px 4px;border-radius:3px;font-family:'Cascadia Code',monospace;font-size:11px\">login()</code> method that signs a JWT after checking the bcrypt hash:</div><div style=\"background:#1e1e1e;border:1px solid var(--vs-border);border-radius:4px;padding:8px 10px;font-family:'Cascadia Code',monospace;font-size:11px;line-height:1.5;color:var(--vs-text)\"><span style=\"color:#569cd6\">async</span> <span style=\"color:#dcdcaa\">login</span>(email, password) {<br/>&nbsp;&nbsp;<span style=\"color:#569cd6\">const</span> user = <span style=\"color:#569cd6\">await</span> findUser(email);<br/>&nbsp;&nbsp;<span style=\"color:#569cd6\">if</span> (!user) <span style=\"color:#569cd6\">return</span> <span style=\"color:#569cd6\">null</span>;<br/>&nbsp;&nbsp;...<br/>}</div><div style=\"margin-top:6px\">I&rsquo;ve applied the change to <span style=\"color:var(--vs-info)\">src/auth/auth.ts</span>. Want me to add a test?</div></div></div></div><div style=\"margin-top:auto;padding:10px 12px;border-top:1px solid var(--vs-divider);background:var(--vs-sidebar)\"><div style=\"background:#1e1e1e;border:1px solid var(--vs-border);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:6px\"><div style=\"font-size:12px;color:var(--vs-text-sec)\">Ask Copilot a question or type / for commands</div><div style=\"display:flex;align-items:center;gap:6px;justify-content:flex-end\"><button class=\"vs-side-action\" aria-label=\"Attach\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-attach\"/></svg></button><button class=\"vs-side-action\" aria-label=\"Mic\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-mic\"/></svg></button><button class=\"vs-side-action\" aria-label=\"Send\" style=\"color:var(--vs-accent)\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-send\"/></svg></button></div></div></div>","secondarySidebarTitle":"","secondarySidebarActionsHtml":"","secondarySidebarBodyHtml":"","tabListHtml":"<div class=\"vs-tab vs-tab--active\"><span class=\"vs-tab-icon\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-file-ts\"/></svg></span><span class=\"vs-tab-label\">auth.ts</span><span class=\"vs-tab-dirty\"></span></div><div class=\"vs-tab\"><span class=\"vs-tab-icon\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-file-ts\"/></svg></span><span class=\"vs-tab-label\">login.ts</span><button class=\"vs-tab-close\" aria-label=\"Close\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-close\"/></svg></button></div>","breadcrumbHtml":"<span class=\"vs-bc-item\"><span style=\"display:inline-flex;width:14px;height:14px\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-folder\"/></svg></span><span>contoso-app</span></span><span class=\"vs-bc-sep\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-chevron-right\"/></svg></span><span class=\"vs-bc-item\"><span style=\"display:inline-flex;width:14px;height:14px\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-folder\"/></svg></span><span>src</span></span><span class=\"vs-bc-sep\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-chevron-right\"/></svg></span><span class=\"vs-bc-item\"><span style=\"display:inline-flex;width:14px;height:14px\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-folder\"/></svg></span><span>auth</span></span><span class=\"vs-bc-sep\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-chevron-right\"/></svg></span><span class=\"vs-bc-item\"><span style=\"display:inline-flex;width:14px;height:14px\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-file-ts\"/></svg></span><span>auth.ts</span></span>","gutterHtml":"<span class=\"vs-gutter-line\">1</span><span class=\"vs-gutter-line\">2</span><span class=\"vs-gutter-line\">3</span><span class=\"vs-gutter-line\">4</span><span class=\"vs-gutter-line\">5</span><span class=\"vs-gutter-line\">6</span><span class=\"vs-gutter-line\">7</span><span class=\"vs-gutter-line\">8</span><span class=\"vs-gutter-line\">9</span><span class=\"vs-gutter-line\">10</span><span class=\"vs-gutter-line\">11</span><span class=\"vs-gutter-line\">12</span><span class=\"vs-gutter-line\">13</span><span class=\"vs-gutter-line\">14</span><span class=\"vs-gutter-line\">15</span><span class=\"vs-gutter-line\">16</span><span class=\"vs-gutter-line\">17</span><span class=\"vs-gutter-line\">18</span><span class=\"vs-gutter-line\">19</span><span class=\"vs-gutter-line\">20</span><span class=\"vs-gutter-line\">21</span><span class=\"vs-gutter-line\">22</span><span class=\"vs-gutter-line\">23</span>","codeContentHtml":"<span class=\"vs-code-line\"><span class=\"vs-tk-com\">// Authentication service</span></span><span class=\"vs-code-line\"><span class=\"vs-tk-kw\">import</span> { <span class=\"vs-tk-var\">sign</span>, <span class=\"vs-tk-var\">verify</span> } <span class=\"vs-tk-kw\">from</span> <span class=\"vs-tk-str\">'jsonwebtoken'</span>;</span><span class=\"vs-code-line\"><span class=\"vs-tk-kw\">import</span> { <span class=\"vs-tk-var\">hash</span>, <span class=\"vs-tk-var\">compare</span> } <span class=\"vs-tk-kw\">from</span> <span class=\"vs-tk-str\">'bcrypt'</span>;</span><span class=\"vs-code-line\"></span><span class=\"vs-code-line\"><span class=\"vs-tk-kw\">export</span> <span class=\"vs-tk-kw\">class</span> <span class=\"vs-tk-type\">AuthService</span> {</span><span class=\"vs-code-line\">  <span class=\"vs-tk-kw\">private</span> <span class=\"vs-tk-var\">secret</span>: <span class=\"vs-tk-type\">string</span>;</span><span class=\"vs-code-line\"></span><span class=\"vs-code-line\">  <span class=\"vs-tk-kw\">constructor</span>(<span class=\"vs-tk-var\">secret</span>: <span class=\"vs-tk-type\">string</span>) {</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">this</span>.<span class=\"vs-tk-prop\">secret</span> = <span class=\"vs-tk-var\">secret</span>;</span><span class=\"vs-code-line\">  }</span><span class=\"vs-code-line\"></span><span class=\"vs-code-line\">  <span class=\"vs-tk-kw\">async</span> <span class=\"vs-tk-fn\">login</span>(<span class=\"vs-tk-var\">email</span>: <span class=\"vs-tk-type\">string</span>, <span class=\"vs-tk-var\">password</span>: <span class=\"vs-tk-type\">string</span>) {</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">const</span> <span class=\"vs-tk-var\">user</span> = <span class=\"vs-tk-kw\">await</span> <span class=\"vs-tk-fn\">findUser</span>(<span class=\"vs-tk-var\">email</span>);</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">if</span> (!<span class=\"vs-tk-var\">user</span>) <span class=\"vs-tk-kw\">return</span> <span class=\"vs-tk-kw\">null</span>;</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">const</span> <span class=\"vs-tk-var\">ok</span> = <span class=\"vs-tk-kw\">await</span> <span class=\"vs-tk-fn\">compare</span>(<span class=\"vs-tk-var\">password</span>, <span class=\"vs-tk-var\">user</span>.<span class=\"vs-tk-prop\">hash</span>);</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">if</span> (!<span class=\"vs-tk-var\">ok</span>) <span class=\"vs-tk-kw\">return</span> <span class=\"vs-tk-kw\">null</span>;</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">return</span> <span class=\"vs-tk-fn\">sign</span>({ <span class=\"vs-tk-prop\">sub</span>: <span class=\"vs-tk-var\">user</span>.<span class=\"vs-tk-prop\">id</span> }, <span class=\"vs-tk-kw\">this</span>.<span class=\"vs-tk-prop\">secret</span>);</span><span class=\"vs-code-line\">  }</span><span class=\"vs-code-line\"></span><span class=\"vs-code-line\">  <span class=\"vs-tk-fn\">verify</span>(<span class=\"vs-tk-var\">token</span>: <span class=\"vs-tk-type\">string</span>) {</span><span class=\"vs-code-line\">    <span class=\"vs-tk-kw\">return</span> <span class=\"vs-tk-fn\">verify</span>(<span class=\"vs-tk-var\">token</span>, <span class=\"vs-tk-kw\">this</span>.<span class=\"vs-tk-prop\">secret</span>);</span><span class=\"vs-code-line\">  }</span><span class=\"vs-code-line\">}</span>","minimapHtml":"<div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-com\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-empty\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-var\"></div><div class=\"vs-minimap-row is-empty\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-prop\"></div><div class=\"vs-minimap-row is-empty\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-var\"></div><div class=\"vs-minimap-row is-var\"></div><div class=\"vs-minimap-row is-var\"></div><div class=\"vs-minimap-row is-var\"></div><div class=\"vs-minimap-row is-var\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-empty\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-kw\"></div><div class=\"vs-minimap-row is-empty\"></div><div class=\"vs-minimap-row is-kw\"></div>","panelTabsHtml":"<button class=\"vs-panel-tab\">Problems <span class=\"vs-panel-tab-count\">2</span></button><button class=\"vs-panel-tab\">Output</button><button class=\"vs-panel-tab\">Debug Console</button><button class=\"vs-panel-tab vs-panel-tab--active\">Terminal</button><button class=\"vs-panel-tab\">Ports</button>","panelBodyHtml":"<span class=\"vs-prompt\">PS</span> <span class=\"vs-prompt-path\">~/projects/contoso-app</span> <span class=\"vs-prompt-arrow\">&gt;</span> npm test\n\n> contoso-app@1.0.0 test\n> jest --coverage\n\n PASS  src/auth/auth.test.ts\n  AuthService\n    <span class=\"vs-out-ok\">&#10003;</span> issues a JWT for valid credentials (24 ms)\n    <span class=\"vs-out-ok\">&#10003;</span> rejects bad password (8 ms)\n    <span class=\"vs-out-ok\">&#10003;</span> rejects unknown email (5 ms)\n\nTest Suites: 1 passed, 1 total\nTests:       3 passed, 3 total\n<span class=\"vs-prompt\">PS</span> <span class=\"vs-prompt-path\">~/projects/contoso-app</span> <span class=\"vs-prompt-arrow\">&gt;</span> <span style=\"background:rgba(255,255,255,0.6);width:7px;height:14px;display:inline-block;vertical-align:middle\"></span>","statusbarLeftHtml":"<span class=\"vs-sb-item\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-git-branch\"/></svg><span>main*</span></span><span class=\"vs-sb-item\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-sync-sb\"/></svg><span>↓ 0 ↑ 1</span></span><span class=\"vs-sb-item\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-error\"/></svg><span>0</span></span><span class=\"vs-sb-item\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-warning\"/></svg><span>1</span></span><span class=\"vs-sb-item\"><span>Copilot ready</span></span>","statusbarRightHtml":"<span class=\"vs-sb-item\"><span>Ln 13, Col 28</span></span><span class=\"vs-sb-item\"><span>Spaces: 2</span></span><span class=\"vs-sb-item\"><span>UTF-8</span></span><span class=\"vs-sb-item\"><span>LF</span></span><span class=\"vs-sb-item\"><span>TypeScript</span></span><span class=\"vs-sb-item\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-feedback\"/></svg></span><span class=\"vs-sb-item\"><svg width=\"16\" height=\"16\" aria-hidden=\"true\"><use href=\"#vscode-icon-bell\"/></svg></span>"};
+/* VSCodeScene animation — Wave A chrome shell.
+ * Mirrors EdgeBrowserScene timing pattern.
+ * Standing Rule #12/#13: synchronous DOM, no setTimeout/await before GSAP
+ * selectors, no gsap.ticker / requestAnimationFrame.
+ */
+(function () {
+  if (typeof gsap === 'undefined') return;
+  if (typeof SCENE_START === 'undefined') return;
+  if (typeof SCENE_DURATION === 'undefined') return;
+
+  var sceneSel = '.scene-' + SCENE_ID + ' ';
+  var window$ = document.querySelector(sceneSel + '[data-scene-component="VSCodeScene"] .vs-window');
+  if (!window$) return;
+
+  if (typeof master === 'undefined') return;
+
+  gsap.set(window$, { opacity: 0, y: 16, scale: 0.985, transformOrigin: 'center center' });
+  master.to(window$, {
+    opacity: 1, y: 0, scale: 1,
+    duration: 0.55, ease: 'power3.out'
+  }, SCENE_START + 0.15);
+  master.to(window$, {
+    opacity: 0,
+    duration: 0.5, ease: 'power2.inOut'
+  }, SCENE_START + Math.max(0.5, SCENE_DURATION - 0.5));
+
+  var enterTargets = document.querySelectorAll(sceneSel + '[data-scene-component="VSCodeScene"] [data-anim="enter"]');
+  if (enterTargets.length) {
+    gsap.set(enterTargets, { opacity: 0, y: 8 });
+    master.to(enterTargets, {
+      opacity: 1, y: 0,
+      duration: 0.4, ease: 'power2.out',
+      stagger: 0.06
+    }, SCENE_START + 0.55);
+  }
+
+  var chromeRoot = sceneSel + '[data-scene-component="VSCodeScene"] ';
+  var sidebarRows = document.querySelectorAll(chromeRoot + '.vs-primary-sidebar .vs-tree-row, ' + chromeRoot + '.vs-primary-sidebar [style*="border-bottom"]');
+  if (sidebarRows.length) {
+    gsap.set(sidebarRows, { autoAlpha: 0, x: -10 });
+    master.to(sidebarRows, {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.28,
+      ease: 'power2.out',
+      stagger: { each: 0.035, from: 'start' }
+    }, SCENE_START + 0.75);
+  }
+
+  var codeLines = document.querySelectorAll(chromeRoot + '.vs-code-line');
+  if (codeLines.length) {
+    gsap.set(codeLines, { autoAlpha: 0, x: -8 });
+    master.to(codeLines, {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.22,
+      ease: 'power1.out',
+      stagger: { amount: Math.min(1.4, Math.max(0.45, SCENE_DURATION * 0.22)), from: 'start' }
+    }, SCENE_START + 0.95);
+  }
+
+  var minimapViewport = document.querySelector(chromeRoot + '.vs-minimap-viewport');
+  if (minimapViewport) {
+    master.fromTo(minimapViewport,
+      { y: -10 },
+      { y: Math.min(42, Math.max(16, SCENE_DURATION * 5)), duration: Math.max(1.2, SCENE_DURATION - 1.6), ease: 'sine.inOut' },
+      SCENE_START + 1.05);
+  }
+
+  var editorBody = document.querySelector(chromeRoot + '.vs-codebody');
+  if (editorBody && SCENE_DURATION > 3.2) {
+    master.fromTo(editorBody,
+      { y: 0 },
+      { y: -Math.min(24, Math.max(8, SCENE_DURATION * 1.4)), duration: Math.max(1.2, SCENE_DURATION - 1.5), ease: 'sine.inOut' },
+      SCENE_START + 1.2);
+  }
+
+  var secondaryRows = document.querySelectorAll(chromeRoot + '.vs-secondary-sidebar [style*="border-bottom"], ' + chromeRoot + '.vs-secondary-sidebar .vs-side-section');
+  if (secondaryRows.length) {
+    gsap.set(secondaryRows, { autoAlpha: 0, x: 10 });
+    master.to(secondaryRows, {
+      autoAlpha: 1,
+      x: 0,
+      duration: 0.3,
+      ease: 'power2.out',
+      stagger: { each: 0.04, from: 'start' }
+    }, SCENE_START + 0.9);
+  }
+
+  var panel = document.querySelector(chromeRoot + '.vs-panel');
+  var panelBody = document.querySelector(chromeRoot + '.vs-panel-body');
+  if (panel && panelBody) {
+    master.fromTo(panel,
+      { y: 34, autoAlpha: 0.86 },
+      { y: 0, autoAlpha: 1, duration: 0.45, ease: 'power2.out' },
+      SCENE_START + 1.05);
+    master.fromTo(panelBody,
+      { y: 10 },
+      { y: -12, duration: Math.max(1.0, SCENE_DURATION - 1.8), ease: 'sine.inOut' },
+      SCENE_START + 1.35);
+  }
+
+  var activeActivity = document.querySelector(chromeRoot + '.vs-ab-item[aria-label="Explorer"], ' + chromeRoot + '.vs-ab-item[aria-label="Source Control"], ' + chromeRoot + '.vs-ab-item[aria-label="Chat"]');
+  if (activeActivity) {
+    master.fromTo(activeActivity,
+      { scale: 0.96 },
+      { scale: 1.04, duration: 0.42, ease: 'sine.inOut', yoyo: true, repeat: 1 },
+      SCENE_START + 1.0);
+  }
+
+  var legacySteps = document.querySelectorAll(sceneSel + '.vs-step');
+  var cursor = SCENE_START + 0.65;
+
+  legacySteps.forEach(function (step) {
+    var kind = step.getAttribute('data-kind') || 'open_file';
+    var dur = parseFloat(step.getAttribute('data-duration') || '0.6') || 0.6;
+
+    if (kind === 'pause') {
+      cursor += dur;
+      return;
+    }
+
+    if (kind === 'type') {
+      var typeEl = step.querySelector('.vs-type-text');
+      var fullText = '';
+      if (typeEl) {
+        fullText = typeEl.getAttribute('data-text') || typeEl.textContent || '';
+        typeEl.textContent = '';
+      } else {
+        fullText = step.textContent || '';
+        step.textContent = '';
+      }
+      master.to(step, { opacity: 1, duration: 0.08 }, cursor);
+      var state = { chars: 0 };
+      master.to(state, {
+        chars: fullText.length,
+        duration: Math.max(0.3, dur),
+        ease: 'none',
+        onUpdate: function () {
+          var nextText = fullText.slice(0, Math.round(state.chars));
+          if (typeEl) typeEl.textContent = nextText;
+          else step.textContent = nextText;
+        }
+      }, cursor);
+      cursor += Math.max(0.3, dur) + 0.12;
+      return;
+    }
+
+    if (kind === 'pill' || kind === 'gutter_marker') {
+      master.fromTo(step,
+        { opacity: 0, scale: 0.9, transformOrigin: 'left center' },
+        { opacity: 1, scale: 1, duration: Math.min(0.35, dur), ease: 'back.out(1.4)' },
+        cursor);
+      cursor += dur + 0.08;
+      return;
+    }
+
+    master.fromTo(step,
+      { opacity: 0, y: 8 },
+      { opacity: 1, y: 0, duration: Math.min(0.3, dur), ease: 'power2.out' },
+      cursor);
+    cursor += dur + 0.08;
+  });
+})();
+
+})();
+
+</script>
+</body>
+</html>

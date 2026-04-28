@@ -1,0 +1,26 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr9-lottie-compliance-badge-wall",
+    "title": "PR 9 Lane B — ComplianceBadgeWall with Lottie badge icon"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "cbw-lottie-icon",
+      "duration": 8,
+      "component": "ComplianceBadgeWall",
+      "props": {
+        "title": "Compliance Posture",
+        "badges": [
+          { "id": "soc2", "name": "SOC 2 Type II", "category": "Security", "iconLottieSrc": "../../render/vendor/lottie-web/samples/checkmark.json", "status": "current" },
+          { "id": "iso27001", "name": "ISO 27001", "category": "Security", "status": "current" },
+          { "id": "hipaa", "name": "HIPAA", "category": "Healthcare", "status": "current" }
+        ],
+        "spotlightBadgeId": "soc2",
+        "footerText": "Lottie icon smoke test"
+      }
+    }
+  ]
+}

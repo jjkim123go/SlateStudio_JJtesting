@@ -1,0 +1,27 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr2-compliance-badge-wall",
+    "title": "PR2 Smoke — ComplianceBadgeWall"
+  },
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "scenes": [
+    {
+      "id": "cbw-spotlight",
+      "duration": 9,
+      "component": "ComplianceBadgeWall",
+      "props": {
+        "title": "Trust & compliance posture",
+        "badgesJson": "[{\"id\":\"soc2\",\"name\":\"SOC 2 Type II\",\"category\":\"Security\",\"detail\":\"Audited annually by an independent accounting firm.\",\"status\":\"current\",\"regionScope\":\"Global\"},{\"id\":\"iso27001\",\"name\":\"ISO 27001\",\"category\":\"Security\",\"status\":\"current\"},{\"id\":\"iso27018\",\"name\":\"ISO 27018\",\"category\":\"Privacy\",\"status\":\"current\"},{\"id\":\"hipaa\",\"name\":\"HIPAA\",\"category\":\"Healthcare\",\"status\":\"current\",\"regionScope\":\"United States\"},{\"id\":\"gdpr\",\"name\":\"GDPR\",\"category\":\"Privacy\",\"status\":\"current\",\"regionScope\":\"European Union\"},{\"id\":\"pci\",\"name\":\"PCI DSS\",\"category\":\"Payments\",\"status\":\"current\"},{\"id\":\"fedramp\",\"name\":\"FedRAMP High\",\"category\":\"Public sector\",\"status\":\"planned\",\"regionScope\":\"United States\"},{\"id\":\"csa\",\"name\":\"CSA STAR\",\"category\":\"Security\",\"status\":\"planned\"}]",
+        "groupBy": "category",
+        "spotlightBadgeId": "soc2",
+        "footerText": "Synthetic data — illustrative only. Replace with your verified attestations."
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+<!--
+  CollageShatter — full-screen bridge transition.
+  Outgoing scene "shatters" into rotated tiles that fly outward with rotation,
+  scale, and opacity decay. Behind the tiles the incoming scene color fades up.
+
+  Props consumed:
+    tileColumns     number  (default 4)
+    tileRows        number  (default 4)
+    color           CSS color for the reveal background (default brand primary)
+    incomingImageSrc  optional image to reveal behind the shatter
+    spreadFactor    multiplier for tile travel distance (default 1.5)
+-->
+<style>
+.scene-{{sceneId}} .csh-root{position:absolute;inset:0;overflow:hidden;background:#000;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif}
+.scene-{{sceneId}} .csh-reveal{position:absolute;inset:0;background:var(--csh-color,var(--brand-primary,#0078D4));opacity:0}
+.scene-{{sceneId}} .csh-reveal-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.scene-{{sceneId}} .csh-grid{position:absolute;inset:0;display:grid;will-change:contents}
+.scene-{{sceneId}} .csh-tile{overflow:hidden;will-change:transform,opacity}
+.scene-{{sceneId}} .csh-tile-inner{width:100%;height:100%;background:var(--csh-color,var(--brand-primary,#0078D4));opacity:0.92}
+</style>
+<div class="csh-root" data-scene-component="CollageShatter" style="--csh-color:{{color}}">
+  <div class="csh-reveal">
+    <img class="csh-reveal-img" src="{{incomingImageSrc}}" alt="" />
+  </div>
+  <div class="csh-grid" data-cols="{{tileColumns}}" data-rows="{{tileRows}}"></div>
+</div>

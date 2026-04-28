@@ -1,0 +1,45 @@
+# Slate Built-in Music Library — Track Manifest
+#
+# This manifest defines the expected music slots for the Slate agent.
+# When a brand package or org music library doesn't provide a track,
+# the agent falls back to this manifest to find a suitable default.
+#
+# To populate: download royalty-free tracks (see README.md for sources),
+# place them in this directory, and update the path + duration fields below.
+
+tracks:
+  ambient_low:
+    path: "atlasaudio-ambient-cinematic-510518.mp3"
+    duration_sec: 124.03
+    mood: "ambient, atmospheric, low-melody"
+    use_case: "cold opens, narration beds, background texture"
+    license: "Pixabay Content License"
+    composer: "AtlasAudio"
+    source_url: "https://pixabay.com/music/-510518/"
+
+  neutral:
+    path: "lexin_music-cinematic-documentary-115669.mp3"
+    duration_sec: 131.76
+    mood: "documentary cinematic, restrained, narration-friendly"
+    use_case: "explainers, walkthroughs, under-narration scenes"
+    license: "Pixabay Content License"
+    composer: "Lexin_Music"
+    source_url: "https://pixabay.com/music/-115669/"
+
+  cinematic_build:
+    path: "tunetank-inspiring-cinematic-music-409347.mp3"
+    duration_sec: 132.05
+    mood: "cinematic, inspiring, building energy"
+    use_case: "brand reveals, asset showcases, feature highlights"
+    license: "Pixabay Content License"
+    composer: "TuneTank"
+    source_url: "https://pixabay.com/music/-409347/"
+
+  uplifting:
+    path: "penguinmusic-better-day-186374.mp3"
+    duration_sec: 90.70
+    mood: "uplifting, optimistic, modern"
+    use_case: "synthesis moments, outros, milestone resolves"
+    license: "Pixabay Content License"
+    composer: "Penguinmusic"
+    source_url: "https://pixabay.com/music/-186374/"

@@ -1,0 +1,177 @@
+<div class="pb-root" data-scene-component="PowerBIScene" data-theme="{{theme}}" style="position:absolute;inset:0;font-family:'Segoe UI',Arial,sans-serif;overflow:hidden">
+  <style>
+    .scene-{{sceneId}} .pb-root {background:#e8e6e3;color:#252423}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] {background:#201f1e;color:#f3f2f1}
+    .scene-{{sceneId}} .pb-root .pb-shell {position:absolute;inset:24px;border-radius:22px;overflow:hidden;box-shadow:0 28px 80px rgba(0,0,0,.28);background:#f7f6f4}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-shell {background:#11100f;box-shadow:0 28px 80px rgba(0,0,0,.55)}
+    .scene-{{sceneId}} .pb-root .pb-header {height:48px;background:#252423;color:#fff;display:flex;align-items:center;padding:0 18px;gap:18px}
+    .scene-{{sceneId}} .pb-root .pb-brand {display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+    .scene-{{sceneId}} .pb-root .pb-brand-dot {width:12px;height:12px;border-radius:50%;background:#f2c811}
+    .scene-{{sceneId}} .pb-root .pb-workspace {font-size:13px;color:rgba(255,255,255,.72);padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.08)}
+    .scene-{{sceneId}} .pb-root .pb-search {flex:1;max-width:520px;height:34px;border-radius:999px;background:rgba(255,255,255,.1);display:flex;align-items:center;gap:10px;padding:0 14px;color:rgba(255,255,255,.58);font-size:13px}
+    .scene-{{sceneId}} .pb-root .pb-profile {width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#8ddcff,#5560ff);display:flex;align-items:center;justify-content:center;font-weight:700}
+    .scene-{{sceneId}} .pb-root .pb-body {display:flex;height:calc(100% - 48px)}
+    .scene-{{sceneId}} .pb-root .pb-nav {width:56px;background:#2b2a29;padding:12px 0;display:flex;flex-direction:column;align-items:center;gap:12px}
+    .scene-{{sceneId}} .pb-root .pb-nav-icon {width:36px;height:36px;border-radius:12px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.74);background:transparent}
+    .scene-{{sceneId}} .pb-root .pb-nav-icon.pb-active {background:rgba(242,200,17,.16);color:#f2c811}
+    .scene-{{sceneId}} .pb-root .pb-canvas {flex:1;background:#f3f2f1;padding:20px;position:relative;overflow:hidden}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-canvas {background:#181716}
+    .scene-{{sceneId}} .pb-root .pb-canvas-title {display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:18px}
+    .scene-{{sceneId}} .pb-root .pb-report-name {font-size:28px;font-weight:700;letter-spacing:-.02em}
+    .scene-{{sceneId}} .pb-root .pb-report-path {font-size:13px;color:#605e5c}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-report-path {color:#c8c6c4}
+    .scene-{{sceneId}} .pb-root .pb-grid {display:grid;grid-template-columns:1.1fr 1.1fr 1.4fr;grid-template-rows:170px 190px 150px;gap:16px;height:calc(100% - 64px)}
+    .scene-{{sceneId}} .pb-root .pb-visual-card {border-radius:18px;background:#fff;box-shadow:0 12px 36px rgba(0,0,0,.08);padding:18px;position:relative;overflow:hidden;opacity:0;visibility:hidden;transform:translateY(12px)}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-visual-card {background:#252423;color:#f3f2f1;box-shadow:0 12px 36px rgba(0,0,0,.28)}
+    .scene-{{sceneId}} .pb-root .pb-kpi-card {display:flex;flex-direction:column;justify-content:space-between}
+    .scene-{{sceneId}} .pb-root .pb-kpi-label, .scene-{{sceneId}} .pb-root .pb-card-title {font-size:13px;font-weight:600;color:#605e5c}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-kpi-label, .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-card-title {color:#d2d0ce}
+    .scene-{{sceneId}} .pb-root .pb-kpi-value {font-size:48px;font-weight:700;letter-spacing:-.04em}
+    .scene-{{sceneId}} .pb-root .pb-kpi-delta {display:inline-flex;align-items:center;gap:6px;font-size:13px;color:#107c10;font-weight:600}
+    .scene-{{sceneId}} .pb-root .pb-bar-card {grid-column:3;grid-row:1 / span 2}
+    .scene-{{sceneId}} .pb-root .pb-line-card {grid-column:1 / span 2;grid-row:2}
+    .scene-{{sceneId}} .pb-root .pb-slicer-card {display:flex;flex-direction:column;gap:12px}
+    .scene-{{sceneId}} .pb-root .pb-slicer-buttons {display:flex;flex-wrap:wrap;gap:8px}
+    .scene-{{sceneId}} .pb-root .pb-slicer-button {padding:8px 12px;border-radius:999px;background:#f3f2f1;color:#323130;border:1px solid rgba(0,0,0,.06);font-size:13px;font-weight:600}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-slicer-button {background:#323130;color:#f3f2f1;border-color:rgba(255,255,255,.08)}
+    .scene-{{sceneId}} .pb-root .pb-slicer-button.pb-selected {background:#f2c811;color:#252423;border-color:#f2c811}
+    .scene-{{sceneId}} .pb-root .pb-filter-pane {width:240px;background:#faf9f8;border-left:1px solid rgba(0,0,0,.05);padding:20px 16px}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-filter-pane {background:#1f1e1d;border-left-color:rgba(255,255,255,.06)}
+    .scene-{{sceneId}} .pb-root .pb-filter-title {font-size:15px;font-weight:700;margin-bottom:14px}
+    .scene-{{sceneId}} .pb-root .pb-filter-section {padding:12px 0;border-bottom:1px solid rgba(0,0,0,.06)}
+    .scene-{{sceneId}} .pb-root[data-theme="dark"] .pb-filter-section {border-bottom-color:rgba(255,255,255,.08)}
+    .scene-{{sceneId}} .pb-root .pb-filter-section-title {display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:8px}
+    .scene-{{sceneId}} .pb-root .pb-filter-chip {display:inline-flex;padding:6px 10px;border-radius:999px;background:rgba(242,200,17,.12);color:#8a6d00;font-size:12px;font-weight:600;margin:4px 4px 0 0}
+    .scene-{{sceneId}} .pb-root .pb-chart-axis {display:flex;justify-content:space-between;font-size:11px;color:#8a8886;margin-top:8px}
+    .scene-{{sceneId}} .pb-root .pb-tooltip {position:absolute;min-width:180px;padding:12px 14px;border-radius:14px;background:#201f1e;color:#fff;box-shadow:0 18px 36px rgba(0,0,0,.24);opacity:0;visibility:hidden;pointer-events:none;z-index:8}
+    .scene-{{sceneId}} .pb-root .pb-tooltip h4 {margin:0 0 8px 0;font-size:13px}
+    .scene-{{sceneId}} .pb-root .pb-tooltip-row {display:flex;justify-content:space-between;gap:24px;font-size:12px;color:rgba(255,255,255,.82);margin-bottom:4px}
+    .scene-{{sceneId}} .pb-root .pb-pill-host {position:absolute;left:24px;bottom:24px;display:flex;flex-direction:column;gap:10px;z-index:9}
+    .scene-{{sceneId}} .pb-root .pb-step-layer {position:absolute;inset:auto 0 0 0;width:0;height:0;overflow:hidden}
+    .scene-{{sceneId}} .pb-root .pb-drill-chip {position:absolute;top:74px;right:264px;padding:8px 14px;border-radius:999px;background:rgba(37,36,35,.88);color:#fff;font-size:13px;font-weight:600;opacity:0;visibility:hidden;z-index:7}
+    .scene-{{sceneId}} .pb-root .pb-flash {position:absolute;inset:0;background:rgba(242,200,17,.12);opacity:0;pointer-events:none;border-radius:18px}
+  </style>
+  <div class="pb-shell">
+    <div class="pb-header">
+      <div class="pb-brand"><span class="pb-brand-dot"></span><span>Power BI</span></div>
+      <div class="pb-workspace">{{workspaceName}}</div>
+      <div class="pb-search">
+        <svg width="14" height="14" viewBox="0 0 20 20" fill="none"><circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="2"/><path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>Search reports, semantic models, dashboards</span>
+      </div>
+      <div class="pb-profile">IB</div>
+    </div>
+    <div class="pb-body">
+      <div class="pb-nav">
+        <div class="pb-nav-icon pb-active">
+          <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M3 9.5L10 4L17 9.5V17H11.5V12H8.5V17H3V9.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="pb-nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3.5" y="4" width="13" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 8H13M7 12H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="pb-nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M4 5.5H16M4 10H16M4 14.5H11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+        <div class="pb-nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><ellipse cx="10" cy="5.5" rx="6" ry="2.5" stroke="currentColor" stroke-width="1.8"/><path d="M4 5.5V14.5C4 15.9 6.7 17 10 17C13.3 17 16 15.9 16 14.5V5.5" stroke="currentColor" stroke-width="1.8"/></svg></div>
+        <div class="pb-nav-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><rect x="3.5" y="3.5" width="13" height="13" rx="3" stroke="currentColor" stroke-width="1.8"/><path d="M7.2 7.2H12.8V12.8H7.2Z" fill="currentColor"/></svg></div>
+      </div>
+      <div class="pb-canvas">
+        <div class="pb-drill-chip">Sales › North America › Washington</div>
+        <div class="pb-tooltip">
+          <h4>Revenue detail</h4>
+          <div class="pb-tooltip-row"><span>Revenue</span><strong>$8.4M</strong></div>
+          <div class="pb-tooltip-row"><span>Margin</span><strong>31.2%</strong></div>
+          <div class="pb-tooltip-row"><span>Orders</span><strong>1,284</strong></div>
+        </div>
+        <div class="pb-pill-host"></div>
+        <div class="pb-canvas-title">
+          <div>
+            <div class="pb-report-name">{{reportName}}</div>
+            <div class="pb-report-path">Workspace: {{workspaceName}} · Last refreshed 7 minutes ago</div>
+          </div>
+        </div>
+        <div class="pb-grid">
+          <div class="pb-visual-card pb-kpi-card" data-visual="kpi-1">
+            <div class="pb-flash"></div>
+            <div class="pb-kpi-label">TOTAL SALES</div>
+            <div class="pb-kpi-value" data-kpi-value="1">$42.8M</div>
+            <div class="pb-kpi-delta" data-kpi-delta="1"><span>▲</span><span>+12.4% vs LY</span></div>
+          </div>
+          <div class="pb-visual-card pb-kpi-card" data-visual="kpi-2">
+            <div class="pb-flash"></div>
+            <div class="pb-kpi-label">GROSS MARGIN</div>
+            <div class="pb-kpi-value" data-kpi-value="2">31.4%</div>
+            <div class="pb-kpi-delta" data-kpi-delta="2"><span>▲</span><span>+1.8 pts</span></div>
+          </div>
+          <div class="pb-visual-card pb-bar-card" data-visual="bar">
+            <div class="pb-flash"></div>
+            <div class="pb-card-title">Revenue by region</div>
+            <svg class="pb-bar-svg" viewBox="0 0 420 260" style="width:100%;height:calc(100% - 30px)">
+              <line x1="30" y1="220" x2="390" y2="220" stroke="rgba(96,94,92,.2)" stroke-width="2"/>
+              <g data-bars>
+                <rect data-bar="1" x="55" y="110" width="46" height="110" rx="10" fill="#9fd9ff"></rect>
+                <rect data-bar="2" x="130" y="82" width="46" height="138" rx="10" fill="#64b5ff"></rect>
+                <rect data-bar="3" x="205" y="126" width="46" height="94" rx="10" fill="#3484ff"></rect>
+                <rect data-bar="4" x="280" y="62" width="46" height="158" rx="10" fill="#f2c811"></rect>
+              </g>
+              <g font-size="14" fill="#605e5c" text-anchor="middle">
+                <text x="78" y="244">NA</text>
+                <text x="153" y="244">EU</text>
+                <text x="228" y="244">APAC</text>
+                <text x="303" y="244">LATAM</text>
+              </g>
+            </svg>
+          </div>
+          <div class="pb-visual-card pb-line-card" data-visual="line">
+            <div class="pb-flash"></div>
+            <div class="pb-card-title">Monthly sales trend</div>
+            <svg class="pb-line-svg" viewBox="0 0 700 220" style="width:100%;height:calc(100% - 28px)">
+              <path d="M40 170 C120 150 160 115 220 120 S340 178 400 145 S520 72 660 54" fill="none" stroke="#4c9ffe" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" data-line-path></path>
+              <g fill="#f2c811">
+                <circle cx="40" cy="170" r="7"></circle>
+                <circle cx="220" cy="120" r="7"></circle>
+                <circle cx="400" cy="145" r="7"></circle>
+                <circle cx="660" cy="54" r="7"></circle>
+              </g>
+            </svg>
+            <div class="pb-chart-axis"><span>Jan</span><span>Mar</span><span>May</span><span>Jul</span><span>Sep</span><span>Nov</span></div>
+          </div>
+          <div class="pb-visual-card pb-slicer-card" data-visual="region-slicer">
+            <div class="pb-flash"></div>
+            <div class="pb-card-title">Region</div>
+            <div class="pb-slicer-buttons" data-group="region">
+              <div class="pb-slicer-button pb-selected" data-value="All">All</div>
+              <div class="pb-slicer-button" data-value="NA">NA</div>
+              <div class="pb-slicer-button" data-value="EU">EU</div>
+              <div class="pb-slicer-button" data-value="APAC">APAC</div>
+            </div>
+          </div>
+          <div class="pb-visual-card pb-slicer-card" data-visual="segment-slicer">
+            <div class="pb-flash"></div>
+            <div class="pb-card-title">Segment</div>
+            <div class="pb-slicer-buttons" data-group="segment">
+              <div class="pb-slicer-button pb-selected" data-value="All">All</div>
+              <div class="pb-slicer-button" data-value="Enterprise">Enterprise</div>
+              <div class="pb-slicer-button" data-value="SMB">SMB</div>
+              <div class="pb-slicer-button" data-value="Public">Public</div>
+            </div>
+          </div>
+        </div>
+        <div class="pb-step-layer">{{{stepsHtml}}}</div>
+      </div>
+      <div class="pb-filter-pane">
+        <div class="pb-filter-title">Filters</div>
+        <div class="pb-filter-section">
+          <div class="pb-filter-section-title"><span>Report level</span><span>▾</span></div>
+          <div class="pb-filter-chip">Fiscal year = FY24</div>
+          <div class="pb-filter-chip">Currency = USD</div>
+        </div>
+        <div class="pb-filter-section">
+          <div class="pb-filter-section-title"><span>Page level</span><span>▾</span></div>
+          <div class="pb-filter-chip">Region = All</div>
+          <div class="pb-filter-chip">Product line = Surface</div>
+        </div>
+        <div class="pb-filter-section">
+          <div class="pb-filter-section-title"><span>Visual level</span><span>▾</span></div>
+          <div class="pb-filter-chip">Top N = 10</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,46 @@
+{
+  "name": "GaugeRing",
+  "description": "Radial gauge ring showing a single KPI as an animated SVG arc with counter tween, label, and optional comparison ring.",
+  "props": {
+    "value": {
+      "type": "number",
+      "required": true,
+      "description": "The gauge value to display (e.g. 92 for 92%)"
+    },
+    "maxValue": {
+      "type": "number",
+      "default": 100,
+      "description": "Maximum value for the gauge scale"
+    },
+    "label": {
+      "type": "string",
+      "default": "",
+      "description": "Text label shown below the ring (e.g. 'System Uptime')"
+    },
+    "suffix": {
+      "type": "string",
+      "default": "%",
+      "description": "Suffix appended to the number display (e.g. '%', '/5', 'pts')"
+    },
+    "comparisonValue": {
+      "type": "number",
+      "default": 0,
+      "description": "Optional second value shown as a thinner ring for comparison (e.g. last quarter's value)"
+    },
+    "comparisonLabel": {
+      "type": "string",
+      "default": "",
+      "description": "Label for the comparison value (e.g. 'Last Quarter')"
+    },
+    "accentColor": {
+      "type": "string",
+      "default": "#0078D4",
+      "description": "Color of the fill arc"
+    },
+    "trackColor": {
+      "type": "string",
+      "default": "#2a2a3e",
+      "description": "Color of the unfilled track ring"
+    }
+  }
+}

@@ -1,0 +1,1012 @@
+<style data-component="OutlookScene">
+/* ============================================================================
+   OutlookScene — chrome shell styles (PR 10b — Wave A)
+   All selectors scoped under .scene-{{sceneId}} .outlook-bg for per-scene isolation.
+   Variant switching driven by data-attributes (no JS needed):
+     [data-theme]            : light | dark
+     [data-active-rail]      : mail|calendar|people|tasks|groups|apps
+     [data-ribbon-variant]   : mail-home|mail-view|mail-help|compose-message
+                              |compose-format|compose-insert|search|calendar-home|none
+     [data-toast-state]      : hidden | visible
+   Standing Rule #14: every layout override resets `display` + template properties.
+============================================================================ */
+
+/* ---------- Theme tokens ---------- */
+.scene-{{sceneId}} .outlook-bg {
+  --ol-bg: #faf9f8;
+  --ol-surface: #ffffff;
+  --ol-surface-hover: #f3f2f1;
+  --ol-surface-active: #edebe9;
+  --ol-divider: #e1dfdd;
+  --ol-divider-strong: #c8c6c4;
+  --ol-text-primary: #201f1e;
+  --ol-text-secondary: #605e5c;
+  --ol-text-tertiary: #8a8886;
+  --ol-text-on-accent: #ffffff;
+  --ol-accent: #0078d4;
+  --ol-accent-hover: #2899f5;
+  --ol-accent-pressed: #005a9e;
+  --ol-focus-ring: #0078d4;
+  --ol-shadow: 0 1.6px 3.6px rgba(0,0,0,.10), 0 .3px .9px rgba(0,0,0,.07);
+  --ol-shadow-lg: 0 6.4px 14.4px rgba(0,0,0,.13), 0 1.2px 3.6px rgba(0,0,0,.10);
+  --ol-rail-bg: #f3f2f1;
+  --ol-ribbon-bg: #faf9f8;
+  --ol-tabstrip-bg: #ffffff;
+  --ol-appbar-bg: #ffffff;
+  --ol-badge-bg: #d13438;
+  --ol-badge-text: #ffffff;
+  --ol-copilot-grad: linear-gradient(135deg, #2899f5 0%, #9b6dff 100%);
+
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--ol-bg);
+  color: var(--ol-text-primary);
+  font-family: "Segoe UI", "Segoe UI Web (West European)", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.scene-{{sceneId}} .outlook-bg[data-theme="dark"] {
+  --ol-bg: #1f1f1f;
+  --ol-surface: #2b2b2b;
+  --ol-surface-hover: #3a3a3a;
+  --ol-surface-active: #444;
+  --ol-divider: #3a3a3a;
+  --ol-divider-strong: #555;
+  --ol-text-primary: #f3f2f1;
+  --ol-text-secondary: #c8c6c4;
+  --ol-text-tertiary: #a19f9d;
+  --ol-rail-bg: #2b2b2b;
+  --ol-ribbon-bg: #1f1f1f;
+  --ol-tabstrip-bg: #2b2b2b;
+  --ol-appbar-bg: #2b2b2b;
+}
+
+/* ---------- App bar (56px) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-appbar {
+  display: flex;
+  align-items: center;
+  flex: 0 0 56px;
+  height: 56px;
+  padding: 0 4px 0 12px;
+  background: var(--ol-appbar-bg);
+  border-bottom: 1px solid var(--ol-divider);
+  gap: 12px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-appbar-left {
+  display: flex; align-items: center; gap: 10px;
+  min-width: 156px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-appbar-logo {
+  width: 32px; height: 32px; flex: 0 0 32px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-appbar-wordmark {
+  font-size: 22px; font-weight: 600; color: var(--ol-text-primary);
+  letter-spacing: -0.2px;
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-appbar-search {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1 1 auto;
+  max-width: 720px;
+  height: 32px;
+  padding: 0 14px;
+  background: var(--ol-surface-hover);
+  border-radius: 16px;
+  color: var(--ol-text-secondary);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-search-spark {
+  width: 16px; height: 16px; flex: 0 0 16px; color: var(--ol-accent);
+}
+.scene-{{sceneId}} .outlook-bg .ol-search-text { color: var(--ol-text-secondary); }
+
+.scene-{{sceneId}} .outlook-bg .ol-appbar-event-slot {
+  display: flex; align-items: center;
+  min-width: 0;
+  max-width: 280px;
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-appbar-right {
+  display: flex; align-items: center; gap: 4px;
+  margin-left: auto;
+}
+.scene-{{sceneId}} .outlook-bg .ol-appbar-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative;
+  width: 36px; height: 36px;
+  background: transparent; border: 0; border-radius: 4px;
+  color: var(--ol-text-primary); cursor: pointer;
+  padding: 0;
+}
+.scene-{{sceneId}} .outlook-bg .ol-appbar-icon:hover { background: var(--ol-surface-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-appbar-icon svg { width: 16px; height: 16px; }
+.scene-{{sceneId}} .outlook-bg .ol-bell-badge {
+  position: absolute;
+  top: 4px; right: 4px;
+  min-width: 16px; height: 16px;
+  padding: 0 4px;
+  background: var(--ol-badge-bg); color: var(--ol-badge-text);
+  border-radius: 8px;
+  font-size: 10px; font-weight: 600;
+  display: inline-flex; align-items: center; justify-content: center;
+  line-height: 1;
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-appbar-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px;
+  margin: 0 6px 0 4px;
+  background: linear-gradient(135deg,#7e57c2,#3949ab);
+  border-radius: 50%;
+  color: #fff; font-weight: 600; font-size: 13px;
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-window-controls {
+  display: flex; align-items: center;
+  height: 56px;
+  margin-left: 4px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-win-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 46px; height: 56px;
+  background: transparent; border: 0; padding: 0;
+  color: var(--ol-text-primary); cursor: pointer;
+}
+.scene-{{sceneId}} .outlook-bg .ol-win-btn:hover { background: var(--ol-surface-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-win-btn svg { width: 12px; height: 12px; }
+.scene-{{sceneId}} .outlook-bg .ol-win-close:hover { background: #e81123; color: #fff; }
+
+/* ---------- Body row (rail + main) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-body {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* ---------- Left rail (56px) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 0 0 56px;
+  width: 56px;
+  background: var(--ol-rail-bg);
+  border-right: 1px solid var(--ol-divider);
+  padding: 4px 0;
+}
+.scene-{{sceneId}} .outlook-bg .ol-rail-item {
+  display: inline-flex; align-items: center; justify-content: center;
+  position: relative;
+  height: 48px;
+  background: transparent; border: 0;
+  border-left: 3px solid transparent;
+  color: var(--ol-text-primary); cursor: pointer;
+  padding: 0;
+}
+.scene-{{sceneId}} .outlook-bg .ol-rail-item svg { width: 20px; height: 20px; }
+.scene-{{sceneId}} .outlook-bg .ol-rail-item:hover { background: var(--ol-surface-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-rail-item--bottom { margin-top: auto; }
+
+/* Active rail accent — driven by [data-active-rail] */
+.scene-{{sceneId}} .outlook-bg[data-active-rail="mail"]     .ol-rail-item[data-rail="mail"],
+.scene-{{sceneId}} .outlook-bg[data-active-rail="calendar"] .ol-rail-item[data-rail="calendar"],
+.scene-{{sceneId}} .outlook-bg[data-active-rail="people"]   .ol-rail-item[data-rail="people"],
+.scene-{{sceneId}} .outlook-bg[data-active-rail="tasks"]    .ol-rail-item[data-rail="tasks"],
+.scene-{{sceneId}} .outlook-bg[data-active-rail="groups"]   .ol-rail-item[data-rail="groups"],
+.scene-{{sceneId}} .outlook-bg[data-active-rail="apps"]     .ol-rail-item[data-rail="apps"] {
+  background: var(--ol-surface);
+  border-left-color: var(--ol-accent);
+  color: var(--ol-accent);
+}
+
+/* ---------- Main column ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--ol-bg);
+}
+
+/* ---------- Tab strip (36px) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-tabstrip {
+  display: flex; align-items: stretch;
+  flex: 0 0 36px;
+  height: 36px;
+  padding: 0 8px;
+  background: var(--ol-tabstrip-bg);
+  border-bottom: 1px solid var(--ol-divider);
+  gap: 2px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-tab-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 36px;
+  background: transparent; border: 0; padding: 0;
+  color: var(--ol-text-primary); cursor: pointer;
+}
+.scene-{{sceneId}} .outlook-bg .ol-tab-icon:hover { background: var(--ol-surface-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-tab-icon svg { width: 16px; height: 16px; }
+
+.scene-{{sceneId}} .outlook-bg .ol-tab {
+  display: inline-flex; align-items: center;
+  height: 36px;
+  padding: 0 12px;
+  background: transparent; border: 0;
+  color: var(--ol-text-primary); cursor: pointer;
+  font-size: 14px; font-weight: 400;
+  position: relative;
+}
+.scene-{{sceneId}} .outlook-bg .ol-tab:hover { background: var(--ol-surface-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-tab--active {
+  font-weight: 600;
+  color: var(--ol-accent);
+}
+.scene-{{sceneId}} .outlook-bg .ol-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 8px; right: 8px; bottom: 0;
+  height: 2px;
+  background: var(--ol-accent);
+  border-radius: 2px;
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-tabstrip-spacer { flex: 1 1 auto; }
+.scene-{{sceneId}} .outlook-bg .ol-tabstrip-right {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--ol-text-secondary);
+  padding-right: 4px;
+}
+
+/* ---------- Ribbon zone (~96px) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-ribbon {
+  display: flex; align-items: stretch;
+  flex: 0 0 96px;
+  height: 96px;
+  padding: 4px 4px 0 4px;
+  background: var(--ol-ribbon-bg);
+  border-bottom: 1px solid var(--ol-divider);
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Variants: hide all by default, show only the matching one */
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-variant {
+  display: none;
+  align-items: stretch;
+  flex: 1 1 auto;
+  gap: 0;
+  min-width: 0;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="mail-home"]       .ol-ribbon-variant[data-variant="mail-home"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="mail-view"]       .ol-ribbon-variant[data-variant="mail-view"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="mail-help"]       .ol-ribbon-variant[data-variant="mail-help"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="compose-message"] .ol-ribbon-variant[data-variant="compose-message"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="compose-format"]  .ol-ribbon-variant[data-variant="compose-format"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="compose-insert"]  .ol-ribbon-variant[data-variant="compose-insert"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="search"]          .ol-ribbon-variant[data-variant="search"],
+.scene-{{sceneId}} .outlook-bg .ol-ribbon[data-ribbon-variant="calendar-home"]   .ol-ribbon-variant[data-variant="calendar-home"] {
+  display: flex;
+}
+
+/* outlook-bg uses ribbon variant attr too — propagated from outer for the data-attr selector */
+.scene-{{sceneId}} .outlook-bg .ol-ribbon { /* no-op anchor; selector above uses ol-ribbon[data-...] but template has it on outlook-bg. We re-emit on the ribbon via JS-free pattern: */ }
+/* Trick: use ancestor selector so we don't need the attr on .ol-ribbon itself */
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="mail-home"]       .ol-ribbon .ol-ribbon-variant[data-variant="mail-home"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="mail-view"]       .ol-ribbon .ol-ribbon-variant[data-variant="mail-view"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="mail-help"]       .ol-ribbon .ol-ribbon-variant[data-variant="mail-help"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="compose-message"] .ol-ribbon .ol-ribbon-variant[data-variant="compose-message"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="compose-format"]  .ol-ribbon .ol-ribbon-variant[data-variant="compose-format"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="compose-insert"]  .ol-ribbon .ol-ribbon-variant[data-variant="compose-insert"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="search"]          .ol-ribbon .ol-ribbon-variant[data-variant="search"],
+.scene-{{sceneId}} .outlook-bg[data-ribbon-variant="calendar-home"]   .ol-ribbon .ol-ribbon-variant[data-variant="calendar-home"] {
+  display: flex;
+}
+
+/* Ribbon group */
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-group {
+  display: flex; flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+  padding: 2px 6px 0 6px;
+  border-right: 1px solid var(--ol-divider);
+  position: relative;
+  min-width: 56px;
+  max-width: 220px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-group > :not(.ol-ribbon-group-name) {
+  display: flex; flex-direction: row;
+  align-items: stretch;
+  gap: 2px;
+  flex: 1 1 auto;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-group-name {
+  display: block;
+  flex: 0 0 14px;
+  font-size: 11px;
+  color: var(--ol-text-secondary);
+  text-align: center;
+  margin-top: 2px;
+  padding: 0 4px;
+  white-space: nowrap;
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-stack {
+  display: flex; flex-direction: column;
+  gap: 2px;
+  flex: 0 0 auto;
+}
+
+/* Ribbon buttons */
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn {
+  display: inline-flex; align-items: center;
+  background: transparent; border: 0; padding: 0;
+  color: var(--ol-text-primary); cursor: pointer;
+  border-radius: 4px;
+  position: relative;
+  font-family: inherit; font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn:hover { background: var(--ol-surface-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--lg {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  width: auto; min-width: 56px;
+  padding: 4px 6px;
+  height: 70px;
+  gap: 4px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--lg svg {
+  width: 28px; height: 28px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--lg .ol-ribbon-label {
+  display: inline-block;
+  font-size: 12px; line-height: 1.15;
+  text-align: center;
+  color: var(--ol-text-primary);
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--sm {
+  display: inline-flex; flex-direction: row;
+  align-items: center; gap: 4px;
+  height: 22px;
+  padding: 0 6px;
+  font-size: 12px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--sm svg {
+  width: 16px; height: 16px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--accent {
+  background: var(--ol-accent);
+  color: var(--ol-text-on-accent);
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--accent:hover { background: var(--ol-accent-hover); }
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--accent .ol-ribbon-label,
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--accent svg { color: var(--ol-text-on-accent); fill: currentColor; }
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-btn--disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-chev {
+  width: 10px; height: 10px;
+  margin-left: 2px;
+  color: var(--ol-text-secondary);
+}
+
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-quicksteps {
+  display: inline-flex; align-items: center;
+  height: 70px; min-width: 130px;
+  padding: 0 12px;
+  background: var(--ol-surface);
+  border: 1px solid var(--ol-divider);
+  border-radius: 4px;
+  font-size: 13px; color: var(--ol-text-primary);
+  gap: 6px;
+}
+
+/* Compose-format specific text controls */
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-group--text {
+  min-width: 240px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-font-row {
+  display: flex; flex-direction: row; align-items: center;
+  gap: 2px;
+  flex: 1 1 auto;
+}
+.scene-{{sceneId}} .outlook-bg .ol-font-name {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 22px; padding: 0 6px;
+  border: 1px solid var(--ol-divider); border-radius: 2px;
+  background: var(--ol-surface);
+  font-size: 12px; min-width: 90px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-font-size {
+  display: inline-flex; align-items: center; gap: 4px;
+  height: 22px; padding: 0 6px;
+  border: 1px solid var(--ol-divider); border-radius: 2px;
+  background: var(--ol-surface);
+  font-size: 12px; min-width: 38px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-font-name svg,
+.scene-{{sceneId}} .outlook-bg .ol-font-size svg { width: 10px; height: 10px; color: var(--ol-text-secondary); }
+
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-collapse {
+  display: inline-flex; align-items: flex-end; justify-content: center;
+  width: 24px; padding-bottom: 4px;
+  margin-left: auto;
+  color: var(--ol-text-secondary);
+  cursor: pointer;
+}
+.scene-{{sceneId}} .outlook-bg .ol-ribbon-collapse svg { width: 12px; height: 12px; }
+
+/* Copilot pin (always visible far right) */
+.scene-{{sceneId}} .outlook-bg .ol-copilot-pin {
+  display: flex; align-items: center;
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 0 8px 0 4px;
+  border-left: 1px solid var(--ol-divider);
+  position: absolute;
+  right: 0; top: 4px; bottom: 0;
+  background: var(--ol-ribbon-bg);
+}
+.scene-{{sceneId}} .outlook-bg .ol-copilot-btn {
+  display: inline-flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  width: 64px; height: 70px;
+  background: transparent; border: 0; padding: 0;
+  cursor: pointer;
+  gap: 4px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-copilot-btn svg {
+  width: 28px; height: 28px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-copilot-btn span {
+  background: var(--ol-copilot-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* ---------- View body slot (flex 1) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-viewbody {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  background: var(--ol-bg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------- Floating tabs slot ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-floating-tabs {
+  position: absolute;
+  right: 16px; bottom: 16px;
+  display: flex;
+  gap: 8px;
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* ---------- Toast (top-right) ---------- */
+.scene-{{sceneId}} .outlook-bg .ol-toast {
+  position: absolute;
+  top: 72px; right: 16px;
+  min-width: 280px; max-width: 360px;
+  padding: 12px 16px;
+  background: var(--ol-surface);
+  border: 1px solid var(--ol-divider);
+  border-left: 4px solid var(--ol-accent);
+  border-radius: 4px;
+  box-shadow: var(--ol-shadow-lg);
+  font-size: 13px;
+  z-index: 40;
+  transition: opacity .2s ease;
+}
+.scene-{{sceneId}} .outlook-bg .ol-toast[data-toast-state="hidden"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.scene-{{sceneId}} .outlook-bg .ol-toast[data-toast-state="visible"] {
+  opacity: 1;
+}
+.scene-{{sceneId}} .outlook-bg .ol-toast-title {
+  display: block;
+  font-weight: 600; color: var(--ol-text-primary);
+  margin-bottom: 2px;
+}
+.scene-{{sceneId}} .outlook-bg .ol-toast-body {
+  display: block;
+  color: var(--ol-text-secondary);
+}
+
+</style>
+<!--
+  OutlookScene chrome shell (PR 10b — Wave A)
+  Faithful to Microsoft Outlook 2025 (Monarch / new Outlook).
+  Slot containers (viewBodyHtml, eventCardHtml, floatingTabsHtml, rightHeaderSlot, contextualTabs)
+  are filled by Wave B agents (mail/calendar/compose layouts).
+
+  Variant switching is data-attribute driven — see style.css:
+    data-theme               : "light" | "dark"
+    data-active-rail         : "mail" | "calendar" | "people" | "tasks" | "groups" | "apps"
+    data-ribbon-variant      : "mail-home" | "mail-view" | "mail-help"
+                               | "compose-message" | "compose-format" | "compose-insert"
+                               | "search" | "calendar-home" | "none"
+    data-toast-state         : "hidden" | "visible"
+-->
+<svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+  <defs>
+    <!-- ===== App-bar / window glyphs ===== -->
+    <symbol id="ol-icon-outlook-app" viewBox="0 0 32 32"><path fill="#0364B8" d="M28 8H16V4l-14 4v16l14 4v-4h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2Z"/><path fill="#0078D4" d="M16 10h12v12H16z" opacity=".15"/><path fill="#fff" d="M9 12.4c-2.4 0-4 2-4 4.6s1.5 4.6 4 4.6 4-2 4-4.6-1.6-4.6-4-4.6Zm0 7.4c-1.3 0-2-1.2-2-2.8 0-1.6.7-2.8 2-2.8s2 1.2 2 2.8c0 1.6-.7 2.8-2 2.8Z"/><path fill="#50D9FF" d="M16 10h12v6l-6 4-6-4z"/></symbol>
+    <symbol id="ol-icon-sparkle" viewBox="0 0 16 16"><path fill="currentColor" d="M8 1l1.4 3.6L13 6l-3.6 1.4L8 11 6.6 7.4 3 6l3.6-1.4zM12.5 10l.7 1.8L15 12.5l-1.8.7L12.5 15l-.7-1.8L10 12.5l1.8-.7z"/></symbol>
+    <symbol id="ol-icon-tab-pin" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.2" d="M3 3h10v10H3z"/><path fill="currentColor" d="M5 5h6v2H5z"/></symbol>
+    <symbol id="ol-icon-bell" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M8 2.5a3.5 3.5 0 0 0-3.5 3.5v2.2L3 10.5h10L11.5 8.2V6A3.5 3.5 0 0 0 8 2.5z"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M6.7 12.7a1.5 1.5 0 0 0 2.6 0"/></symbol>
+    <symbol id="ol-icon-settings" viewBox="0 0 16 16"><circle cx="8" cy="8" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="m13.4 9.4.4-1.4-.4-1.4 1.1-1-1-1.7L12 4.3l-1.2-.8-.4-1.4H8.5L8 3.5l-1.2.8L5.5 4l-1.5.7-1 1.6 1.1 1L4 8.6l.4 1.4-1.1 1 1 1.7 1.5-.4 1.2.8.4 1.4h1.9l.4-1.4 1.2-.8 1.4.4 1-1.7z"/></symbol>
+    <symbol id="ol-icon-win-min" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1" d="M3 8h10"/></symbol>
+    <symbol id="ol-icon-win-max" viewBox="0 0 16 16"><rect x="3" y="3" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1"/></symbol>
+    <symbol id="ol-icon-win-close" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.1" d="m4 4 8 8M12 4l-8 8"/></symbol>
+
+    <!-- ===== Left rail glyphs ===== -->
+    <symbol id="ol-icon-mail" viewBox="0 0 20 20"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" d="M3 5h14v10H3zM3 5l7 6 7-6"/></symbol>
+    <symbol id="ol-icon-calendar" viewBox="0 0 20 20"><rect x="3" y="4.5" width="14" height="12.5" rx="1" fill="none" stroke="currentColor" stroke-width="1.4"/><path fill="none" stroke="currentColor" stroke-width="1.4" d="M3 8h14M7 3v3M13 3v3"/></symbol>
+    <symbol id="ol-icon-people" viewBox="0 0 20 20"><circle cx="10" cy="7" r="3" fill="none" stroke="currentColor" stroke-width="1.4"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M4 17c0-3 2.7-5 6-5s6 2 6 5"/></symbol>
+    <symbol id="ol-icon-tasks" viewBox="0 0 20 20"><rect x="4" y="4" width="12" height="12" rx="1.2" fill="none" stroke="currentColor" stroke-width="1.4"/><path fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" d="m7 10.4 2 2 4-5"/></symbol>
+    <symbol id="ol-icon-groups" viewBox="0 0 20 20"><circle cx="7" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="13.5" cy="8" r="2.4" fill="none" stroke="currentColor" stroke-width="1.4"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M3 16c0-2 1.8-3.5 4-3.5s4 1.5 4 3.5M9.5 16c.2-2 2.2-3.5 4.5-3.5s4 1.5 4 3.5"/></symbol>
+    <symbol id="ol-icon-apps" viewBox="0 0 20 20"><g fill="currentColor"><rect x="3" y="3" width="5" height="5" rx="0.6"/><rect x="12" y="3" width="5" height="5" rx="0.6"/><rect x="3" y="12" width="5" height="5" rx="0.6"/><rect x="12" y="12" width="5" height="5" rx="0.6"/></g></symbol>
+
+    <!-- ===== Tab strip / chrome ===== -->
+    <symbol id="ol-icon-hamburger" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M2.5 4.5h11M2.5 8h11M2.5 11.5h11"/></symbol>
+    <symbol id="ol-icon-chev-down" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="m3 4.5 3 3 3-3"/></symbol>
+    <symbol id="ol-icon-chev-right" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="m4.5 3 3 3-3 3"/></symbol>
+    <symbol id="ol-icon-chev-up" viewBox="0 0 12 12"><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" d="m3 7.5 3-3 3 3"/></symbol>
+    <symbol id="ol-icon-more-h" viewBox="0 0 16 16"><g fill="currentColor"><circle cx="3" cy="8" r="1.2"/><circle cx="8" cy="8" r="1.2"/><circle cx="13" cy="8" r="1.2"/></g></symbol>
+    <symbol id="ol-icon-copilot" viewBox="0 0 20 20"><defs><linearGradient id="ol-grad-copilot" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#2899F5"/><stop offset="100%" stop-color="#9B6DFF"/></linearGradient></defs><path fill="url(#ol-grad-copilot)" d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16Zm0 4 1.6 2.4L14 10l-2.4 1.6L10 14l-1.6-2.4L6 10l2.4-1.6Z"/></symbol>
+
+    <!-- ===== Mail Home ribbon glyphs ===== -->
+    <symbol id="ol-icon-new-mail" viewBox="0 0 28 28"><rect x="3" y="6" width="22" height="16" rx="1" fill="#fff" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" d="m3 6 11 8 11-8"/><circle cx="22" cy="22" r="5" fill="#fff" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M22 19.5v5M19.5 22h5"/></symbol>
+    <symbol id="ol-icon-ignore" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="m4.5 4.5 7 7"/></symbol>
+    <symbol id="ol-icon-block" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="m4 12 8-8"/></symbol>
+    <symbol id="ol-icon-trash" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M5 8h18l-1.5 14a2 2 0 0 1-2 2H8.5a2 2 0 0 1-2-2L5 8Z"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M3 8h22M11 4h6M11 12v8M14 12v8M17 12v8"/></symbol>
+    <symbol id="ol-icon-archive" viewBox="0 0 28 28"><rect x="3" y="6" width="22" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M5 11h18v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V11ZM11 16h6"/></symbol>
+    <symbol id="ol-icon-report" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M14 4 5 22h18L14 4Z"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="M14 11v5"/><circle cx="14" cy="19" r="0.9" fill="currentColor"/></symbol>
+    <symbol id="ol-icon-reply" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M7 5 3 8.5 7 12M3 8.5h6.5A3.5 3.5 0 0 1 13 12"/></symbol>
+    <symbol id="ol-icon-reply-all" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M5 5 1 8.5 5 12M9 5 5 8.5 9 12M5 8.5h5.5A3.5 3.5 0 0 1 14 12"/></symbol>
+    <symbol id="ol-icon-forward" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M9 5l4 3.5L9 12M13 8.5H6.5A3.5 3.5 0 0 0 3 12"/></symbol>
+    <symbol id="ol-icon-meeting" viewBox="0 0 28 28"><rect x="3" y="6" width="18" height="12" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="currentColor" d="m22 10 4-2v8l-4-2z"/></symbol>
+    <symbol id="ol-icon-chat" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M5 6h18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-7l-4 4v-4H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/></symbol>
+    <symbol id="ol-icon-share-teams" viewBox="0 0 28 28"><rect x="6" y="6" width="11" height="16" rx="1" fill="#5059C9"/><path fill="#fff" d="M9 9h5v1.6h-1.7V14h-1.6v-3.4H9z"/><circle cx="20" cy="10" r="3" fill="#7B83EB"/></symbol>
+    <symbol id="ol-icon-folder-move" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M3 8h7l2 2h13v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8Z"/></symbol>
+    <symbol id="ol-icon-sweep" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="m3 13 5-5 3 3-5 5zM8 8l2-5 3 3-2 5"/></symbol>
+    <symbol id="ol-icon-rules" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M3 3h10M3 7h10M3 11h6M11 11l2 2 3-3"/></symbol>
+    <symbol id="ol-icon-quick-steps" viewBox="0 0 16 16"><path fill="currentColor" d="m9 1 1 5h4l-3 3 1 5-4-3-4 3 1-5L2 6h4z"/></symbol>
+    <symbol id="ol-icon-read" viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" d="M4 10h20M8 14h12M8 17h8"/></symbol>
+    <symbol id="ol-icon-flag" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M4 2v12M4 3h8l-1.5 3L12 9H4"/></symbol>
+    <symbol id="ol-icon-categorize" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M2 8 8 2l6 6-6 6z"/><circle cx="6" cy="6" r="1" fill="currentColor"/></symbol>
+    <symbol id="ol-icon-pin" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="m9.5 2 4.5 4.5-2 1L8 11l-1 4-1.5-1.5L9 10 4.5 5.5l1-2z"/></symbol>
+    <symbol id="ol-icon-snooze" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M5 6h3L5 10h3"/></symbol>
+
+    <!-- ===== Compose / Format ribbon glyphs ===== -->
+    <symbol id="ol-icon-paste" viewBox="0 0 28 28"><rect x="6" y="4" width="16" height="20" rx="1.5" fill="#fff" stroke="currentColor" stroke-width="1.3"/><rect x="10" y="2" width="8" height="4" rx="0.8" fill="#fff" stroke="currentColor" stroke-width="1.3"/></symbol>
+    <symbol id="ol-icon-cut" viewBox="0 0 16 16"><circle cx="4" cy="11" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="12" cy="11" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M5.5 9.5 12 3M10.5 9.5 4 3"/></symbol>
+    <symbol id="ol-icon-copy" viewBox="0 0 16 16"><rect x="3" y="3" width="9" height="11" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="5" y="5" width="9" height="11" rx="1" fill="#fff" stroke="currentColor" stroke-width="1.2"/></symbol>
+    <symbol id="ol-icon-undo" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M3 7h7a3 3 0 0 1 0 6H6M3 7l3-3M3 7l3 3"/></symbol>
+    <symbol id="ol-icon-redo" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M13 7H6a3 3 0 0 0 0 6h4M13 7l-3-3M13 7l-3 3"/></symbol>
+    <symbol id="ol-icon-format-painter" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M4 2h8v3H4zM3 5h10v3H3zM6 8v2h4V8M7 10v4h2v-4"/></symbol>
+    <symbol id="ol-icon-bold" viewBox="0 0 16 16"><path fill="currentColor" d="M5 2h4.5a2.8 2.8 0 0 1 1.6 5.1 3 3 0 0 1-1.4 5.4H5V2Zm2 2v3h2.4a1.5 1.5 0 0 0 0-3H7Zm0 5v3.5h2.7a1.75 1.75 0 0 0 0-3.5H7Z"/></symbol>
+    <symbol id="ol-icon-italic" viewBox="0 0 16 16"><path fill="currentColor" d="M6 2h6v1.5H10L8 12.5h2V14H4v-1.5h2L8 3.5H6z"/></symbol>
+    <symbol id="ol-icon-underline" viewBox="0 0 16 16"><path fill="currentColor" d="M4 2h2v6.5a2 2 0 0 0 4 0V2h2v6.5a4 4 0 0 1-8 0V2ZM3 13h10v1.5H3z"/></symbol>
+    <symbol id="ol-icon-strike" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M2 8h12"/><path fill="currentColor" d="M5 4c0-1.5 1.3-2.5 3-2.5 1.6 0 2.8.8 3 2.2H9.5C9.4 3.2 8.8 3 8 3c-1 0-1.7.4-1.7 1H5Zm0 8c.2 1.5 1.5 2.5 3.2 2.5 1.7 0 3-1 3-2.5h-1.5c0 .7-.7 1.2-1.5 1.2-.9 0-1.6-.5-1.7-1.2H5Z"/></svg></symbol>
+    <symbol id="ol-icon-font-color" viewBox="0 0 16 16"><path fill="currentColor" d="M3 13 7 3h2l4 10h-2l-1-2.5H6L5 13H3Zm3.5-4h3L8 5.2 6.5 9Z"/><rect x="3" y="14" width="10" height="1.5" fill="#0078D4"/></symbol>
+    <symbol id="ol-icon-highlight" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="m3 13 2-2 5-5 3 3-5 5-2 2zM3 13l-1 2h3"/><rect x="2" y="14.5" width="12" height="1" fill="#FFE074"/></symbol>
+    <symbol id="ol-icon-superscript" viewBox="0 0 16 16"><path fill="currentColor" d="M3 4h2l2 4 2-4h2l-3 5 3 5H9L7 10l-2 4H3l3-5L3 4Zm9-1h3v1h-2v1h2v1h-3V5l2-1h-2V3Z"/></symbol>
+    <symbol id="ol-icon-subscript" viewBox="0 0 16 16"><path fill="currentColor" d="M3 2h2l2 4 2-4h2l-3 5 3 5H9L7 8l-2 4H3l3-5L3 2Zm9 9h3v1h-2v1h2v1h-3v-1l2-1h-2v-1Z"/></symbol>
+    <symbol id="ol-icon-clear-format" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M4 3h9l-1 3-3 7H6L4 3Z"/><path fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" d="m11 11 3 3M14 11l-3 3"/></symbol>
+    <symbol id="ol-icon-list-bullet" viewBox="0 0 16 16"><g fill="currentColor"><circle cx="3" cy="4" r="1"/><circle cx="3" cy="8" r="1"/><circle cx="3" cy="12" r="1"/></g><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M6 4h8M6 8h8M6 12h8"/></symbol>
+    <symbol id="ol-icon-list-num" viewBox="0 0 16 16"><path fill="currentColor" d="M2 3h1.5v2.5H2zM2 7h1.5v.6L2.5 9H4v.5H2V8.5L3 7.5H2zM3 11.5H2v.7h1v.3H2v.5h1v.5H2v.5h2V11H2v.5h1z"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M6 4h8M6 8h8M6 12h8"/></symbol>
+    <symbol id="ol-icon-indent-dec" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M2 4h12M6 8h8M2 12h12M5 6 2 8l3 2"/></symbol>
+    <symbol id="ol-icon-indent-inc" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M2 4h12M6 8h8M2 12h12M3 6l3 2-3 2"/></symbol>
+    <symbol id="ol-icon-align-left" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M2 4h12M2 7h8M2 10h12M2 13h8"/></symbol>
+    <symbol id="ol-icon-align-center" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M2 4h12M4 7h8M2 10h12M4 13h8"/></symbol>
+    <symbol id="ol-icon-line-spacing" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M3 3v10M3 3l-1.5 1.5M3 3l1.5 1.5M3 13l-1.5-1.5M3 13l1.5-1.5M7 4h7M7 8h7M7 12h7"/></symbol>
+    <symbol id="ol-icon-styles" viewBox="0 0 16 16"><path fill="currentColor" d="M3 3h10v3H3zM3 7h10v2H3zM3 10h6v1.5H3z"/></symbol>
+    <symbol id="ol-icon-ltr" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M3 4h10M3 8h7M3 12h10M11 6l3 2-3 2"/></symbol>
+    <symbol id="ol-icon-rtl" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M3 4h10M6 8h7M3 12h10M5 6 2 8l3 2"/></symbol>
+
+    <!-- ===== Insert / message ribbon glyphs ===== -->
+    <symbol id="ol-icon-attach" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="m20 9-9 9a4 4 0 0 1-5.7-5.7l9-9a3 3 0 0 1 4.2 4.2l-8 8a2 2 0 0 1-2.8-2.8L15 6"/></symbol>
+    <symbol id="ol-icon-link" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="m11 17 6-6M9.5 14.5 7 17a4 4 0 0 0 5.7 5.7l3-3M18.5 13.5 21 11a4 4 0 0 0-5.7-5.7l-3 3"/></symbol>
+    <symbol id="ol-icon-signature" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M3 20c4 0 5-12 9-12s2 10 6 10c2 0 3-2 5-2"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M3 23h22"/></symbol>
+    <symbol id="ol-icon-pic" viewBox="0 0 28 28"><rect x="3" y="5" width="22" height="18" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="11" r="2" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="m3 19 6-5 5 4 4-3 7 6"/></symbol>
+    <symbol id="ol-icon-record" viewBox="0 0 28 28"><circle cx="14" cy="14" r="10" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="14" cy="14" r="4.5" fill="#D13438"/></symbol>
+    <symbol id="ol-icon-emoji" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="7" r="0.8" fill="currentColor"/><circle cx="10" cy="7" r="0.8" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M5.5 10c.7.8 1.5 1.2 2.5 1.2s1.8-.4 2.5-1.2"/></symbol>
+    <symbol id="ol-icon-loop" viewBox="0 0 28 28"><path fill="none" stroke="#7B61FF" stroke-width="1.6" d="M14 4a10 10 0 1 0 10 10"/><path fill="none" stroke="#7B61FF" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" d="M19 6h5v5"/></symbol>
+    <symbol id="ol-icon-dictate" viewBox="0 0 28 28"><rect x="11" y="4" width="6" height="14" rx="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M7 13a7 7 0 0 0 14 0M14 20v3M11 23h6"/></symbol>
+    <symbol id="ol-icon-table" viewBox="0 0 28 28"><rect x="3" y="5" width="22" height="18" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" d="M3 11h22M3 17h22M11 5v18M19 5v18"/></symbol>
+    <symbol id="ol-icon-address-book" viewBox="0 0 28 28"><rect x="5" y="3" width="18" height="22" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="14" cy="11" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="M8 19c1.5-2 3.5-3 6-3s4.5 1 6 3"/></symbol>
+    <symbol id="ol-icon-check-names" viewBox="0 0 28 28"><circle cx="14" cy="11" r="4" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M5 23c1.5-3 5-5 9-5s7.5 2 9 5M19 9l2 2 4-4"/></symbol>
+    <symbol id="ol-icon-poll" viewBox="0 0 28 28"><rect x="4" y="14" width="4" height="10" fill="currentColor"/><rect x="12" y="8" width="4" height="16" fill="currentColor"/><rect x="20" y="4" width="4" height="20" fill="currentColor"/></symbol>
+    <symbol id="ol-icon-send" viewBox="0 0 16 16"><path fill="currentColor" d="m2 2 12 6-12 6 2-6-2-6Zm2 2.5L5.2 8 4 11.5 11 8 4 4.5Z"/></symbol>
+
+    <!-- ===== Calendar ribbon glyphs ===== -->
+    <symbol id="ol-icon-new-event" viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="18" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" d="M4 11h20M9 4v4M19 4v4M14 14v6M11 17h6"/></symbol>
+    <symbol id="ol-icon-recurring" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M5 14a9 9 0 0 1 16-5l1 1M22 5v5h-5M23 14a9 9 0 0 1-16 5l-1-1M6 23v-5h5"/></symbol>
+    <symbol id="ol-icon-today" viewBox="0 0 28 28"><rect x="4" y="6" width="20" height="18" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" d="M4 11h20"/><circle cx="14" cy="17" r="3" fill="#0078D4"/></symbol>
+    <symbol id="ol-icon-weather" viewBox="0 0 28 28"><circle cx="11" cy="13" r="4" fill="#FFB900"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M14 19a4 4 0 0 1 8 0c2 0 3 1.5 3 3s-1 3-3 3H10c-2 0-3.5-1.3-3.5-3.2 0-1.7 1.1-3 2.8-3.2"/></symbol>
+
+    <!-- ===== View / Help ribbon glyphs ===== -->
+    <symbol id="ol-icon-print" viewBox="0 0 28 28"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M7 9V4h14v5M7 9h14v8H7zM5 12h2v8h14v-8h2v10H5z"/></symbol>
+    <symbol id="ol-icon-share" viewBox="0 0 28 28"><circle cx="22" cy="6" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="14" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="22" cy="22" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" d="m9 13 10-6M9 15l10 6"/></symbol>
+    <symbol id="ol-icon-sort" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" d="M5 3v10M5 3 3 5M5 3l2 2M11 13V3M11 13l-2-2M11 13l2-2"/></symbol>
+    <symbol id="ol-icon-filter" viewBox="0 0 16 16"><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" d="M2 3h12l-5 6v4l-2 1V9z"/></symbol>
+    <symbol id="ol-icon-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.5" fill="none" stroke="currentColor" stroke-width="1.3"/><path fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" d="m10.5 10.5 3.5 3.5"/></symbol>
+  </defs>
+</svg>
+
+<div class="outlook-bg"
+     data-scene-component="OutlookScene"
+     data-theme="{{theme}}"
+     data-active-rail="{{activeRail}}"
+     data-ribbon-variant="{{ribbonVariant}}">
+
+  <!-- ===== Top app bar (56px) ===== -->
+  <header class="ol-appbar">
+    <div class="ol-appbar-left">
+      <svg class="ol-appbar-logo" aria-hidden="true"><use href="#ol-icon-outlook-app"/></svg>
+      <span class="ol-appbar-wordmark">Outlook</span>
+    </div>
+
+    <div class="ol-appbar-search">
+      <svg class="ol-search-spark" aria-hidden="true"><use href="#ol-icon-sparkle"/></svg>
+      <span class="ol-search-text">{{searchPlaceholder}}</span>
+    </div>
+
+    <div class="ol-appbar-event-slot">{{{eventCardHtml}}}</div>
+
+    <div class="ol-appbar-right">
+      <button class="ol-appbar-icon ol-appbar-bell" aria-label="Notifications">
+        <svg aria-hidden="true"><use href="#ol-icon-bell"/></svg>
+        <span class="ol-bell-badge">{{notifCount}}</span>
+      </button>
+      <button class="ol-appbar-icon" aria-label="Settings"><svg aria-hidden="true"><use href="#ol-icon-settings"/></svg></button>
+      <div class="ol-appbar-avatar" aria-label="{{accountName}}">
+        <span class="ol-avatar-initial">{{accountInitial}}</span>
+      </div>
+      <div class="ol-window-controls">
+        <button class="ol-win-btn" aria-label="Minimize"><svg aria-hidden="true"><use href="#ol-icon-win-min"/></svg></button>
+        <button class="ol-win-btn" aria-label="Maximize"><svg aria-hidden="true"><use href="#ol-icon-win-max"/></svg></button>
+        <button class="ol-win-btn ol-win-close" aria-label="Close"><svg aria-hidden="true"><use href="#ol-icon-win-close"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== Body row: rail + main column ===== -->
+  <div class="ol-body">
+
+    <!-- Left rail (56px) -->
+    <nav class="ol-rail" aria-label="Outlook apps">
+      <button class="ol-rail-item" data-rail="mail" title="Mail">
+        <svg aria-hidden="true"><use href="#ol-icon-mail"/></svg>
+      </button>
+      <button class="ol-rail-item" data-rail="calendar" title="Calendar">
+        <svg aria-hidden="true"><use href="#ol-icon-calendar"/></svg>
+      </button>
+      <button class="ol-rail-item" data-rail="people" title="People">
+        <svg aria-hidden="true"><use href="#ol-icon-people"/></svg>
+      </button>
+      <button class="ol-rail-item" data-rail="tasks" title="To Do">
+        <svg aria-hidden="true"><use href="#ol-icon-tasks"/></svg>
+      </button>
+      <button class="ol-rail-item" data-rail="groups" title="Groups">
+        <svg aria-hidden="true"><use href="#ol-icon-groups"/></svg>
+      </button>
+      <button class="ol-rail-item ol-rail-item--bottom" data-rail="apps" title="More apps">
+        <svg aria-hidden="true"><use href="#ol-icon-apps"/></svg>
+      </button>
+    </nav>
+
+    <!-- Main column (flex 1) -->
+    <main class="ol-main">
+
+      <!-- Tab strip (36px) -->
+      <div class="ol-tabstrip">
+        <button class="ol-tab-icon" aria-label="Toggle nav"><svg aria-hidden="true"><use href="#ol-icon-hamburger"/></svg></button>
+        <button class="ol-tab" data-tab="file">File</button>
+        <button class="ol-tab ol-tab--active" data-tab="home">Home</button>
+        <button class="ol-tab" data-tab="view">View</button>
+        <button class="ol-tab" data-tab="help">Help</button>
+        {{{contextualTabs}}}
+        <div class="ol-tabstrip-spacer"></div>
+        <div class="ol-tabstrip-right">{{{rightHeaderSlot}}}</div>
+      </div>
+
+      <!-- Ribbon zone (~96px) — variant blocks shown/hidden by data-ribbon-variant -->
+      <div class="ol-ribbon">
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: mail-home                                            -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="mail-home">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg">
+              <svg aria-hidden="true"><use href="#ol-icon-new-mail"/></svg>
+              <span class="ol-ribbon-label">New<br/>mail</span>
+              <svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg>
+            </button>
+            <div class="ol-ribbon-group-name">New</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-trash"/></svg><span class="ol-ribbon-label">Delete</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-archive"/></svg><span class="ol-ribbon-label">Archive</span></button>
+            <div class="ol-ribbon-stack">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-ignore"/></svg><span>Ignore</span></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-block"/></svg><span>Block</span><svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></button>
+            </div>
+            <div class="ol-ribbon-group-name">Delete</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-report"/></svg><span class="ol-ribbon-label">Report<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Report</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <div class="ol-ribbon-stack">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-reply"/></svg><span>Reply</span></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-reply-all"/></svg><span>Reply all</span></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-forward"/></svg><span>Forward</span></button>
+            </div>
+            <div class="ol-ribbon-group-name">Respond</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-meeting"/></svg><span class="ol-ribbon-label">Schedule with<br/>Copilot</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-meeting"/></svg><span class="ol-ribbon-label">Meeting</span></button>
+            <div class="ol-ribbon-group-name">Respond</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-chat"/></svg><span class="ol-ribbon-label">Chat<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg ol-ribbon-btn--disabled"><svg aria-hidden="true"><use href="#ol-icon-share-teams"/></svg><span class="ol-ribbon-label">Share to<br/>Teams</span></button>
+            <div class="ol-ribbon-group-name">Teams</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-folder-move"/></svg><span class="ol-ribbon-label">Move<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Move</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <div class="ol-ribbon-stack">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-sweep"/></svg><span>Sweep</span></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-rules"/></svg><span>Rules</span><svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></button>
+            </div>
+            <div class="ol-ribbon-group-name">Move</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <div class="ol-ribbon-quicksteps">Quick steps<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></div>
+            <div class="ol-ribbon-group-name">Quick steps</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-read"/></svg><span class="ol-ribbon-label">Read /<br/>Unread</span></button>
+            <div class="ol-ribbon-stack">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-flag"/></svg><span>Flag</span><svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-pin"/></svg><span>Pin</span></button>
+            </div>
+            <div class="ol-ribbon-group-name">Tags</div>
+          </div>
+
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-categorize"/></svg><span class="ol-ribbon-label">Categorize<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-snooze"/></svg><span class="ol-ribbon-label">Snooze<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Tags</div>
+          </div>
+
+          <div class="ol-ribbon-collapse"><svg aria-hidden="true"><use href="#ol-icon-chev-up"/></svg></div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: mail-view                                            -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="mail-view">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-sort"/></svg><span class="ol-ribbon-label">Sort<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-filter"/></svg><span class="ol-ribbon-label">Filter<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">View</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-read"/></svg><span class="ol-ribbon-label">Reading<br/>pane</span></button>
+            <div class="ol-ribbon-group-name">Layout</div>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: mail-help                                            -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="mail-help">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-search"/></svg><span class="ol-ribbon-label">Help</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-share"/></svg><span class="ol-ribbon-label">Feedback</span></button>
+            <div class="ol-ribbon-group-name">Support</div>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: compose-message                                      -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="compose-message">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg ol-ribbon-btn--accent">
+              <svg aria-hidden="true"><use href="#ol-icon-send"/></svg>
+              <span class="ol-ribbon-label">Send</span>
+              <svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg>
+            </button>
+            <div class="ol-ribbon-group-name">Send</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-attach"/></svg><span class="ol-ribbon-label">Attach<br/>file<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-pic"/></svg><span class="ol-ribbon-label">Pictures</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-link"/></svg><span class="ol-ribbon-label">Link<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Insert</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-emoji"/></svg><span class="ol-ribbon-label">Emoji</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-table"/></svg><span class="ol-ribbon-label">Table<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Insert</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-signature"/></svg><span class="ol-ribbon-label">Signature<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Insert</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-loop"/></svg><span class="ol-ribbon-label">Loop<br/>components</span></button>
+            <div class="ol-ribbon-group-name">Collaborate</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-dictate"/></svg><span class="ol-ribbon-label">Dictate<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Voice</div>
+          </div>
+          <div class="ol-ribbon-collapse"><svg aria-hidden="true"><use href="#ol-icon-chev-up"/></svg></div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: compose-format                                       -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="compose-format">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-paste"/></svg><span class="ol-ribbon-label">Paste<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-stack">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-cut"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-copy"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-format-painter"/></svg></button>
+            </div>
+            <div class="ol-ribbon-group-name">Clipboard</div>
+          </div>
+          <div class="ol-ribbon-group ol-ribbon-group--text">
+            <div class="ol-font-row">
+              <div class="ol-font-name">Aptos<svg aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></div>
+              <div class="ol-font-size">12<svg aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></div>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-superscript"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-clear-format"/></svg></button>
+            </div>
+            <div class="ol-font-row">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-bold"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-italic"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-underline"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-strike"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-highlight"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-font-color"/></svg></button>
+            </div>
+            <div class="ol-ribbon-group-name">Basic Text</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <div class="ol-font-row">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-list-bullet"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-list-num"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-indent-dec"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-indent-inc"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-styles"/></svg><span>Styles</span><svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></button>
+            </div>
+            <div class="ol-font-row">
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-align-left"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-align-center"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-line-spacing"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-ltr"/></svg></button>
+              <button class="ol-ribbon-btn ol-ribbon-btn--sm"><svg aria-hidden="true"><use href="#ol-icon-rtl"/></svg></button>
+            </div>
+            <div class="ol-ribbon-group-name">Paragraph</div>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: compose-insert                                       -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="compose-insert">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-address-book"/></svg><span class="ol-ribbon-label">Address<br/>book</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-check-names"/></svg><span class="ol-ribbon-label">Check<br/>names</span></button>
+            <div class="ol-ribbon-group-name">Names</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-attach"/></svg><span class="ol-ribbon-label">Attach<br/>file</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-link"/></svg><span class="ol-ribbon-label">Link</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-pic"/></svg><span class="ol-ribbon-label">Pictures</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-record"/></svg><span class="ol-ribbon-label">Record</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-table"/></svg><span class="ol-ribbon-label">Table</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-poll"/></svg><span class="ol-ribbon-label">Scheduling<br/>poll</span></button>
+            <div class="ol-ribbon-group-name">Insert</div>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: search                                               -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="search">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-filter"/></svg><span class="ol-ribbon-label">Filter</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-folder-move"/></svg><span class="ol-ribbon-label">Folder<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">Refine</div>
+          </div>
+        </div>
+
+        <!-- ============================================================ -->
+        <!-- VARIANT: calendar-home                                        -->
+        <!-- ============================================================ -->
+        <div class="ol-ribbon-variant" data-variant="calendar-home">
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg ol-ribbon-btn--accent"><svg aria-hidden="true"><use href="#ol-icon-new-event"/></svg><span class="ol-ribbon-label">New<br/>event<svg class="ol-ribbon-chev" aria-hidden="true"><use href="#ol-icon-chev-down"/></svg></span></button>
+            <div class="ol-ribbon-group-name">New</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-today"/></svg><span class="ol-ribbon-label">Today</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-recurring"/></svg><span class="ol-ribbon-label">Recurring</span></button>
+            <div class="ol-ribbon-group-name">Go to</div>
+          </div>
+          <div class="ol-ribbon-group">
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-share"/></svg><span class="ol-ribbon-label">Share</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-print"/></svg><span class="ol-ribbon-label">Print</span></button>
+            <button class="ol-ribbon-btn ol-ribbon-btn--lg"><svg aria-hidden="true"><use href="#ol-icon-weather"/></svg><span class="ol-ribbon-label">Weather</span></button>
+            <div class="ol-ribbon-group-name">Manage</div>
+          </div>
+        </div>
+
+        <!-- Copilot pill — pinned far-right on every variant -->
+        <div class="ol-copilot-pin">
+          <button class="ol-copilot-btn">
+            <svg aria-hidden="true"><use href="#ol-icon-copilot"/></svg>
+            <span>Copilot</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ===== View body (single slot — Wave B fills with mail/calendar/compose layouts) ===== -->
+      <section class="ol-viewbody">
+        {{{viewBodyHtml}}}
+      </section>
+    </main>
+
+  </div>
+
+  <!-- ===== Floating tabs (e.g. Compose minimized tab strip) ===== -->
+  <div class="ol-floating-tabs">{{{floatingTabsHtml}}}</div>
+
+  <!-- ===== Toast (top-right) — controlled by data-toast-state ===== -->
+  <div class="ol-toast" data-toast-state="{{toastState}}">
+    <div class="ol-toast-title">{{toastTitle}}</div>
+    <div class="ol-toast-body">{{toastBody}}</div>
+  </div>
+
+</div>

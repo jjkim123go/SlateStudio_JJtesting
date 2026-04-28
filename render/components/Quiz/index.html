@@ -1,0 +1,167 @@
+<!--
+  Quiz — Single-answer quiz card with option reveal animation.
+  Props consumed: question, options, correctOptionId, mode,
+                  revealAnswerAtSec, teacherNote, scoreBadge
+  Data-island IDs: qz-options-{{sceneId}},
+                   qz-score-{{sceneId}}
+  Preprocessed props: optionsJson, scoreBadgeJson
+  Class prefix: qz-
+  Provenance: proposal §3.7, PR 6 Lane C (Education + Event pack)
+  NOTE: mode:"multi" is NOT supported — only mode:"single" path exists.
+-->
+<style>
+.scene-{{sceneId}} .qz-root {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  padding: 5% 8%;
+}
+
+.scene-{{sceneId}} .qz-question {
+  margin: 0 0 40px;
+  font-size: 46px;
+  font-weight: 800;
+  color: #ffffff;
+  text-align: center;
+  line-height: 1.18;
+  letter-spacing: -0.025em;
+  opacity: 0;
+}
+
+.scene-{{sceneId}} .qz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: 100%;
+  max-width: 880px;
+}
+
+.scene-{{sceneId}} .qz-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 18px 26px;
+  border-radius: 14px;
+  background: rgba(148, 163, 184, 0.08);
+  border: 2px solid rgba(148, 163, 184, 0.15);
+  color: #e2e8f0;
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.35;
+  opacity: 0;
+}
+
+.scene-{{sceneId}} .qz-option-letter {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 11px;
+  background: rgba(148, 163, 184, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.scene-{{sceneId}} .qz-option-label {
+  flex: 1;
+  min-width: 0;
+}
+
+.scene-{{sceneId}} .qz-option-ring {
+  position: absolute;
+  inset: -3px;
+  border-radius: 16px;
+  border: 3px solid #22c55e;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.scene-{{sceneId}} .qz-checkmark {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #22c55e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0);
+  opacity: 0;
+}
+.scene-{{sceneId}} .qz-checkmark svg {
+  width: 20px;
+  height: 20px;
+}
+
+.scene-{{sceneId}} .qz-explanation {
+  width: 100%;
+  max-width: 880px;
+  margin-top: 20px;
+  padding: 22px 28px;
+  border-radius: 14px;
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  color: #bbf7d0;
+  font-size: 22px;
+  line-height: 1.45;
+  opacity: 0;
+  perspective: 800px;
+}
+
+.scene-{{sceneId}} .qz-explanation-inner {
+  transform: rotateY(90deg);
+  transform-origin: left center;
+}
+
+.scene-{{sceneId}} .qz-teacher-note {
+  position: absolute;
+  bottom: 4%;
+  left: 8%;
+  right: 8%;
+  font-size: 18px;
+  color: rgba(148, 163, 184, 0.7);
+  font-style: italic;
+  text-align: center;
+  opacity: 0;
+}
+
+.scene-{{sceneId}} .qz-score-badge {
+  position: absolute;
+  top: 4%;
+  right: 4%;
+  padding: 8px 20px;
+  border-radius: 20px;
+  background: rgba(99, 102, 241, 0.18);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  color: #a5b4fc;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  opacity: 0;
+}
+</style>
+
+<div class="qz-root" data-scene-component="Quiz"
+  data-correct-option-id="{{correctOptionId}}"
+  data-mode="{{mode}}"
+  data-reveal-sec="{{revealAnswerAtSec}}">
+  <h2 class="qz-question">{{question}}</h2>
+  <div class="qz-options"></div>
+  <div class="qz-explanation"><div class="qz-explanation-inner"></div></div>
+  <div class="qz-teacher-note">{{teacherNote}}</div>
+  <div class="qz-score-badge"></div>
+  <script type="application/json" id="qz-options-{{sceneId}}">{{{optionsJson}}}</script>
+  <script type="application/json" id="qz-score-{{sceneId}}">{{{scoreBadgeJson}}}</script>
+</div>

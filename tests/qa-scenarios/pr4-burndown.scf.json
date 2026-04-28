@@ -1,0 +1,79 @@
+{
+  "version": "1.0",
+  "pipeline": "qa-smoke",
+  "metadata": {
+    "id": "pr4-burndown",
+    "title": "PR 4 Smoke — BurnDown (full props with native arrays + edge case)"
+  },
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30 },
+  "scenes": [
+    {
+      "id": "bd-full",
+      "duration": 10,
+      "component": "BurnDown",
+      "description": "Full props: plan (11 pts), actual (6 pts, shorter), forecast (4 pts), goalLine, 2 highlights, todayIndex=5 into merged domain [0..10]. Native arrays prove PROP_PREPROCESSORS wiring.",
+      "props": {
+        "title": "Sprint 23 — Burn-Down",
+        "xLabel": "Day",
+        "yLabel": "Points",
+        "plan": [
+          { "x": 0,  "y": 50 },
+          { "x": 1,  "y": 45 },
+          { "x": 2,  "y": 40 },
+          { "x": 3,  "y": 35 },
+          { "x": 4,  "y": 30 },
+          { "x": 5,  "y": 25 },
+          { "x": 6,  "y": 20 },
+          { "x": 7,  "y": 15 },
+          { "x": 8,  "y": 10 },
+          { "x": 9,  "y": 5 },
+          { "x": 10, "y": 0 }
+        ],
+        "actual": [
+          { "x": 0, "y": 50 },
+          { "x": 1, "y": 47 },
+          { "x": 2, "y": 43 },
+          { "x": 3, "y": 42 },
+          { "x": 4, "y": 36 },
+          { "x": 5, "y": 28 }
+        ],
+        "forecast": [
+          { "x": 6, "y": 22 },
+          { "x": 7, "y": 16 },
+          { "x": 8, "y": 10 },
+          { "x": 9, "y": 4 }
+        ],
+        "todayIndex": 5,
+        "goalLine": 0,
+        "highlights": [
+          { "x": 3, "label": "Scope added +8pts", "kind": "scope-change" },
+          { "x": 5, "label": "Team recovered",    "kind": "recover" }
+        ]
+      }
+    },
+    {
+      "id": "bd-edge",
+      "duration": 8,
+      "component": "BurnDown",
+      "description": "Edge case: todayIndex=99 is out of range (merged domain has 6 elements) — today marker must be silently hidden. No forecast, no highlights, no goalLine. Tests graceful degradation of optional props.",
+      "props": {
+        "title": "Sprint 42 — Early Days",
+        "xLabel": "Sprint day",
+        "yLabel": "Hours",
+        "plan": [
+          { "x": 1, "y": 40 },
+          { "x": 2, "y": 32 },
+          { "x": 3, "y": 24 },
+          { "x": 4, "y": 16 },
+          { "x": 5, "y": 8 },
+          { "x": 6, "y": 0 }
+        ],
+        "actual": [
+          { "x": 1, "y": 40 },
+          { "x": 2, "y": 38 }
+        ],
+        "todayIndex": 99
+      }
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "color": {
+    "type": "string",
+    "default": "#0078D4",
+    "description": "CSS color for the monospace text characters"
+  },
+  "cursorColor": {
+    "type": "string",
+    "default": "#ffffff",
+    "description": "CSS color for the blinking cursor"
+  },
+  "cols": {
+    "type": "number",
+    "default": 40,
+    "description": "Number of columns in the character grid (10–80)"
+  },
+  "rows": {
+    "type": "number",
+    "default": 22,
+    "description": "Number of rows in the character grid (5–40)"
+  },
+  "deleteOffset": {
+    "type": "number",
+    "default": 200,
+    "description": "Milliseconds offset between delete and retype waves (0–1000)"
+  }
+}

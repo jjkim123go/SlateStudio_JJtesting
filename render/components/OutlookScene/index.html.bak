@@ -1,0 +1,79 @@
+<div class="ol-bg" data-scene-component="OutlookScene"
+  style="position:absolute;inset:0;background:#faf9f8;display:flex;flex-direction:column;font-family:'Segoe UI','Helvetica Neue',Arial,sans-serif;overflow:hidden">
+
+  <!-- Top ribbon -->
+  <div class="ol-ribbon" style="height:90px;background:#f3f2f1;border-bottom:1px solid #e1dfdd;display:flex;flex-direction:column;flex-shrink:0">
+    <div style="display:flex;gap:20px;padding:4px 16px;font-size:13px;color:#323130">
+      <span style="color:#0078d4;font-weight:600;border-bottom:2px solid #0078d4;padding-bottom:2px">Home</span>
+      <span>View</span>
+      <span>Help</span>
+    </div>
+    <div style="display:flex;align-items:center;padding:6px 16px;gap:4px;flex:1">
+      <div style="display:flex;align-items:center;gap:6px;padding:6px 16px;background:#0078d4;border-radius:4px;color:#fff;font-size:13px;font-weight:600">
+        <span>✉️</span> New email
+      </div>
+      <div style="width:1px;height:28px;background:#d2d0ce;margin:0 8px"></div>
+      <div style="padding:6px 10px;font-size:13px;color:#323130;border-radius:4px">Reply</div>
+      <div style="padding:6px 10px;font-size:13px;color:#323130;border-radius:4px">Reply all</div>
+      <div style="padding:6px 10px;font-size:13px;color:#323130;border-radius:4px">Forward</div>
+      <div style="width:1px;height:28px;background:#d2d0ce;margin:0 8px"></div>
+      <div style="padding:6px 10px;font-size:13px;color:#323130;border-radius:4px">🗑️ Delete</div>
+      <div style="padding:6px 10px;font-size:13px;color:#323130;border-radius:4px">📦 Archive</div>
+    </div>
+  </div>
+
+  <!-- Body row -->
+  <div style="flex:1;display:flex;overflow:hidden;position:relative">
+    <!-- Folder pane -->
+    <div class="ol-folders" style="width:240px;background:#faf9f8;border-right:1px solid #e1dfdd;padding:12px 0;flex-shrink:0;overflow:hidden">
+      <div style="padding:8px 16px;display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#0078d4;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:600">{{accountInitial}}</div>
+        <div style="font-size:13px;color:#323130;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{accountName}}</div>
+      </div>
+      <div style="margin-top:8px">
+        <div style="padding:6px 16px 6px 24px;font-size:13px;color:#0078d4;font-weight:600;background:#edebe9;border-left:3px solid #0078d4;display:flex;justify-content:space-between">
+          <span>📥 {{currentFolder}}</span><span class="ol-unread-badge" style="background:#0078d4;color:#fff;border-radius:10px;padding:0 7px;font-size:11px;font-weight:700;min-width:18px;text-align:center">7</span>
+        </div>
+        <div style="padding:6px 16px 6px 24px;font-size:13px;color:#605e5c">📝 Drafts</div>
+        <div style="padding:6px 16px 6px 24px;font-size:13px;color:#605e5c">📤 Sent Items</div>
+        <div style="padding:6px 16px 6px 24px;font-size:13px;color:#605e5c">🗑️ Deleted Items</div>
+        <div style="padding:6px 16px 6px 24px;font-size:13px;color:#605e5c">📦 Archive</div>
+      </div>
+    </div>
+
+    <!-- Message list -->
+    <div class="ol-msglist" style="width:360px;background:#ffffff;border-right:1px solid #e1dfdd;overflow:hidden;flex-shrink:0;display:flex;flex-direction:column">
+      <div style="padding:10px 16px;font-size:13px;color:#605e5c;border-bottom:1px solid #f3f2f1">Focused · Other</div>
+      <div class="ol-msglist-items" style="flex:1;overflow:hidden">
+        {{{stepsHtml}}}
+      </div>
+    </div>
+
+    <!-- Reading pane -->
+    <div class="ol-reading" style="flex:1;background:#ffffff;padding:24px 32px;overflow:hidden">
+      <div class="ol-reading-content" style="opacity:0.4;color:#a19f9d;font-size:14px;display:flex;align-items:center;justify-content:center;height:100%">Select a message to read</div>
+    </div>
+
+    <!-- Compose overlay (hidden by default) -->
+    <div class="ol-compose-overlay" style="position:absolute;bottom:0;right:0;width:560px;height:70%;background:#fff;border:1px solid #e1dfdd;border-radius:8px 8px 0 0;box-shadow:0 -4px 24px rgba(0,0,0,0.12);display:flex;flex-direction:column;opacity:0;transform:translateY(100%);pointer-events:none;z-index:10">
+      <div style="padding:12px 16px;border-bottom:1px solid #f3f2f1;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:15px;font-weight:600;color:#323130">New Message</span>
+        <span style="font-size:18px;color:#605e5c;cursor:default">✕</span>
+      </div>
+      <div style="padding:8px 16px;border-bottom:1px solid #f3f2f1">
+        <div style="font-size:13px;color:#605e5c;margin-bottom:4px">To:</div>
+        <div style="font-size:13px;color:#605e5c">Cc:</div>
+      </div>
+      <div style="padding:8px 16px;border-bottom:1px solid #f3f2f1;font-size:13px;color:#605e5c">Subject:</div>
+      <div class="ol-compose-body" style="flex:1;padding:12px 16px;font-size:14px;color:#323130;overflow:hidden"></div>
+      <div class="ol-compose-attachments" style="padding:0 16px;display:flex;gap:8px;flex-wrap:wrap"></div>
+      <div style="padding:12px 16px;border-top:1px solid #f3f2f1;display:flex;gap:8px">
+        <div class="ol-send-btn" style="padding:6px 20px;background:#0078d4;color:#fff;border-radius:4px;font-size:13px;font-weight:600">Send</div>
+        <div style="padding:6px 12px;font-size:13px;color:#605e5c">📎 Attach</div>
+      </div>
+    </div>
+
+    <!-- Sent toast (hidden) -->
+    <div class="ol-sent-toast" style="position:absolute;top:16px;right:16px;background:#107c10;color:#fff;padding:10px 20px;border-radius:6px;font-size:13px;font-weight:600;opacity:0;z-index:20;box-shadow:0 4px 12px rgba(0,0,0,0.15)">✓ Message sent</div>
+  </div>
+</div>
