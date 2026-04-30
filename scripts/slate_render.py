@@ -8,7 +8,7 @@ The scenario JSON should contain:
     company: Company name (default: Contoso)
     tagline: Company tagline
     voice: Voice preset (default: professional-female)
-    style: Visual style/palette (default: tech-blue)
+    style: Visual style/palette (default: premium-velvet)
     scenes: list of scene objects with:
         id: Unique scene ID
         title: Scene title
@@ -395,25 +395,35 @@ def _self_review(trace_path: str | None, total_duration: float, target_duration:
         }
 
         for scene in scenes:
-            component = scene.get("component")
-            rule = rules.get(component)
-            if not rule:
+            components = [scene.get("component"), *(scene.get("components") or [])]
+            components = [component for component in components if component]
+            components = list(dict.fromkeys(components))
+            if not components:
                 continue
-            props = scene.get("props") or {}
-            if not any(_has_renderable_content(props.get(field)) for field in rule["required"]):
-                score = 1
-                findings.append(
-                    f"Synthetic surface {scene.get('id', component)} ({component}) is missing a renderable body contract"
-                )
-                continue
+            component_layers = {
+                layer.get("component"): layer.get("props") or {}
+                for layer in scene.get("layers") or []
+                if layer.get("type") == "component" and layer.get("component")
+            }
+            for component in components:
+                rule = rules.get(component)
+                if not rule:
+                    continue
+                props = component_layers.get(component) or scene.get("props") or {}
+                if not any(_has_renderable_content(props.get(field)) for field in rule["required"]):
+                    score = 1
+                    findings.append(
+                        f"Synthetic surface {scene.get('id', component)} ({component}) is missing a renderable body contract"
+                    )
+                    continue
 
-            has_legacy = _has_renderable_content(props.get("stepsHtml"))
-            has_canonical = any(_has_renderable_content(props.get(field)) for field in rule["canonical"])
-            if has_legacy and not has_canonical:
-                score = min(score, 2)
-                findings.append(
-                    f"Synthetic surface {scene.get('id', component)} ({component}) is using the legacy compatibility path; prefer the canonical slot contract"
-                )
+                has_legacy = _has_renderable_content(props.get("stepsHtml"))
+                has_canonical = any(_has_renderable_content(props.get(field)) for field in rule["canonical"])
+                if has_legacy and not has_canonical:
+                    score = min(score, 2)
+                    findings.append(
+                        f"Synthetic surface {scene.get('id', component)} ({component}) is using the legacy compatibility path; prefer the canonical slot contract"
+                    )
 
         return score, findings
 
@@ -1046,7 +1056,7 @@ def render_video(scenario: dict, output_dir: str, use_ai_images: bool = True,
     company = scenario.get("company", "Contoso")
     tagline = scenario.get("tagline", "")
     voice = scenario.get("voice", "professional-female")
-    style = scenario.get("style", "tech-blue")
+    style = scenario.get("style", "premium-velvet")
     scenes = scenario.get("scenes", [])
 
     # ── Fix: Auto-detect video_type for voice cycling ──────────
@@ -1689,7 +1699,7 @@ SCENARIOS = {
         "company": "Contoso",
         "tagline": "AI-Powered Innovation",
         "voice": "professional-female",
-        "style": "tech-blue",
+        "style": "ai-native",
         "intro_narration": "Welcome to Contoso, where we are redefining enterprise AI.",
         "outro_narration": "Join us on this journey. Visit contoso.com to get started today.",
         "cta_text": "Get Started Today",

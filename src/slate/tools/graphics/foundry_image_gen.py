@@ -155,7 +155,7 @@ class FoundryImageGen(BaseTool):
                     error=f"image_gen dry-run implementation unavailable: {_IMPORT_ERROR}",
                     metadata={"provider": self.provider, "model": "gpt-image-2"},
                 )
-            await asyncio.to_thread(_generate_scene_image, output_path, prompt[:80], palette="tech-blue")
+            await asyncio.to_thread(_generate_scene_image, output_path, prompt[:80], palette="premium-velvet")
             return ToolResult(
                 success=True,
                 output={

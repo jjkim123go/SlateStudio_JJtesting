@@ -195,6 +195,10 @@ def select_model(prompt: str, hint: str | None = None) -> str:
 
 # Enterprise color palettes (gradient pairs: top-left → bottom-right)
 PALETTES = {
+    "premium-velvet": ((18, 10, 31),   (42, 27, 61)),
+    "ai-native":      ((13, 16, 32),   (32, 38, 67)),
+    "dark-cinema":    ((8, 9, 13),     (32, 36, 45)),
+    "warm-editorial": ((23, 18, 15),   (51, 37, 30)),
     "tech-blue":    ((15, 32, 85),    (30, 80, 180)),
     "dark":         ((10, 10, 20),    (35, 35, 55)),
     "data-green":   ((10, 45, 30),    (25, 110, 75)),
@@ -209,6 +213,10 @@ PALETTES = {
 
 # Microsoft brand colors
 ACCENT_COLORS = {
+    "champagne": (231, 215, 162),
+    "violet": (139, 92, 246),
+    "cyan": (40, 215, 229),
+    "coral": (255, 127, 109),
     "blue":   (0, 120, 212),
     "green":  (16, 124, 16),
     "yellow": (255, 185, 0),
@@ -297,8 +305,8 @@ def generate_scene_image(
     output_path: str,
     title: str,
     subtitle: str = "",
-    palette: str = "tech-blue",
-    accent: str = "blue",
+    palette: str = "premium-velvet",
+    accent: str = "champagne",
     width: int = 1920,
     height: int = 1080,
     scene_number: int = 0,
@@ -321,8 +329,8 @@ def generate_scene_image(
     Returns:
         Path to generated PNG
     """
-    colors = PALETTES.get(palette, PALETTES["tech-blue"])
-    accent_color = ACCENT_COLORS.get(accent, ACCENT_COLORS["blue"])
+    colors = PALETTES.get(palette, PALETTES["premium-velvet"])
+    accent_color = ACCENT_COLORS.get(accent, ACCENT_COLORS["champagne"])
 
     # Create gradient background
     img = create_gradient(width, height, colors[0], colors[1])
@@ -400,7 +408,7 @@ def generate_brand_intro(
     height: int = 1080,
 ) -> str:
     """Generate a brand intro slide with centered logo text."""
-    img = create_gradient(width, height, (8, 12, 25), (20, 30, 55))
+    img = create_gradient(width, height, PALETTES["premium-velvet"][0], PALETTES["premium-velvet"][1])
     draw = ImageDraw.Draw(img)
 
     # Company name — large, centered
@@ -415,13 +423,13 @@ def generate_brand_intro(
         tag_font = _find_font(36)
         tag_bbox = tag_font.getbbox(tagline)
         tx = (width - tag_bbox[2]) // 2
-        draw.text((tx, y + bbox[3] + 30), tagline, font=tag_font, fill=(140, 165, 200))
+        draw.text((tx, y + bbox[3] + 30), tagline, font=tag_font, fill=(201, 191, 215))
 
     # Accent line
     line_width = 200
     line_x = (width - line_width) // 2
     line_y = y + bbox[3] + (80 if tagline else 30)
-    draw.rectangle([line_x, line_y, line_x + line_width, line_y + 3], fill=ACCENT_COLORS["blue"])
+    draw.rectangle([line_x, line_y, line_x + line_width, line_y + 3], fill=ACCENT_COLORS["champagne"])
 
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -438,7 +446,7 @@ def generate_brand_outro(
     height: int = 1080,
 ) -> str:
     """Generate a brand outro/CTA slide."""
-    img = create_gradient(width, height, (8, 12, 25), (15, 22, 45))
+    img = create_gradient(width, height, PALETTES["premium-velvet"][0], PALETTES["premium-velvet"][1])
     draw = ImageDraw.Draw(img)
 
     # CTA text
@@ -453,7 +461,7 @@ def generate_brand_outro(
         url_font = _find_font(30)
         url_bbox = url_font.getbbox(url)
         ux = (width - url_bbox[2]) // 2
-        draw.text((ux, y + bbox[3] + 30), url, font=url_font, fill=ACCENT_COLORS["blue"])
+        draw.text((ux, y + bbox[3] + 30), url, font=url_font, fill=ACCENT_COLORS["champagne"])
 
     # Company name small at bottom
     small_font = _find_font(24)
@@ -608,7 +616,7 @@ def generate_ai_image(
     print(f"  [image_gen] Model routing: {chosen} (prompt: {prompt[:60]}...)")
 
     if chosen == "structured":
-        generate_scene_image(str(out), prompt[:80], palette="tech-blue")
+        generate_scene_image(str(out), prompt[:80], palette="premium-velvet")
         return {"path": str(out), "method": "structured", "model": "none", "size_kb": round(out.stat().st_size / 1024), "cost": 0.0}
 
     token = _get_azure_token()
@@ -736,7 +744,7 @@ def _diagram_image_prompt(boxes: list[dict], arrows: list[dict], reason: str) ->
     """
     if not _STRUCTURED_AVAILABLE:
         print("  ⚠ structured_image module not available — Pillow slide fallback")
-        generate_scene_image(output_path, structured_visual.get("title", ""), palette="tech-blue")
+        generate_scene_image(output_path, structured_visual.get("title", ""), palette="premium-velvet")
         out = Path(output_path)
         return {"path": str(out), "method": "pillow-fallback", "model": "none",
                 "size_kb": round(out.stat().st_size / 1024), "cost": 0.0}
@@ -765,7 +773,7 @@ def _diagram_image_prompt(boxes: list[dict], arrows: list[dict], reason: str) ->
     renderer = render_map.get(stype)
     if not renderer:
         print(f"  ⚠ Unknown structured type '{stype}' — Pillow slide fallback")
-        generate_scene_image(output_path, title, palette="tech-blue")
+        generate_scene_image(output_path, title, palette="premium-velvet")
     else:
         print(f"  📐 Structured image: {stype} — {title[:50]}")
         renderer()
@@ -783,7 +791,7 @@ if __name__ == "__main__":
     generate_brand_intro(str(out_dir / "intro.png"), "Contoso", "AI-Powered Innovation")
     generate_scene_image(str(out_dir / "scene1.png"), "The Future of Enterprise AI",
                         "Our platform transforms how teams create content",
-                        palette="tech-blue", scene_number=1, total_scenes=5)
+                        palette="premium-velvet", scene_number=1, total_scenes=5)
     generate_scene_image(str(out_dir / "scene2.png"), "Key Capabilities",
                         subtitle="Everything you need in one place",
                         palette="innovation", accent="yellow", scene_number=2, total_scenes=5,

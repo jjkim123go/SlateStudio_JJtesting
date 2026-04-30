@@ -15,7 +15,10 @@ from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
-from subtitle_burner import burn_subtitle_on_image
+try:
+    from subtitle_burner import burn_subtitle_on_image
+except ImportError:
+    from scripts.lib.subtitle_burner import burn_subtitle_on_image
 
 # Azure configuration
 from slate.core.azure_config import azure_config as _az_cfg

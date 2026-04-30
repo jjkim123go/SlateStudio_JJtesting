@@ -94,7 +94,7 @@ class IngestResult:
             "company": self.metadata.get("author", ""),
             "tagline": "",
             "voice": "professional-female",
-            "style": "tech-blue",
+            "style": "premium-velvet",
             "scenes": scenes,
             "source": {
                 "type": self.source_type,

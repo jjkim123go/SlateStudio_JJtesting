@@ -17,6 +17,24 @@ tracks:
     composer: "AtlasAudio"
     source_url: "https://pixabay.com/music/-510518/"
 
+  synthwave_chill:
+    path: "fassounds-crypto-dreams-gaming-synthwave-chill-technology-280693.mp3"
+    duration_sec: 131.79
+    mood: "synthwave, chill, technology, modern"
+    use_case: "AI/product demos, theme showcases, energetic technical walk-throughs"
+    license: "Pixabay Content License"
+    composer: "FASSounds"
+    source_url: "https://pixabay.com/music/-280693/"
+
+  corporate_technology:
+    path: "freemusicforvideo-corporate-technology-401961.mp3"
+    duration_sec: 75.42
+    mood: "corporate, technology, clean, confident"
+    use_case: "enterprise product demos, capability overviews, concise explainers"
+    license: "Pixabay Content License"
+    composer: "FreeMusicForVideo"
+    source_url: "https://pixabay.com/music/-401961/"
+
   neutral:
     path: "lexin_music-cinematic-documentary-115669.mp3"
     duration_sec: 131.76
@@ -25,6 +43,15 @@ tracks:
     license: "Pixabay Content License"
     composer: "Lexin_Music"
     source_url: "https://pixabay.com/music/-115669/"
+
+  electronic_future_beats:
+    path: "qubesounds-electronic-future-beats_fadeout-117997.mp3"
+    duration_sec: 126.04
+    mood: "electronic, future beats, upbeat, polished"
+    use_case: "innovation stories, premium theme showcases, modern app walkthroughs"
+    license: "Pixabay Content License"
+    composer: "QubeSounds"
+    source_url: "https://pixabay.com/music/-117997/"
 
   cinematic_build:
     path: "tunetank-inspiring-cinematic-music-409347.mp3"

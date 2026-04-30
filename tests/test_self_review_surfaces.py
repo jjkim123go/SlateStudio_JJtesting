@@ -160,6 +160,34 @@ def test_self_review_blocks_long_static_visual_hold():
     assert any("no visual holds longer than" in warning for warning in result["warnings"])
 
 
+def test_self_review_allows_timing_sensitive_component_layer_holds():
+    result = _self_review(
+        trace_path=None,
+        total_duration=10.0,
+        target_duration=10.0,
+        scene_count=1,
+        brand_name=None,
+        video_path=None,
+        scenes=[{
+            "id": "chart-layer",
+            "duration": 10,
+            "layers": [
+                {
+                    "type": "component",
+                    "component": "DataChart",
+                    "props": {"title": "Premium", "labels": "[\"A\",\"B\"]"},
+                }
+            ],
+        }],
+        narration_texts=["The chart animates and remains readable."],
+        captions={"style": "word-highlight"},
+        deep_review=False,
+    )
+
+    assert result["scores"]["visual_consistency"] >= 2
+    assert not any("chart-layer" in warning and "no visual holds longer" in warning for warning in result["warnings"])
+
+
 def test_review_stage_writes_report_and_blocks_failed_review(tmp_path: Path):
     self_review = {
         "verdict": "FAIL",

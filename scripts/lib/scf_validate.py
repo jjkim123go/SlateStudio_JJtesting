@@ -29,6 +29,26 @@ VISUAL_BEAT_KEYS = {
     "states",
 }
 
+TIMING_SENSITIVE_COMPONENTS = {
+    "DataChart",
+    "DataFlow",
+    "MetricsCard",
+    "MetricStack",
+    "ArchitectureDiagram",
+    "VSCodeScene",
+    "GitHubScene",
+    "TeamsScene",
+    "OutlookScene",
+    "ExcelScene",
+    "PlannerScene",
+    "PowerPointScene",
+    "PowerBIScene",
+    "CTABlock",
+    "StepByStep",
+    "TerminalCast",
+    "TerminalScene",
+}
+
 
 def _scene_id(scene: dict) -> str:
     return scene.get("id") or scene.get("title") or "?"
@@ -82,15 +102,27 @@ def _count_beats(value) -> int:
     return 1
 
 
-def _scene_visual_beat_count(scene: dict) -> int:
-    beats = 1 if (scene.get("component") or scene.get("layers")) else 0
-    props = scene.get("props") or {}
-    for key, value in props.items():
+def _component_visual_beats(component: str | None, props: dict) -> int:
+    if not component:
+        return 0
+    beats = 1
+    if component in TIMING_SENSITIVE_COMPONENTS:
+        beats = 3
+    for key, value in (props or {}).items():
         if key in VISUAL_BEAT_KEYS or key.endswith("Steps") or key.endswith("States") or key.endswith("Beats"):
             beats = max(beats, _count_beats(value))
+    return beats
+
+
+def _scene_visual_beat_count(scene: dict) -> int:
+    beats = _component_visual_beats(scene.get("component"), scene.get("props") or {})
+    if not beats and scene.get("layers"):
+        beats = 1
 
     visual_starts: set[float] = set()
     for layer in scene.get("layers") or []:
+        if layer.get("type") == "component":
+            beats = max(beats, _component_visual_beats(layer.get("component"), layer.get("props") or {}))
         if layer.get("type") in {"image", "video", "shape", "text", "caption"}:
             try:
                 visual_starts.add(float(layer.get("startTime") or layer.get("start") or 0))

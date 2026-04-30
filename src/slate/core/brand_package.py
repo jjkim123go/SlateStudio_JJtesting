@@ -17,16 +17,18 @@ from typing import Any
 
 import yaml
 
+from slate.core.theme_intelligence import choose_theme
+
 logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
 class ColorPalette:
     """Color palette definition."""
-    primary: list[str] = field(default_factory=lambda: ["#0078D4"])
-    accent: list[str] = field(default_factory=list)
-    background: str = "#FFFFFF"
-    text: str = "#323130"
+    primary: list[str] = field(default_factory=lambda: ["#8B5CF6"])
+    accent: list[str] = field(default_factory=lambda: ["#E7D7A2"])
+    background: str = "#120A1F"
+    text: str = "#F8F4EC"
 
 
 @dataclass(frozen=True)
@@ -103,7 +105,7 @@ class BrandPackage:
 
     Usage:
         brand = BrandPackage.load("config/org/brand-packages/contoso-corporate.yaml")
-        brand.colors.primary  # ["#0078D4", "#106EBE"]
+        brand.colors.primary  # ["#8B5CF6", "#E7D7A2"] for defaults, or brand-specified colors
         brand.is_locked       # True — cannot be overridden
         brand.logo.required   # True — must appear in every video
     """
@@ -125,7 +127,7 @@ class BrandPackage:
     @property
     def primary_color(self) -> str:
         """First primary color (most common need)."""
-        return self.colors.primary[0] if self.colors.primary else "#0078D4"
+        return self.colors.primary[0] if self.colors.primary else "#8B5CF6"
 
     @property
     def accent_color(self) -> str:
@@ -171,11 +173,9 @@ class BrandPackage:
 
     def to_style_vars(self) -> dict[str, str]:
         """Generate CSS-style variables for HyperFrames rendering."""
+        theme = choose_theme(brand=self)
         return {
-            "--brand-primary": self.primary_color,
-            "--brand-accent": self.accent_color,
-            "--brand-bg": self.colors.background,
-            "--brand-text": self.colors.text,
+            **theme.to_style_vars(),
             "--font-heading": self.heading_font,
             "--font-body": self.body_font,
         }
@@ -204,7 +204,7 @@ class BrandPackage:
         # Color palette
         palette_data = visual.get("color_palette", {})
         colors = ColorPalette(
-            primary=palette_data.get("primary", ["#0078D4"]),
+            primary=palette_data.get("primary", ["#8B5CF6"]),
             accent=palette_data.get("accent", []),
             background=palette_data.get("background", "#FFFFFF"),
             text=palette_data.get("text", "#323130"),
@@ -297,14 +297,15 @@ class BrandPackage:
 
     @classmethod
     def default(cls) -> BrandPackage:
-        """Return a default brand package (clean professional look)."""
+        """Return Slate's premium default brand package."""
+        theme = choose_theme({"theme": "premium-velvet"})
         return cls(
             name="default",
             org="",
             colors=ColorPalette(
-                primary=["#0078D4"],
-                accent=["#FFB900"],
-                background="#1A1A2E",
-                text="#FFFFFF",
+                primary=[theme.primary],
+                accent=[theme.accent],
+                background=theme.background,
+                text=theme.text,
             ),
         )

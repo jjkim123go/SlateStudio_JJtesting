@@ -21,6 +21,7 @@ import argparse
 import json
 import sys
 
+from slate.core.music_library import discover_music_sources
 from slate.core.tool_registry import registry
 
 
@@ -63,6 +64,7 @@ def main(argv: list[str] | None = None) -> int:
 
     count = registry.discover()
     report = registry.provider_menu_summary()
+    report["music_sources"] = discover_music_sources()
 
     if args.json_only:
         print(json.dumps(report, indent=2, default=str))
@@ -82,6 +84,12 @@ def main(argv: list[str] | None = None) -> int:
             _print("\nWarnings:")
             for w in report["runtime_warnings"]:
                 _print(f"  - {w}")
+        music = report["music_sources"]
+        built_in = music["built_in_source"]
+        _print("\nMusic:")
+        _print(f"  Built-in library: {'OK' if built_in['found'] else 'missing'} ({built_in['track_count']} file(s))")
+        if built_in.get("missing_manifest_tracks"):
+            _print(f"  Missing manifest tracks: {len(built_in['missing_manifest_tracks'])}")
         return 0
 
     _print("=" * 70)

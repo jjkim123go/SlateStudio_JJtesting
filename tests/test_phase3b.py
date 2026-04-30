@@ -8,6 +8,36 @@ import pytest
 import yaml
 
 
+class TestMusicLibraryDiscovery:
+    """Tests for concrete music discovery, including ignored local media."""
+
+    def test_discovers_manifest_tracks_from_filesystem(self, tmp_path):
+        from slate.core.music_library import discover_music_sources
+
+        library = tmp_path / "assets" / "music" / "library"
+        library.mkdir(parents=True)
+        (library / "premium-bed.mp3").write_bytes(b"fake mp3")
+        (library / "MANIFEST.yaml").write_text(
+            yaml.dump({
+                "tracks": {
+                    "premium": {
+                        "path": "premium-bed.mp3",
+                        "duration_sec": 42.0,
+                        "mood": "premium",
+                    }
+                }
+            }),
+            encoding="utf-8",
+        )
+
+        report = discover_music_sources(tmp_path)
+        built_in = report["built_in_source"]
+        assert report["available"] is True
+        assert built_in["found"] is True
+        assert built_in["track_count"] == 1
+        assert built_in["manifest_tracks"][0]["exists"] is True
+
+
 # ═══════════════════════════════════════════════════════════════════════
 # Brand Package Tests
 # ═══════════════════════════════════════════════════════════════════════
@@ -71,7 +101,8 @@ class TestBrandPackage:
         from slate.core.brand_package import BrandPackage
         brand = BrandPackage.default()
         assert brand.name == "default"
-        assert brand.primary_color == "#0078D4"
+        assert brand.primary_color == "#8B5CF6"
+        assert brand.accent_color == "#E7D7A2"
         assert brand.logo.required is False
 
     def test_to_scf_props(self, tmp_path):
@@ -96,7 +127,8 @@ class TestBrandPackage:
         from slate.core.brand_package import BrandPackage
         brand = BrandPackage.default()
         vars_ = brand.to_style_vars()
-        assert vars_["--brand-primary"] == "#0078D4"
+        assert vars_["--brand-primary"] == "#8B5CF6"
+        assert vars_["--slate-bg"] == "#120A1F"
         assert "--font-heading" in vars_
 
     def test_validate_color(self, tmp_path):
@@ -311,7 +343,85 @@ class TestSCFComposer:
         composer = SCFComposer(brand=brand)
         scf = composer.from_scenario(self._sample_scenario())
         assert scf["captions"]["font"] == "Comic Sans"
-        assert scf["captions"]["highlightColor"] == "#AABB00"
+        assert scf["captions"]["highlightColor"] != "#0078D4"
+        assert scf["metadata"]["theme"]["name"] == "brand-CaptionBrand"
+
+    def test_default_scf_has_theme_metadata(self):
+        from slate.core.scf_composer import SCFComposer
+        composer = SCFComposer()
+        scf = composer.from_scenario(self._sample_scenario())
+        theme = scf["metadata"]["theme"]
+        assert theme["name"] == "premium-velvet"
+        assert theme["primary"] != "#0078D4"
+        assert scf["captions"]["highlightColor"] == theme["captionHighlight"]
+        assert scf["metadata"]["visual_direction"]["theme"] == "premium-velvet"
+
+    def test_ai_scenario_selects_ai_native_theme(self):
+        from slate.core.scf_composer import SCFComposer
+        scenario = self._sample_scenario()
+        scenario["title"] = "Agentic AI Platform Launch"
+        scenario["tagline"] = "Copilot workflows for every team"
+        scf = SCFComposer().from_scenario(scenario)
+        assert scf["metadata"]["theme"]["name"] == "ai-native"
+        assert scf["metadata"]["theme"]["accent"] == "#28D7E5"
+
+    def test_theme_selection_uses_word_tokens(self):
+        from slate.core.theme_intelligence import choose_theme
+        theme = choose_theme({"title": "Quarterly campaign update", "scenes": []})
+        assert theme.name == "premium-velvet"
+
+    def test_component_scene_preserves_authored_props(self):
+        from slate.core.scf_composer import SCFComposer
+        scenario = {
+            "title": "Component Safety",
+            "company": "TestCo",
+            "scenes": [
+                {
+                    "id": "metric",
+                    "duration": 6,
+                    "component": "MetricsCard",
+                    "props": {"label": "Latency", "value": "42 ms"},
+                }
+            ],
+        }
+        scf = SCFComposer().from_scenario(scenario)
+        props = scf["scenes"][1]["props"]
+        assert props == {"label": "Latency", "value": "42 ms"}
+
+
+class TestThemeIntelligence:
+    """Tests for runtime theme choice and visibility guardrails."""
+
+    def test_contrast_guard_adjusts_low_contrast_text(self):
+        from slate.core.theme_intelligence import contrast_ratio, ensure_contrast
+        adjusted = ensure_contrast("#111111", "#000000", minimum=4.5)
+        assert contrast_ratio(adjusted, "#000000") >= 4.5
+
+    def test_surface_guard_separates_dark_component_surfaces(self):
+        from slate.core.theme_intelligence import contrast_ratio, ensure_surface_separation
+        adjusted = ensure_surface_separation("#101010", "#0F0F0F", minimum=1.18)
+        assert contrast_ratio(adjusted, "#0F0F0F") >= 1.18
+
+    def test_brand_theme_derives_safe_tokens(self, tmp_path):
+        from slate.core.brand_package import BrandPackage
+        from slate.core.theme_intelligence import choose_theme, contrast_ratio
+        yaml_content = {
+            "identity": {"name": "DarkBrand"},
+            "visual_language": {
+                "color_palette": {
+                    "primary": ["#1A1A1A"],
+                    "accent": ["#222222"],
+                    "background": "#101010",
+                    "text": "#111111",
+                }
+            },
+        }
+        p = tmp_path / "brand.yaml"
+        p.write_text(yaml.dump(yaml_content), encoding="utf-8")
+        theme = choose_theme(brand=BrandPackage.load(p))
+        assert theme.name == "brand-DarkBrand"
+        assert contrast_ratio(theme.text, theme.background) >= 7.0
+        assert contrast_ratio(theme.surface, theme.background) >= 1.18
 
 
 # ═══════════════════════════════════════════════════════════════════════

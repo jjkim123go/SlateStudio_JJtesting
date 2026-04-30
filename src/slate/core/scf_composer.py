@@ -21,6 +21,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from slate.core.theme_intelligence import ThemeTokens, choose_theme, component_theme_notes
+
 logger = logging.getLogger(__name__)
 
 # Default output profile
@@ -85,7 +87,8 @@ class SCFComposer:
         scenes: list[dict[str, Any]] = []
 
         # Brand intro scene
-        brand_props = self._brand_props(scenario)
+        theme = choose_theme(scenario, self.brand)
+        brand_props = self._brand_props(scenario, theme)
         scenes.append({
             "id": "brand-intro",
             "duration": scenario.get("intro_duration", 4),
@@ -102,7 +105,7 @@ class SCFComposer:
         # Content scenes
         for scene_data in scenario.get("scenes", []):
             scene_id = scene_data["id"]
-            scene = self._build_scene(scene_data, assets, brand_props)
+            scene = self._build_scene(scene_data, assets, brand_props, theme)
             scenes.append(scene)
 
         # Brand outro scene
@@ -142,7 +145,7 @@ class SCFComposer:
             }
 
         # Captions config from brand
-        scf["captions"] = self._caption_config()
+        scf["captions"] = self._caption_config(theme)
 
         # Metadata
         source_components = {
@@ -154,6 +157,12 @@ class SCFComposer:
             "title": scenario.get("title", "Untitled"),
             "generated_by": "slate-scf-composer",
             "scene_count": len(scenes),
+            "theme": theme.to_scf_metadata(),
+            "visual_direction": {
+                "theme": theme.name,
+                "rationale": theme.rationale,
+                "safety": "Semantic tokens are contrast-validated; product/demo components preserve internal UI colors and use themed surrounding surfaces.",
+            },
         }
         if source_components:
             scf["metadata"]["source_components"] = source_components
@@ -165,6 +174,7 @@ class SCFComposer:
         scene_data: dict[str, Any],
         assets: AssetManifest,
         brand_props: dict[str, Any],
+        theme: ThemeTokens,
     ) -> dict[str, Any]:
         """Build a single SCF scene from scenario scene data."""
         scene_id = scene_data["id"]
@@ -172,11 +182,13 @@ class SCFComposer:
 
         component = scene_data.get("component")
         if component:
+            props = dict(scene_data.get("props", {}))
             scene: dict[str, Any] = {
                 "id": scene_id,
                 "duration": duration,
                 "component": component,
-                "props": scene_data.get("props", {}),
+                "props": props,
+                "notes": scene_data.get("notes", component_theme_notes(component)["rationale"]),
                 "transition": scene_data.get("transition", "crossfade"),
             }
             narration_path = assets.scene_narrations.get(scene_id, "")
@@ -195,6 +207,12 @@ class SCFComposer:
 
         layers: list[dict[str, Any]] = []
 
+        if not image_path:
+            layers.append({
+                "type": "shape",
+                "fill": theme.background,
+            })
+
         # Background image layer
         if image_path:
             layers.append({
@@ -208,7 +226,13 @@ class SCFComposer:
             layers.append({
                 "type": "text",
                 "content": title,
-                "style": "heading",
+                "style": {
+                    "fontSize": 64,
+                    "fontWeight": 700,
+                    "fontFamily": brand_props.get("headingFont", "Inter"),
+                    "color": theme.text,
+                    "lineHeight": 1.08,
+                },
                 "animation": "fadeInUp",
                 "position": {"anchor": "top-center", "y": 0.1},
             })
@@ -219,7 +243,13 @@ class SCFComposer:
             layers.append({
                 "type": "text",
                 "content": "\n".join(f"• {b}" for b in bullets),
-                "style": "body",
+                "style": {
+                    "fontSize": 32,
+                    "fontWeight": 500,
+                    "fontFamily": brand_props.get("bodyFont", "Inter"),
+                    "color": theme.muted_text,
+                    "lineHeight": 1.28,
+                },
                 "animation": "fadeIn",
                 "position": {"anchor": "center-left", "x": 0.08, "y": 0.4},
                 "startTime": 1.5,
@@ -229,6 +259,7 @@ class SCFComposer:
             "id": scene_id,
             "duration": duration,
             "layers": layers,
+            "notes": scene_data.get("notes", f"Theme {theme.name}: {theme.rationale}"),
             "transition": scene_data.get("transition", "crossfade"),
         }
 
@@ -260,34 +291,36 @@ class SCFComposer:
             scene["narration"] = narration
         return scene
 
-    def _brand_props(self, scenario: dict[str, Any]) -> dict[str, Any]:
+    def _brand_props(self, scenario: dict[str, Any], theme: ThemeTokens) -> dict[str, Any]:
         """Extract brand-related props for component scenes."""
         if self.brand:
-            return self.brand.to_scf_props()
-        # Fallback defaults from scenario
-        style = scenario.get("style", "tech-blue")
+            props = self.brand.to_scf_props()
+            props.setdefault("surfaceColor", theme.surface)
+            props.setdefault("elevatedSurfaceColor", theme.elevated_surface)
+            props.setdefault("mutedTextColor", theme.muted_text)
+            props.setdefault("borderColor", theme.border)
+            return props
         return {
             "companyName": scenario.get("company", "Slate"),
-            "primaryColor": "#0078D4",
-            "accentColor": "#FFB900",
-            "backgroundColor": "#1A1A2E",
-            "textColor": "#FFFFFF",
+            **theme.to_brand_props(scenario.get("company", "Slate")),
             "headingFont": "Inter",
             "bodyFont": "Inter",
         }
 
-    def _caption_config(self) -> dict[str, Any]:
+    def _caption_config(self, theme: ThemeTokens) -> dict[str, Any]:
         """Generate caption config from brand package."""
         config: dict[str, Any] = {
             "style": "word-highlight",
             "position": "bottom",
             "fontSize": 24,
             "maxWordsPerLine": 8,
+            "color": theme.text,
+            "highlightColor": theme.caption_highlight,
+            "highlightBackgroundColor": theme.caption_highlight_background,
+            "lineBackgroundColor": "rgba(18, 10, 31, 0.80)",
         }
         if self.brand:
             config["font"] = self.brand.body_font
-            config["color"] = self.brand.colors.text
-            config["highlightColor"] = self.brand.primary_color
         return config
 
     def validate(self, scf: dict[str, Any]) -> list[str]:

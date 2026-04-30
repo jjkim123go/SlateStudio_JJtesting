@@ -26,6 +26,10 @@ work-*/
 *.wav
 *.mp3
 
+# Shipped built-in Slate music library. Keep generated/ad-hoc audio ignored,
+# but commit approved royalty-free tracks that the manifest references.
+!assets/music/library/*.mp3
+
 # Root-level ad-hoc visual audit/frame grabs
 /_audit_*.png
 /_check_*.png

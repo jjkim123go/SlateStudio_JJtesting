@@ -34,6 +34,23 @@ import { transformVSCodeScene } from './vscode-scene-transformer.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const COMPONENTS_DIR = resolve(__dirname, '..', 'components');
 
+const DEFAULT_THEME = {
+  name: 'premium-velvet',
+  background: '#120A1F',
+  surface: '#1D142C',
+  elevatedSurface: '#2A1B3D',
+  text: '#F8F4EC',
+  mutedText: '#C9BFD7',
+  primary: '#8B5CF6',
+  accent: '#E7D7A2',
+  border: '#4B3A63',
+  success: '#3DDC97',
+  warning: '#F7C948',
+  danger: '#FF6B6B',
+  captionHighlight: '#F3DFA2',
+  captionHighlightBackground: 'rgba(243,223,162,0.24)',
+};
+
 // ---------- Component registry ----------------------------------------------
 
 const KNOWN_COMPONENTS = new Set([
@@ -200,6 +217,137 @@ function parseBrandTypography(yamlText) {
   return typography;
 }
 
+function parseBrandColors(yamlText) {
+  const colors = {};
+  let inVisual = false;
+  let inPalette = false;
+  const keyMap = {
+    primary: 'primary',
+    accent: 'accent',
+    background: 'background',
+    text: 'text',
+    surface: 'surface',
+    surface_color: 'surface',
+    elevated_surface: 'elevatedSurface',
+    elevatedSurface: 'elevatedSurface',
+    elevated_surface_color: 'elevatedSurface',
+    muted_text: 'mutedText',
+    mutedText: 'mutedText',
+    muted_text_color: 'mutedText',
+    border: 'border',
+    border_color: 'border',
+  };
+  const firstHex = (value) => {
+    const match = String(value || '').match(/#[0-9a-fA-F]{6}/);
+    return match ? match[0].toUpperCase() : null;
+  };
+  for (const rawLine of yamlText.split(/\r?\n/)) {
+    const line = rawLine.replace(/#(?![0-9a-fA-F]{6}).*$/, '').trimEnd();
+    if (!line.trim()) continue;
+    if (/^visual_language:\s*$/.test(line)) {
+      inVisual = true;
+      inPalette = false;
+      continue;
+    }
+    if (inVisual && /^\S/.test(line)) break;
+    if (!inVisual) continue;
+    if (/^\s{2}color_palette:\s*$/.test(line)) {
+      inPalette = true;
+      continue;
+    }
+    if (inPalette && /^\s{2}\S/.test(line) && !/^\s{2}color_palette:/.test(line)) break;
+    if (!inPalette) continue;
+    const field = line.match(/^\s{4}([A-Za-z_]+):\s*(.*)$/);
+    if (!field) continue;
+    const mappedKey = keyMap[field[1]];
+    if (!mappedKey) continue;
+    const color = firstHex(field[2]);
+    if (!color) continue;
+    colors[mappedKey] = color;
+  }
+  return colors;
+}
+
+const HEX_COLOR_RE = /^#[0-9a-fA-F]{6}$/;
+
+function normalizeHexColor(value, fallback) {
+  return (typeof value === 'string' && HEX_COLOR_RE.test(value.trim())) ? value.trim().toUpperCase() : fallback;
+}
+
+function hexToRgb(value) {
+  const hex = normalizeHexColor(value, '#000000').slice(1);
+  return [0, 2, 4].map((idx) => parseInt(hex.slice(idx, idx + 2), 16));
+}
+
+function channelLuminance(channel) {
+  const value = channel / 255;
+  return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+}
+
+function relativeLuminance(value) {
+  const [red, green, blue] = hexToRgb(value);
+  return 0.2126 * channelLuminance(red) + 0.7152 * channelLuminance(green) + 0.0722 * channelLuminance(blue);
+}
+
+function contrastRatio(foreground, background) {
+  const first = relativeLuminance(foreground);
+  const second = relativeLuminance(background);
+  const lighter = Math.max(first, second);
+  const darker = Math.min(first, second);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function mixHexColor(value, target, amount) {
+  const source = hexToRgb(value);
+  const destination = hexToRgb(target);
+  const ratio = Math.max(0, Math.min(1, amount));
+  const mixed = source.map((channel, idx) => Math.round(channel + (destination[idx] - channel) * ratio));
+  return `#${mixed.map((channel) => channel.toString(16).padStart(2, '0')).join('').toUpperCase()}`;
+}
+
+function ensureReadableColor(value, background, minimum = 4.5) {
+  if (!HEX_COLOR_RE.test(String(value || '').trim()) || !HEX_COLOR_RE.test(String(background || '').trim())) return value;
+  const foreground = normalizeHexColor(value, '#FFFFFF');
+  const bg = normalizeHexColor(background, '#000000');
+  if (contrastRatio(foreground, bg) >= minimum) return foreground;
+  const whiteRatio = contrastRatio('#FFFFFF', bg);
+  const blackRatio = contrastRatio('#0B0B0F', bg);
+  const target = whiteRatio >= blackRatio ? '#FFFFFF' : '#0B0B0F';
+  for (let step = 1; step <= 10; step++) {
+    const candidate = mixHexColor(foreground, target, step / 10);
+    if (contrastRatio(candidate, bg) >= minimum) return candidate;
+  }
+  return target;
+}
+
+function ensureSurfaceColor(value, background, minimum = 1.18) {
+  if (!HEX_COLOR_RE.test(String(value || '').trim()) || !HEX_COLOR_RE.test(String(background || '').trim())) return value;
+  const surface = normalizeHexColor(value, DEFAULT_THEME.surface);
+  const bg = normalizeHexColor(background, DEFAULT_THEME.background);
+  if (contrastRatio(surface, bg) >= minimum) return surface;
+  const target = relativeLuminance(bg) < 0.35 ? '#FFFFFF' : '#000000';
+  for (let step = 1; step <= 8; step++) {
+    const candidate = mixHexColor(surface, target, step * 0.08);
+    if (contrastRatio(candidate, bg) >= minimum) return candidate;
+  }
+  return mixHexColor(surface, target, 0.48);
+}
+
+function validateThemeColors(theme) {
+  const background = normalizeHexColor(theme.background, DEFAULT_THEME.background);
+  return {
+    ...theme,
+    background,
+    surface: ensureSurfaceColor(theme.surface, background, 1.18),
+    elevatedSurface: ensureSurfaceColor(theme.elevatedSurface, background, 1.28),
+    text: ensureReadableColor(theme.text, background, 7.0),
+    mutedText: ensureReadableColor(theme.mutedText, theme.surface || background, 4.5),
+    primary: ensureReadableColor(theme.primary, background, 3.0),
+    accent: ensureReadableColor(theme.accent, background, 3.0),
+    captionHighlight: ensureReadableColor(theme.captionHighlight, background, 3.0),
+  };
+}
+
 function loadBrandPackage(brandName) {
   if (!brandName) return null;
   const brandRoot = resolve(__dirname, '..', '..', 'config', 'org', 'brand-packages');
@@ -213,12 +361,57 @@ function loadBrandPackage(brandName) {
   ];
   const path = candidates.find((candidate) => existsSync(candidate));
   if (!path) return null;
+  const yamlText = readFileSync(path, 'utf-8');
   return {
     name: raw,
     path,
     root: dirname(path),
-    typography: parseBrandTypography(readFileSync(path, 'utf-8')),
+    typography: parseBrandTypography(yamlText),
+    colors: parseBrandColors(yamlText),
   };
+}
+
+function normalizeThemeFromSCF(scf, brandPackage) {
+  const source = (scf && scf.metadata && scf.metadata.theme) || {};
+  const brandColors = brandPackage?.colors || {};
+  const theme = {
+    ...DEFAULT_THEME,
+    name: source.name || (brandPackage ? `brand-${brandPackage.name}` : DEFAULT_THEME.name),
+    background: source.background || brandColors.background || DEFAULT_THEME.background,
+    surface: source.surface || brandColors.surface || source.elevatedSurface || DEFAULT_THEME.surface,
+    elevatedSurface: source.elevatedSurface || brandColors.elevatedSurface || DEFAULT_THEME.elevatedSurface,
+    text: source.text || brandColors.text || DEFAULT_THEME.text,
+    mutedText: source.mutedText || brandColors.mutedText || DEFAULT_THEME.mutedText,
+    primary: source.primary || brandColors.primary || DEFAULT_THEME.primary,
+    accent: source.accent || brandColors.accent || source.primary || brandColors.primary || DEFAULT_THEME.accent,
+    border: source.border || brandColors.border || DEFAULT_THEME.border,
+    success: source.success || DEFAULT_THEME.success,
+    warning: source.warning || DEFAULT_THEME.warning,
+    danger: source.danger || DEFAULT_THEME.danger,
+    captionHighlight: source.captionHighlight || source.primary || brandColors.primary || DEFAULT_THEME.captionHighlight,
+    captionHighlightBackground: source.captionHighlightBackground || DEFAULT_THEME.captionHighlightBackground,
+  };
+  return validateThemeColors(theme);
+}
+
+function themeCssVars(theme) {
+  const entries = {
+    '--brand-primary': theme.primary,
+    '--brand-accent': theme.accent,
+    '--brand-bg': theme.background,
+    '--brand-text': theme.text,
+    '--slate-bg': theme.background,
+    '--slate-surface': theme.surface,
+    '--slate-elevated-surface': theme.elevatedSurface,
+    '--slate-text': theme.text,
+    '--slate-muted-text': theme.mutedText,
+    '--slate-border': theme.border,
+    '--slate-success': theme.success,
+    '--slate-warning': theme.warning,
+    '--slate-danger': theme.danger,
+    '--slate-caption-highlight': theme.captionHighlight,
+  };
+  return Object.entries(entries).map(([key, value]) => `${key}:${value};`).join('');
 }
 
 function formatFontFamily(font, fallback = 'Inter') {
@@ -373,27 +566,30 @@ function resolveNestedAssetPaths(value, scfDir, depth = 0, maxDepth = 6) {
   return value;
 }
 
-function normalizeCaptionConfig(config = {}) {
+function normalizeCaptionConfig(config = {}, theme = DEFAULT_THEME) {
   const style = ['word-highlight', 'sentence', 'karaoke', 'static', 'none'].includes(config?.style)
     ? config.style
     : 'word-highlight';
   const panel = config?.panel === true;
   const lineBackgroundColor = config?.lineBackgroundColor || 'rgba(3, 10, 22, 0.78)';
   const parsedTimingOffsetSec = Number(config?.timingOffsetSec ?? 0.07);
-  return {
+  const normalized = {
     style,
     font: config?.font || 'Inter',
     fontSize: Number(config?.fontSize || 24),
-    color: config?.color || '#FFFFFF',
-    highlightColor: config?.highlightColor || '#0078D4',
+    color: config?.color || theme.text || '#FFFFFF',
+    highlightColor: config?.highlightColor || theme.captionHighlight || '#F3DFA2',
     backgroundColor: config?.backgroundColor || (panel ? 'rgba(0,0,0,0.62)' : 'transparent'),
     lineBackgroundColor,
-    highlightBackgroundColor: config?.highlightBackgroundColor || 'rgba(0,120,212,0.34)',
+    highlightBackgroundColor: config?.highlightBackgroundColor || theme.captionHighlightBackground || 'rgba(243,223,162,0.24)',
     panel,
     position: ['top', 'center', 'bottom'].includes(config?.position) ? config.position : 'bottom',
     maxWordsPerLine: Math.max(3, Math.min(15, Number(config?.maxWordsPerLine || 5))),
     timingOffsetSec: Number.isFinite(parsedTimingOffsetSec) ? Math.max(-0.5, Math.min(0.5, parsedTimingOffsetSec)) : 0.07,
   };
+  normalized.color = ensureReadableColor(normalized.color, theme.background, 4.5);
+  normalized.highlightColor = ensureReadableColor(normalized.highlightColor, theme.background, 3.0);
+  return normalized;
 }
 
 function normalizeNarrationWordTimeline(rawWords) {
@@ -750,10 +946,10 @@ function renderTextLayer(layer, sceneCtx, idx) {
     if (style.lineHeight) css.push(`line-height:${style.lineHeight}`);
   } else if (style === 'heading') {
     fontFamily = typography.headings?.font || fontFamily;
-    css.push(`font-size:64px;font-weight:${typography.headings?.weight || 700};color:#FFFFFF`);
+    css.push(`font-size:64px;font-weight:${typography.headings?.weight || 700};color:var(--slate-text,#F8F4EC)`);
   } else if (style === 'subheading') {
     fontFamily = typography.headings?.font || fontFamily;
-    css.push(`font-size:32px;font-weight:${typography.headings?.weight || 500};color:#FFFFFF`);
+    css.push(`font-size:32px;font-weight:${typography.headings?.weight || 500};color:var(--slate-text,#F8F4EC)`);
   }
   // Default-anchor for text layers is `top-center`. When the resolved
   // anchor includes "center" the element is horizontally centered via
@@ -1368,8 +1564,9 @@ export function compileSCFToHTML(scf, options = {}) {
   const projectDir = options.projectDir || scfDir;
   const repoRoot = options.repoRoot || null;
   const brandPackage = loadBrandPackage(scf.brandPackage);
-  const captionConfig = normalizeCaptionConfig(scf.captions || {});
-  const ctx = { cursor: 0, index: 0, scfDir, projectDir, repoRoot, width, height, brandPackage, captionConfig, componentsUsed: new Set(), lottieUsed: false };
+  const theme = normalizeThemeFromSCF(scf, brandPackage);
+  const captionConfig = normalizeCaptionConfig(scf.captions || {}, theme);
+  const ctx = { cursor: 0, index: 0, scfDir, projectDir, repoRoot, width, height, brandPackage, theme, captionConfig, componentsUsed: new Set(), lottieUsed: false };
   const fontFaceCss = brandFontFaceCss(brandPackage, ctx);
   const renderedScenes = [];
   for (const scene of scf.scenes || []) {
@@ -1431,10 +1628,10 @@ export function compileSCFToHTML(scf, options = {}) {
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 ${lottieVendorTag}
 <style>
-:root { color-scheme: dark; }
+:root { color-scheme: dark; ${themeCssVars(theme)} }
 ${fontFaceCss}
 * { box-sizing: border-box; }
-html, body { margin:0; padding:0; width:${width}px; height:${height}px; background:#000; overflow:hidden; font-family:${formatFontFamily(brandPackage?.typography?.body?.font || 'Inter')}; }
+html, body { margin:0; padding:0; width:${width}px; height:${height}px; background:var(--slate-bg,#120A1F); color:var(--slate-text,#F8F4EC); overflow:hidden; font-family:${formatFontFamily(brandPackage?.typography?.body?.font || 'Inter')}; }
 .scene { opacity: 0; }
 ${allCss}
 </style>
@@ -1446,7 +1643,7 @@ ${allCss}
   data-duration="${totalDuration}"
   data-width="${width}"
   data-height="${height}"
-  style="position:relative;width:${width}px;height:${height}px;background:#000;overflow:hidden">
+  style="position:relative;width:${width}px;height:${height}px;background:var(--slate-bg,#120A1F);overflow:hidden">
 ${renderedScenes.map((s) => s.html).join('\n')}
 </div>
 ${musicAudio}

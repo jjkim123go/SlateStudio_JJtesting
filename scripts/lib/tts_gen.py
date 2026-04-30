@@ -15,7 +15,10 @@ from pathlib import Path
 from urllib.error import HTTPError
 
 from slate.core.foundry_retry import RetryConfig, should_retry
-from live_subtitles import estimate_word_timestamps, transcribe_audio
+try:
+    from live_subtitles import estimate_word_timestamps, transcribe_audio
+except ImportError:
+    from scripts.lib.live_subtitles import estimate_word_timestamps, transcribe_audio
 
 
 # Azure OpenAI TTS configuration

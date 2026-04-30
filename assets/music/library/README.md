@@ -8,10 +8,14 @@ fallback in the music resolution chain:
 3. **`assets/music/library/`** (this directory — Slate defaults)
 4. User-provided files (per-project)
 
+The MP3 files in this directory are intentionally committed even though the
+repo ignores generated audio elsewhere. They are approved built-in assets, and
+`MANIFEST.yaml` is the source of truth for track metadata and selection.
+
 ## What belongs here
 
-Royalty-free background tracks suitable for video production. Three mood
-categories are expected (see `MANIFEST.yaml` for the slot definitions):
+Royalty-free background tracks suitable for video production. Core mood
+categories are expected (see `MANIFEST.yaml` for the full track catalog):
 
 | Slot | Mood | Use case |
 |------|------|----------|
@@ -45,7 +49,8 @@ commercial use in internal and external video productions. Suggested sources:
 ## How to add tracks
 
 1. Download the track in WAV or high-bitrate MP3 (≥192 kbps).
-2. Rename to match the slot: `uplifting.mp3`, `neutral.mp3`, `ambient_low.mp3`.
+2. Give the track a descriptive lowercase filename, including the source id
+  when available.
 3. Place in this directory.
 4. Update `MANIFEST.yaml` with the filename, duration, and confirm the mood tag.
 5. Commit. The agent will discover tracks via the manifest on next session.

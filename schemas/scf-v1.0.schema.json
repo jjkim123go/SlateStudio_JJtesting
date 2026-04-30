@@ -502,6 +502,10 @@
           "maximum": 1,
           "default": 1
         },
+        "fill": {
+          "type": "string",
+          "description": "CSS color for shape layers"
+        },
         "zIndex": {
           "type": "integer",
           "description": "Layer stacking order; higher values render above lower values"
@@ -1448,7 +1452,18 @@
         "logoSrc": { "type": "string", "description": "Path or URL to the logo image" },
         "companyName": { "type": "string" },
         "tagline": { "type": "string" },
-        "primaryColor": { "type": "string", "description": "CSS color for brand accent" }
+        "primaryColor": { "type": "string", "description": "CSS color for brand accent" },
+        "accentColor": { "type": "string" },
+        "backgroundColor": { "type": "string" },
+        "textColor": { "type": "string" },
+        "surfaceColor": { "type": "string" },
+        "elevatedSurfaceColor": { "type": "string" },
+        "mutedTextColor": { "type": "string" },
+        "borderColor": { "type": "string" },
+        "headingFont": { "type": "string" },
+        "bodyFont": { "type": "string" },
+        "logoPosition": { "type": "string" },
+        "introTemplate": { "type": "string" }
       },
       "additionalProperties": false
     },
@@ -1460,6 +1475,17 @@
         "companyName": { "type": "string" },
         "logoSrc": { "type": "string" },
         "primaryColor": { "type": "string" },
+        "accentColor": { "type": "string" },
+        "backgroundColor": { "type": "string" },
+        "textColor": { "type": "string" },
+        "surfaceColor": { "type": "string" },
+        "elevatedSurfaceColor": { "type": "string" },
+        "mutedTextColor": { "type": "string" },
+        "borderColor": { "type": "string" },
+        "headingFont": { "type": "string" },
+        "bodyFont": { "type": "string" },
+        "logoPosition": { "type": "string" },
+        "outroTemplate": { "type": "string" },
         "cta": { "type": "string", "description": "Call-to-action text" },
         "ctaText": { "type": "string", "description": "Alternate CTA text field" },
         "contact": { "type": "string" },

@@ -160,14 +160,26 @@ def _load_review_inputs(video_path: Path, scenario_arg: str, scf_arg: str) -> tu
 
     has_video_layers = False
     has_image_layers = False
+    has_component_layers = False
+
+    def layer_components(layers: list[dict]) -> list[str]:
+        return [
+            str(layer.get("component"))
+            for layer in layers
+            if layer.get("type") == "component" and layer.get("component")
+        ]
+
     for scene in scf.get("scenes", []):
+        layers = scene.get("layers", [])
+        components = layer_components(layers)
         normalized = {
             "id": scene.get("id"),
             "title": scene.get("title") or scene.get("id"),
             "duration": scene.get("duration"),
-            "component": scene.get("component"),
+            "component": scene.get("component") or (components[0] if len(components) == 1 else None),
+            "components": ([scene.get("component")] if scene.get("component") else []) + components,
             "props": scene.get("props", {}),
-            "layers": scene.get("layers", []),
+            "layers": layers,
         }
         narration = scene.get("narration")
         if isinstance(narration, dict):
@@ -176,17 +188,21 @@ def _load_review_inputs(video_path: Path, scenario_arg: str, scf_arg: str) -> tu
             normalized["narration"] = ""
         else:
             normalized["narration"] = ""
-        for layer in scene.get("layers", []):
+        for layer in layers:
             if layer.get("type") == "video":
                 has_video_layers = True
             if layer.get("type") == "image":
                 has_image_layers = True
+            if layer.get("type") == "component":
+                has_component_layers = True
         scenario["scenes"].append(normalized)
 
     if has_video_layers and has_image_layers:
         scenario["motion_style"] = "hybrid"
     elif has_video_layers:
         scenario["motion_style"] = "motion"
+    elif has_component_layers:
+        scenario["motion_style"] = "image"
 
     return scenario, str(scf_path)
 
