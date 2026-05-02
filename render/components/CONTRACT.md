@@ -185,6 +185,7 @@ guarantee no cross-component CSS collision even within a single scene.
 | CompetitiveMatrix | `cm-` | ROICalculator | `roi-` |
 | _shared (PT + CM grid)_ | `cmp-` | LoopScene | `loop-` |
 | StreamScene | `stream-` | WhiteboardScene | `wb-` |
+| PremiumMotionShowcase | `pms-` |  |  |
 
 **New components** must declare and reserve their prefix in this table when
 adding to `KNOWN_COMPONENTS`. PR review should reject unprefixed selectors.

@@ -8,6 +8,11 @@
 > [animation/sequencing.md](animation/sequencing.md),
 > [animation/performance.md](animation/performance.md),
 > [animation/value-helpers.md](animation/value-helpers.md).
+>
+> **Companion skills (Layer 2, motion design):**
+> [animation/motion-intent.md](animation/motion-intent.md) — pick a material,
+> [animation/material-physics.md](animation/material-physics.md) — get GSAP params,
+> [animation/attention-choreography.md](animation/attention-choreography.md) — sequence elements.
 
 This skill defines the **Slate component contract**: what a HyperFrames
 component must do, how it integrates with the SCF compiler, and which Slate

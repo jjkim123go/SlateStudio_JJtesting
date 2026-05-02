@@ -32,6 +32,9 @@ or adding a new component folder), load all of the following:
 | [`core/component-authoring`](core/component-authoring.md) | Master timeline contract, SCENE_DURATION, scf-to-html, file layout |
 | [`core/animation/sequencing`](core/animation/sequencing.md) | How to build the master timeline (every component needs one) |
 | [`core/animation/basics`](core/animation/basics.md) | Tween conventions, easing, duration norms |
+| [`core/animation/motion-intent`](core/animation/motion-intent.md) | Material choice: map scene job → emotion → material personality (glass/paper/metal/rubber/liquid/wood) |
+| [`core/animation/material-physics`](core/animation/material-physics.md) | Material → exact GSAP parameters (duration, ease, stagger, overshoot) |
+| [`core/animation/attention-choreography`](core/animation/attention-choreography.md) | Sequencing elements within a scene — one focus at a time, stagger patterns, overlap timing |
 | [`meta/narration-component-sync`](meta/narration-component-sync.md) | Caption / `narrationStartSec` / cue alignment |
 
 **Also load when relevant:**
@@ -53,6 +56,9 @@ break when composed.
 |-------|------|---------|
 | `hyperframes-rendering` | [`skills/core/hyperframes-rendering.md`](core/hyperframes-rendering.md) | SCF, render, compose, scene, component, MP4, HyperFrames, TitleCard, BrandIntro, BrandOutro, AnimatedCaption, LowerThird |
 | `component-authoring` | [`skills/core/component-authoring.md`](core/component-authoring.md) | new component, edit component, animation.js, index.html, master timeline, render/components, SCENE_DURATION, scf-to-html |
+| `motion-intent` | [`skills/core/animation/motion-intent.md`](core/animation/motion-intent.md) | scene_plan stage, animation personality, material choice, "what should it feel like", emotion, tone, glass, paper, metal, rubber, liquid, wood |
+| `material-physics` | [`skills/core/animation/material-physics.md`](core/animation/material-physics.md) | animation.js, easing choice, duration, stagger values, overshoot, material parameters, GSAP ease mapping |
+| `attention-choreography` | [`skills/core/animation/attention-choreography.md`](core/animation/attention-choreography.md) | animation.js, element sequencing, stagger, "one focus at a time", entrance order, overlap, reading order, choreography |
 | `foundry-models` | [`skills/core/foundry-models.md`](core/foundry-models.md) | image, photo, face, portrait, narration, voice, TTS, video clip, Sora, transcribe, captions, model, prompt, Foundry, Azure AI |
 | `ffmpeg-audio` | [`skills/core/ffmpeg-audio.md`](core/ffmpeg-audio.md) | audio, mix, ducking, normalize, loudness, transcode, ffmpeg, music, narration, sample rate, codec |
 | `video-indexer-review` | [`skills/core/video-indexer-review.md`](core/video-indexer-review.md) | review stage, deep review, Video Indexer, VI signals, caption accuracy, scene drift, moderation, OCR |
@@ -140,6 +146,8 @@ break when composed.
 | `components/component-overlay` | [`skills/core/components/component-overlay.md`](core/components/component-overlay.md) | component overlay, layered component, transparent component host, glass panel, rich overlay over image, composite component scene |
 | `components/metric-stack` | [`skills/core/components/metric-stack.md`](core/components/metric-stack.md) | three metrics, KPI stack, metric trio, proof stack, stacked cards, multiple headline numbers |
 | `components/book-page-metrics` | [`skills/core/components/book-page-metrics.md`](core/components/book-page-metrics.md) | book page metrics, metrics on page, chapter metrics, editorial spread, page turn metrics, playbook proof |
+| `components/gauge-ring` | [`skills/core/components/gauge-ring.md`](core/components/gauge-ring.md) | gauge, radial gauge, progress ring, score, percent complete, quality score, health score, utilization, comparison ring |
+| `components/premium-motion-showcase` | [`skills/core/components/premium-motion-showcase.md`](core/components/premium-motion-showcase.md) | premium motion, motion showcase, physics animation, showcase reel, kinetic demo, hero motion, visual physics, animation quality |
 
 ## Layer 3 — Animation references (load when authoring components)
 

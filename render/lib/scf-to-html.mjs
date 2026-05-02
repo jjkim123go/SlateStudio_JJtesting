@@ -150,6 +150,7 @@ const KNOWN_COMPONENTS = new Set([
   'BookPageMetrics',
   // Dynamically authored components
   'GaugeRing',
+  'PremiumMotionShowcase',
 ]);
 
 const BUILTIN_TRANSITIONS = new Set(['cut', 'fadeIn', 'fadeOut', 'crossfade', 'slide', 'wipe', 'zoom']);

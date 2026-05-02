@@ -200,7 +200,8 @@
             "AssetCascade",
             "ComponentOverlay",
             "MetricStack",
-            "BookPageMetrics"
+            "BookPageMetrics",
+            "PremiumMotionShowcase"
           ]
         },
         "props": {
