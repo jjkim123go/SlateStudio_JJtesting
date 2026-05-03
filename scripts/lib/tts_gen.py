@@ -155,7 +155,7 @@ def _write_word_sidecar(audio_path: str, text: str, duration_sec: float) -> None
     source = "estimate"
     if transcript and isinstance(transcript, dict) and transcript.get("words"):
         words = transcript.get("words", [])
-        source = "gpt-4o-transcribe"
+        source = transcript.get("source") or "azure-transcribe"
     if not words:
         words = estimate_word_timestamps(text, duration_sec)
     payload = {

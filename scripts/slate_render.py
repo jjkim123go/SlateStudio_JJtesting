@@ -52,6 +52,7 @@ from video_compose import (
 from video_gen import generate_video_clip
 from subtitle_burner import burn_subtitle_on_image
 from live_subtitles import (
+    load_word_sidecar,
     transcribe_audio,
     estimate_word_timestamps,
     group_into_segments,
@@ -1440,11 +1441,16 @@ def render_video(scenario: dict, output_dir: str, use_ai_images: bool = True,
                     cost_tracker.record("foundry_tts", scene_id, tts_cost)
 
                 # Live subtitles: transcribe audio → timed subtitle frames → video
-                print(f"  💬 Transcribing for live subtitles...")
-                transcript = transcribe_audio(audio_path)
+                print("  💬 Loading live subtitle timings...")
+                transcript = load_word_sidecar(audio_path)
+                if transcript and transcript.get("words"):
+                    source = transcript.get("source", "unknown")
+                    print(f"     → Sidecar: {len(transcript['words'])} words ({source})")
+                else:
+                    transcript = transcribe_audio(audio_path)
                 if transcript and transcript.get("words"):
                     words = transcript["words"]
-                    print(f"     → Transcribed: {len(words)} words, {transcript['duration']:.1f}s")
+                    print(f"     → Timed: {len(words)} words, {transcript['duration']:.1f}s")
                 else:
                     # Fallback: estimate timestamps from narration text + TTS duration
                     words = estimate_word_timestamps(narration, tts_result["duration"])

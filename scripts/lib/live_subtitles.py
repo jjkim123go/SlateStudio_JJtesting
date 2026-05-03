@@ -1,16 +1,19 @@
-"""Live subtitle pipeline — transcribe TTS audio via Azure gpt-4o-transcribe,
+"""Live subtitle pipeline — transcribe TTS audio via Azure transcription,
 segment into timed captions, and burn onto scene images frame-by-frame.
 
 Flow:
-  TTS audio (WAV) → Azure gpt-4o-transcribe (word timestamps) → segment into phrases
+    TTS audio (WAV) → Azure transcription (word timestamps) → segment into phrases
   → generate one image per phrase with subtitle burned → FFmpeg image-sequence video
 
-Primary: Azure gpt-4o-transcribe — 100 RPM, word-level timestamps.
+Primary: Azure gpt-4o-transcribe — text transcript when available.
+Word timestamps: Azure Whisper fallback with RPM-aware backoff.
 Fallback: Estimated timestamps from known text + duration.
 """
 
 import json
 import subprocess
+import threading
+import time
 from pathlib import Path
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
@@ -22,11 +25,27 @@ except ImportError:
 
 # Azure configuration
 from slate.core.azure_config import azure_config as _az_cfg
+from slate.core.foundry_retry import RetryConfig, should_retry
 
 def _azure_endpoint():
     return _az_cfg.endpoint
 TRANSCRIBE_DEPLOYMENT = "gpt-4o-transcribe"
 TRANSCRIBE_API_VERSION = "2025-04-01-preview"
+WORD_TIMESTAMP_FALLBACK_DEPLOYMENT = "whisper"
+TRANSCRIBE_TIMEOUT_SEC = 120
+TRANSCRIBE_RETRY_CONFIG = RetryConfig(
+    timeout_sec=TRANSCRIBE_TIMEOUT_SEC,
+    max_retries=3,
+    rate_limit_base_sec=20,
+    transient_base_sec=2,
+    max_wait_sec=120,
+)
+WORD_TIMESTAMP_MIN_INTERVAL_SEC = 21.0
+
+_WORD_TIMESTAMP_RATE_LIMITED_DEPLOYMENTS = {WORD_TIMESTAMP_FALLBACK_DEPLOYMENT}
+_TRANSCRIPTION_THROTTLE_LOCK = threading.Lock()
+_NEXT_TRANSCRIPTION_CALL_AT: dict[str, float] = {}
+_PRIMARY_WORD_TIMESTAMP_SUPPORTED: bool | None = None
 
 
 
@@ -43,6 +62,116 @@ def _get_azure_token() -> str | None:
     return None
 
 
+def _read_http_error(error: HTTPError) -> str:
+    try:
+        return error.read().decode("utf-8", errors="replace")[:300]
+    except Exception:
+        return str(error)
+
+
+def _wait_for_transcription_slot(deployment: str) -> None:
+    if deployment not in _WORD_TIMESTAMP_RATE_LIMITED_DEPLOYMENTS:
+        return
+
+    with _TRANSCRIPTION_THROTTLE_LOCK:
+        now = time.monotonic()
+        next_call_at = _NEXT_TRANSCRIPTION_CALL_AT.get(deployment, 0.0)
+        wait = max(0.0, next_call_at - now)
+        _NEXT_TRANSCRIPTION_CALL_AT[deployment] = max(now, next_call_at) + WORD_TIMESTAMP_MIN_INTERVAL_SEC
+
+    if wait > 0:
+        print(f"  → Waiting {wait:.1f}s for Azure {deployment} RPM budget")
+        time.sleep(wait)
+
+
+def _post_transcription(audio_path: str, deployment: str, response_format: str, token: str) -> dict | None:
+    audio_file = Path(audio_path)
+    if not audio_file.exists():
+        return None
+
+    url = (
+        f"{_azure_endpoint()}/openai/deployments/{deployment}"
+        f"/audio/transcriptions?api-version={TRANSCRIBE_API_VERSION}"
+    )
+
+    boundary = "----SlateTranscribeBoundary"
+    body_parts = []
+    body_parts.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"model\"\r\n\r\n{deployment}")
+    body_parts.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"response_format\"\r\n\r\n{response_format}")
+    if response_format == "verbose_json":
+        body_parts.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"timestamp_granularities[]\"\r\n\r\nword")
+
+    file_data = audio_file.read_bytes()
+    suffix = audio_file.suffix.lower()
+    content_type_map = {".wav": "audio/wav", ".mp3": "audio/mpeg", ".flac": "audio/flac", ".ogg": "audio/ogg", ".m4a": "audio/mp4"}
+    ct = content_type_map.get(suffix, "application/octet-stream")
+    body_parts.append(
+        f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{audio_file.name}\"\r\nContent-Type: {ct}\r\n\r\n"
+    )
+
+    body_bytes = b""
+    for part in body_parts[:-1]:
+        body_bytes += part.encode("utf-8") + b"\r\n"
+    body_bytes += body_parts[-1].encode("utf-8")
+    body_bytes += file_data
+    body_bytes += f"\r\n--{boundary}--\r\n".encode("utf-8")
+
+    req = Request(url, data=body_bytes, method="POST")
+    req.add_header("Authorization", f"Bearer {token}")
+    req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
+
+    for attempt in range(TRANSCRIBE_RETRY_CONFIG.max_retries + 1):
+        _wait_for_transcription_slot(deployment)
+        try:
+            with urlopen(req, timeout=TRANSCRIBE_RETRY_CONFIG.timeout_sec) as resp:
+                return json.loads(resp.read().decode("utf-8"))
+        except HTTPError as e:
+            err_body = _read_http_error(e)
+            retry, error_class, wait = should_retry(e, attempt, TRANSCRIBE_RETRY_CONFIG)
+            if not retry:
+                print(f"  ⚠ Azure transcription {deployment} HTTP {e.code}: {err_body}")
+                return None
+            print(f"  ⚠ Azure transcription {deployment} HTTP {e.code} ({error_class}); retrying in {wait:g}s")
+            time.sleep(wait)
+        except Exception as e:
+            retry, error_class, wait = should_retry(e, attempt, TRANSCRIBE_RETRY_CONFIG)
+            if not retry:
+                print(f"  ⚠ Azure transcription {deployment} error: {e}")
+                return None
+            print(f"  ⚠ Azure transcription {deployment} {error_class} error; retrying in {wait:g}s: {e}")
+            time.sleep(wait)
+
+    return None
+
+
+def _parse_transcription_response(data: dict, source: str) -> dict:
+    words = []
+    for w in data.get("words", []):
+        words.append({
+            "word": w.get("word", "").strip(),
+            "start": w.get("start", 0.0),
+            "end": w.get("end", 0.0),
+        })
+
+    full_text = data.get("text", "")
+    duration = words[-1]["end"] if words else data.get("duration", 0.0)
+    return {"text": full_text, "words": words, "duration": duration, "source": source}
+
+
+def load_word_sidecar(audio_path: str) -> dict | None:
+    """Load an existing word-timestamp sidecar next to a narration file."""
+    sidecar_path = Path(audio_path).with_suffix(".words.json")
+    if not sidecar_path.exists():
+        return None
+    try:
+        payload = json.loads(sidecar_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    if not isinstance(payload, dict) or not isinstance(payload.get("words"), list):
+        return None
+    return payload
+
+
 def transcribe_with_azure(audio_path: str) -> dict | None:
     """Transcribe audio via Azure gpt-4o-transcribe with word-level timestamps.
 
@@ -54,70 +183,24 @@ def transcribe_with_azure(audio_path: str) -> dict | None:
         print("  ⚠ Azure auth unavailable — skipping cloud transcription")
         return None
 
+    global _PRIMARY_WORD_TIMESTAMP_SUPPORTED
+
     try:
-        audio_file = Path(audio_path)
-        if not audio_file.exists():
-            return None
+        result = None
+        if _PRIMARY_WORD_TIMESTAMP_SUPPORTED is not False:
+            data = _post_transcription(audio_path, TRANSCRIBE_DEPLOYMENT, "json", token)
+            result = _parse_transcription_response(data or {}, TRANSCRIBE_DEPLOYMENT)
+            if result.get("words"):
+                _PRIMARY_WORD_TIMESTAMP_SUPPORTED = True
+                return result
+            if data is not None:
+                _PRIMARY_WORD_TIMESTAMP_SUPPORTED = False
 
-        url = (
-            f"{_azure_endpoint()}/openai/deployments/{TRANSCRIBE_DEPLOYMENT}"
-            f"/audio/transcriptions?api-version={TRANSCRIBE_API_VERSION}"
-        )
-
-        # Build multipart/form-data manually (no requests dependency)
-        boundary = "----SlateTranscribeBoundary"
-        body_parts = []
-
-        # model field (required by Azure OpenAI)
-        body_parts.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"model\"\r\n\r\n{TRANSCRIBE_DEPLOYMENT}")
-        # response_format = json (Azure 2025-04-01-preview rejects verbose_json;
-        # word timestamps are returned when timestamp_granularities includes "word")
-        body_parts.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"response_format\"\r\n\r\njson")
-        # timestamp_granularities = word
-        body_parts.append(f"--{boundary}\r\nContent-Disposition: form-data; name=\"timestamp_granularities[]\"\r\n\r\nword")
-
-        # Audio file
-        file_data = audio_file.read_bytes()
-        # Determine content type
-        suffix = audio_file.suffix.lower()
-        content_type_map = {".wav": "audio/wav", ".mp3": "audio/mpeg", ".flac": "audio/flac", ".ogg": "audio/ogg", ".m4a": "audio/mp4"}
-        ct = content_type_map.get(suffix, "application/octet-stream")
-        body_parts.append(
-            f"--{boundary}\r\nContent-Disposition: form-data; name=\"file\"; filename=\"{audio_file.name}\"\r\nContent-Type: {ct}\r\n\r\n"
-        )
-
-        # Assemble body bytes
-        body_bytes = b""
-        for i, part in enumerate(body_parts[:-1]):
-            body_bytes += part.encode("utf-8") + b"\r\n"
-        # Last text part (file header) + binary file data
-        body_bytes += body_parts[-1].encode("utf-8")
-        body_bytes += file_data
-        body_bytes += f"\r\n--{boundary}--\r\n".encode("utf-8")
-
-        req = Request(url, data=body_bytes, method="POST")
-        req.add_header("Authorization", f"Bearer {token}")
-        req.add_header("Content-Type", f"multipart/form-data; boundary={boundary}")
-
-        with urlopen(req, timeout=120) as resp:
-            data = json.loads(resp.read().decode("utf-8"))
-
-        # Parse response: verbose_json includes "words" array
-        words = []
-        for w in data.get("words", []):
-            words.append({
-                "word": w.get("word", "").strip(),
-                "start": w.get("start", 0.0),
-                "end": w.get("end", 0.0),
-            })
-
-        full_text = data.get("text", "")
-        duration = words[-1]["end"] if words else data.get("duration", 0.0)
-
-        return {"text": full_text, "words": words, "duration": duration}
+        data = _post_transcription(audio_path, WORD_TIMESTAMP_FALLBACK_DEPLOYMENT, "verbose_json", token)
+        return _parse_transcription_response(data or {}, WORD_TIMESTAMP_FALLBACK_DEPLOYMENT) if data else result
 
     except HTTPError as e:
-        err_body = e.read().decode("utf-8", errors="replace")[:300] if hasattr(e, "read") else str(e)
+        err_body = _read_http_error(e)
         print(f"  ⚠ Azure gpt-4o-transcribe HTTP {e.code}: {err_body}")
         return None
     except Exception as e:
@@ -137,10 +220,10 @@ def transcribe_audio(audio_path: str) -> dict:
             "duration": float,
         }
     """
-    # 1. Try Azure gpt-4o-transcribe (cloud — 100 RPM, word timestamps)
+    # 1. Try Azure transcription (cloud; RPM-aware retry/backoff)
     result = transcribe_with_azure(audio_path)
     if result and result.get("words"):
-        print(f"     → Azure gpt-4o-transcribe: {len(result['words'])} words, {result['duration']:.1f}s")
+        print(f"     → Azure {result.get('source', TRANSCRIBE_DEPLOYMENT)}: {len(result['words'])} words, {result['duration']:.1f}s")
         return result
 
     # 2. Fallback: return None → caller uses estimate_word_timestamps()

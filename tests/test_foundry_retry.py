@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from io import BytesIO
 from pathlib import Path
 from unittest import mock
@@ -42,6 +43,7 @@ def test_tts_retries_429_then_succeeds(tmp_path: Path, monkeypatch):
     from scripts.lib import tts_gen
 
     monkeypatch.setattr(tts_gen, "_get_azure_token", lambda: "token")
+    monkeypatch.setattr(tts_gen, "_write_word_sidecar", lambda *args, **kwargs: None)
     response = mock.MagicMock()
     response.read.return_value = b"RIFF\x24\x00\x00\x00WAVEfmt "
     response.__enter__.return_value = response
@@ -112,3 +114,55 @@ def test_video_timeout_fails_loud_without_fallback(tmp_path: Path, monkeypatch):
     assert result["success"] is False
     assert "poll timeout" in result["error"]
     assert not (tmp_path / "out.mp4").exists()
+
+
+def test_transcription_retries_429_then_succeeds(tmp_path: Path, monkeypatch):
+    from scripts.lib import live_subtitles
+
+    audio_path = tmp_path / "sample.wav"
+    audio_path.write_bytes(b"fake-wav")
+    monkeypatch.setattr(live_subtitles, "_get_azure_token", lambda: "token")
+    monkeypatch.setattr(live_subtitles, "_PRIMARY_WORD_TIMESTAMP_SUPPORTED", False)
+    monkeypatch.setattr(live_subtitles, "_wait_for_transcription_slot", lambda deployment: None)
+
+    response = mock.MagicMock()
+    response.read.return_value = (
+        b'{"text":"Hello world","words":[{"word":"Hello","start":0,"end":0.4}]}'
+    )
+    response.__enter__.return_value = response
+    response.__exit__.return_value = None
+    calls = [_http_error(429, b"rate limited", {"Retry-After": "1"}), response]
+
+    def fake_urlopen(*args, **kwargs):
+        item = calls.pop(0)
+        if isinstance(item, BaseException):
+            raise item
+        return item
+
+    monkeypatch.setattr(live_subtitles, "urlopen", fake_urlopen)
+    with mock.patch("time.sleep") as sleep:
+        result = live_subtitles.transcribe_with_azure(str(audio_path))
+
+    assert result["source"] == "whisper"
+    assert result["words"][0]["word"] == "Hello"
+    sleep.assert_called_once_with(1)
+
+
+def test_load_word_sidecar(tmp_path: Path):
+    from scripts.lib.live_subtitles import load_word_sidecar
+
+    audio_path = tmp_path / "scene.wav"
+    audio_path.write_bytes(b"fake")
+    sidecar_path = tmp_path / "scene.words.json"
+    sidecar_path.write_text(
+        json.dumps({
+            "source": "whisper",
+            "words": [{"word": "Hi", "start": 0, "end": 0.2}],
+        }),
+        encoding="utf-8",
+    )
+
+    result = load_word_sidecar(str(audio_path))
+
+    assert result["source"] == "whisper"
+    assert result["words"][0]["word"] == "Hi"
