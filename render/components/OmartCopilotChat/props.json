@@ -1,0 +1,13 @@
+{
+  "name": "OmartCopilotChat",
+  "description": "GitHub Copilot Chat panel showing a realistic Omart publish to-and-fro between user and Copilot.",
+  "props": {
+    "title": { "type": "string", "default": "Copilot" },
+    "fileName": { "type": "string", "default": "control-health.html" },
+    "audience": { "type": "string", "default": "FinPlat-Engineering" },
+    "reportTitle": { "type": "string", "default": "Daily Control Health Brief" },
+    "version": { "type": "string", "default": "v3" },
+    "accentColor": { "type": "string", "default": "#0078D4" },
+    "turnsJson": { "type": "string", "default": "[]" }
+  }
+}

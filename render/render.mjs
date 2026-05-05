@@ -3,16 +3,21 @@
  *
  * Usage:
  *   node render.mjs <scf-file.json> [--output <path>] [--quality draft|standard|high]
+ *                                   [--workers <n>] [--use-gpu true|false]
+ *                                   [--safe-webgl] [--scene <id>] [--split-scenes]
  *                                   [--dry-run] [--preview]
  */
 
-import { execSync } from 'child_process';
+import { execSync, spawnSync } from 'child_process';
 import { randomUUID } from 'crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
-import { basename, dirname, resolve } from 'path';
+import { basename, dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { runGovernanceGate } from './lib/governance-gate.mjs';
 import { compileSCFToHTML } from './lib/scf-to-html.mjs';
+
+const WEBGL_COMPONENTS = new Set(['BuildingBlocksScene', 'ThreeScene', 'DeviceStage3D', 'HTMLTextureWall']);
+const DEFAULT_WEBGL_WORKERS = 2;
 
 // ---------- PR 5 render audit trail -----------------------------------------
 // Every render attempt — success or failure — emits a JSON line under
@@ -78,8 +83,15 @@ function parseArgs(argv) {
     const a = argv[i];
     if (a === '--dry-run') args.flags.dryRun = true;
     else if (a === '--preview') args.flags.preview = true;
+    else if (a === '--safe-webgl') args.flags.safeWebgl = true;
+    else if (a === '--debug-render') args.flags.debugRender = true;
+    else if (a === '--split-scenes') args.flags.splitScenes = true;
+    else if (a === '--scene') args.flags.scene = argv[++i];
     else if (a === '--output') args.flags.output = argv[++i];
     else if (a === '--quality') args.flags.quality = argv[++i];
+    else if (a === '--workers') args.flags.workers = argv[++i];
+    else if (a === '--use-gpu') args.flags.useGpu = argv[++i];
+    else if (a === '--webgl-backend') args.flags.webglBackend = argv[++i];
     else args.positional.push(a);
   }
   return args;
@@ -93,8 +105,188 @@ function usage() {
   console.log('Options:');
   console.log('  --output <path>     Output MP4 path (default: output/<basename>.mp4)');
   console.log('  --quality <preset>  draft | standard | high (default: standard)');
+  console.log('  --workers <n>       Capture worker count; WebGL default is 2 unless --safe-webgl is set');
+  console.log('  --use-gpu <bool>    Request GPU encode/capture path when supported (WebGL default: true)');
+  console.log('  --webgl-backend <b> ANGLE backend: swiftshader | d3d11 | default');
+  console.log('  --safe-webgl        Force conservative WebGL defaults (workers=1, draft if quality omitted, swiftshader)');
+  console.log('  --debug-render      Preserve producer work directories for render diagnostics');
+  console.log('  --scene <id>        Render only one scene from the SCF');
+  console.log('  --split-scenes      Render scenes sequentially, then concatenate with FFmpeg');
   console.log('  --dry-run           Compile SCF → HTML and exit (no render)');
   console.log('  --preview           Open compiled HTML in default browser');
+}
+
+function parsePositiveIntegerFlag(value, flagName) {
+  if (value == null) return undefined;
+  const parsed = Number(value);
+  if (!Number.isInteger(parsed) || parsed < 1) {
+    throw new Error(`${flagName} must be a positive integer`);
+  }
+  return parsed;
+}
+
+function parseBooleanFlag(value, flagName) {
+  if (value == null) return undefined;
+  const text = String(value).trim().toLowerCase();
+  if (['true', '1', 'yes', 'on'].includes(text)) return true;
+  if (['false', '0', 'no', 'off'].includes(text)) return false;
+  throw new Error(`${flagName} must be true or false`);
+}
+
+function parseWebGLBackendFlag(value) {
+  if (value == null) return undefined;
+  const backend = String(value).trim().toLowerCase();
+  if (['swiftshader', 'd3d11', 'default'].includes(backend)) return backend;
+  throw new Error('--webgl-backend must be swiftshader, d3d11, or default');
+}
+
+function isProducerGpuDisabled() {
+  return String(process.env.PRODUCER_DISABLE_GPU || '').trim().toLowerCase() === 'true';
+}
+
+function defaultWebGLBackend() {
+  return process.platform === 'win32' ? 'd3d11' : 'default';
+}
+
+function applyWebGLDefaults({ hasWebGL, safeWebgl, quality, qualityProvided, workers, useGpu, webglBackend }) {
+  if (!hasWebGL) {
+    return { quality, workers, useGpu, webglBackend, message: null };
+  }
+
+  if (safeWebgl) {
+    return {
+      quality: qualityProvided ? quality : 'draft',
+      workers: workers ?? 1,
+      useGpu: useGpu ?? false,
+      webglBackend: webglBackend ?? 'swiftshader',
+      message: 'safe',
+    };
+  }
+
+  return {
+    quality,
+    workers: workers ?? DEFAULT_WEBGL_WORKERS,
+    useGpu: useGpu ?? !isProducerGpuDisabled(),
+    webglBackend: webglBackend ?? defaultWebGLBackend(),
+    message: 'gpu-default',
+  };
+}
+
+function hasWebGLScene(scf) {
+  const hasWebGLValue = (value) => {
+    if (!value || typeof value !== 'object') return false;
+    if (WEBGL_COMPONENTS.has(value.component)) return true;
+    if (Array.isArray(value.layers) && value.layers.some(hasWebGLValue)) return true;
+    if (Array.isArray(value.children) && value.children.some(hasWebGLValue)) return true;
+    return false;
+  };
+  return Array.isArray(scf?.scenes) && scf.scenes.some(hasWebGLValue);
+}
+
+function filterToScene(scf, sceneId) {
+  if (!sceneId) return scf;
+  const index = scf.scenes?.findIndex((scene) => scene.id === sceneId) ?? -1;
+  if (index < 0) {
+    throw new Error(`Scene not found: ${sceneId}`);
+  }
+  return {
+    ...scf,
+    pipeline: `${scf.pipeline || 'slate'}-scene-${sceneId}`,
+    scenes: [scf.scenes[index]],
+    metadata: {
+      ...(scf.metadata || {}),
+      sourceSceneIndex: index,
+      sourceSceneId: sceneId,
+    },
+  };
+}
+
+function shellQuoteForFfmpegConcat(filePath) {
+  return String(filePath).replace(/\\/g, '/').replace(/'/g, "'\\''");
+}
+
+function renderSplitScenes({ scf, scfPath, scfBase, outputMp4, quality, workers, useGpu, webglBackend, safeWebgl, debugRender, dryRun }) {
+  const scenes = scf.scenes || [];
+  if (scenes.length === 0) {
+    throw new Error('SCF contains no scenes');
+  }
+  const splitDir = resolve(dirname(outputMp4), `${scfBase}-split-scenes`);
+  mkdirSync(splitDir, { recursive: true });
+  const splitHasWebGL = hasWebGLScene(scf);
+  const defaults = applyWebGLDefaults({
+    hasWebGL: splitHasWebGL,
+    safeWebgl,
+    quality: quality || 'standard',
+    qualityProvided: Boolean(quality),
+    workers,
+    useGpu,
+    webglBackend,
+  });
+  const effectiveWorkers = defaults.workers;
+  const effectiveQuality = defaults.quality;
+  const effectiveUseGpu = defaults.useGpu;
+  const effectiveWebGLBackend = defaults.webglBackend;
+
+  const rendered = [];
+  console.log(`[Slate] Split render: ${scenes.length} scene(s), quality=${effectiveQuality}, workers=${effectiveWorkers ?? 'auto'}, useGpu=${effectiveUseGpu ?? 'producer-default'}, webglBackend=${effectiveWebGLBackend || process.env.PRODUCER_WEBGL_BACKEND || 'producer-default'}`);
+  for (let i = 0; i < scenes.length; i++) {
+    const scene = scenes[i];
+    const stem = `${String(i + 1).padStart(2, '0')}-${scene.id}`;
+    const sceneScfPath = join(dirname(scfPath), `${scfBase}.split-${stem}.scf.json`);
+    const sceneOutput = join(splitDir, `${stem}.mp4`);
+    const sceneScf = filterToScene(scf, scene.id);
+    writeFileSync(sceneScfPath, JSON.stringify(sceneScf, null, 2), 'utf-8');
+    rendered.push(sceneOutput);
+
+    const childArgs = [
+      fileURLToPath(import.meta.url),
+      sceneScfPath,
+      '--quality',
+      effectiveQuality,
+      '--output',
+      sceneOutput,
+      '--scene',
+      scene.id,
+    ];
+    if (effectiveWorkers != null) childArgs.push('--workers', String(effectiveWorkers));
+    if (effectiveUseGpu != null) childArgs.push('--use-gpu', String(effectiveUseGpu));
+    if (effectiveWebGLBackend != null) childArgs.push('--webgl-backend', effectiveWebGLBackend);
+    if (safeWebgl) childArgs.push('--safe-webgl');
+    if (debugRender) childArgs.push('--debug-render');
+    if (dryRun) childArgs.push('--dry-run');
+
+    console.log(`[Slate] Split render scene ${i + 1}/${scenes.length}: ${scene.id}`);
+    const child = spawnSync(process.execPath, childArgs, {
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        ...(effectiveWorkers != null ? { PRODUCER_MAX_WORKERS: String(effectiveWorkers) } : {}),
+        ...(effectiveWebGLBackend != null ? { PRODUCER_WEBGL_BACKEND: effectiveWebGLBackend } : {}),
+      },
+    });
+    if (child.status !== 0) {
+      throw new Error(`Scene render failed: ${scene.id} (exit ${child.status})`);
+    }
+  }
+
+  if (dryRun) {
+    console.log('[Slate] --dry-run: split scene SCFs were generated; skipping concat');
+    return;
+  }
+
+  const concatPath = join(splitDir, 'concat.txt');
+  writeFileSync(
+    concatPath,
+    rendered.map((file) => `file '${shellQuoteForFfmpegConcat(resolve(file))}'`).join('\n') + '\n',
+    'utf-8',
+  );
+  console.log(`[Slate] Concatenating ${rendered.length} scene render(s) → ${outputMp4}`);
+  const ffmpeg = spawnSync('ffmpeg', ['-y', '-hide_banner', '-f', 'concat', '-safe', '0', '-i', concatPath, '-c', 'copy', outputMp4], {
+    stdio: 'inherit',
+  });
+  if (ffmpeg.status !== 0) {
+    throw new Error(`FFmpeg concat failed (exit ${ffmpeg.status})`);
+  }
 }
 
 async function main() {
@@ -127,12 +319,24 @@ async function main() {
     ? resolve(args.flags.output)
     : resolve(outputDir, 'renders', `${scfBase}.mp4`);
   const htmlPath = resolve(outputDir, `${scfBase}.html`);
+  mkdirSync(dirname(outputMp4), { recursive: true });
 
   // Ensure renders/ subdirectory exists when using default path
   if (!args.flags.output) {
     mkdirSync(resolve(outputDir, 'renders'), { recursive: true });
   }
-  const quality = args.flags.quality || 'standard';
+  let quality = args.flags.quality || 'standard';
+  let workers;
+  let useGpu;
+  let webglBackend;
+  try {
+    workers = parsePositiveIntegerFlag(args.flags.workers, '--workers');
+    useGpu = parseBooleanFlag(args.flags.useGpu, '--use-gpu');
+    webglBackend = parseWebGLBackendFlag(args.flags.webglBackend);
+  } catch (err) {
+    console.error(`[Slate] Invalid render option: ${err.message}`);
+    process.exit(1);
+  }
 
   console.log(`[Slate] Reading SCF: ${scfPath}`);
   console.log(`[Slate] Run id: ${runId}`);
@@ -146,6 +350,51 @@ async function main() {
       status: 'failure', error: `parse: ${err.message}`,
     }));
     process.exit(1);
+  }
+  if (args.flags.scene) {
+    try {
+      scf = filterToScene(scf, args.flags.scene);
+    } catch (err) {
+      console.error(`[Slate] ${err.message}`);
+      process.exit(1);
+    }
+  }
+  if (args.flags.splitScenes) {
+    try {
+      renderSplitScenes({
+        scf,
+        scfPath,
+        scfBase,
+        outputMp4,
+        quality: args.flags.quality,
+        workers,
+        useGpu,
+        webglBackend,
+        safeWebgl: args.flags.safeWebgl,
+        debugRender: args.flags.debugRender,
+        dryRun: args.flags.dryRun,
+      });
+      writeRenderAudit(buildAuditRecord({
+        runId,
+        scfPath,
+        scf,
+        compiled: null,
+        status: args.flags.dryRun ? 'split-scenes-dry-run' : 'split-scenes-success',
+        error: null,
+      }));
+      return;
+    } catch (err) {
+      console.error(`[Slate] Split render failed: ${err.message}`);
+      writeRenderAudit(buildAuditRecord({
+        runId,
+        scfPath,
+        scf,
+        compiled: null,
+        status: 'failure',
+        error: `split-scenes: ${err.message}`,
+      }));
+      process.exit(4);
+    }
   }
 
   console.log('[Slate] Running governance gate...');
@@ -205,6 +454,26 @@ async function main() {
   writeFileSync(htmlPath, compiled.html, 'utf-8');
   console.log(`[Slate] HTML composition: ${htmlPath}`);
   console.log(`[Slate] Composition: ${compiled.sceneCount} scenes, ${compiled.totalDuration}s @ ${compiled.width}x${compiled.height}`);
+  const compiledHasWebGL = compiled.componentsUsed?.some((c) => WEBGL_COMPONENTS.has(c));
+  const defaults = applyWebGLDefaults({
+    hasWebGL: compiledHasWebGL,
+    safeWebgl: args.flags.safeWebgl,
+    quality,
+    qualityProvided: Boolean(args.flags.quality),
+    workers,
+    useGpu,
+    webglBackend,
+  });
+  quality = defaults.quality;
+  workers = defaults.workers;
+  useGpu = defaults.useGpu;
+  webglBackend = defaults.webglBackend;
+  if (defaults.message === 'safe') {
+    console.warn('[Slate]   WebGL composition detected; using safe local capture defaults (workers=1, quality=draft unless overridden, software WebGL backend).');
+  } else if (defaults.message === 'gpu-default') {
+    console.warn(`[Slate]   WebGL composition detected; defaulting to GPU-oriented capture (workers=${workers}, useGpu=${useGpu}, webglBackend=${webglBackend}).`);
+    console.warn('[Slate]     Use --safe-webgl for conservative software WebGL fallback, or override --workers/--use-gpu/--webgl-backend explicitly.');
+  }
 
   if (args.flags.dryRun) {
     console.log('[Slate] --dry-run: skipping render');
@@ -243,6 +512,9 @@ async function main() {
   }
 
   const { createRenderJob, executeRenderJob } = producer;
+  if (webglBackend != null) {
+    process.env.PRODUCER_WEBGL_BACKEND = webglBackend;
+  }
 
   const fps = compiled.fps === 24 || compiled.fps === 60 ? compiled.fps : 30;
   const job = createRenderJob({
@@ -250,11 +522,18 @@ async function main() {
     quality,
     format: 'mp4',
     entryFile: basename(htmlPath),
+    ...(workers != null ? { workers } : {}),
+    ...(useGpu != null ? { useGpu } : {}),
+    ...(args.flags.debugRender ? { debug: true } : {}),
   });
 
   const projectDir = dirname(htmlPath);
 
-  console.log(`[Slate] Rendering via @hyperframes/producer (quality=${quality}, fps=${fps})`);
+  const workerLabel = workers != null ? workers : (process.env.PRODUCER_MAX_WORKERS || 'auto');
+  console.log(`[Slate] Rendering via @hyperframes/producer (quality=${quality}, fps=${fps}, workers=${workerLabel}, webglBackend=${webglBackend || process.env.PRODUCER_WEBGL_BACKEND || 'producer-default'})`);
+  if (compiledHasWebGL && !args.flags.splitScenes) {
+    console.warn('[Slate]   For long WebGL videos, prefer `--split-scenes` to isolate scene failures; use `--safe-webgl` only for software fallback.');
+  }
   const startMs = Date.now();
   try {
     await executeRenderJob(job, projectDir, outputMp4, (j, message) => {

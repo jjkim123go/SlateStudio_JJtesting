@@ -172,3 +172,28 @@ async def test_brand_font_readiness_marker_compile():
     html = Path(result.output["html_path"]).read_text(encoding="utf-8")
     assert "Segoe UI" in html
     assert "__slateFontsReady" in html
+
+
+@pytest.mark.asyncio
+async def test_webgl_compile_defaults_to_gpu_two_workers():
+    """WebGL components should dry-run through the GPU-oriented default path."""
+    scf = _base_scf(
+        scenes=[
+            {
+                "id": "three",
+                "duration": 2,
+                "component": "ThreeScene",
+                "props": {"title": "GPU default", "mode": "orbital"},
+            }
+        ]
+    )
+    tool = HyperFramesRender()
+    result = await tool.execute(scf=scf, dry_run=True)
+
+    assert result.success, f"Compile failed: {result.error}"
+    html = Path(result.output["html_path"]).read_text(encoding="utf-8")
+    assert "vendor/three/three.module.min.js" in html
+    output = result.metadata["stdout"] + result.metadata["stderr"]
+    assert "defaulting to GPU-oriented capture" in output
+    assert "workers=2" in output
+    assert "useGpu=true" in output

@@ -19,6 +19,15 @@ editing, VS Code, Azure portal, etc.), load
 [`synthetic-screen-recording.md`](synthetic-screen-recording.md) instead
 (or in addition).
 
+If the script reaches for "premium / cinematic / 3D / depth / parallax /
+shader / logo wall / device flythrough" cues, *also* load
+[`../creative/premium-motion-routing.md`](../creative/premium-motion-routing.md)
+to pick the right tier (standard 2D vs 2.5D polish vs Sora-2 hybrid vs true
+3D) before authoring a `ThreeScene` / `HTMLTextureWall` / `DeviceStage3D`
+component. See [`render/three-js.md`](render/three-js.md) for the
+engineering contract and [`render/html-in-canvas.md`](render/html-in-canvas.md)
+for texture authoring.
+
 ## Quick router — pick a component in one read
 
 | Script signal | Component | Skill |

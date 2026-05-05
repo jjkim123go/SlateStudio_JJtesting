@@ -1,0 +1,143 @@
+<!-- OmartCopilotChat — synthetic GitHub Copilot Chat panel for the Omart publish flow -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+.scene-{{sceneId}} .occ-root{position:absolute;inset:0;overflow:hidden;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;color:#0f2236;background:
+  radial-gradient(circle at 78% 14%,rgba(0,120,212,.18),transparent 36%),
+  radial-gradient(circle at 14% 86%,rgba(82,196,255,.16),transparent 32%),
+  linear-gradient(135deg,#ffffff 0%,#f5fbff 46%,#eaf3ff 100%);
+  --occ-accent:{{accentColor}};
+}
+.scene-{{sceneId}} .occ-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,120,212,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,120,212,.04) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(circle at 50% 45%,#000 0%,transparent 78%);}
+
+/* VS Code window chrome */
+.scene-{{sceneId}} .occ-window{position:absolute;left:90px;top:74px;right:90px;bottom:74px;border-radius:18px;background:#1f2933;border:1px solid rgba(255,255,255,.16);box-shadow:0 50px 120px rgba(7,32,60,.36),0 18px 44px rgba(15,36,66,.18);overflow:hidden;display:flex;flex-direction:column;}
+.scene-{{sceneId}} .occ-titlebar{height:38px;background:linear-gradient(180deg,#2a3744,#222d39);border-bottom:1px solid #0e1620;display:flex;align-items:center;padding:0 16px;flex-shrink:0;}
+.scene-{{sceneId}} .occ-trafficlights{display:flex;gap:8px;}
+.scene-{{sceneId}} .occ-trafficlight{width:13px;height:13px;border-radius:50%;}
+.scene-{{sceneId}} .occ-tl-r{background:#ff5f57;}.scene-{{sceneId}} .occ-tl-y{background:#ffbd2e;}.scene-{{sceneId}} .occ-tl-g{background:#28c941;}
+.scene-{{sceneId}} .occ-tabname{color:#d6dde6;font-size:13px;font-weight:600;letter-spacing:.02em;margin-left:18px;display:flex;align-items:center;gap:8px;}
+.scene-{{sceneId}} .occ-tabname-dot{width:8px;height:8px;border-radius:50%;background:#0078d4;}
+.scene-{{sceneId}} .occ-body{flex:1;display:flex;min-height:0;}
+
+/* Activity bar (left) */
+.scene-{{sceneId}} .occ-activitybar{width:54px;background:#181f28;display:flex;flex-direction:column;align-items:center;padding-top:14px;gap:18px;flex-shrink:0;border-right:1px solid #0e1620;}
+.scene-{{sceneId}} .occ-actbtn{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#7e8a98;font-size:18px;}
+.scene-{{sceneId}} .occ-actbtn.active{color:#fff;background:rgba(0,120,212,.18);box-shadow:inset 2px 0 0 #0078d4;border-radius:6px 6px 6px 6px;}
+
+/* Side panel (file explorer hint) */
+.scene-{{sceneId}} .occ-side{width:228px;background:#222d39;border-right:1px solid #0e1620;padding:14px 12px;flex-shrink:0;}
+.scene-{{sceneId}} .occ-side-title{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#7e8a98;margin-bottom:10px;}
+.scene-{{sceneId}} .occ-side-row{display:flex;align-items:center;gap:8px;color:#d2d9e2;font-size:13px;font-weight:500;padding:5px 6px;border-radius:5px;}
+.scene-{{sceneId}} .occ-side-row.focus{background:rgba(0,120,212,.16);color:#fff;}
+.scene-{{sceneId}} .occ-side-icon{color:#9aa6b3;font-size:13px;}
+
+/* Editor area (faint code preview) */
+.scene-{{sceneId}} .occ-editor{flex:1;background:#1d2530;padding:18px 24px;color:#728697;font-family:'JetBrains Mono',Consolas,monospace;font-size:12.5px;line-height:1.62;min-width:0;overflow:hidden;opacity:.78;}
+.scene-{{sceneId}} .occ-editor .ln{display:block;}
+.scene-{{sceneId}} .occ-editor .tag{color:#a4c2db;}
+.scene-{{sceneId}} .occ-editor .attr{color:#c8a262;}
+.scene-{{sceneId}} .occ-editor .str{color:#a3d6a7;}
+.scene-{{sceneId}} .occ-editor .key{color:#7da7d9;}
+.scene-{{sceneId}} .occ-editor .com{color:#5c6c7c;font-style:italic;}
+
+/* Copilot panel (right) — the star */
+.scene-{{sceneId}} .occ-chatpanel{width:560px;background:#1a212b;border-left:1px solid #0e1620;display:flex;flex-direction:column;flex-shrink:0;}
+.scene-{{sceneId}} .occ-chatheader{height:42px;border-bottom:1px solid #0e1620;display:flex;align-items:center;padding:0 16px;gap:10px;background:linear-gradient(180deg,#222d39,#1a212b);}
+.scene-{{sceneId}} .occ-copilot-mark{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#0078d4,#52c4ff);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:12px;box-shadow:0 6px 14px rgba(0,120,212,.34);}
+.scene-{{sceneId}} .occ-chatheader-title{color:#e8eef5;font-size:14px;font-weight:700;letter-spacing:-.005em;}
+.scene-{{sceneId}} .occ-chatheader-mode{margin-left:auto;font-size:11px;font-weight:700;color:#7da7d9;background:rgba(0,120,212,.16);padding:4px 10px;border-radius:999px;letter-spacing:.04em;}
+.scene-{{sceneId}} .occ-thread{flex:1;padding:18px 18px 14px;display:flex;flex-direction:column;gap:14px;min-height:0;overflow:hidden;}
+
+.scene-{{sceneId}} .occ-msg{max-width:88%;display:flex;gap:10px;}
+.scene-{{sceneId}} .occ-msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.scene-{{sceneId}} .occ-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;color:#fff;}
+.scene-{{sceneId}} .occ-avatar.copilot{background:linear-gradient(135deg,#0078d4,#52c4ff);box-shadow:0 6px 14px rgba(0,120,212,.32);}
+.scene-{{sceneId}} .occ-avatar.user{background:linear-gradient(135deg,#5468ff,#8d6ef0);box-shadow:0 6px 14px rgba(108,87,240,.32);}
+.scene-{{sceneId}} .occ-bubble{padding:11px 14px;border-radius:14px;font-size:14px;line-height:1.45;font-weight:500;color:#e6edf3;background:#252e39;border:1px solid rgba(255,255,255,.06);box-shadow:0 8px 20px rgba(0,0,0,.18);}
+.scene-{{sceneId}} .occ-msg.user .occ-bubble{background:linear-gradient(135deg,#1e3a6a,#0c2752);color:#e8eef5;border-color:rgba(82,196,255,.20);}
+.scene-{{sceneId}} .occ-bubble code{font-family:'JetBrains Mono',Consolas,monospace;font-size:12.5px;background:rgba(0,0,0,.28);padding:1px 6px;border-radius:4px;color:#9cd9ff;}
+.scene-{{sceneId}} .occ-bubble .phase{display:block;font-family:'JetBrains Mono',Consolas,monospace;font-size:12.5px;line-height:1.6;color:#9cd9ff;margin-top:6px;padding-left:8px;border-left:2px solid rgba(0,120,212,.45);}
+.scene-{{sceneId}} .occ-bubble .phase b{color:#fff;font-weight:700;}
+.scene-{{sceneId}} .occ-bubble .ok{color:#7ed492;}
+.scene-{{sceneId}} .occ-bubble .ask{display:block;margin-top:8px;font-size:13px;font-weight:700;color:#ffd070;}
+.scene-{{sceneId}} .occ-bubble .ok-pub{display:flex;align-items:center;gap:8px;margin-top:8px;padding:8px 12px;background:rgba(126,212,146,.12);border:1px solid rgba(126,212,146,.32);border-radius:9px;color:#a4e8b6;font-size:13px;font-weight:700;}
+.scene-{{sceneId}} .occ-bubble .ok-pub .pub-link{color:#9cd9ff;font-family:'JetBrains Mono',Consolas,monospace;font-size:12px;font-weight:600;}
+
+/* Composer (typing indicator + input box at bottom) */
+.scene-{{sceneId}} .occ-composer{flex-shrink:0;padding:10px 16px 16px;border-top:1px solid #0e1620;background:#1a212b;}
+.scene-{{sceneId}} .occ-input{height:42px;border-radius:9px;background:#252e39;border:1px solid rgba(255,255,255,.10);padding:0 14px;display:flex;align-items:center;color:#7e8a98;font-size:13px;font-weight:500;}
+.scene-{{sceneId}} .occ-typing{display:inline-flex;gap:4px;margin-left:4px;}
+.scene-{{sceneId}} .occ-typing span{width:6px;height:6px;border-radius:50%;background:#52c4ff;}
+
+/* Side caption — what the user is doing */
+.scene-{{sceneId}} .occ-callout{position:absolute;left:118px;top:18px;z-index:5;}
+.scene-{{sceneId}} .occ-kicker{font-size:12px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#0067b8;}
+
+/* Bottom badge strip showing the 5 phases */
+.scene-{{sceneId}} .occ-phases{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:10px;z-index:6;}
+.scene-{{sceneId}} .occ-phase-pill{padding:8px 16px;border-radius:999px;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 28px rgba(15,36,66,.14);font-size:12px;font-weight:800;color:#506174;letter-spacing:.03em;}
+.scene-{{sceneId}} .occ-phase-pill[data-active="1"]{background:linear-gradient(135deg,#0078d4,#52c4ff);color:#fff;box-shadow:0 14px 34px rgba(0,120,212,.34);}
+</style>
+<div class="occ-root" data-scene-component="OmartCopilotChat">
+  <div class="occ-grid"></div>
+  <div class="occ-callout"><div class="occ-kicker">Commerce Radar · O-mart Publisher</div></div>
+
+  <div class="occ-window">
+    <div class="occ-titlebar">
+      <div class="occ-trafficlights"><div class="occ-trafficlight occ-tl-r"></div><div class="occ-trafficlight occ-tl-y"></div><div class="occ-trafficlight occ-tl-g"></div></div>
+      <div class="occ-tabname"><span class="occ-tabname-dot"></span>{{fileName}} — radar-data</div>
+    </div>
+    <div class="occ-body">
+      <div class="occ-activitybar">
+        <div class="occ-actbtn">▢</div>
+        <div class="occ-actbtn">⌕</div>
+        <div class="occ-actbtn">⎇</div>
+        <div class="occ-actbtn active">✦</div>
+      </div>
+      <div class="occ-side">
+        <div class="occ-side-title">Explorer</div>
+        <div class="occ-side-row"><span class="occ-side-icon">▾</span>radar-data</div>
+        <div class="occ-side-row" style="padding-left:18px;"><span class="occ-side-icon">▸</span>tools</div>
+        <div class="occ-side-row focus" style="padding-left:18px;"><span class="occ-side-icon">⟨⟩</span>{{fileName}}</div>
+        <div class="occ-side-row" style="padding-left:18px;"><span class="occ-side-icon">{ }</span>omart.json</div>
+        <div class="occ-side-row" style="padding-left:18px;"><span class="occ-side-icon">📄</span>README.md</div>
+      </div>
+      <div class="occ-editor">
+        <span class="ln"><span class="com">&lt;!-- {{fileName}} --&gt;</span></span>
+        <span class="ln"><span class="tag">&lt;html&gt;</span></span>
+        <span class="ln">  <span class="tag">&lt;body&gt;</span></span>
+        <span class="ln">    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"kpi"</span><span class="tag">&gt;</span></span>
+        <span class="ln">      <span class="tag">&lt;span&gt;</span>PRs Merged<span class="tag">&lt;/span&gt;</span></span>
+        <span class="ln">      <span class="tag">&lt;span&gt;</span>70<span class="tag">&lt;/span&gt;</span></span>
+        <span class="ln">    <span class="tag">&lt;/div&gt;</span></span>
+        <span class="ln">    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"kpi"</span><span class="tag">&gt;</span></span>
+        <span class="ln">      <span class="tag">&lt;span&gt;</span>Failures<span class="tag">&lt;/span&gt;</span></span>
+        <span class="ln">      <span class="tag">&lt;span&gt;</span>3<span class="tag">&lt;/span&gt;</span></span>
+        <span class="ln">    <span class="tag">&lt;/div&gt;</span></span>
+        <span class="ln">    <span class="tag">&lt;section</span> <span class="attr">class</span>=<span class="str">"summary"</span><span class="tag">&gt;</span></span>
+        <span class="ln">      <span class="com">// owner notes...</span></span>
+        <span class="ln">    <span class="tag">&lt;/section&gt;</span></span>
+        <span class="ln">  <span class="tag">&lt;/body&gt;</span></span>
+        <span class="ln"><span class="tag">&lt;/html&gt;</span></span>
+      </div>
+      <div class="occ-chatpanel">
+        <div class="occ-chatheader">
+          <div class="occ-copilot-mark">✦</div>
+          <div class="occ-chatheader-title">{{title}}</div>
+          <div class="occ-chatheader-mode">Agent · O-mart</div>
+        </div>
+        <div class="occ-thread"></div>
+        <div class="occ-composer"><div class="occ-input">Ask Copilot<div class="occ-typing"><span></span><span></span><span></span></div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="occ-phases">
+    <div class="occ-phase-pill" data-phase="1">1 · Detect</div>
+    <div class="occ-phase-pill" data-phase="2">2 · Annotate</div>
+    <div class="occ-phase-pill" data-phase="3">3 · Manifest</div>
+    <div class="occ-phase-pill" data-phase="4">4 · Validate</div>
+    <div class="occ-phase-pill" data-phase="5">5 · Publish</div>
+  </div>
+</div>

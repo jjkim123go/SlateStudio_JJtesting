@@ -151,6 +151,24 @@ const KNOWN_COMPONENTS = new Set([
   // Dynamically authored components
   'GaugeRing',
   'PremiumMotionShowcase',
+  'BuildingBlocksScene',
+  'MoneyTransferScene',
+  'ThreeScene',
+  'DeviceStage3D',
+  'HTMLTextureWall',
+  'OmartSignalWall',
+  'OmartMarketplaceDemo',
+  'OmartCopilotChat',
+]);
+
+// Components that depend on the lazy three.js driver. Adding a name here
+// gates loader injection (import map + driver script) on whether the SCF
+// uses any of these in a layer or as a scene-level component.
+const THREE_COMPONENTS = new Set([
+  'BuildingBlocksScene',
+  'ThreeScene',
+  'DeviceStage3D',
+  'HTMLTextureWall',
 ]);
 
 const BUILTIN_TRANSITIONS = new Set(['cut', 'fadeIn', 'fadeOut', 'crossfade', 'slide', 'wipe', 'zoom']);
@@ -772,6 +790,14 @@ function layerInitialOpacityStyle(layer) {
   return start > 0 ? 'opacity:0;' : '';
 }
 
+function layerOpacityStyle(layer) {
+  if (hasLayerTiming(layer)) return '';
+  if (layer?.opacity == null) return '';
+  const opacity = Number(layer.opacity);
+  if (!Number.isFinite(opacity)) return '';
+  return `opacity:${Math.max(0, Math.min(1, opacity))};`;
+}
+
 // Append data-layer-start / data-layer-end attrs (informational + handy
 // for debugging) to a layer's HTML attribute string.
 function layerTimingAttrs(layer) {
@@ -978,6 +1004,7 @@ function renderComponentLayer(layer, sceneCtx, idx) {
   if (!componentName) return '<!-- component layer missing component name -->';
   const c = loadComponent(componentName);
   if (sceneCtx.compileCtx?.componentsUsed) sceneCtx.compileCtx.componentsUsed.add(componentName);
+  if (THREE_COMPONENTS.has(componentName) && sceneCtx.compileCtx) sceneCtx.compileCtx.threeUsed = true;
   const rawProps = layer.props || layer.data || {};
   const resolvedProps = resolveNestedAssetPaths({ ...rawProps }, sceneCtx.scfDir, 0);
   applyBrandDefaults(resolvedProps, sceneCtx);
@@ -986,10 +1013,11 @@ function renderComponentLayer(layer, sceneCtx, idx) {
   const inner = templateString(c.html, vars);
   const pos = positionStyles(layer.position);
   const initOpacity = layerInitialOpacityStyle(layer);
+  const opacity = layerOpacityStyle(layer);
   const zIndex = layer.zIndex != null ? `z-index:${Number(layer.zIndex)};` : '';
   const baseStyle = pos
-    ? `position:absolute;${pos};${zIndex}${initOpacity}`
-    : `position:absolute;inset:0;${zIndex}${initOpacity}`;
+    ? `position:absolute;${pos};${zIndex}${opacity}${initOpacity}`
+    : `position:absolute;inset:0;${zIndex}${opacity}${initOpacity}`;
   const elementId = layerTimingId(sceneCtx, idx);
   const idAttr = hasLayerTiming(layer) ? `id="${escapeHtml(elementId)}"` : '';
   const timingAttrs = layerTimingAttrs(layer);
@@ -1348,6 +1376,227 @@ const LOTTIE_DRIVER_JS = `
 })();
 `;
 
+const THREE_RUNTIME_VERSION = '0.171.0';
+
+function buildThreeImportMapTag(projectDir) {
+  const threePackagePath = resolve(__dirname, '..', 'node_modules', 'three', 'package.json');
+  const threeModulePath = resolve(__dirname, '..', 'node_modules', 'three', 'build', 'three.module.min.js');
+  const threeCorePath = resolve(__dirname, '..', 'node_modules', 'three', 'build', 'three.core.min.js');
+  if (!existsSync(threePackagePath) || !existsSync(threeModulePath) || !existsSync(threeCorePath)) {
+    throw new Error('[scf-to-html] ThreeScene requires render/node_modules/three. Run npm install in render/.');
+  }
+  const threePackage = JSON.parse(readFileSync(threePackagePath, 'utf8'));
+  if (threePackage.version !== THREE_RUNTIME_VERSION) {
+    throw new Error(`[scf-to-html] Expected three@${THREE_RUNTIME_VERSION}, found three@${threePackage.version}.`);
+  }
+  const vendorDir = resolve(projectDir || process.cwd(), 'vendor', 'three');
+  mkdirSync(vendorDir, { recursive: true });
+  copyFileSync(threeModulePath, resolve(vendorDir, 'three.module.min.js'));
+  copyFileSync(threeCorePath, resolve(vendorDir, 'three.core.min.js'));
+  const importMap = JSON.stringify({ imports: { three: './vendor/three/three.module.min.js' } });
+  return `<!-- three ${THREE_RUNTIME_VERSION} (MIT) staged from render/node_modules/three; no CDN fallback -->\n<script type="importmap">${importMap}</script>`;
+}
+
+const THREE_DRIVER_JS = `
+/* === Slate three.js driver ==============================================
+ * Drives registered WebGL scenes from the paused master GSAP timeline.
+ * Determinism contract: components must not use requestAnimationFrame,
+ * Date.now(), performance.now(), or unseeded randomness. This framework
+ * hook calls renderAtTime(master.time()) during seek-driven renders.
+ * ====================================================================== */
+(function(){
+  if (typeof window === 'undefined') return;
+
+  var previous = window.__slateThree;
+  if (previous && previous._installed) return;
+
+  var instances = (previous && previous.instances) || [];
+  var threePromise = null;
+
+  function getMasterTimeline() {
+    var compositionId = (window.__timelines && Object.keys(window.__timelines)[0]);
+    return (compositionId && window.__timelines[compositionId]) || (typeof master !== 'undefined' ? master : null);
+  }
+
+  function loadThree() {
+    if (window.THREE) return Promise.resolve(window.THREE);
+    if (!threePromise) {
+      threePromise = import('three').then(function(mod){
+        window.THREE = mod;
+        window.__slateThree.ready = true;
+        return mod;
+      }).catch(function(err){
+        window.__slateThree.error = err && err.message ? err.message : String(err);
+        if (typeof console !== 'undefined') console.warn('[slate-three] load failed:', window.__slateThree.error);
+        throw err;
+      });
+    }
+    return threePromise;
+  }
+
+  function ensureInitialized(inst) {
+    if (!inst || inst._initStarted || inst.disposed) return;
+    inst._initStarted = true;
+    loadThree().then(function(THREE){
+      inst.THREE = THREE;
+      var initResult = null;
+      if (inst.api && typeof inst.api.init === 'function') {
+        try {
+          initResult = inst.api.init(THREE);
+        } catch (err) {
+          inst.error = err && err.message ? err.message : String(err);
+          window.__slateThree.error = inst.error;
+          throw err;
+        }
+      }
+      return Promise.resolve(initResult).then(function(){
+        inst.ready = true;
+        tick();
+      });
+    }).catch(function(err){
+      inst.error = err && err.message ? err.message : (inst.error || String(err));
+      inst.ready = false;
+    });
+  }
+
+  function register(sceneId, api) {
+    var inst = { sceneId: sceneId, api: api || {}, ready: false, _initStarted: false, disposed: false, error: null };
+    instances.push(inst);
+    ensureInitialized(inst);
+    return inst;
+  }
+
+  function disposeInstance(inst) {
+    if (!inst || inst.disposed) return;
+    inst.disposed = true;
+    try {
+      if (inst.api && typeof inst.api.dispose === 'function') {
+        inst.api.dispose(inst.THREE || window.THREE);
+      }
+    } catch (err) {
+      if (typeof console !== 'undefined') console.warn('[slate-three] dispose failed:', err && err.message ? err.message : err);
+    }
+    inst.ready = false;
+  }
+
+  function unregister(sceneIdOrInst) {
+    for (var i = instances.length - 1; i >= 0; i--) {
+      var inst = instances[i];
+      if (inst === sceneIdOrInst || inst.sceneId === sceneIdOrInst) {
+        disposeInstance(inst);
+        instances.splice(i, 1);
+      }
+    }
+  }
+
+  function disposeAll() {
+    for (var i = instances.length - 1; i >= 0; i--) {
+      disposeInstance(instances[i]);
+    }
+    instances.length = 0;
+  }
+
+  function tick() {
+    var masterTl = getMasterTimeline();
+    if (!masterTl) return;
+    var t = masterTl.time();
+    for (var i = 0; i < instances.length; i++) {
+      var inst = instances[i];
+      if (inst.disposed) continue;
+      if (!inst.ready) {
+        ensureInitialized(inst);
+        continue;
+      }
+      if (inst.api && typeof inst.api.renderAtTime === 'function') {
+        inst.api.renderAtTime(t, inst.THREE || window.THREE);
+      }
+    }
+  }
+
+  window.__slateThree = {
+    _installed: true,
+    ready: !!window.THREE,
+    error: null,
+    instances: instances,
+    register: register,
+    unregister: unregister,
+    disposeAll: disposeAll,
+    driver: tick
+  };
+
+  function allInstancesReady() {
+    if (window.__slateThree.error) {
+      throw new Error('[slate-three] ' + window.__slateThree.error);
+    }
+    if (!window.__slateThree.ready) return false;
+    for (var i = 0; i < instances.length; i++) {
+      if (!instances[i].disposed && !instances[i].ready) return false;
+    }
+    return true;
+  }
+
+  function installHyperFramesCaptureGate() {
+    var storedHf = window.__hf;
+    function wrapHf(hf) {
+      if (!hf || hf.__slateThreeWrapped) return hf;
+      var wrapped = {
+        __slateThreeWrapped: true,
+        get duration() {
+          return allInstancesReady() ? hf.duration : 0;
+        },
+        seek: function(t) {
+          return hf.seek(t);
+        }
+      };
+      return wrapped;
+    }
+
+    try {
+      Object.defineProperty(window, '__hf', {
+        configurable: true,
+        get: function() {
+          return wrapHf(storedHf);
+        },
+        set: function(value) {
+          storedHf = value;
+        }
+      });
+    } catch (err) {
+      if (typeof console !== 'undefined') console.warn('[slate-three] unable to install capture gate:', err);
+    }
+
+    if (storedHf) storedHf = wrapHf(storedHf);
+  }
+
+  installHyperFramesCaptureGate();
+
+  function hookMasterTimeline() {
+    var masterTl = getMasterTimeline();
+    if (!masterTl || !masterTl.eventCallback) return false;
+    var existing = masterTl.eventCallback('onUpdate');
+    masterTl.eventCallback('onUpdate', function(){
+      if (typeof existing === 'function') { try { existing(); } catch(e){} }
+      tick();
+    });
+    tick();
+    return true;
+  }
+
+  if (!hookMasterTimeline()) {
+    Promise.resolve().then(hookMasterTimeline);
+  }
+
+  if (typeof gsap !== 'undefined' && gsap.ticker && typeof gsap.ticker.add === 'function') {
+    gsap.ticker.add(tick);
+  }
+
+  window.addEventListener('pagehide', disposeAll);
+  window.addEventListener('beforeunload', disposeAll);
+
+  loadThree().then(tick).catch(function(){});
+})();
+`;
+
 // ---------- Scene renderer ---------------------------------------------------
 
 function renderScene(scene, ctx) {
@@ -1380,6 +1629,7 @@ function renderScene(scene, ctx) {
   if (scene.component) {
     const c = loadComponent(scene.component);
     if (ctx.componentsUsed) ctx.componentsUsed.add(scene.component);
+    if (THREE_COMPONENTS.has(scene.component)) ctx.threeUsed = true;
     const props = scene.props || {};
     // Resolve any *Src / *Path / src props to file:// URLs.
     // PR 3: walk recursively into nested objects + arrays so that
@@ -1567,7 +1817,7 @@ export function compileSCFToHTML(scf, options = {}) {
   const brandPackage = loadBrandPackage(scf.brandPackage);
   const theme = normalizeThemeFromSCF(scf, brandPackage);
   const captionConfig = normalizeCaptionConfig(scf.captions || {}, theme);
-  const ctx = { cursor: 0, index: 0, scfDir, projectDir, repoRoot, width, height, brandPackage, theme, captionConfig, componentsUsed: new Set(), lottieUsed: false };
+  const ctx = { cursor: 0, index: 0, scfDir, projectDir, repoRoot, width, height, brandPackage, theme, captionConfig, componentsUsed: new Set(), lottieUsed: false, threeUsed: false };
   const fontFaceCss = brandFontFaceCss(brandPackage, ctx);
   const renderedScenes = [];
   for (const scene of scf.scenes || []) {
@@ -1619,6 +1869,8 @@ export function compileSCFToHTML(scf, options = {}) {
     lottieVendorTag = `<script>/* lottie-web 5.12.2 svg renderer (MIT) — compile-time embed per Standing Rule #10 */\n${vendorJs}\n</script>`;
   }
   const lottieDriverTag = ctx.lottieUsed ? LOTTIE_DRIVER_JS : '';
+  const threeImportMapTag = ctx.threeUsed ? buildThreeImportMapTag(projectDir) : '';
+  const threeDriverTag = ctx.threeUsed ? THREE_DRIVER_JS : '';
 
   const html = `<!doctype html>
 <html lang="en">
@@ -1626,6 +1878,7 @@ export function compileSCFToHTML(scf, options = {}) {
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=${width}, height=${height}" />
 <title>${escapeHtml(scf.metadata?.title || 'Slate Composition')}</title>
+${threeImportMapTag}
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 ${lottieVendorTag}
 <style>
@@ -1681,6 +1934,7 @@ ${renderedScenes.flatMap((s) => (s.layerVisibility || []).map((v) => {
 
 window.__timelines[${JSON.stringify(compositionId)}] = master;
 
+${threeDriverTag}
 ${allJs}
 ${lottieDriverTag}
 </script>
@@ -1799,6 +2053,47 @@ const PROP_TRANSFORMERS = {
     if (props.legend && !props.legendJson) props.legendJson = JSON.stringify(props.legend);
     if (props.callouts && !props.calloutsJson) props.calloutsJson = JSON.stringify(props.callouts);
   },
+
+  DeviceStage3D(props, sceneCtx) {
+    // Default the optional copy props so {{title}} / {{subtitle}} don't appear
+    // literally in the rendered DOM when the SCF omits them.
+    if (props.title == null) props.title = '';
+    if (props.subtitle == null) props.subtitle = '';
+    if (props.mode == null) props.mode = 'browser';
+    if (props.primaryColor == null) props.primaryColor = '#8B5CF6';
+    if (props.accentColor == null) props.accentColor = '#E7D7A2';
+    if (props.seed == null) props.seed = '';
+    // Stage the screen image through the localhost file server so WebGL can
+    // load it CORS-cleanly via THREE.TextureLoader.
+    if (typeof props.screenSrc === 'string' && props.screenSrc.trim() && sceneCtx) {
+      props.screenSrc = stageBrowserAsset(props.screenSrc, sceneCtx);
+    } else {
+      props.screenSrc = '';
+    }
+  },
+
+  HTMLTextureWall(props, sceneCtx) {
+    if (props.title == null) props.title = '';
+    if (props.mode == null) props.mode = 'wall';
+    if (props.primaryColor == null) props.primaryColor = '#8B5CF6';
+    if (props.accentColor == null) props.accentColor = '#E7D7A2';
+    if (props.seed == null) props.seed = '';
+    // cards: array of {title, subtitle, kicker} → JSON string for data attr.
+    if (Array.isArray(props.cards) && !props.cardsJson) {
+      props.cardsJson = JSON.stringify(props.cards);
+    }
+    if (!props.cardsJson) props.cardsJson = '[]';
+    // textureSrcs: array of image paths. Stage each into the localhost server
+    // root so WebGL can load CORS-cleanly, then JSON-encode for the data attr.
+    if (Array.isArray(props.textureSrcs) && sceneCtx) {
+      const staged = props.textureSrcs.map((src) =>
+        typeof src === 'string' && src.trim() ? stageBrowserAsset(src, sceneCtx) : ''
+      ).filter(Boolean);
+      props.textureSrcsJson = JSON.stringify(staged);
+    }
+    if (!props.textureSrcsJson) props.textureSrcsJson = '[]';
+  },
+
   TeamsScene: transformTeamsScene,
   OutlookScene: transformOutlookScene,
   VSCodeScene: transformVSCodeScene,

@@ -34,6 +34,9 @@
 | MetricStack | Composite | — |
 | BookPageMetrics | Composite | — |
 | ComponentOverlay | Composite | — |
+| ThreeScene | 3D / Premium Motion | — |
+| DeviceStage3D | 3D / Premium Motion | — |
+| HTMLTextureWall | 3D / Premium Motion | — |
 | [Roadmap](#roadmap) | Planning | ✅ |
 | [ReleaseNotes](#releasenotes) | Planning | ✅ |
 | [TerminologyCard](#terminologycard) | Education | ✅ |
@@ -580,6 +583,45 @@ StepByStep, StickyNote, SwipeCarousel, TestimonialWall, Timeline, TreeMap,
 VideoEmbed, WordCloud.
 
 Product-showcase composites: BookPageMetrics, ComponentOverlay, MetricStack.
+Premium motion / WebGL: ThreeScene, DeviceStage3D, HTMLTextureWall.
+
+### Premium motion / WebGL components
+
+These three components share the deterministic three.js authoring contract
+described in `skills/core/render/three-js.md` (no `requestAnimationFrame`,
+register through `window.__slateThree`, render at `compositionTime - SCENE_START`,
+seeded RNG, `setPixelRatio(1)`).
+
+**ThreeScene** — generic deterministic 3D hero stage with seeded geometry,
+lighting and a DOM copy overlay. Use for premium moments that don't fit a
+more specific 3D component.
+
+**DeviceStage3D** — renders a screenshot or texture on a tilted screen
+plane wrapped in a browser chrome / device bezel / glass panel surround.
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `title` | string | `''` | Large foreground copy (DOM overlay, not in 3D). |
+| `subtitle` | string | `''` | Supporting line under the title. |
+| `screenSrc` | string | `''` | Path to the screenshot / texture image. Auto-staged into the localhost server root before render. If absent or load fails, a deterministic placeholder texture is used. |
+| `mode` | `browser` \| `device` \| `glass` | `browser` | Surround treatment: traffic-light browser bar; tablet/laptop bezel; semi-transparent glass panel. |
+| `primaryColor` | string (hex) | `#8B5CF6` | Rim light + glow tint. |
+| `accentColor` | string (hex) | `#E7D7A2` | Secondary point light. |
+| `seed` | string | scene id + title | Seeds the RNG used for any per-render jitter. |
+
+**HTMLTextureWall** — wall or carousel of card planes. Each plane is
+textured with either a CanvasTexture rendered from a `cards` entry (exact
+text — never AI-generated) or a pre-rendered image from `textureSrcs`.
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `title` | string | `''` | Top-left header copy (DOM overlay). |
+| `cards` | array of `{title, subtitle?, kicker?}` | `[]` | When non-empty, used as the source of truth — each card becomes a CanvasTexture. Wins over `textureSrcs`. |
+| `textureSrcs` | array of strings | `[]` | Image paths used when `cards` is empty. Each path is auto-staged into the localhost server root. |
+| `mode` | `wall` \| `carousel` | `wall` | `wall` lays cards out in a 2–4-column grid with subtle depth jitter; `carousel` arranges them around a vertical axis with steady rotation. |
+| `primaryColor` | string (hex) | `#8B5CF6` | Card top-stripe accent. |
+| `accentColor` | string (hex) | `#E7D7A2` | Card kicker color + corner glow. |
+| `seed` | string | scene id + mode | Seeds depth jitter on the wall layout. |
 
 > **Contributing:** To add a prop schema for any of these, add a `$defs` entry
 > and corresponding `allOf` if/then block in `schemas/scf-v1.0.schema.json`.

@@ -43,6 +43,8 @@ or adding a new component folder), load all of the following:
 |---|---|
 | [`core/render/gsap-flip`](core/render/gsap-flip.md) | The component reorders, swaps positions, or expands a child (FLIP-style layout choreography) |
 | [`core/render/shiki`](core/render/shiki.md) | The component renders source code with token-level highlighting |
+| [`core/render/three-js`](core/render/three-js.md) | The component uses three.js / WebGL (planned `ThreeScene`, `HTMLTextureWall`, `DeviceStage3D`, `ShaderPortal`, or any custom WebGL surface). Mandatory: no rAF loops, master-timeline driven, seeded randomness, text-as-texture, dispose on exit. |
+| [`core/render/html-in-canvas`](core/render/html-in-canvas.md) | The component (or a tool feeding it) needs to bake HTML/SVG/text into a canvas or texture (3D plane, billboard, device-stage screen, shader uniform). |
 | [`core/hyperframes-rendering`](core/hyperframes-rendering.md) | First time touching components this session, or unsure how SCF maps to a component's props |
 | `components/<x>` row below | A row exists for the specific component being edited — load that row's skill too for design intent and trigger semantics |
 
@@ -166,6 +168,8 @@ break when composed.
 | `render/shiki` | [`skills/core/render/shiki.md`](core/render/shiki.md) | authoring a component that renders source code and needs token-level highlighting beyond a single solid color |
 | `render/mermaid` | [`skills/core/render/mermaid.md`](core/render/mermaid.md) | a structured diagram exceeds Pillow's complexity threshold (>8 nodes, sequence/ER/class/gantt/state) |
 | `render/chartjs` | [`skills/core/render/chartjs.md`](core/render/chartjs.md) | a `bar_chart`/`donut_chart` scene needs interactive- fidelity axes, gridlines, legend, or stacked series |
+| `render/three-js` | [`skills/core/render/three-js.md`](core/render/three-js.md) | authoring or reviewing a HyperFrames component that uses three.js / WebGL — including the planned `ThreeScene`, `HTMLTextureWall`, `DeviceStage3D`, `ShaderPortal` family — or any "3D scene", camera flythrough, shader transition, or `CanvasTexture` work |
+| `render/html-in-canvas` | [`skills/core/render/html-in-canvas.md`](core/render/html-in-canvas.md) | a scene needs HTML/SVG/text content baked *into* a canvas or texture (3D plane, shader, billboard, device-stage screen, logo wall) — or anyone reaches for Satori / resvg / html2canvas / headless screenshot |
 
 ## Layer 3 — Icon kits (load when placing product/affordance icons)
 
@@ -193,6 +197,7 @@ break when composed.
 | `creative/voice-selection` | [`skills/creative/voice-selection.md`](creative/voice-selection.md) | choosing a TTS voice, user voice preference, tone × audience matrix, voice override, "use a male voice", "warm voice" |
 | `creative/component-design-system` | [`skills/creative/component-design-system.md`](creative/component-design-system.md) | creating a new component, choosing visual style, selecting colors/typography without a brand package, chart type selection, design system query |
 | `creative/gsap-component-patterns` | [`skills/creative/gsap-component-patterns.md`](creative/gsap-component-patterns.md) | authoring or modifying a HyperFrames component animation, choosing GSAP patterns, stagger reveals, counter tweens, node+arrow diagrams, chart animations, data visualization motion |
+| `creative/premium-motion-routing` | [`skills/creative/premium-motion-routing.md`](creative/premium-motion-routing.md) | scene-plan routing taste for "premium / cinematic / 3D / depth / parallax / shader / particle / logo wall / device flythrough" cues — picks T1 standard 2D vs T2 2.5D polish vs T3 Sora-2 hybrid vs T4 true 3D before reaching for three.js |
 
 ## Meta skills
 

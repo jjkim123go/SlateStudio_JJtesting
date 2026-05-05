@@ -88,7 +88,18 @@ permitted in render artifacts under `runtime_libraries.render_components.allowed
 (paid) plugins and irrelevant plugins (ScrollTrigger, etc.) are explicitly listed under
 `runtime_libraries.render_components.forbidden` to prevent accidental inclusion.
 
-### 4b. GSAP AI Skills (Vendored Documentation)
+### 4b. three.js (WebGL Runtime)
+
+three.js is pinned in `render/package.json` and embedded into generated HTML from the
+installed `render/node_modules/three/build/three.module.min.js` only when a three-backed
+component is present. The compiler emits an import map to a data URL backed by that local
+package file; there is no CDN fallback.
+
+| Package | Version | License | Distribution model | Enterprise Risk |
+|---------|---------|---------|---------------------|-----------------|
+| three   | 0.171.0 | MIT | Conditional local compile-time embed from `render/node_modules/three` | ✅ None |
+
+### 4c. GSAP AI Skills (Vendored Documentation)
 
 A subset of the official [greensock/gsap-skills](https://github.com/greensock/gsap-skills)
 repository is vendored under `skills/core/animation/` to provide GSAP guidance to the Slate

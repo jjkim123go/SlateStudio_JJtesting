@@ -21,6 +21,14 @@ style, color, and typography decisions.
   data shape.
 - **Quality gate** — the UX guidelines provide hard rules (animation 150–300ms,
   contrast 4.5:1, no decorative-only motion).
+- **Authoring a 3D / WebGL component** (`ThreeScene`, `HTMLTextureWall`,
+  `DeviceStage3D`, `ShaderPortal`, or any custom three.js surface) — also
+  load [`../core/render/three-js.md`](../core/render/three-js.md) for the
+  engineering contract (no rAF, master-timeline driven, seeded randomness,
+  text-as-texture, dispose on exit) and
+  [`../core/render/html-in-canvas.md`](../core/render/html-in-canvas.md)
+  for texture authoring. Decide whether 3D is even justified via
+  [`premium-motion-routing.md`](premium-motion-routing.md) first.
 
 ---
 

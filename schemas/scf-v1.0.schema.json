@@ -201,7 +201,14 @@
             "ComponentOverlay",
             "MetricStack",
             "BookPageMetrics",
-            "PremiumMotionShowcase"
+            "PremiumMotionShowcase",
+            "BuildingBlocksScene",
+            "MoneyTransferScene",
+            "ThreeScene",
+            "DeviceStage3D",
+            "HTMLTextureWall",
+            "OmartSignalWall",
+            "OmartMarketplaceDemo"
           ]
         },
         "props": {

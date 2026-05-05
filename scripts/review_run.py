@@ -56,6 +56,7 @@ _stub_module("subtitle_burner", {"burn_subtitle_on_image": lambda *args, **kwarg
 _stub_module(
     "live_subtitles",
     {
+        "load_word_sidecar": lambda *args, **kwargs: None,
         "transcribe_audio": lambda *args, **kwargs: None,
         "estimate_word_timestamps": lambda *args, **kwargs: [],
         "group_into_segments": lambda *args, **kwargs: [],

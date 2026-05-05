@@ -8,6 +8,13 @@
 > bypassed for that scene. If this skill DEFERS, the structured-visuals
 > two-step flow (call `structured_image` tool → display PNG via component)
 > takes over.
+>
+> **Premium / 3D / cinematic cues:** before reaching for three.js or a
+> Sora-2 plate, also load
+> [`creative/premium-motion-routing.md`](../creative/premium-motion-routing.md).
+> It picks the cheapest credible treatment (T1 standard 2D → T2 2.5D polish
+> → T3 Sora-2 hybrid → T4 true 3D) and prevents "3D for a single text scene"
+> failures.
 
 ---
 

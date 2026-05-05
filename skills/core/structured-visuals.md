@@ -38,6 +38,15 @@ Default → Call `foundry_image_gen` tool (gpt-image-2)
           Display via image layer or ScreenDemoFrame
 ```
 
+## Texture path (3D / canvas-bound content)
+
+For content that must end up *inside* a canvas/texture (3D plane, billboard,
+shader, planned `HTMLTextureWall` / `DeviceStage3D` screen), the routing is
+different — see [`render/html-in-canvas.md`](render/html-in-canvas.md). In
+brief: prefer `html_texture_render` (templates / SVG, deterministic, $0)
+or screenshot an existing HyperFrames component. Never ask `foundry_image_gen`
+to render UI for a 3D scene — image models hallucinate text and labels.
+
 ## Static export only — the `structured_image` tool
 
 > **Note:** This tool is NOT used for video scenes. For video, always use or

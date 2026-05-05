@@ -1,0 +1,123 @@
+<div class="money-transfer-scene" data-scene-component="MoneyTransferScene"
+  style="position:absolute;inset:0;overflow:hidden;
+    background:
+      radial-gradient(circle at 22% 36%, rgba(109,40,217,0.34), transparent 34%),
+      radial-gradient(circle at 76% 42%, rgba(40,215,229,0.16), transparent 32%),
+      linear-gradient(135deg,#05020D 0%,#180B2E 54%,#03040B 100%);
+    color:#F8F4EC;font-family:Inter,-apple-system,BlinkMacSystemFont,sans-serif;">
+  <div class="mt-orb mt-orb-a" style="position:absolute;width:520px;height:520px;border-radius:50%;left:110px;top:180px;background:radial-gradient(circle,rgba(109,40,217,0.22),transparent 68%);filter:blur(4px);"></div>
+  <div class="mt-orb mt-orb-b" style="position:absolute;width:620px;height:620px;border-radius:50%;right:90px;top:210px;background:radial-gradient(circle,rgba(231,215,162,0.12),transparent 70%);filter:blur(8px);"></div>
+
+  <div class="mt-title-wrap" style="position:absolute;left:96px;right:96px;top:72px;z-index:5;">
+    <div class="mt-kicker" style="font-size:18px;letter-spacing:0.18em;text-transform:uppercase;color:#E7D7A2;font-weight:700;">Financial motion</div>
+    <h1 class="mt-title" style="margin:12px 0 0;font-size:62px;line-height:1.02;letter-spacing:-0.045em;font-weight:790;max-width:1160px;">
+      {{title}}
+    </h1>
+  </div>
+
+  <svg class="mt-rail-svg" viewBox="0 0 1920 1080" style="position:absolute;inset:0;width:100%;height:100%;z-index:2;">
+    <defs>
+      <linearGradient id="mt-rail-{{sceneId}}" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#E7D7A2" stop-opacity="0.95"/>
+        <stop offset="46%" stop-color="#28D7E5" stop-opacity="0.95"/>
+        <stop offset="100%" stop-color="#A78BFA" stop-opacity="0.95"/>
+      </linearGradient>
+      <filter id="mt-glow-{{sceneId}}" x="-40%" y="-80%" width="180%" height="260%">
+        <feGaussianBlur stdDeviation="6" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <path class="mt-rail-glow" d="M430 606 C 650 496, 824 720, 1040 600 S 1350 500, 1510 602"
+      fill="none" stroke="url(#mt-rail-{{sceneId}})" stroke-width="22" stroke-linecap="round" opacity="0.12"/>
+    <path class="mt-rail" d="M430 606 C 650 496, 824 720, 1040 600 S 1350 500, 1510 602"
+      fill="none" stroke="url(#mt-rail-{{sceneId}})" stroke-width="8" stroke-linecap="round" filter="url(#mt-glow-{{sceneId}})"/>
+  </svg>
+
+  <div class="mt-actor mt-customer" style="position:absolute;left:178px;top:432px;width:310px;height:292px;z-index:4;">
+    <div class="mt-card" style="position:absolute;inset:0;border:1px solid rgba(248,244,236,0.16);border-radius:34px;background:linear-gradient(145deg,rgba(255,255,255,0.105),rgba(255,255,255,0.035));box-shadow:0 24px 90px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.18);backdrop-filter:blur(18px);"></div>
+    <div class="mt-person" style="position:absolute;left:92px;top:42px;width:126px;height:126px;">
+      <div style="position:absolute;left:38px;top:8px;width:50px;height:50px;border-radius:50%;background:linear-gradient(145deg,#F8F4EC,#B9A8FF);box-shadow:0 0 32px rgba(231,215,162,0.32);"></div>
+      <div style="position:absolute;left:20px;top:70px;width:86px;height:54px;border-radius:44px 44px 18px 18px;background:linear-gradient(145deg,#A78BFA,#4C1D95);"></div>
+      <div style="position:absolute;left:4px;top:96px;width:118px;height:16px;border-radius:999px;background:rgba(231,215,162,0.72);filter:blur(10px);"></div>
+    </div>
+    <div class="mt-label" style="position:absolute;left:28px;right:28px;bottom:34px;text-align:center;">
+      <div style="font-size:34px;line-height:1;font-weight:790;letter-spacing:-0.03em;">{{sourceLabel}}</div>
+      <div style="margin-top:10px;font-size:20px;color:rgba(248,244,236,0.66);">chooses an offer</div>
+    </div>
+  </div>
+
+  <div class="mt-packet-stack" style="position:absolute;left:0;top:0;z-index:6;">
+    <div class="mt-coin mt-coin-1">$</div>
+    <div class="mt-coin mt-coin-2">$</div>
+    <div class="mt-coin mt-coin-3">$</div>
+    <div class="mt-coin mt-coin-4">$</div>
+    <div class="mt-coin mt-coin-5">$</div>
+    <div class="mt-signal">payment signal</div>
+  </div>
+
+  <div class="mt-actor mt-account" style="position:absolute;left:824px;top:392px;width:360px;height:350px;z-index:4;">
+    <div class="mt-vault" style="position:absolute;left:28px;right:28px;top:22px;height:222px;border-radius:32px;background:linear-gradient(145deg,rgba(13,18,36,0.96),rgba(43,26,84,0.88));border:1px solid rgba(231,215,162,0.22);box-shadow:0 28px 110px rgba(40,215,229,0.10), inset 0 1px 0 rgba(255,255,255,0.13);">
+      <div style="position:absolute;left:84px;top:36px;width:136px;height:136px;border-radius:50%;border:10px solid rgba(231,215,162,0.74);box-shadow:0 0 40px rgba(231,215,162,0.18);"></div>
+      <div class="mt-dial" style="position:absolute;left:143px;top:95px;width:18px;height:18px;border-radius:50%;background:#E7D7A2;box-shadow:0 -58px 0 -4px rgba(231,215,162,0.95),58px 0 0 -4px rgba(231,215,162,0.95),0 58px 0 -4px rgba(231,215,162,0.95),-58px 0 0 -4px rgba(231,215,162,0.95);"></div>
+      <div class="mt-balance-pulse" style="position:absolute;left:96px;right:96px;bottom:26px;height:10px;border-radius:999px;background:linear-gradient(90deg,#E7D7A2,#28D7E5);box-shadow:0 0 26px rgba(40,215,229,0.5);"></div>
+    </div>
+    <div class="mt-label" style="position:absolute;left:24px;right:24px;bottom:24px;text-align:center;">
+      <div style="font-size:34px;line-height:1;font-weight:790;letter-spacing:-0.03em;">{{accountLabel}}</div>
+      <div style="margin-top:10px;font-size:20px;color:rgba(248,244,236,0.66);">balance changes</div>
+    </div>
+  </div>
+
+  <div class="mt-actor mt-finance" style="position:absolute;right:170px;top:418px;width:330px;height:306px;z-index:4;">
+    <div class="mt-card" style="position:absolute;inset:0;border:1px solid rgba(40,215,229,0.24);border-radius:34px;background:linear-gradient(145deg,rgba(12,19,38,0.92),rgba(42,17,74,0.78));box-shadow:0 24px 100px rgba(40,215,229,0.12), inset 0 1px 0 rgba(255,255,255,0.15);backdrop-filter:blur(18px);"></div>
+    <div class="mt-lens" style="position:absolute;left:104px;top:46px;width:122px;height:122px;border-radius:50%;border:8px solid #28D7E5;box-shadow:0 0 42px rgba(40,215,229,0.32);">
+      <div style="position:absolute;left:34px;top:30px;width:46px;height:56px;border-radius:10px;background:linear-gradient(180deg,#F8F4EC,#A78BFA);opacity:0.92;"></div>
+      <div style="position:absolute;left:92px;top:88px;width:64px;height:12px;border-radius:999px;background:#28D7E5;transform:rotate(42deg);transform-origin:left center;"></div>
+    </div>
+    <div class="mt-proof-beam" style="position:absolute;left:-210px;top:136px;width:250px;height:22px;background:linear-gradient(90deg,transparent,rgba(40,215,229,0.42),rgba(231,215,162,0.32));filter:blur(6px);"></div>
+    <div class="mt-label" style="position:absolute;left:28px;right:28px;bottom:34px;text-align:center;">
+      <div style="font-size:34px;line-height:1;font-weight:790;letter-spacing:-0.03em;">{{financeLabel}}</div>
+      <div style="margin-top:10px;font-size:20px;color:rgba(248,244,236,0.66);">asks for proof</div>
+    </div>
+  </div>
+
+  <div class="mt-question" style="position:absolute;left:596px;right:596px;bottom:112px;z-index:7;padding:22px 28px;border-radius:24px;border:1px solid rgba(231,215,162,0.24);background:rgba(5,2,13,0.72);box-shadow:0 18px 60px rgba(0,0,0,0.34);backdrop-filter:blur(18px);text-align:center;">
+    <div style="font-size:18px;letter-spacing:0.16em;text-transform:uppercase;color:#E7D7A2;font-weight:760;">Finance asks</div>
+    <div style="margin-top:8px;font-size:36px;line-height:1.06;font-weight:790;letter-spacing:-0.035em;">{{question}}</div>
+  </div>
+
+  <style>
+    .scene-{{sceneId}} .mt-coin {
+      position:absolute;
+      left:398px;
+      top:574px;
+      width:54px;
+      height:54px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#180B2E;
+      font-weight:900;
+      font-size:30px;
+      background:radial-gradient(circle at 34% 28%,#FFF7C7 0%,#E7D7A2 48%,#A87417 100%);
+      box-shadow:0 0 26px rgba(231,215,162,0.48),0 12px 30px rgba(0,0,0,0.34);
+    }
+    .scene-{{sceneId}} .mt-signal {
+      position:absolute;
+      left:704px;
+      top:664px;
+      padding:10px 16px;
+      border-radius:999px;
+      border:1px solid rgba(40,215,229,0.30);
+      background:rgba(5,8,22,0.72);
+      color:rgba(248,244,236,0.80);
+      font-size:18px;
+      font-weight:650;
+      letter-spacing:0.03em;
+      box-shadow:0 14px 48px rgba(0,0,0,0.28);
+    }
+  </style>
+</div>

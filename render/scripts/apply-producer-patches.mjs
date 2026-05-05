@@ -49,6 +49,19 @@ const PATCHES = [
     replacement:
       'outPath.startsWith(compileDir + (process.platform === "win32" ? "\\\\" : "/"))',
   },
+  {
+    name: 'Site 3 — configurable WebGL ANGLE backend',
+    needle: '"--use-angle=swiftshader",',
+    replacement:
+      '...(process.env.PRODUCER_WEBGL_BACKEND && process.env.PRODUCER_WEBGL_BACKEND !== "default" ? [`--use-angle=${process.env.PRODUCER_WEBGL_BACKEND}`] : []),',
+  },
+  {
+    name: 'Site 4 — loop short audio sources to fill requested duration',
+    needle:
+      'async function prepareAudioTrack(srcPath, outputPath, mediaStart, duration, signal, config2) {\n  const ffmpegProcessTimeout = config2?.ffmpegProcessTimeout ?? DEFAULT_CONFIG.ffmpegProcessTimeout;\n  const outputDir = dirname7(outputPath);\n  if (!existsSync9(outputDir)) mkdirSync6(outputDir, { recursive: true });\n  const args = [\n    "-ss",\n    String(mediaStart),\n    "-t",\n    String(duration),\n    "-i",\n    srcPath,',
+    replacement:
+      'async function prepareAudioTrack(srcPath, outputPath, mediaStart, duration, signal, config2) {\n  const ffmpegProcessTimeout = config2?.ffmpegProcessTimeout ?? DEFAULT_CONFIG.ffmpegProcessTimeout;\n  const outputDir = dirname7(outputPath);\n  if (!existsSync9(outputDir)) mkdirSync6(outputDir, { recursive: true });\n  const args = [\n    "-stream_loop",\n    "-1",\n    "-ss",\n    String(mediaStart),\n    "-t",\n    String(duration),\n    "-i",\n    srcPath,',
+  },
 ];
 
 function main() {

@@ -27,6 +27,8 @@ VISUAL_BEAT_KEYS = {
     "metrics",
     "slides",
     "states",
+    "cards",
+    "textureSrcs",
 }
 
 TIMING_SENSITIVE_COMPONENTS = {
@@ -47,6 +49,12 @@ TIMING_SENSITIVE_COMPONENTS = {
     "StepByStep",
     "TerminalCast",
     "TerminalScene",
+    # 3D / WebGL components: continuous camera + material motion drives
+    # perceptual change every frame even when there's only one "logical" beat.
+    "ThreeScene",
+    "DeviceStage3D",
+    "HTMLTextureWall",
+    "MoneyTransferScene",
 }
 
 

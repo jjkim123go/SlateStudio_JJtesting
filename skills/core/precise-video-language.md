@@ -28,6 +28,14 @@ Require a five-aspect spec before:
 
 For simple title cards, lower thirds, CTA cards, and deterministic app components, the spec can be abbreviated or omitted if the component contract already defines the visual proof.
 
+For premium / cinematic cues that hint at depth, parallax, or 3D rather
+than a single Sora-2 prompt — "logo wall", "device flythrough", "rotate to
+reveal", "shader portal" — load
+[`../creative/premium-motion-routing.md`](../creative/premium-motion-routing.md)
+before locking the five-aspect spec. The motion ladder may resolve the
+moment in standard 2D / 2.5D polish without needing a generated video clip
+at all.
+
 ## Scene-plan format
 
 Use this compact block inside scene plans or decision logs:

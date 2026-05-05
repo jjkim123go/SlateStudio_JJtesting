@@ -32,6 +32,36 @@ outPath.startsWith(compileDir + "/")
 outPath.startsWith(compileDir + (process.platform === "win32" ? "\\" : "/"))
 ```
 
+## Patch 4: Loop short audio sources to fill requested duration
+
+**Symptom:** Background music tracks shorter than the total composition duration are truncated. E.g. a 126s music file in a 176s video plays once and goes silent at 2:06.
+
+**Root cause:** `prepareAudioTrack` (~line 102728) shells out to ffmpeg with `-ss <start> -t <duration> -i <src>`. Without `-stream_loop`, ffmpeg outputs `min(file_duration - start, requested_duration)` — silently truncating to file length.
+
+The `loop` attribute on the HTML `<audio>` element is for in-browser playback only; the producer captures frames headlessly and bakes audio via ffmpeg afterward, so the attribute has no effect on the final MP4.
+
+**Fix:** Prepend `-stream_loop -1` BEFORE the input. With `-t` after, output is bounded — looping only kicks in if requested duration > source duration, so narration tracks (always exact length) are unaffected.
+
+### Site 4 — `prepareAudioTrack` (~line 102728)
+```js
+// BEFORE
+const args = [
+  "-ss", String(mediaStart),
+  "-t", String(duration),
+  "-i", srcPath,
+  ...
+];
+
+// AFTER
+const args = [
+  "-stream_loop", "-1",
+  "-ss", String(mediaStart),
+  "-t", String(duration),
+  "-i", srcPath,
+  ...
+];
+```
+
 ## Producer behavior to be aware of (no patch — emitter responsibility)
 
 `parseVideoElements` (~line 102276) auto-assigns an `id` like `hf-video-0` if the `<video>` element doesn't have one. **This auto-assigned id is only set on the producer's in-memory parsed DOM — it is never written back to the served HTML on disk.** At runtime, `injectVideoFramesBatch` calls `document.getElementById(item.videoId)`, which returns `null` for auto-assigned ids → frames are never injected → video element remains visually empty.

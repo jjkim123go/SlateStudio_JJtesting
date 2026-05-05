@@ -1,0 +1,58 @@
+<!-- OmartSignalWall — premium Radar-blue glass signal convergence opener -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<style>
+.scene-{{sceneId}} .osw-root{
+  position:absolute;inset:0;overflow:hidden;
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  color:#102033;background:
+    radial-gradient(circle at 72% 18%,rgba(0,120,212,.18),transparent 34%),
+    radial-gradient(circle at 18% 82%,rgba(93,188,252,.18),transparent 32%),
+    linear-gradient(135deg,#ffffff 0%,#f7fbff 44%,#eef6ff 100%);
+  perspective:1400px;
+}
+.scene-{{sceneId}} .osw-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,120,212,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(0,120,212,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(circle at 50% 45%,#000 0%,transparent 78%);}
+.scene-{{sceneId}} .osw-orb{position:absolute;border-radius:999px;filter:blur(18px);opacity:.42;}
+.scene-{{sceneId}} .osw-orb-a{width:500px;height:500px;right:90px;top:42px;background:linear-gradient(135deg,rgba(0,120,212,.30),rgba(255,255,255,.1));}
+.scene-{{sceneId}} .osw-orb-b{width:420px;height:420px;left:-110px;bottom:60px;background:linear-gradient(135deg,rgba(82,196,255,.24),rgba(255,255,255,.22));}
+.scene-{{sceneId}} .osw-copy{position:absolute;left:118px;top:84px;width:760px;z-index:3;}
+.scene-{{sceneId}} .osw-kicker{font-size:13px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#0067b8;margin-bottom:18px;}
+.scene-{{sceneId}} .osw-title{margin:0;font-size:68px;line-height:.96;letter-spacing:-.06em;font-weight:900;color:#0b1b2b;}
+.scene-{{sceneId}} .osw-subtitle{margin-top:24px;font-size:25px;line-height:1.34;font-weight:520;color:#506174;max-width:700px;}
+.scene-{{sceneId}} .osw-wall{position:absolute;inset:0;transform-style:preserve-3d;z-index:2;}
+.scene-{{sceneId}} .osw-panel{position:absolute;width:282px;height:138px;border-radius:26px;padding:22px 24px;box-sizing:border-box;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(239,248,255,.60));border:1px solid rgba(255,255,255,.92);box-shadow:0 30px 70px rgba(15,36,66,.14),inset 0 1px 0 rgba(255,255,255,.95),0 0 0 1px rgba(0,120,212,.06);backdrop-filter:blur(18px);transform-style:preserve-3d;}
+.scene-{{sceneId}} .osw-panel::after{content:'';position:absolute;inset:1px;border-radius:25px;background:linear-gradient(115deg,rgba(255,255,255,.78),rgba(255,255,255,0) 36%,rgba(0,120,212,.10));pointer-events:none;}
+.scene-{{sceneId}} .osw-icon{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#ffffff,#e9f5ff);box-shadow:0 12px 28px rgba(0,120,212,.14);font-size:20px;margin-bottom:14px;}
+.scene-{{sceneId}} .osw-name{font-size:26px;font-weight:820;letter-spacing:-.03em;color:#12263c;}
+.scene-{{sceneId}} .osw-meta{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#0078d4;margin-top:7px;}
+/* Panel positions chosen to avoid hero card footprint (x:550-1370, y:345-735) */
+.scene-{{sceneId}} .osw-panel[data-key="dashboard"]{left:970px;top:80px;transform:rotateY(-12deg) rotateX(6deg) translateZ(70px)}
+.scene-{{sceneId}} .osw-panel[data-key="newsletter"]{left:1498px;top:178px;transform:rotateY(14deg) rotateX(-4deg) translateZ(40px)}
+.scene-{{sceneId}} .osw-panel[data-key="powerbi"]{left:78px;top:438px;transform:rotateY(-12deg) rotateX(2deg) translateZ(90px)}
+.scene-{{sceneId}} .osw-panel[data-key="cli"]{left:1556px;top:438px;transform:rotateY(18deg) rotateX(3deg) translateZ(50px)}
+.scene-{{sceneId}} .osw-panel[data-key="icm"]{left:140px;top:802px;transform:rotateY(12deg) rotateX(-6deg) translateZ(60px)}
+.scene-{{sceneId}} .osw-panel[data-key="control"]{left:792px;top:822px;width:330px;transform:rotateY(-7deg) rotateX(-2deg) translateZ(120px)}
+.scene-{{sceneId}} .osw-panel[data-key="cost"]{left:1556px;top:802px;transform:rotateY(13deg) rotateX(6deg) translateZ(80px)}
+.scene-{{sceneId}} .osw-hero{position:absolute;left:50%;top:50%;width:820px;height:390px;margin-left:-410px;margin-top:-168px;border-radius:38px;background:linear-gradient(145deg,rgba(255,255,255,.96),rgba(240,248,255,.82));border:1px solid rgba(255,255,255,.96);box-shadow:0 44px 110px rgba(0,76,135,.22),0 18px 44px rgba(15,36,66,.12),inset 0 1px 0 rgba(255,255,255,1);z-index:5;overflow:hidden;}
+.scene-{{sceneId}} .osw-hero::before{content:'';position:absolute;inset:-1px;background:radial-gradient(circle at 20% 8%,rgba(0,120,212,.18),transparent 34%),linear-gradient(90deg,rgba(0,120,212,.10),transparent 38%);}
+.scene-{{sceneId}} .osw-hero-content{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:54px;box-sizing:border-box;}
+.scene-{{sceneId}} .osw-logo{width:86px;height:86px;border-radius:26px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#0078d4,#35b7ff);color:white;font-size:42px;font-weight:900;box-shadow:0 22px 46px rgba(0,120,212,.32);margin-bottom:24px;}
+.scene-{{sceneId}} .osw-hero-title{font-size:92px;line-height:.9;letter-spacing:-.07em;font-weight:900;color:#0078d4;}
+.scene-{{sceneId}} .osw-hero-sub{margin-top:22px;font-size:30px;line-height:1.2;font-weight:700;color:#15314b;}
+.scene-{{sceneId}} .osw-chips{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);display:flex;gap:14px;z-index:6;}
+.scene-{{sceneId}} .osw-chip{padding:12px 20px;border-radius:999px;background:rgba(255,255,255,.74);border:1px solid rgba(255,255,255,.9);box-shadow:0 16px 36px rgba(15,36,66,.12);font-size:15px;font-weight:800;color:#0067b8;backdrop-filter:blur(14px);}
+</style>
+<div class="osw-root" data-mode="{{mode}}" data-scene-component="OmartSignalWall">
+  <div class="osw-grid"></div><div class="osw-orb osw-orb-a"></div><div class="osw-orb osw-orb-b"></div>
+  <div class="osw-copy"><div class="osw-kicker">Commerce Radar · O-mart</div><h1 class="osw-title">{{title}}</h1><div class="osw-subtitle">{{subtitle}}</div></div>
+  <div class="osw-wall">
+    <div class="osw-panel" data-key="dashboard"><div class="osw-icon">▦</div><div class="osw-name">Dashboard</div><div class="osw-meta">Health metrics</div></div>
+    <div class="osw-panel" data-key="newsletter"><div class="osw-icon">✉</div><div class="osw-name">Newsletter</div><div class="osw-meta">Daily summary</div></div>
+    <div class="osw-panel" data-key="powerbi"><div class="osw-icon">◫</div><div class="osw-name">Power BI</div><div class="osw-meta">Trends</div></div>
+    <div class="osw-panel" data-key="cli"><div class="osw-icon">⌁</div><div class="osw-name">CLI</div><div class="osw-meta">Status checks</div></div>
+    <div class="osw-panel" data-key="icm"><div class="osw-icon">⚑</div><div class="osw-name">ICM</div><div class="osw-meta">Livesite</div></div>
+    <div class="osw-panel" data-key="control"><div class="osw-icon">✓</div><div class="osw-name">Control Health</div><div class="osw-meta">SOX + ops</div></div>
+    <div class="osw-panel" data-key="cost"><div class="osw-icon">$</div><div class="osw-name">Cost Signal</div><div class="osw-meta">Finance</div></div>
+  </div>
+  <div class="osw-hero"><div class="osw-hero-content"><div class="osw-logo">O</div><div class="osw-hero-title">O-mart</div><div class="osw-hero-sub">Trusted observability marketplace</div></div></div>
+  <div class="osw-chips"><div class="osw-chip">Find</div><div class="osw-chip">Trust</div><div class="osw-chip">Compose</div><div class="osw-chip">Share safely</div></div>
+</div>

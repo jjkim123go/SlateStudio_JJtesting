@@ -97,6 +97,12 @@ runtime_libraries:
         provider: chartjs
         injection: cdn
         notes: "Canvas charting. Loaded only when bar/donut needs true axes/legend beyond Pillow."
+      - name: three
+        version: "0.171.0"
+        license: MIT
+        provider: mrdoob / three.js
+        injection: local-embedded-importmap
+        notes: "WebGL runtime for deterministic renderer-driven 3D scenes. Embedded from render/node_modules/three/build/three.module.min.js only when ThreeScene or future three-backed components are used; no CDN fallback."
     # Hard-deny list — these libraries are explicitly forbidden in render artifacts.
     forbidden:
       - reason: not_applicable_to_headless_render

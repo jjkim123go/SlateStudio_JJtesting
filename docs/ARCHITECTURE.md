@@ -807,9 +807,43 @@ node render/render.mjs <scf-file.json> [options]
 
   --output <path>     Output MP4 (default: output/<basename>.mp4)
   --quality <preset>  draft | standard | high | ultra
+  --workers <n>       Capture worker count; WebGL default is 2 unless --safe-webgl is set
+  --use-gpu <bool>    Request GPU acceleration when supported; WebGL default is true
+  --webgl-backend <b> ANGLE backend: swiftshader | d3d11 | default
+  --safe-webgl        Conservative WebGL defaults (workers=1, draft if quality omitted, swiftshader)
+  --scene <id>        Render one scene from the SCF
+  --split-scenes      Render scenes sequentially, then concatenate with FFmpeg
   --dry-run           Compile SCF → HTML and exit (no render)
   --preview           Open the compiled HTML in default browser
 ```
+
+For WebGL-heavy SCFs (`ThreeScene`, `DeviceStage3D`, `HTMLTextureWall`), Slate
+defaults to GPU-oriented capture when no explicit render flags are supplied:
+
+```bash
+node render/render.mjs <scf-file.json> --split-scenes --output <out.mp4>
+```
+
+On Windows this resolves to `workers=2`, `useGpu=true`, and
+`webglBackend=d3d11` unless the user or environment overrides it. If
+`PRODUCER_DISABLE_GPU=true` is set, Slate does not request GPU encoding.
+
+The safe local fallback remains:
+
+```bash
+node render/render.mjs <scf-file.json> --safe-webgl --split-scenes --output <out.mp4>
+```
+
+This avoids auto-parallel 1080p Chromium/WebGL capture, which can saturate CPU
+and disk I/O on desktops when Chrome falls back to software WebGL.
+
+When a real GPU is available, first render one representative WebGL scene with
+`--workers 1 --use-gpu true` (and `--webgl-backend d3d11` on Windows). If that
+probe is stable, visually correct, and faster, rerun the same scene with
+`--workers 2`; use `workers=2` for the full split-scene render only if the
+second probe improves throughput without black frames, crashes, throttling, or
+memory pressure. Try `workers=3` only on machines with clear GPU/VRAM headroom;
+otherwise keep `workers=2` or the conservative safe-WebGL path.
 
 The `hyperframes_render` tool (`src/slate/tools/video/hyperframes_render.py`)
 wraps this CLI with `BaseTool` semantics so it integrates with the dispatcher,

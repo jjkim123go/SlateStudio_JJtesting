@@ -13,6 +13,14 @@
 > [animation/motion-intent.md](animation/motion-intent.md) — pick a material,
 > [animation/material-physics.md](animation/material-physics.md) — get GSAP params,
 > [animation/attention-choreography.md](animation/attention-choreography.md) — sequence elements.
+>
+> **Companion skills (Layer 3, vendor libraries) — load if applicable:**
+> [render/three-js.md](render/three-js.md) — mandatory for any WebGL component
+> (planned `ThreeScene` / `HTMLTextureWall` / `DeviceStage3D` / `ShaderPortal`):
+> no rAF loops, master-timeline driven, seeded randomness, text-as-texture,
+> dispose on scene exit;
+> [render/html-in-canvas.md](render/html-in-canvas.md) — when a component
+> bakes HTML/SVG/text into a canvas or texture.
 
 This skill defines the **Slate component contract**: what a HyperFrames
 component must do, how it integrates with the SCF compiler, and which Slate

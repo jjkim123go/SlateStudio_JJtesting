@@ -63,19 +63,38 @@ class HyperFramesRender(BaseTool):
             scf: SCF composition as a dict or a string file path to a .json file.
             output_dir: Directory for output files (default: "renders", relative to project root).
             quality: Render preset — "draft" | "standard" | "high" (default: "standard").
+            output_path: Optional MP4 output path.
+            workers: Optional capture worker count. WebGL defaults to 2 in the renderer;
+                pass safe_webgl=True for conservative workers=1 fallback.
+            safe_webgl: If True, pass --safe-webgl to the renderer.
+            split_scenes: If True, render scenes sequentially and concatenate.
+            scene: Optional scene id to render in isolation.
+            use_gpu: Optional bool passed to renderer.
+            webgl_backend: Optional ANGLE backend passed to renderer
+                ("swiftshader" | "d3d11" | "default").
             dry_run: If True, compile SCF → HTML only and skip render.
         """
         scf_input = kwargs.get("scf")
         output_dir = kwargs.get("output_dir", "renders")
         quality = kwargs.get("quality", "standard")
+        output_path = kwargs.get("output_path")
+        workers = kwargs.get("workers")
+        safe_webgl = bool(kwargs.get("safe_webgl", False))
+        split_scenes = bool(kwargs.get("split_scenes", False))
+        scene = kwargs.get("scene")
+        use_gpu = kwargs.get("use_gpu")
+        webgl_backend = kwargs.get("webgl_backend")
         dry_run = bool(kwargs.get("dry_run", False))
 
         if scf_input is None:
             return ToolResult(success=False, error="Missing required parameter: scf")
 
         # --- Load SCF data ---
+        scf_path: Path | None = None
         if isinstance(scf_input, str):
             scf_path = Path(scf_input)
+            if not scf_path.is_absolute():
+                scf_path = _PROJECT_ROOT / scf_path
             if not scf_path.exists():
                 return ToolResult(success=False, error=f"SCF file not found: {scf_input}")
             try:
@@ -96,17 +115,51 @@ class HyperFramesRender(BaseTool):
         except jsonschema.ValidationError as exc:
             return ToolResult(success=False, error=f"SCF validation failed: {exc.message}")
 
-        # --- Write SCF to output dir ---
-        out_dir = _PROJECT_ROOT / output_dir
-        out_dir.mkdir(parents=True, exist_ok=True)
-
-        timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
-        scf_file = out_dir / f"{timestamp}.scf.json"
-        with open(scf_file, "w", encoding="utf-8") as f:
-            json.dump(scf_data, f, indent=2)
+        # --- Resolve SCF file ---
+        # For existing SCF paths, render in place so relative assets like
+        # assets/narration.wav continue to resolve against the project folder.
+        if scf_path is not None:
+            scf_file = scf_path
+        else:
+            out_dir = _PROJECT_ROOT / output_dir
+            out_dir.mkdir(parents=True, exist_ok=True)
+            timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
+            scf_file = out_dir / f"{timestamp}.scf.json"
+            with open(scf_file, "w", encoding="utf-8") as f:
+                json.dump(scf_data, f, indent=2)
 
         # --- Build renderer command ---
         cmd = ["node", str(_RENDER_SCRIPT), str(scf_file), "--quality", quality]
+        if output_path:
+            output = Path(str(output_path))
+            if not output.is_absolute():
+                output = _PROJECT_ROOT / output
+            output.parent.mkdir(parents=True, exist_ok=True)
+            cmd.extend(["--output", str(output)])
+        if workers is not None:
+            try:
+                worker_count = int(workers)
+            except (TypeError, ValueError):
+                return ToolResult(success=False, error="workers must be an integer")
+            if worker_count < 1:
+                return ToolResult(success=False, error="workers must be >= 1")
+            cmd.extend(["--workers", str(worker_count)])
+        if safe_webgl:
+            cmd.append("--safe-webgl")
+        if split_scenes:
+            cmd.append("--split-scenes")
+        if scene:
+            cmd.extend(["--scene", str(scene)])
+        if use_gpu is not None:
+            cmd.extend(["--use-gpu", "true" if bool(use_gpu) else "false"])
+        if webgl_backend is not None:
+            backend = str(webgl_backend).strip().lower()
+            if backend not in {"swiftshader", "d3d11", "default"}:
+                return ToolResult(
+                    success=False,
+                    error="webgl_backend must be one of: swiftshader, d3d11, default",
+                )
+            cmd.extend(["--webgl-backend", backend])
         if dry_run:
             cmd.append("--dry-run")
 
@@ -116,7 +169,7 @@ class HyperFramesRender(BaseTool):
                 *cmd,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
-                cwd=str(_RENDER_DIR),
+                cwd=str(_PROJECT_ROOT),
             )
             stdout_bytes, stderr_bytes = await proc.communicate()
         except FileNotFoundError:
@@ -141,7 +194,9 @@ class HyperFramesRender(BaseTool):
         # render.mjs writes HTML next to the SCF, MP4 in renders/ subdirectory
         scf_stem = scf_file.stem.replace(".scf", "")
         html_path = scf_file.parent / f"{scf_stem}.html"
-        mp4_path = scf_file.parent / "renders" / f"{scf_stem}.mp4"
+        mp4_path = Path(output_path) if output_path else scf_file.parent / "renders" / f"{scf_stem}.mp4"
+        if not mp4_path.is_absolute():
+            mp4_path = _PROJECT_ROOT / mp4_path
 
         return ToolResult(
             success=True,
@@ -151,5 +206,12 @@ class HyperFramesRender(BaseTool):
                 "scf_path": str(scf_file),
             },
             cost_usd=0.0,
-            metadata={"stdout": stdout, "stderr": stderr, "dry_run": dry_run},
+            metadata={
+                "stdout": stdout,
+                "stderr": stderr,
+                "dry_run": dry_run,
+                "safe_webgl": safe_webgl,
+                "split_scenes": split_scenes,
+                "workers": workers,
+            },
         )

@@ -91,6 +91,9 @@
 
 | Component | What it does | When to use |
 |-----------|-------------|-------------|
+| **ThreeScene** | Deterministic three.js/WebGL hero stage with real 3D depth, lighting, particles, and texture-ready planes | Premium hero moments where spatial depth carries meaning, not routine text/data scenes |
+| **DeviceStage3D** | three.js stage that renders a screenshot/texture on a tilted browser/device/glass panel with soft camera orbit + accent glow | Product-screenshot reveals, "show the laptop / phone in hand" beats, demo openings where the artifact itself is the hero |
+| **HTMLTextureWall** | three.js wall or carousel of card planes textured via CanvasTexture (exact text) or pre-rendered images, with staggered reveal | Logo / customer / quote / capability walls; "many things at once" beats where each card needs to read clearly |
 | **CollageShatter** | Image shatters into fragments | Dramatic scene transition |
 | **DepthZoomPunch** | Zoom punch with depth layers | Energetic transition |
 | **SwirlVortex** | Spiral vortex transition | Creative/playful transition |
