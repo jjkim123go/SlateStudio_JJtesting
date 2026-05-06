@@ -72,3 +72,33 @@ const args = [
 
 - File issues against `@hyperframes/producer` for both bugs.
 - Until fixed upstream, consider adding a `postinstall` script that re-applies the two patches, or vendoring the producer.
+
+
+---
+
+## Note: companion fix in render.mjs (not a producer patch)
+
+\ender.mjs --split-scenes\ mode renders each scene independently and
+concatenates with ffmpeg. Composition-level music in a per-scene SCF would
+cause the producer to extract music starting at \	=0\ for every scene,
+making the final concat play the same music intro 12 times instead of one
+continuous track.
+
+**Fix lives in \ender/render.mjs\:**
+
+1. \enderSplitScenes\ strips \scf.music\ before writing each per-scene SCF.
+2. After concat, \ddMusicToFinalRender\ mixes one continuous looped music
+   bed over the joined video via:
+   \\\
+   ffmpeg -i concat.mp4 -stream_loop -1 -i music.mp3 \\
+     -filter_complex "[1:a]volume=V[mus];[0:a][mus]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[outa]" \\
+     -map 0:v -map [outa] -c:v copy -c:a aac -b:a 192k -shortest output.mp4
+   \\\
+
+This is complementary to Patch 4 (which fixes single-render music looping
+inside the producer). Both are needed — single-render path uses Patch 4,
+split-scenes path uses the render.mjs post-mix.
+
+Verified via MFCC similarity: rendered audio at \	=130s\ matches source
+music at \	=130s\ (cos sim 0.998), and at \	=148s\ correctly wraps to
+source \	=16s\ (148 - 132 music duration).

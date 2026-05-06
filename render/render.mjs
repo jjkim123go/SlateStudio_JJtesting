@@ -10,11 +10,14 @@
 
 import { execSync, spawnSync } from 'child_process';
 import { randomUUID } from 'crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
 import { basename, dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { runGovernanceGate } from './lib/governance-gate.mjs';
 import { compileSCFToHTML } from './lib/scf-to-html.mjs';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const WEBGL_COMPONENTS = new Set(['BuildingBlocksScene', 'ThreeScene', 'DeviceStage3D', 'HTMLTextureWall']);
 const DEFAULT_WEBGL_WORKERS = 2;
@@ -235,6 +238,13 @@ function renderSplitScenes({ scf, scfPath, scfBase, outputMp4, quality, workers,
     const sceneScfPath = join(dirname(scfPath), `${scfBase}.split-${stem}.scf.json`);
     const sceneOutput = join(splitDir, `${stem}.mp4`);
     const sceneScf = filterToScene(scf, scene.id);
+    // Path B: strip composition-level music from per-scene SCFs.
+    // Each split-scene render would otherwise replay the music from t=0 of the
+    // source file, causing the same intro motif to loop N times after concat.
+    // Music is added back as a single continuous track in addMusicToFinalRender().
+    if (sceneScf.music) {
+      delete sceneScf.music;
+    }
     writeFileSync(sceneScfPath, JSON.stringify(sceneScf, null, 2), 'utf-8');
     rendered.push(sceneOutput);
 
@@ -280,13 +290,78 @@ function renderSplitScenes({ scf, scfPath, scfBase, outputMp4, quality, workers,
     rendered.map((file) => `file '${shellQuoteForFfmpegConcat(resolve(file))}'`).join('\n') + '\n',
     'utf-8',
   );
-  console.log(`[Slate] Concatenating ${rendered.length} scene render(s) → ${outputMp4}`);
-  const ffmpeg = spawnSync('ffmpeg', ['-y', '-hide_banner', '-f', 'concat', '-safe', '0', '-i', concatPath, '-c', 'copy', outputMp4], {
+
+  const hasMusic = Boolean(scf.music?.src);
+  const concatTarget = hasMusic
+    ? join(splitDir, '_concat-no-music.mp4')
+    : outputMp4;
+
+  console.log(`[Slate] Concatenating ${rendered.length} scene render(s) → ${concatTarget}`);
+  const ffmpeg = spawnSync('ffmpeg', ['-y', '-hide_banner', '-f', 'concat', '-safe', '0', '-i', concatPath, '-c', 'copy', concatTarget], {
     stdio: 'inherit',
   });
   if (ffmpeg.status !== 0) {
     throw new Error(`FFmpeg concat failed (exit ${ffmpeg.status})`);
   }
+
+  if (hasMusic) {
+    addMusicToFinalRender({
+      concatMp4: concatTarget,
+      outputMp4,
+      music: scf.music,
+      scfDir: dirname(scfPath),
+      projectDir: dirname(scfPath),
+      repoRoot: resolve(__dirname, '..'),
+    });
+  }
+}
+
+/**
+ * Mix a single continuous music bed into a fully-concatenated split-scene
+ * render. This is the second half of Path B: per-scene SCFs were stripped of
+ * music in renderSplitScenes() so each scene's audio is narration-only; here
+ * we add looping music to the full timeline as one stream, eliminating the
+ * intro-motif-on-every-scene bug.
+ */
+function addMusicToFinalRender({ concatMp4, outputMp4, music, scfDir, projectDir, repoRoot }) {
+  const musicSrc = resolveMusicSrc(music.src, { scfDir, projectDir, repoRoot });
+  if (!existsSync(musicSrc)) {
+    console.warn(`[Slate] Music source not found, skipping music mix: ${musicSrc}`);
+    if (concatMp4 !== outputMp4) {
+      copyFileSync(concatMp4, outputMp4);
+    }
+    return;
+  }
+  const volume = music.volume ?? 0.15;
+  console.log(`[Slate] Mixing continuous music bed (vol=${volume}) into ${outputMp4}`);
+  const filter = `[1:a]volume=${volume}[mus];[0:a][mus]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[outa]`;
+  const args = [
+    '-y', '-hide_banner',
+    '-i', concatMp4,
+    '-stream_loop', '-1', '-i', musicSrc,
+    '-filter_complex', filter,
+    '-map', '0:v',
+    '-map', '[outa]',
+    '-c:v', 'copy',
+    '-c:a', 'aac',
+    '-b:a', '192k',
+    '-shortest',
+    outputMp4,
+  ];
+  const result = spawnSync('ffmpeg', args, { stdio: 'inherit' });
+  if (result.status !== 0) {
+    throw new Error(`FFmpeg music mix failed (exit ${result.status})`);
+  }
+}
+
+function resolveMusicSrc(src, { scfDir, projectDir, repoRoot }) {
+  if (!src) return null;
+  if (src.startsWith('http://') || src.startsWith('https://')) return src;
+  for (const base of [scfDir, projectDir, repoRoot]) {
+    const candidate = resolve(base, src);
+    if (existsSync(candidate)) return candidate;
+  }
+  return resolve(scfDir, src);
 }
 
 async function main() {
