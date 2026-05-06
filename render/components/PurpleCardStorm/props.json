@@ -1,0 +1,15 @@
+{
+  "$schema": "../_schemas/component-props.schema.json",
+  "name": "PurpleCardStorm",
+  "description": "Premium velvety dark-purple 3D card storm. 4-8 chore/feature cards storm in from extreme 3D space, settle into Keynote-style staggered arrangement with continuous parallax breathing. Built for executive-grade explainer scenes.",
+  "tokens": {
+    "eyebrow":   { "type": "string", "description": "Small uppercase label above title" },
+    "title":     { "type": "string", "description": "Large hero title" },
+    "subtitle":  { "type": "string", "description": "Supporting line under title (currently unused)" },
+    "footer":    { "type": "string", "description": "Closing line at bottom (e.g. '6 hours · every quarter')" },
+    "cardsJson": {
+      "type": "string",
+      "description": "JSON-encoded array of cards: [{idx, title, sub, badge, accent}]. accent: primary | secondary | warm | green. Up to 8 cards."
+    }
+  }
+}

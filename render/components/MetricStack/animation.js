@@ -9,6 +9,31 @@ var metricsRaw = rootEl ? rootEl.getAttribute('data-metrics-json') : '[]';
 var metrics = [];
 try { metrics = JSON.parse(metricsRaw); } catch(e) { metrics = []; }
 
+// Optional palette override via data attributes — backward compatible
+var accentFrom = (rootEl && rootEl.getAttribute('data-accent-from')) || '#38bdf8';
+var accentTo   = (rootEl && rootEl.getAttribute('data-accent-to'))   || '#818cf8';
+var rowBg      = (rootEl && rootEl.getAttribute('data-row-bg'))      || 'rgba(30,41,59,0.55)';
+var rowStroke  = (rootEl && rootEl.getAttribute('data-row-stroke'))  || 'rgba(148,163,184,0.12)';
+var bgFrom     = rootEl && rootEl.getAttribute('data-bg-from');
+var bgTo       = rootEl && rootEl.getAttribute('data-bg-to');
+var panelGlow  = rootEl && rootEl.getAttribute('data-panel-glow');
+var panelBg    = rootEl && rootEl.getAttribute('data-panel-bg');
+var panelStroke= rootEl && rootEl.getAttribute('data-panel-stroke');
+
+if (rootEl && (bgFrom || bgTo || panelGlow)) {
+  var glow = panelGlow || 'rgba(56,189,248,0.10)';
+  var from = bgFrom || '#020617';
+  var to   = bgTo   || '#0f172a';
+  rootEl.style.background =
+    'radial-gradient(circle at 30% 20%,' + glow + ',transparent 50%),' +
+    'linear-gradient(135deg,' + from + ' 0%,' + to + ' 100%)';
+}
+var panelEl = document.querySelector(S + ' .ms-panel');
+if (panelEl && (panelBg || panelStroke)) {
+  if (panelBg)     panelEl.style.background = panelBg;
+  if (panelStroke) panelEl.style.border     = '1px solid ' + panelStroke;
+}
+
 metrics.forEach(function(m, i) {
   var numericVal = parseFloat(String(m.value).replace(/[^0-9.\-]/g, '')) || 0;
   var prefix = String(m.value).replace(/[0-9.\-,]+.*/, '');
@@ -22,7 +47,7 @@ metrics.forEach(function(m, i) {
   var row = document.createElement('div');
   row.className = 'ms-row';
   row.style.cssText = 'display:flex;align-items:center;padding:22px 28px;border-radius:18px;'
-    + 'background:rgba(30,41,59,0.55);border:1px solid rgba(148,163,184,0.12);opacity:0';
+    + 'background:' + rowBg + ';border:1px solid ' + rowStroke + ';opacity:0';
 
   row.innerHTML =
     '<div style="flex:1;display:flex;flex-direction:column;gap:4px">'
@@ -32,7 +57,7 @@ metrics.forEach(function(m, i) {
     + '" data-trail="' + trail + '" data-decimals="' + decPlaces
     + '" style="font-size:56px;font-weight:800;letter-spacing:-0.03em;line-height:1.1;'
     + 'font-variant-numeric:tabular-nums;'
-    + 'background:linear-gradient(135deg,#38bdf8,#818cf8);-webkit-background-clip:text;'
+    + 'background:linear-gradient(135deg,' + accentFrom + ',' + accentTo + ');-webkit-background-clip:text;'
     + '-webkit-text-fill-color:transparent">0</span>'
     + '</div>'
     + '<div class="ms-delta" style="display:flex;align-items:center;gap:8px;color:' + deltaColor + '">'

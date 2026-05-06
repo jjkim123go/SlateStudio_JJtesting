@@ -1,0 +1,89 @@
+<!--
+  ParticleTextForm — particles converge from random scatter into the actual
+  pixel-shape of a text glyph (e.g. "MAGE"). Forked from ParticleAssemble,
+  but uses a hidden canvas to sample text pixels so the particles ARE the
+  text, not an overlay.
+
+  Slots:
+    {{text}}            — text to render (e.g. "MAGE")
+    {{particleColor}}   — CSS color for particles (default #c4b5fd)
+    {{particleColorAlt}}— optional second color for chromatic mix
+    {{particleCount}}   — number of particles (300–1200 ideal)
+    {{assemblyDuration}}— total assembly arc in seconds (default 3.5)
+    {{fontFamily}}      — CSS font-family stack
+    {{fontWeight}}      — font weight (default 900)
+    {{letterSpacing}}   — em letter-spacing (default -0.04)
+-->
+
+<style data-component="ParticleTextForm">
+.scene-{{sceneId}} .ptf-root {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 50% 50%, #3A1F50 0%, #2A1838 50%, #160827 100%);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ptf-aurora {
+  position: absolute; inset: -10%;
+  background:
+    radial-gradient(circle at 22% 30%, rgba(178,122,240,0.34), transparent 38%),
+    radial-gradient(circle at 78% 68%, rgba(214,158,232,0.26), transparent 42%),
+    radial-gradient(circle at 50% 100%, rgba(212,178,107,0.12), transparent 50%);
+  filter: blur(46px);
+  opacity: 0.92;
+  pointer-events: none;
+}
+.scene-{{sceneId}} .ptf-vignette {
+  position: absolute; inset: 0;
+  background: radial-gradient(circle at 50% 50%, transparent 50%, rgba(0,0,0,0.62) 100%);
+  pointer-events: none;
+}
+.scene-{{sceneId}} .ptf-stage {
+  position: absolute;
+  left: 8%; right: 8%;
+  top: 18%; bottom: 18%;
+}
+.scene-{{sceneId}} .ptf-particle-layer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.scene-{{sceneId}} .ptf-particle {
+  position: absolute;
+  border-radius: 999px;
+  box-shadow:
+    0 0 14px var(--ptf-glow, rgba(196,181,253,0.85)),
+    0 0 30px var(--ptf-glow-soft, rgba(124,77,255,0.45));
+  will-change: transform, opacity, filter;
+  pointer-events: none;
+}
+.scene-{{sceneId}} .ptf-tagline {
+  position: absolute;
+  left: 0; right: 0;
+  bottom: 8%;
+  text-align: center;
+  font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.30em;
+  text-transform: uppercase;
+  color: #e9defe;
+  text-shadow: 0 0 22px rgba(196,181,253,0.55);
+  opacity: 0;
+}
+</style>
+
+<div class="scene-{{sceneId}} ptf-root"
+     data-ptf-text="{{text}}"
+     data-ptf-color="{{particleColor}}"
+     data-ptf-color-alt="{{particleColorAlt}}"
+     data-ptf-count="{{particleCount}}"
+     data-ptf-duration="{{assemblyDuration}}"
+     data-ptf-font="{{fontFamily}}"
+     data-ptf-weight="{{fontWeight}}"
+     data-ptf-letter-spacing="{{letterSpacing}}">
+  <div class="ptf-aurora"></div>
+  <div class="ptf-stage">
+    <div class="ptf-particle-layer"></div>
+  </div>
+  <div class="ptf-tagline">{{tagline}}</div>
+  <div class="ptf-vignette"></div>
+</div>

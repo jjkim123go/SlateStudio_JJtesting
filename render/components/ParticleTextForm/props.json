@@ -1,0 +1,15 @@
+{
+  "name": "ParticleTextForm",
+  "description": "Particles converge from a wide swirl into the actual pixel-shape of a text string (e.g. 'MAGE'). No image overlay — the particles ARE the text.",
+  "tokens": [
+    { "name": "text", "type": "string", "description": "Text to assemble into. Short uppercase words work best (4–6 chars).", "default": "MAGE" },
+    { "name": "particleColor", "type": "string", "description": "Primary particle color.", "default": "#c4b5fd" },
+    { "name": "particleColorAlt", "type": "string", "description": "Secondary particle color (chromatic mix).", "default": "#7c4dff" },
+    { "name": "particleCount", "type": "number", "description": "Particle count (120–1400). Higher = sharper letters.", "default": 700 },
+    { "name": "assemblyDuration", "type": "number", "description": "Total assembly arc in seconds (1.0–scene length).", "default": 3.5 },
+    { "name": "fontFamily", "type": "string", "description": "CSS font-family stack used for the text shape.", "default": "'Inter', -apple-system, 'Segoe UI', sans-serif" },
+    { "name": "fontWeight", "type": "string", "description": "Font weight for the text shape.", "default": "900" },
+    { "name": "letterSpacing", "type": "number", "description": "Letter spacing in em (negative tightens).", "default": -0.04 },
+    { "name": "tagline", "type": "string", "description": "Optional small uppercase tagline that fades in below.", "default": "" }
+  ]
+}

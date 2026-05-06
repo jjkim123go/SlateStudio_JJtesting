@@ -159,6 +159,9 @@ const KNOWN_COMPONENTS = new Set([
   'OmartSignalWall',
   'OmartMarketplaceDemo',
   'OmartCopilotChat',
+  // Slate-original components
+  'ParticleTextForm',
+  'PurpleCardStorm',
 ]);
 
 // Components that depend on the lazy three.js driver. Adding a name here
