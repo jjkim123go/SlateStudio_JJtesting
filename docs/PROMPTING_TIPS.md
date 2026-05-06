@@ -17,6 +17,59 @@
   components, sound, pacing, etc.).
 - For iteration / feedback rounds, the **"Iterate With Visual Specificity"**
   and **"Anti-Patterns"** sections will save you the most time.
+- The **"#1 Failure Mode"** and **"Verification — Catch Issues Before
+  Delivery"** sections are distilled from real production rounds where users
+  had to push the agent through 3+ revisions to reach A+ quality. Read them
+  *before* your first run, not after.
+
+---
+
+## 🚨 The #1 Failure Mode: Component Improvisation
+
+This is the single most common reason a Slate video looks like AI-slop on
+the first pass.
+
+**What happens:** You ask for a scene that involves a real software UI —
+"show a Windows File Explorer with our evidence files", "show an Outlook
+calendar with the rollout dates", "show a VS Code workspace". Slate has
+**polished, registered components** for all of these (`WindowsScene`,
+`OutlookScene`, `VSCodeScene`, `TerminalCast`, `ScreenDemoFrame`, …). But
+unless you name them, the agent often **improvises** — it draws a window
+chrome from rectangles + text, or pastes a generated screenshot, or uses
+boring grid-of-tiles to fake a calendar. The result looks hand-drawn and
+PowerPoint-y, not premium.
+
+**Why it happens:** The agent is biased toward "build something" over
+"discover what exists". Without an explicit instruction, scene planning
+defaults to layered shapes/text instead of querying the component catalog.
+
+**How to prevent it (do all three):**
+
+1. **Force a component-discovery pass before scene planning.** Add this to
+   your brief:
+   > *"Before scene planning, list every scene that involves a real software
+   > UI (Windows, Mac, browser chrome, Outlook, Teams, VS Code, Excel,
+   > terminals, file explorers, charts, tables, code) and name which
+   > registered component will render it. If no component exists for one of
+   > those scenes, **say so and create one** before the scene plan is
+   > approved. Do not hand-draw a UI from primitives."*
+
+2. **Name the component explicitly when you describe the scene.** Don't say
+   "show a calendar with the launch dates" — say *"use `OutlookScene` with
+   a 3-month calendar (Apr / May / Sep) showing Phase 1, Phase 2, GA as
+   real calendar events on the actual day cells"*.
+
+3. **Reject hand-drawn UIs in feedback.** If you see a scene that looks
+   like rectangles-and-text trying to be a real app, write back:
+   > *"Replace this with the actual `<ComponentName>` component. There is
+   > a real `<X>Scene` in the registry. Do not roll your own."*
+   The fix is usually one component swap, not a redraw.
+
+**Bonus directive that stops improvisation cold:**
+> *"For every scene, justify the choice: which registered component am I
+> using, and why? If you are about to layer shapes/text to imitate a
+> familiar UI, stop and either find the registered component or build a
+> new one — never imitate."*
 
 ---
 
@@ -49,12 +102,29 @@
 - "Add subtle camera moves between scenes (slow push-in, gentle pan)" →
   adds cinematic continuity instead of hard cuts.
 
+**Critical: Match animation length to narration length.** A common failure
+is a scene where the visual finishes its animation in 1–2 seconds (e.g.
+`TerminalCast` types 30 chars in 1.5s) but the narration runs for 8s — the
+remaining 6.5s is dead air on a frozen frame. Add this to your brief:
+
+> *"For every scene, the visual motion must occupy the FULL narration
+> length, not just the first beat. If the component finishes early, slow
+> the typing, stagger reveals, add follow-on micro-motion (cursor blink,
+> highlight pass, value tick), or break the content into more steps. No
+> scene should hold a frozen frame for more than 1 second of narration."*
+
 ---
 
 ## 🧩 Push for Custom Components Over Stitched Overlays
 
-This is the **single biggest lever** for premium output.
+This is the **single biggest lever** for premium output. It's so important
+it's also called out as the #1 failure mode at the top of this doc — read
+that section first.
 
+- **Always discover before building.** Tell the agent:
+  > *"Before scene planning, list which registered Slate components match
+  > each scene's content type. Use them. If none exists, create a new one
+  > via sub-agent. Do not roll your own from shapes/text."*
 - Say **"create a new component if none exists"** — Slate has
   component-authoring skills it won't invoke unless asked.
 - Stitching divs on top of a screenshot looks cheap and drifts under camera
@@ -69,6 +139,12 @@ This is the **single biggest lever** for premium output.
   cursor movement, focus rings, typing rhythm.
 - For complex flows: **"build it like Outlook / Teams / VS Code does it"** —
   reference the interaction model of polished consumer apps.
+- **Beware hardcoded component defaults.** Some components ship with a
+  default accent color (e.g. cyan-indigo) that may ignore your brand
+  palette. Add to your brief:
+  > *"Audit every component used for hardcoded colors before render. Patch
+  > the component to honor my palette tokens, or replace it. Do not let a
+  > stray cyan or default blue appear in a velvet/warm/branded video."*
 
 ---
 
@@ -86,6 +162,43 @@ This is the **single biggest lever** for premium output.
 - "Use Three.js / WebGL for the hero if it adds depth" → unlocks 3D
   backgrounds. If you know the system: add **`--use-gpu` with 2 workers** for
   smooth WebGL capture.
+
+---
+
+## 🎨 Lock the Palette Before Anything Renders
+
+Color words like "deep purple", "matte navy", "warm gold" are interpreted
+loosely. "Deep purple matte sheen" can land as dark blue, deep violet, or
+muted aubergine — three very different feelings. Don't discover this after
+a 12-minute render.
+
+**Force a swatch checkpoint:**
+
+> *"Before any scene renders, generate a 1080×270 palette swatch image
+> showing every color in the proposed palette (BG base, BG deep, primary,
+> secondary, warm/accent, body text). Show it to me with hex codes labeled.
+> If I reject the palette, regenerate. Do not proceed to scene rendering
+> until I approve the swatch."*
+
+**Use precise palette language.** Compare:
+
+- ❌ "Use deep purple."
+- ✅ "Use a *velvety dark plum* — warm undertone, not blue-leaning. Think
+  Burgundy meets aubergine, not navy. Hex around `#1B0E33` to `#2A1838`
+  for backgrounds; `#B27AF0` velvet lilac for primary accents; `#D69EE8`
+  dusty mauve for secondary."
+
+**Audit components for hardcoded colors.** Some shipped components have
+default gradients (e.g. cyan-indigo for `MetricStack` numeric values) that
+override the brand palette. Add to the brief:
+
+> *"Before render, audit each component for hardcoded colors. Either pass
+> palette tokens via props or patch the component (backward-compatible) to
+> read from data attributes. No off-palette accents in the final output."*
+
+**Smoke-test on one scene first.** For long videos (>60s), render a single
+representative scene at quality `medium` first — eye-check the palette,
+then commit to the full render.
 
 ---
 
@@ -135,6 +248,82 @@ Tactics:
   an Apple product page."**
 - Say **"escalate to A+"** when the bar shifts — Slate has a polish-round
   workflow that re-reviews every scene.
+- **Force a self-critique pass.** After every render, before showing the
+  video to you, ask the agent:
+  > *"Self-critique the video on every dimension (component fit, palette
+  > adherence, animation-narration sync, content-visual relevance,
+  > placeholder usage, decorative-vs-meaningful imagery). Surface anything
+  > below A-quality with a timestamp and proposed fix. Do not tell me 'good'
+  > if there's a flaw — fix it first or flag it explicitly."*
+
+---
+
+## 📚 Use Source Materials As Ground Truth — Forbid Placeholders
+
+When you give Slate a folder of references (specs, design docs, slide
+decks, READMEs), it should pull every name, term, screenshot, and product
+string from there. Without an explicit instruction, the agent often falls
+back to safe placeholders ("Contoso", "Acme", "ProductName", "Customer") —
+which makes the video feel generic and AI-generated.
+
+Add this to your brief whenever you provide source material:
+
+> *"All product names, team names, file names, customer names, and brand
+> strings must come from the source material at `<path>`. **Do not use
+> Contoso, Acme, ExampleCorp, or any placeholder.** If a name is missing
+> from the source, ask me — don't invent. Real evidence file names, real
+> ticket IDs, real domain language wherever possible."*
+
+Bonus: tell the agent which terms are non-negotiable:
+
+> *"The product is called **MAGE** (Master Agent for Gathering Evidence).
+> The team is **Financial Controls**. The audit cycle is **FY26-Q3**.
+> These exact strings appear in every relevant scene."*
+
+---
+
+## 💰 Budget Directives That Stick
+
+When you say "go big, cost is no concern", Slate's stage-gate workflow
+will *still* pause to confirm spend at every checkpoint — because that's
+its safe default. To skip that loop, be explicit:
+
+> *"I authorize unlimited spend on this video. Do not pause to ask for
+> cost approval at any checkpoint. Spend whatever the quality requires —
+> Sora-2 video clips, multiple gpt-image-2 generations, full reviewer
+> sub-agent runs, re-renders. Just keep going and report total cost at the
+> end."*
+
+Conversely, if budget is tight:
+
+> *"Hard cap: $5. If a planned scene would push us over, downgrade the
+> approach (use a static image instead of a Sora clip; reuse a generated
+> image instead of regenerating). Show me the cost forecast before assets
+> render."*
+
+---
+
+## 🖥️ Hardware Directives — Don't Let Them Get Silently Dropped
+
+If you specify GPU usage, worker count, or a specific renderer, the agent
+might hit a hardware limitation and silently fall back without telling
+you. Force transparency:
+
+> *"If I specify GPU usage, worker count, NVENC, or a specific render
+> backend and you cannot honor it on this hardware, **stop and tell me
+> why** before rendering. Do not silently change my flags. If you have
+> to deviate, explain the constraint at the moment of the choice — not
+> after delivery."*
+
+Common hardware traps to know about:
+
+- `--use-gpu true` requires a real NVIDIA GPU with NVENC. Hyper-V VMs
+  expose only a virtual adapter — NVENC will crash. WebGL d3d11 capture
+  is still GPU-accelerated even without `--use-gpu`.
+- Increasing `--workers` past 2 helps only if you have GPU + VRAM
+  headroom; on a CPU-bound box, 3+ workers can hang the desktop.
+- WebGL-heavy renders should start at `--workers 1 --safe-webgl` and only
+  scale up after a successful single-scene probe.
 
 ---
 
@@ -179,6 +368,21 @@ Small additions, big polish gain:
 
 State these in the brief or in feedback to prevent them up front:
 
+- **"No hand-drawn UI when a registered component exists"** — call out
+  Windows Explorer, Outlook, VS Code, Teams, browser chrome by name.
+- **"No generic placeholders"** — Contoso, Acme, FooCorp, ExampleCustomer
+  are forbidden when source materials supply real names.
+- **"No animations that finish before narration ends"** — every motion must
+  occupy the full narration window.
+- **"No silent override of explicit hardware/budget directives"** — if
+  `--use-gpu`, `--workers`, or unlimited spend can't be honored, surface
+  the constraint immediately, don't quietly change flags.
+- **"No cost reconfirmation prompts after unlimited budget is authorized"**
+  — once spend cap is lifted, stop asking.
+- **"No decorative imagery unrelated to scene narration"** — a 3D globe in
+  a finance-evidence scene is noise, not polish.
+- **"No off-palette accent colors from hardcoded component defaults"** —
+  audit and patch.
 - "No floating buttons appearing on top of UI screens unless functional"
 - "No mystery empty panels — every element must earn its place"
 - "Don't paste static screenshots if a real interaction is possible"
@@ -189,10 +393,47 @@ State these in the brief or in feedback to prevent them up front:
 
 ---
 
-## 🧠 Working With Slate's Component Library
+## 🔍 Verification — Catch Issues Before You Watch the Whole Render
 
-Slate's component library is designed to mix and match. Key components to
-reference by name in your prompts:
+A 3-minute video takes ~12 minutes to render. Don't watch the whole thing
+to discover scene 4 is empty. Force a verification pass *before* delivery:
+
+> *"After render but before showing me the video, extract a still frame
+> at the midpoint of every scene (use the scene timings from the SCF).
+> Inspect each frame for: empty/black render, missing text, off-palette
+> color, component crash, placeholder strings. Surface anything broken
+> with the timestamp and the proposed fix. Re-render the affected scenes
+> if needed. Only then show me the final video."*
+
+Bonus check for narration-heavy scenes:
+
+> *"For any scene with narration > 4 seconds, sample frames at the
+> midpoint AND at narration-end-minus-1s. If the frames are visually
+> identical (frozen), the animation is too short — fix it."*
+
+This catches the failure where a `TerminalCast` types a single short
+command in 2s but the scene runs for 10s: the last 8s look broken even
+though the render technically succeeded.
+
+---
+
+## 🧠 Working With Slate's Component Library — Ask First, Build Second
+
+**The discovery step is non-negotiable.** Before any scene is planned,
+the agent should enumerate which registered Slate components map to each
+scene's content type. If you don't force this discovery step, the agent
+will improvise — and improvisation looks like PowerPoint.
+
+Lead your brief with:
+
+> *"For every scene, name the registered Slate component that will render
+> it. If no existing component fits, build a new one via sub-agent (load
+> component-authoring + component-design-system + gsap-component-patterns
+> skills). Do not assemble scenes from raw shapes, divs, or SVG primitives
+> when a component exists. Show me the component map before approving the
+> scene plan."*
+
+Key components to reference by name in your prompts:
 
 | If you want to show… | Ask for… |
 |---|---|
@@ -202,12 +443,19 @@ reference by name in your prompts:
 | Charts | "DataChart — animated bar / donut with reveal" |
 | Tables / comparisons | "PricingTable or ExcelScene — row-by-row reveal" |
 | Synthetic UI demo | "ScreenDemoFrame around a custom component — not a screenshot" |
+| **Windows Explorer / file browser** | **"WindowsScene — real File Explorer chrome with file rows"** |
+| **Outlook / calendar** | **"OutlookScene — real Outlook chrome with calendar/inbox modes"** |
 | Chat / Copilot interaction | "OmartCopilotChat-style — VS Code chrome + chat panel + phase pills" |
+| Particle text reveal | "ParticleTextForm — particles converge into wordmark/logo" |
 | Brand bookends | "BrandIntro / BrandOutro — logo reveal + tagline" |
 
-If a component you need doesn't exist, **say so**: "There's no good
-component for this — please create one." Slate will spawn a sub-agent to
-build it (component-authoring + design-system + GSAP skills auto-load).
+If a component you need doesn't exist, **say so explicitly**: "There's no
+good component for this — please create one." Slate will spawn a sub-agent
+to build it (component-authoring + design-system + GSAP skills auto-load).
+
+**Audit hardcoded colors before render** — see the *Lock the Palette*
+section above. A component may ship with a default cyan-indigo gradient
+that ignores your brand palette unless you patch it or pass overrides.
 
 ---
 
@@ -266,9 +514,16 @@ Copy, fill the blanks, paste:
 > **Arc**: [pain] → [solution] → [magic moment / CTA].
 >
 > **Constraints**:
+> - For every scene, **name the registered Slate component** that will
+>   render it before approving the scene plan. If none fits, build one.
+> - **Lock the palette via swatch** before any render. Hex codes, not
+>   color words. Audit components for hardcoded colors.
+> - **Animation must run the full narration length** of every scene.
+>   No frozen frames after a fast reveal.
 > - Animate every scene end-to-end. No static screenshots, no cut-outs.
-> - Build new components for **[X]**, **[Y]** if none exists.
 > - Use design-system tokens, glass cards, soft depth.
+> - **Pull all names/terms from the source material at `<path>`. No
+>   placeholders (Contoso/Acme/FooCorp).**
 > - Reference: **[Apple keynote / Stripe / Vercel / etc.]** vibe.
 >
 > **Audio**: **[mood]** music, ducked under a warm conversational narration.
@@ -277,8 +532,16 @@ Copy, fill the blanks, paste:
 > **Pacing**: faster cuts in demo, slower on hero / close. Don't rush the
 > magic moment.
 >
+> **Budget**: I authorize unlimited spend — don't pause for cost
+> reconfirmation. *(Or: hard cap $X — downgrade approach if over.)*
+>
+> **Hardware**: Use GPU + 2 workers. If you can't honor this, stop and
+> tell me why before rendering.
+>
 > **Workflow**: Show me the brief first. Estimate cost. Stage-gate review on
-> script and scene plan. Run the reviewer subagent after render.
+> script and scene plan. Run the reviewer subagent after render. **Extract
+> midpoint frames per scene before delivery — surface anything broken or
+> off-palette.**
 >
 > **Inputs**: [paste paths to spec docs, PRs, screenshots, brand assets].
 
