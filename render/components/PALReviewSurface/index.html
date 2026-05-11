@@ -1,0 +1,216 @@
+<!-- PALReviewSurface - Azure DevOps-style PAL PR detection, impact comment, and monitoring report surface -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<style>
+.scene-{{sceneId}} .pal-root{
+  --pal-bg:#07030f;
+  --pal-bg-2:#120823;
+  --pal-panel:rgba(24,11,43,.78);
+  --pal-panel-2:rgba(39,18,68,.72);
+  --pal-stroke:rgba(216,190,255,.25);
+  --pal-stroke-strong:rgba(216,190,255,.42);
+  --pal-text:#f7ecff;
+  --pal-muted:rgba(247,236,255,.66);
+  --pal-faint:rgba(247,236,255,.42);
+  --pal-purple:#8b5cf6;
+  --pal-orchid:#c084fc;
+  --pal-gleam:#e879f9;
+  --pal-teal:#5eead4;
+  --pal-green:#a7f3d0;
+  --pal-amber:#f6a623;
+  --pal-red:#ff5c7a;
+  position:absolute;inset:0;overflow:hidden;
+  font-family:Inter,'Segoe UI',system-ui,-apple-system,sans-serif;
+  color:var(--pal-text);
+  background:
+    radial-gradient(circle at 78% 8%, rgba(232,121,249,.18), transparent 31%),
+    radial-gradient(circle at 8% 84%, rgba(94,234,212,.12), transparent 34%),
+    linear-gradient(135deg,var(--pal-bg) 0%,var(--pal-bg-2) 55%,#080414 100%);
+}
+.scene-{{sceneId}} .pal-aurora{position:absolute;inset:-12%;background:conic-gradient(from 210deg at 52% 42%,transparent 0 18%,rgba(139,92,246,.20) 24%,rgba(232,121,249,.14) 34%,transparent 48%,rgba(94,234,212,.10) 68%,transparent 82%);filter:blur(34px);opacity:.85;will-change:transform;}
+.scene-{{sceneId}} .pal-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(216,190,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(216,190,255,.055) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(circle at 50% 48%,#000 0 58%,transparent 82%);opacity:.5;}
+.scene-{{sceneId}} .pal-orb{position:absolute;border-radius:50%;border:1px solid rgba(216,190,255,.14);box-shadow:inset 0 0 64px rgba(192,132,252,.08),0 0 90px rgba(139,92,246,.08);}
+.scene-{{sceneId}} .pal-orb-a{width:620px;height:620px;right:-170px;top:-170px}.scene-{{sceneId}} .pal-orb-b{width:460px;height:460px;left:-150px;bottom:-145px}
+.scene-{{sceneId}} .pal-stage{position:absolute;left:92px;right:92px;top:72px;bottom:72px;transform-style:preserve-3d;perspective:1500px;will-change:transform;}
+.scene-{{sceneId}} .pal-browser{position:absolute;inset:0;border-radius:34px;overflow:hidden;background:linear-gradient(145deg,rgba(21,9,40,.86),rgba(12,6,23,.74));border:1px solid var(--pal-stroke);box-shadow:0 44px 110px rgba(0,0,0,.54),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(20px);transform-style:preserve-3d;}
+.scene-{{sceneId}} .pal-browser::after{content:"";position:absolute;inset:1px;border-radius:33px;background:linear-gradient(120deg,rgba(255,255,255,.11),transparent 20%,transparent 74%,rgba(232,121,249,.09));pointer-events:none;}
+.scene-{{sceneId}} .pal-toolbar{height:62px;display:flex;align-items:center;gap:18px;padding:0 24px;border-bottom:1px solid rgba(216,190,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.015));box-sizing:border-box;}
+.scene-{{sceneId}} .pal-dot{width:12px;height:12px;border-radius:50%;background:rgba(247,236,255,.30)}.scene-{{sceneId}} .pal-dot:nth-child(1){background:#ff6b7d}.scene-{{sceneId}} .pal-dot:nth-child(2){background:#f6a623}.scene-{{sceneId}} .pal-dot:nth-child(3){background:#5eead4}
+.scene-{{sceneId}} .pal-url{height:34px;flex:1;border-radius:999px;display:flex;align-items:center;padding:0 16px;color:var(--pal-muted);font-size:14px;font-weight:650;background:rgba(255,255,255,.055);border:1px solid rgba(216,190,255,.14);}
+.scene-{{sceneId}} .pal-chip{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 12px;font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--pal-teal);background:rgba(94,234,212,.10);border:1px solid rgba(94,234,212,.22);}
+.scene-{{sceneId}} .pal-body{position:absolute;inset:62px 0 0;display:grid;grid-template-columns:250px minmax(0,1fr);min-height:0;}
+.scene-{{sceneId}} .pal-rail{padding:26px 20px;border-right:1px solid rgba(216,190,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,.012));}
+.scene-{{sceneId}} .pal-rail-title{font-size:13px;font-weight:850;text-transform:uppercase;letter-spacing:.16em;color:var(--pal-faint);margin-bottom:18px;}
+.scene-{{sceneId}} .pal-rail-item{height:44px;border-radius:14px;display:flex;align-items:center;gap:10px;padding:0 14px;margin-bottom:8px;font-size:15px;font-weight:720;color:var(--pal-muted);}
+.scene-{{sceneId}} .pal-rail-item.active{color:var(--pal-text);background:rgba(139,92,246,.18);box-shadow:inset 0 0 0 1px rgba(216,190,255,.14);}
+.scene-{{sceneId}} .pal-rail-mark{width:9px;height:9px;border-radius:50%;background:var(--pal-orchid);box-shadow:0 0 16px rgba(192,132,252,.7);}
+.scene-{{sceneId}} .pal-content{position:relative;padding:30px 34px 34px;min-width:0;overflow:hidden;}
+.scene-{{sceneId}} .pal-mode{position:absolute;inset:30px 34px 34px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:22px;}
+.scene-{{sceneId}} .pal-root[data-mode="pr-detection"] [data-modes]:not([data-modes~="pr-detection"]),.scene-{{sceneId}} .pal-root[data-mode="impact-comment"] [data-modes]:not([data-modes~="impact-comment"]),.scene-{{sceneId}} .pal-root[data-mode="monitoring-report"] [data-modes]:not([data-modes~="monitoring-report"]){display:none;}
+.scene-{{sceneId}} .pal-header{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;}
+.scene-{{sceneId}} .pal-eyebrow{font-size:13px;font-weight:850;letter-spacing:.18em;text-transform:uppercase;color:var(--pal-teal);margin-bottom:8px;}
+.scene-{{sceneId}} .pal-title{font-size:38px;line-height:1.06;font-weight:880;letter-spacing:-.045em;max-width:1060px;}
+.scene-{{sceneId}} .pal-subtitle{margin-top:8px;color:var(--pal-muted);font-size:18px;line-height:1.36;max-width:980px;}
+.scene-{{sceneId}} .pal-status{min-width:210px;border-radius:20px;padding:14px 16px;background:rgba(94,234,212,.09);border:1px solid rgba(94,234,212,.22);box-shadow:0 18px 48px rgba(94,234,212,.08);}
+.scene-{{sceneId}} .pal-status b{display:block;font-size:13px;text-transform:uppercase;letter-spacing:.14em;color:var(--pal-teal);margin-bottom:4px}.scene-{{sceneId}} .pal-status span{font-size:16px;font-weight:760}
+.scene-{{sceneId}} .pal-card{border-radius:26px;background:linear-gradient(145deg,var(--pal-panel),rgba(16,7,30,.66));border:1px solid rgba(216,190,255,.17);box-shadow:0 24px 70px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.07);overflow:hidden;}
+.scene-{{sceneId}} .pal-detect-grid{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(0,.94fr);gap:22px;min-height:0;}
+.scene-{{sceneId}} .pal-pr-card{padding:22px 24px;}
+.scene-{{sceneId}} .pal-pr-meta{display:flex;gap:10px;align-items:center;margin-bottom:16px;color:var(--pal-muted);font-weight:720;font-size:14px;}
+.scene-{{sceneId}} .pal-pr-id{color:#fff;background:rgba(139,92,246,.22);border:1px solid rgba(216,190,255,.20);border-radius:999px;padding:6px 10px;font-weight:850;}
+.scene-{{sceneId}} .pal-pr-title{font-size:26px;line-height:1.18;font-weight:830;letter-spacing:-.025em;margin-bottom:18px;}
+.scene-{{sceneId}} .pal-file-list{display:flex;flex-direction:column;gap:12px;}
+.scene-{{sceneId}} .pal-file-row{display:grid;grid-template-columns:30px minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 14px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(216,190,255,.11);}
+.scene-{{sceneId}} .pal-file-icon{width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(192,132,252,.16);color:var(--pal-orchid);font-weight:900;}
+.scene-{{sceneId}} .pal-file-path{font-family:'Cascadia Code',Consolas,monospace;font-size:15px;color:rgba(247,236,255,.88);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.scene-{{sceneId}} .pal-file-badge{font-size:11px;font-weight:850;letter-spacing:.08em;text-transform:uppercase;color:var(--pal-amber);border:1px solid rgba(246,166,35,.30);background:rgba(246,166,35,.10);padding:6px 9px;border-radius:999px;}
+.scene-{{sceneId}} .pal-scan-card{position:relative;padding:22px 24px;overflow:hidden;}
+.scene-{{sceneId}} .pal-scanbar{position:absolute;left:-30%;top:0;width:28%;height:100%;background:linear-gradient(90deg,transparent,rgba(94,234,212,.20),transparent);filter:blur(1px);}
+.scene-{{sceneId}} .pal-scan-title{font-size:14px;font-weight:880;letter-spacing:.16em;text-transform:uppercase;color:var(--pal-teal);margin-bottom:18px;}
+.scene-{{sceneId}} .pal-step{display:grid;grid-template-columns:42px minmax(0,1fr);gap:13px;align-items:start;padding:12px 0;border-bottom:1px solid rgba(216,190,255,.10);}
+.scene-{{sceneId}} .pal-step-num{width:34px;height:34px;border-radius:13px;display:grid;place-items:center;background:rgba(94,234,212,.11);border:1px solid rgba(94,234,212,.24);color:var(--pal-teal);font-weight:900;}
+.scene-{{sceneId}} .pal-step b{display:block;font-size:17px;letter-spacing:-.01em;margin-bottom:3px}.scene-{{sceneId}} .pal-step span{display:block;color:var(--pal-muted);font-size:14px;line-height:1.35;}
+.scene-{{sceneId}} .pal-map-strip{margin-top:18px;border-radius:18px;padding:14px;background:rgba(10,4,19,.44);border:1px solid rgba(216,190,255,.12);display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.scene-{{sceneId}} .pal-map-node{font-family:'Cascadia Code',Consolas,monospace;font-size:13px;font-weight:750;color:#fff;border-radius:12px;padding:8px 10px;background:rgba(139,92,246,.18);border:1px solid rgba(216,190,255,.15);}
+.scene-{{sceneId}} .pal-arrow{color:var(--pal-faint);font-weight:900;}
+.scene-{{sceneId}} .pal-comment-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px;min-height:0;}
+.scene-{{sceneId}} .pal-comment{display:flex;flex-direction:column;min-height:0;}
+.scene-{{sceneId}} .pal-comment-head{padding:17px 20px;border-bottom:1px solid rgba(216,190,255,.13);display:flex;align-items:center;gap:12px;}
+.scene-{{sceneId}} .pal-avatar{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--pal-purple),var(--pal-gleam));display:grid;place-items:center;font-weight:900;color:#fff;}
+.scene-{{sceneId}} .pal-comment-head b{display:block;font-size:16px}.scene-{{sceneId}} .pal-comment-head span{display:block;color:var(--pal-muted);font-size:12px;margin-top:2px}
+.scene-{{sceneId}} .pal-md{padding:20px;overflow:hidden;}
+.scene-{{sceneId}} .pal-md h3{margin:0 0 12px;font-size:22px;letter-spacing:-.02em}.scene-{{sceneId}} .pal-md p{margin:0 0 16px;color:var(--pal-muted);font-size:15px;}
+.scene-{{sceneId}} .pal-impact-table{width:100%;border-collapse:separate;border-spacing:0 8px;font-size:13px;}
+.scene-{{sceneId}} .pal-impact-table th{color:var(--pal-faint);font-size:11px;text-transform:uppercase;letter-spacing:.10em;text-align:left;padding:0 10px 4px;}
+.scene-{{sceneId}} .pal-impact-table td{padding:12px 10px;background:rgba(255,255,255,.045);border-top:1px solid rgba(216,190,255,.10);border-bottom:1px solid rgba(216,190,255,.10);vertical-align:middle;}
+.scene-{{sceneId}} .pal-impact-table td:first-child{border-left:1px solid rgba(216,190,255,.10);border-radius:14px 0 0 14px}.scene-{{sceneId}} .pal-impact-table td:last-child{border-right:1px solid rgba(216,190,255,.10);border-radius:0 14px 14px 0;}
+.scene-{{sceneId}} .pal-code{font-family:'Cascadia Code',Consolas,monospace;color:rgba(247,236,255,.90);}
+.scene-{{sceneId}} .pal-owner{display:inline-block;margin:2px 4px 2px 0;padding:4px 8px;border-radius:999px;color:var(--pal-teal);background:rgba(94,234,212,.09);border:1px solid rgba(94,234,212,.20);font-weight:760;}
+.scene-{{sceneId}} .pal-reviewers{padding:20px;display:flex;flex-direction:column;gap:14px;}
+.scene-{{sceneId}} .pal-reviewer-title{font-size:13px;text-transform:uppercase;letter-spacing:.15em;color:var(--pal-faint);font-weight:850;}
+.scene-{{sceneId}} .pal-reviewer{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:rgba(94,234,212,.08);border:1px solid rgba(94,234,212,.19);}
+.scene-{{sceneId}} .pal-reviewer-initial{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--pal-teal),var(--pal-green));color:#06111f;font-weight:900;display:grid;place-items:center;}
+.scene-{{sceneId}} .pal-reviewer b{display:block;font-size:15px}.scene-{{sceneId}} .pal-reviewer span{display:block;font-size:12px;color:var(--pal-green);font-weight:780;margin-top:2px}
+.scene-{{sceneId}} .pal-no-page{margin-top:auto;border-radius:18px;padding:15px 16px;color:var(--pal-green);background:rgba(167,243,208,.10);border:1px solid rgba(167,243,208,.24);font-weight:850;}
+.scene-{{sceneId}} .pal-report-grid{display:grid;grid-template-rows:auto minmax(0,1fr);gap:18px;min-height:0;}
+.scene-{{sceneId}} .pal-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.scene-{{sceneId}} .pal-kpi{padding:16px;border-radius:20px;background:rgba(255,255,255,.048);border:1px solid rgba(216,190,255,.13);}
+.scene-{{sceneId}} .pal-kpi-num{font-size:36px;font-weight:900;letter-spacing:-.05em;background:linear-gradient(135deg,var(--pal-orchid),var(--pal-teal));-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-variant-numeric:tabular-nums;}
+.scene-{{sceneId}} .pal-kpi-label{margin-top:4px;color:var(--pal-muted);font-size:13px;font-weight:760;}
+.scene-{{sceneId}} .pal-report-lower{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,.88fr);gap:18px;min-height:0;}
+.scene-{{sceneId}} .pal-report-card{padding:18px;min-height:0;}
+.scene-{{sceneId}} .pal-report-title{font-size:17px;font-weight:850;letter-spacing:-.01em;margin-bottom:12px;}
+.scene-{{sceneId}} .pal-report-row{display:grid;grid-template-columns:82px minmax(0,1fr) 86px;gap:12px;align-items:center;padding:12px;border-radius:15px;background:rgba(255,255,255,.042);border:1px solid rgba(216,190,255,.10);margin-bottom:10px;}
+.scene-{{sceneId}} .pal-report-pr{font-weight:900;color:var(--pal-orchid);}.scene-{{sceneId}} .pal-report-copy{font-size:13px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:rgba(247,236,255,.86);}.scene-{{sceneId}} .pal-report-pill{justify-self:end;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:850;color:var(--pal-amber);background:rgba(246,166,35,.10);border:1px solid rgba(246,166,35,.25);}
+.scene-{{sceneId}} .pal-repos{display:flex;flex-wrap:wrap;gap:9px;align-content:flex-start;}
+.scene-{{sceneId}} .pal-repo-pill{border-radius:999px;padding:8px 10px;background:rgba(139,92,246,.15);border:1px solid rgba(216,190,255,.14);font-size:12px;font-weight:780;color:rgba(247,236,255,.88);}
+</style>
+<div class="pal-root" data-mode="{{mode}}" data-scene-component="PALReviewSurface">
+  <div class="pal-aurora"></div>
+  <div class="pal-grid"></div>
+  <div class="pal-orb pal-orb-a"></div>
+  <div class="pal-orb pal-orb-b"></div>
+  <div class="pal-stage">
+    <div class="pal-browser">
+      <div class="pal-toolbar">
+        <span class="pal-dot"></span><span class="pal-dot"></span><span class="pal-dot"></span>
+        <div class="pal-url">msazure.visualstudio.com / One / _git / {{repoName}}</div>
+        <div class="pal-chip">PAL active</div>
+      </div>
+      <div class="pal-body">
+        <aside class="pal-rail">
+          <div class="pal-rail-title">Azure Repos</div>
+          <div class="pal-rail-item active"><span class="pal-rail-mark"></span> Pull Requests</div>
+          <div class="pal-rail-item"><span class="pal-rail-mark"></span> Files</div>
+          <div class="pal-rail-item"><span class="pal-rail-mark"></span> Policies</div>
+          <div class="pal-rail-title" style="margin-top:26px">GitOps PR Assistant</div>
+          <div class="pal-rail-item active"><span class="pal-rail-mark"></span> Contract Review</div>
+        </aside>
+        <main class="pal-content">
+          <section class="pal-mode" data-modes="pr-detection">
+            <div class="pal-header">
+              <div>
+                <div class="pal-eyebrow">{{eyebrow}}</div>
+                <div class="pal-title">{{title}}</div>
+                <div class="pal-subtitle">{{subtitle}}</div>
+              </div>
+              <div class="pal-status"><b>Runtime detection</b><span>{{statusText}}</span></div>
+            </div>
+            <div class="pal-detect-grid">
+              <div class="pal-card pal-pr-card">
+                <div class="pal-pr-meta"><span class="pal-pr-id">PR {{prId}}</span><span>{{repoName}}</span><span>{{branchName}}</span></div>
+                <div class="pal-pr-title">{{prTitle}}</div>
+                <div class="pal-file-list">
+                  {{{changedFilesHtml}}}
+                </div>
+              </div>
+              <div class="pal-card pal-scan-card">
+                <div class="pal-scanbar"></div>
+                <div class="pal-scan-title">{{scanLabel}}</div>
+                <div class="pal-step"><div class="pal-step-num">1</div><div><b>Read modified contract files</b><span>Diff contains model and storage contract changes.</span></div></div>
+                <div class="pal-step"><div class="pal-step-num">2</div><div><b>Match against contract-mapping.json</b><span>PAL resolves shared directories and downstream owners.</span></div></div>
+                <div class="pal-step"><div class="pal-step-num">3</div><div><b>Prepare PR action</b><span>CommentOnPullRequest plus AddReviewers, no Teams chase.</span></div></div>
+                <div class="pal-map-strip">
+                  <span class="pal-map-node">changed file</span><span class="pal-arrow">-&gt;</span>
+                  <span class="pal-map-node">contract-mapping.json</span><span class="pal-arrow">-&gt;</span>
+                  <span class="pal-map-node">owners</span><span class="pal-arrow">-&gt;</span>
+                  <span class="pal-map-node">reviewers</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="pal-mode" data-modes="impact-comment">
+            <div class="pal-header">
+              <div>
+                <div class="pal-eyebrow">{{eyebrow}}</div>
+                <div class="pal-title">{{title}}</div>
+                <div class="pal-subtitle">{{subtitle}}</div>
+              </div>
+              <div class="pal-status"><b>Blast radius</b><span>Visible before merge</span></div>
+            </div>
+            <div class="pal-comment-layout">
+              <article class="pal-card pal-comment">
+                <div class="pal-comment-head"><div class="pal-avatar">P</div><div><b>PAL Cross-Repo Contract Review</b><span>GitOps PR Assistant commented just now</span></div></div>
+                <div class="pal-md">
+                  <h3>Potential cross-repo contract impact</h3>
+                  <p>PAL found shared data contract directories touched by this PR. Review downstream owners before merge.</p>
+                  <table class="pal-impact-table">
+                    <thead><tr><th>Contract directory</th><th>Changed file</th><th>Shared with</th><th>Contacts</th><th>Count</th></tr></thead>
+                    <tbody>{{{impactRowsHtml}}}</tbody>
+                  </table>
+                </div>
+              </article>
+              <aside class="pal-card pal-reviewers">
+                <div class="pal-reviewer-title">Auto-added reviewers</div>
+                {{{reviewerChipsHtml}}}
+                <div class="pal-no-page">Midnight incident prevented</div>
+              </aside>
+            </div>
+          </section>
+          <section class="pal-mode" data-modes="monitoring-report">
+            <div class="pal-header">
+              <div>
+                <div class="pal-eyebrow">{{eyebrow}}</div>
+                <div class="pal-title">{{title}}</div>
+                <div class="pal-subtitle">{{subtitle}}</div>
+              </div>
+              <div class="pal-status"><b>Operating view</b><span>Adoption and flagged PRs</span></div>
+            </div>
+            <div class="pal-report-grid">
+              <div class="pal-kpis">{{{kpisHtml}}}</div>
+              <div class="pal-report-lower">
+                <div class="pal-card pal-report-card">
+                  <div class="pal-report-title">Flagged PR details</div>
+                  {{{flaggedRowsHtml}}}
+                </div>
+                <div class="pal-card pal-report-card">
+                  <div class="pal-report-title">Onboarded repositories</div>
+                  <div class="pal-repos">{{{repoPillsHtml}}}</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+  </div>
+</div>

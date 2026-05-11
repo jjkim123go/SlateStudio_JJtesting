@@ -55,11 +55,21 @@
     // Hold on the assembled report; subtle scale up to feature it.
     master.to(S + ' .omd-tray', { scale: 1.025, x: -10, duration: .85, ease: 'power2.inOut' }, SCENE_START + 5.55);
   } else if (mode === 'custom-report') {
-    move(270, 330, .35, .01); click(.72); show(S + ' .omd-title-text', .62, { from:{ y:8 } }); master.to(S + ' .omd-title-text span', { clipPath:'inset(0 0% 0 0)', duration:.72, ease:'steps(20)' }, SCENE_START + .86);
-    move(270, 410, 1.55); click(1.88); show(S + ' .omd-prompt-text', 1.78, { from:{ y:8 } }); master.to(S + ' .omd-prompt-text span', { clipPath:'inset(0 0% 0 0)', duration:1.24, ease:'steps(34)' }, SCENE_START + 2.05);
-    move(286, 734, 3.18); click(3.43); show(S + ' .omd-check-a', 3.38, { from:{ scale:.5, y:0 } }); move(286, 866, 3.78); click(4.0); show(S + ' .omd-check-b', 3.95, { from:{ scale:.5, y:0 } }); move(286, 990, 4.26); click(4.48); show(S + ' .omd-check-c', 4.42, { from:{ scale:.5, y:0 } });
-    show(S + ' .omd-preview', 4.78, { from:{ x:26, scale:.94 } }); master.fromTo(S + ' .omd-mini-line', { scaleX:.06, autoAlpha:.3 }, { scaleX:1, autoAlpha:1, duration:.34, ease:'power2.out', stagger:.07 }, SCENE_START + 5.05);
-    show(S + ' .omd-share', 5.75, { from:{ y:16, scale:.96 }, to:{ y:0, scale:1, stagger:.09 } }); move(1370, 930, 6.05); click(6.38);
+    master.set(S + ' .omd-typed span', { clipPath:'inset(0 100% 0 0)' }, SCENE_START);
+    master.set(S + ' .omd-source-card, ' + S + ' .omd-report-card, ' + S + ' .omd-share-row .omd-native-pill', { autoAlpha:0, y:14, scale:.98 }, SCENE_START);
+    show(S + ' .omd-native-builder', .18, { from:{ y:18, scale:.985 } });
+    move(370, 272, .52, .01); click(.84);
+    master.to(S + ' .omd-title-text span', { clipPath:'inset(0 0% 0 0)', duration:.78, ease:'steps(24)' }, SCENE_START + .96);
+    move(370, 376, 1.62); click(1.92);
+    master.to(S + ' .omd-prompt-text span', { clipPath:'inset(0 0% 0 0)', duration:1.34, ease:'steps(42)' }, SCENE_START + 2.08);
+    move(350, 552, 3.48); click(3.72);
+    master.to(S + ' .omd-source-card', { autoAlpha:1, y:0, scale:1, duration:.4, ease:'power2.out', stagger:.16 }, SCENE_START + 3.62);
+    move(350, 700, 4.34); click(4.54);
+    move(350, 842, 4.90); click(5.12);
+    master.to(S + ' .omd-report-card', { autoAlpha:1, y:0, scale:1, duration:.42, ease:'power2.out', stagger:.13 }, SCENE_START + 5.34);
+    master.fromTo(S + ' .omd-mini-bar span', { scaleX:.06 }, { scaleX:1, duration:.52, ease:'power2.out' }, SCENE_START + 5.92);
+    master.to(S + ' .omd-share-row .omd-native-pill', { autoAlpha:1, y:0, scale:1, duration:.34, ease:'power2.out', stagger:.1 }, SCENE_START + 6.35);
+    move(1410, 902, 6.68); click(6.98);
   } else if (mode === 'manage') {
     show(S + ' .omd-status-focus', .50, { from:{ scale:.96 } }); move(1138, 330, .42, .01); show(S + ' .omd-status-ready', .92); click(1.05);
     move(1366, 330, 1.82); show(S + ' .omd-status-actions', 2.05, { from:{ y:10, scale:.96 } }); click(2.28);

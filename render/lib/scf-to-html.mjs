@@ -159,9 +159,11 @@ const KNOWN_COMPONENTS = new Set([
   'OmartSignalWall',
   'OmartMarketplaceDemo',
   'OmartCopilotChat',
+  'OmartSecurityScope',
   // Slate-original components
   'ParticleTextForm',
   'PurpleCardStorm',
+  'PALReviewSurface',
 ]);
 
 // Components that depend on the lazy three.js driver. Adding a name here
@@ -2130,6 +2132,71 @@ const PROP_TRANSFORMERS = {
       props.metricsJson = JSON.stringify(props.metrics);
     }
     if (!props.metricsJson) props.metricsJson = '[]';
+  },
+
+  PALReviewSurface(props) {
+    const fileRows = Array.isArray(props.changedFiles) ? props.changedFiles : [
+      { path: '/src/Financials.RevRec.Models/Balance/MACC.cs', badge: 'model' },
+      { path: '/src/Financials.RevRec.StorageContracts/Balance/MACCStorageContractV1.cs', badge: 'contract' },
+    ];
+    props.changedFilesHtml = props.changedFilesHtml || fileRows.map((file) => (
+      `<div class="pal-file-row"><div class="pal-file-icon">Y</div><div class="pal-file-path">${escapeHtml(file.path || file)}</div><div class="pal-file-badge">${escapeHtml(file.badge || 'changed')}</div></div>`
+    )).join('');
+
+    const impactRows = Array.isArray(props.impactRows) ? props.impactRows : [
+      { directory: 'src/Financials.RevRec.Models/Balance', file: 'MACC.cs', sharedWith: 'BFG.Collector.EventCollector', contacts: ['viravula', 'asathy'], count: 24 },
+      { directory: 'src/Financials.RevRec.StorageContracts/Balance', file: 'MACCStorageContractV1.cs', sharedWith: 'CFS-Financials-Ledger', contacts: ['swegh', 'jonalexa'], count: 1 },
+      { directory: 'src/Financials.RevRec.StorageContracts/Balance', file: 'MACCStorageContractV1.cs', sharedWith: 'CFS-Financials-Revenue-Consumer', contacts: ['ConsumerCRSDev'], count: 4 },
+    ];
+    props.impactRowsHtml = props.impactRowsHtml || impactRows.map((row) => {
+      const contacts = (Array.isArray(row.contacts) ? row.contacts : String(row.contacts || '').split(',')).filter(Boolean);
+      return `<tr class="pal-impact-row"><td><span class="pal-code">${escapeHtml(row.directory || '')}</span></td><td><span class="pal-code">${escapeHtml(row.file || '')}</span></td><td>${escapeHtml(row.sharedWith || '')}</td><td>${contacts.map((contact) => `<span class="pal-owner">${escapeHtml(contact)}</span>`).join('')}</td><td>${escapeHtml(row.count || '')}</td></tr>`;
+    }).join('');
+
+    const reviewers = Array.isArray(props.reviewers) ? props.reviewers : ['Rujuta Marathe', 'Sumouli Choudhury'];
+    props.reviewerChipsHtml = props.reviewerChipsHtml || reviewers.map((reviewer) => {
+      const name = typeof reviewer === 'string' ? reviewer : reviewer.name;
+      const initials = String(name || 'PAL').split(/\s+/).filter(Boolean).slice(0, 2).map((part) => part[0]).join('').toUpperCase();
+      return `<div class="pal-reviewer"><div class="pal-reviewer-initial">${escapeHtml(initials)}</div><div><b>${escapeHtml(name || '')}</b><span>Added as reviewer</span></div></div>`;
+    }).join('');
+
+    const kpis = Array.isArray(props.kpis) ? props.kpis : [
+      { label: 'Total repos', value: 36 },
+      { label: 'Onboarded repos', value: 9 },
+      { label: 'Onboarded PRs', value: 1188 },
+      { label: 'Flagged PRs', value: 6 },
+    ];
+    props.kpisHtml = props.kpisHtml || kpis.map((kpi) => (
+      `<div class="pal-kpi"><div class="pal-kpi-num">${escapeHtml(kpi.value || 0)}</div><div class="pal-kpi-label">${escapeHtml(kpi.label || '')}</div></div>`
+    )).join('');
+
+    const flagged = Array.isArray(props.flaggedRows) ? props.flaggedRows : [
+      { pr: '15589558', title: '[MACC ACO Blending] Use MACCPurchaseDate for 30-day blending window', badge: 'flagged' },
+      { pr: 'Contract map', title: 'Shared Balance contract directory detected in downstream repos', badge: 'review' },
+    ];
+    props.flaggedRowsHtml = props.flaggedRowsHtml || flagged.map((row) => (
+      `<div class="pal-report-row"><div class="pal-report-pr">${escapeHtml(row.pr || '')}</div><div class="pal-report-copy">${escapeHtml(row.title || '')}</div><div class="pal-report-pill">${escapeHtml(row.badge || 'flagged')}</div></div>`
+    )).join('');
+
+    const repos = Array.isArray(props.repos) ? props.repos : [
+      'CFS-Financials-Revenue',
+      'CFS-Financials-Ledger',
+      'BFG.Collector.EventCollector',
+      'finplat-egress',
+      'CFS-Financials-Revenue-Consumer',
+    ];
+    props.repoPillsHtml = props.repoPillsHtml || repos.map((repo) => `<span class="pal-repo-pill">${escapeHtml(repo)}</span>`).join('');
+
+    props.mode = props.mode || 'pr-detection';
+    props.repoName = props.repoName || 'CFS-Financials-Revenue';
+    props.branchName = props.branchName || 'feature/macc-aco-blending';
+    props.prId = props.prId || '15589558';
+    props.prTitle = props.prTitle || '[MACC ACO Blending] Use MACCPurchaseDate for 30-day blending window';
+    props.eyebrow = props.eyebrow || 'Cross-Repo Contract Review';
+    props.title = props.title || 'PAL reviews the PR before the incident exists';
+    props.subtitle = props.subtitle || 'Contract changes are matched against downstream dependencies and routed to the right owners automatically.';
+    props.statusText = props.statusText || 'Scanning changed files';
+    props.scanLabel = props.scanLabel || 'GitOps PR Assistant scan';
   },
 
   BookPageMetrics(props, sceneCtx) {

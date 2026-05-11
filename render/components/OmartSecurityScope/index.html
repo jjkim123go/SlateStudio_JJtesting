@@ -1,0 +1,89 @@
+<!-- OmartSecurityScope — Omart-native section-level access scoping demo -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<style>
+.scene-{{sceneId}} .oss-root{position:absolute;inset:0;overflow:hidden;font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;color:#0f2236;background:radial-gradient(circle at 80% 18%,rgba(0,120,212,.18),transparent 34%),radial-gradient(circle at 16% 86%,rgba(82,196,255,.16),transparent 32%),linear-gradient(135deg,#ffffff 0%,#f6fbff 48%,#eaf4ff 100%);--oss-accent:{{accentColor}};}
+.scene-{{sceneId}} .oss-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,120,212,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,120,212,.045) 1px,transparent 1px);background-size:66px 66px;mask-image:radial-gradient(circle at 50% 50%,#000 0%,transparent 82%);}
+.scene-{{sceneId}} .oss-header{position:absolute;left:112px;top:72px;right:112px;display:flex;justify-content:space-between;align-items:flex-start;z-index:2;}
+.scene-{{sceneId}} .oss-kicker{font-size:13px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:#0067b8;}
+.scene-{{sceneId}} .oss-title{font-size:48px;font-weight:920;letter-spacing:-.045em;color:#0f2740;margin-top:8px;line-height:1.02;}
+.scene-{{sceneId}} .oss-subtitle{font-size:19px;font-weight:650;color:#53677d;margin-top:12px;max-width:850px;line-height:1.35;}
+.scene-{{sceneId}} .oss-badge{border-radius:999px;padding:12px 18px;background:rgba(255,255,255,.78);border:1px solid rgba(255,255,255,.94);box-shadow:0 14px 36px rgba(0,48,92,.13);font-size:13px;font-weight:900;color:#0067b8;letter-spacing:.06em;text-transform:uppercase;}
+.scene-{{sceneId}} .oss-stage{position:absolute;left:112px;right:112px;top:220px;bottom:84px;display:grid;grid-template-columns:1.34fr .66fr;gap:28px;z-index:2;}
+.scene-{{sceneId}} .oss-report{position:relative;border-radius:32px;background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.96);box-shadow:0 40px 110px rgba(0,48,92,.18),inset 0 1px 0 rgba(255,255,255,.96);overflow:hidden;}
+.scene-{{sceneId}} .oss-report-top{height:88px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;border-bottom:1px solid rgba(0,120,212,.11);background:linear-gradient(180deg,rgba(0,120,212,.07),rgba(255,255,255,0));box-sizing:border-box;}
+.scene-{{sceneId}} .oss-report-name{font-size:25px;font-weight:920;letter-spacing:-.025em;color:#0f2740;}
+.scene-{{sceneId}} .oss-report-meta{display:flex;gap:10px;}
+.scene-{{sceneId}} .oss-pill{border-radius:999px;padding:8px 13px;background:rgba(0,120,212,.10);color:#0067b8;font-size:12px;font-weight:900;}
+.scene-{{sceneId}} .oss-report-body{padding:26px 30px 30px;display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.scene-{{sceneId}} .oss-card{position:relative;border-radius:22px;background:#fff;border:1px solid rgba(0,120,212,.13);box-shadow:0 18px 46px rgba(0,48,92,.09);padding:21px;min-height:166px;box-sizing:border-box;overflow:hidden;}
+.scene-{{sceneId}} .oss-card.wide{grid-column:1 / span 2;min-height:218px;}
+.scene-{{sceneId}} .oss-card h3{margin:0;font-size:17px;font-weight:920;color:#102438;}
+.scene-{{sceneId}} .oss-card p{margin:8px 0 0;font-size:13px;line-height:1.35;font-weight:650;color:#5b6c80;}
+.scene-{{sceneId}} .oss-stat{font-size:46px;font-weight:950;letter-spacing:-.05em;color:#0078d4;line-height:1;margin-top:18px;}
+.scene-{{sceneId}} .oss-stat small{font-size:16px;font-weight:800;color:#64748b;margin-left:6px;}
+.scene-{{sceneId}} .oss-bars{margin-top:18px;display:grid;gap:10px;}
+.scene-{{sceneId}} .oss-bar{height:12px;border-radius:999px;background:rgba(0,120,212,.11);overflow:hidden;}
+.scene-{{sceneId}} .oss-bar span{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#0078d4,#52c4ff);transform-origin:left center;}
+.scene-{{sceneId}} .oss-veil{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(248,251,255,.62);backdrop-filter:blur(8px);z-index:6;}
+.scene-{{sceneId}} .oss-lock{width:300px;border-radius:24px;background:rgba(255,255,255,.94);border:1px solid rgba(0,120,212,.20);box-shadow:0 28px 70px rgba(0,48,92,.18);padding:24px;text-align:center;}
+.scene-{{sceneId}} .oss-lock-icon{width:62px;height:62px;border-radius:22px;margin:0 auto 14px;background:linear-gradient(135deg,#0078d4,#52c4ff);color:#fff;display:flex;align-items:center;justify-content:center;font-size:34px;font-weight:900;box-shadow:0 15px 32px rgba(0,120,212,.28);}
+.scene-{{sceneId}} .oss-lock-title{font-size:20px;font-weight:940;color:#0f2740;}
+.scene-{{sceneId}} .oss-lock-copy{font-size:13px;line-height:1.35;font-weight:700;color:#53677d;margin-top:7px;}
+.scene-{{sceneId}} .oss-side{display:grid;grid-template-rows:1fr;gap:18px;}
+.scene-{{sceneId}} .oss-audience,.scene-{{sceneId}} .oss-policy{border-radius:30px;background:rgba(255,255,255,.90);border:1px solid rgba(255,255,255,.96);box-shadow:0 32px 90px rgba(0,48,92,.14),inset 0 1px 0 rgba(255,255,255,.96);padding:28px;box-sizing:border-box;}
+.scene-{{sceneId}} .oss-panel-kicker{font-size:12px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:#0067b8;}
+.scene-{{sceneId}} .oss-panel-title{font-size:26px;font-weight:930;color:#0f2740;letter-spacing:-.025em;margin-top:7px;}
+.scene-{{sceneId}} .oss-group{margin-top:22px;border-radius:24px;padding:22px;background:linear-gradient(145deg,#0078d4,#42b6f5);color:#fff;box-shadow:0 24px 62px rgba(0,120,212,.28);}
+.scene-{{sceneId}} .oss-group-label{font-size:14px;font-weight:800;opacity:.86;}
+.scene-{{sceneId}} .oss-group-name{font-size:28px;font-weight:950;letter-spacing:-.035em;margin-top:5px;}
+.scene-{{sceneId}} .oss-avatars{display:flex;margin-top:18px;}
+.scene-{{sceneId}} .oss-avatar{width:42px;height:42px;border-radius:50%;background:#fff;color:#0078d4;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:950;border:3px solid rgba(255,255,255,.72);margin-left:-8px;}
+.scene-{{sceneId}} .oss-avatar:first-child{margin-left:0;}
+.scene-{{sceneId}} .oss-viewers{display:grid;gap:12px;margin-top:20px;}
+.scene-{{sceneId}} .oss-viewer{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;border-radius:17px;background:#fff;border:1px solid rgba(0,120,212,.12);font-size:14px;font-weight:850;color:#102438;}
+.scene-{{sceneId}} .oss-viewer.denied{color:#64748b;background:rgba(255,255,255,.66);}
+.scene-{{sceneId}} .oss-check{color:#16a34a;font-size:18px;font-weight:950;}
+.scene-{{sceneId}} .oss-deny{color:#dc2626;font-size:18px;font-weight:950;}
+.scene-{{sceneId}} .oss-rule{display:flex;gap:14px;align-items:flex-start;margin-top:18px;padding:16px;border-radius:18px;background:#fff;border:1px solid rgba(0,120,212,.12);}
+.scene-{{sceneId}} .oss-rule-dot{width:32px;height:32px;border-radius:12px;background:rgba(0,120,212,.12);color:#0078d4;display:flex;align-items:center;justify-content:center;font-weight:950;flex-shrink:0;}
+.scene-{{sceneId}} .oss-rule-title{font-size:15px;font-weight:920;color:#102438;}
+.scene-{{sceneId}} .oss-rule-copy{font-size:12.5px;font-weight:650;line-height:1.35;color:#5b6c80;margin-top:3px;}
+</style>
+<div class="oss-root" data-scene-component="OmartSecurityScope">
+  <div class="oss-grid"></div>
+  <div class="oss-header">
+    <div>
+      <div class="oss-kicker">O-mart Security Scope</div>
+      <div class="oss-title">{{title}}</div>
+      <div class="oss-subtitle">{{subtitle}}</div>
+    </div>
+    <div class="oss-badge">Illustrative demo data</div>
+  </div>
+  <div class="oss-stage">
+    <section class="oss-report">
+      <div class="oss-report-top">
+        <div class="oss-report-name">{{reportTitle}}</div>
+        <div class="oss-report-meta"><span class="oss-pill">Published to Radar</span><span class="oss-pill">Lineage attached</span></div>
+      </div>
+      <div class="oss-report-body">
+        <article class="oss-card"><h3>Report summary</h3><div class="oss-stat">Ready</div><p>Report visibility follows the configured audience scope.</p></article>
+        <article class="oss-card"><h3>Open risks</h3><div class="oss-stat">4<small>items</small></div><p>Audience rules stay attached when the report is published.</p></article>
+        <article class="oss-card wide oss-sensitive">
+          <h3>MS Sales data section</h3>
+          <p>Revenue numbers and MS Sales details are protected when this section appears in a report.</p>
+          <div class="oss-bars"><div class="oss-bar"><span style="width:84%"></span></div><div class="oss-bar"><span style="width:68%"></span></div><div class="oss-bar"><span style="width:76%"></span></div></div>
+          <div class="oss-veil"><div class="oss-lock"><div class="oss-lock-icon">L</div><div class="oss-lock-title">Requires MSRA access</div><div class="oss-lock-copy">Only people with MSRA access can view this report.</div></div></div>
+        </article>
+      </div>
+    </section>
+    <aside class="oss-side">
+      <section class="oss-audience">
+        <div class="oss-panel-kicker">Audience resolution</div>
+        <div class="oss-panel-title">MS Sales reports stay protected</div>
+        <div class="oss-group"><div class="oss-group-label">Can view protected report</div><div class="oss-group-name">{{accessGroup}}</div><div class="oss-avatars"><span class="oss-avatar">M</span><span class="oss-avatar">S</span><span class="oss-avatar">R</span><span class="oss-avatar">A</span></div></div>
+        <div class="oss-viewers"><div class="oss-viewer"><span>Has MSRA access</span><span class="oss-check">Visible</span></div><div class="oss-viewer denied"><span>No MSRA access</span><span class="oss-deny">Hidden</span></div></div>
+        <div class="oss-rule"><div class="oss-rule-dot">1</div><div><div class="oss-rule-title">Simple rule</div><div class="oss-rule-copy">If a report contains MS Sales data, O-mart keeps your report visible only to MSRA-authorized viewers.</div></div></div>
+      </section>
+    </aside>
+  </div>
+</div>

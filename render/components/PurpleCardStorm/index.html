@@ -85,8 +85,8 @@
 .scene-{{sceneId}} .pcs-card {
   position: absolute;
   left: 50%; top: 50%;
-  width: 360px; height: 200px;
-  margin-left: -180px; margin-top: -100px;
+  width: 335px; height: 185px;
+  margin-left: -167.5px; margin-top: -92.5px;
   transform-style: preserve-3d;
   will-change: transform, opacity, filter;
   border-radius: 16px;
@@ -99,9 +99,10 @@
     inset 0 1px 0 rgba(255,255,255,0.10),
     inset 0 -1px 0 rgba(214,158,232,0.20);
   backdrop-filter: blur(8px);
-  padding: 22px 26px;
+  padding: 20px 24px;
   display: flex; flex-direction: column;
   opacity: 0;
+  overflow: hidden;
 }
 .scene-{{sceneId}} .pcs-card[data-accent="primary"]   { --pcs-accent: #B27AF0; }
 .scene-{{sceneId}} .pcs-card[data-accent="secondary"] { --pcs-accent: #D69EE8; }
@@ -115,8 +116,23 @@
   border-radius: 0 4px 4px 0;
   box-shadow: 0 0 18px var(--pcs-accent, #B27AF0);
 }
+.scene-{{sceneId}} .pcs-card-sheen {
+  position: absolute;
+  top: -18%; bottom: -18%; left: -58%;
+  width: 46%;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,0.04) 22%,
+    rgba(255,255,255,0.24) 50%,
+    rgba(214,158,232,0.10) 68%,
+    transparent 100%);
+  filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+}
 .scene-{{sceneId}} .pcs-card-idx {
-  font-size: 56px;
+  font-size: 52px;
   font-weight: 820;
   color: var(--pcs-accent, #B27AF0);
   line-height: 1;
@@ -124,14 +140,14 @@
   margin-bottom: 6px;
 }
 .scene-{{sceneId}} .pcs-card-title {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 720;
   color: #FFFFFF;
   letter-spacing: 0.01em;
   margin-bottom: 4px;
 }
 .scene-{{sceneId}} .pcs-card-sub {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: rgba(229,224,240,0.78);
   margin-bottom: auto;

@@ -210,7 +210,10 @@
             "DeviceStage3D",
             "HTMLTextureWall",
             "OmartSignalWall",
-            "OmartMarketplaceDemo"
+            "OmartMarketplaceDemo",
+            "OmartCopilotChat",
+            "OmartSecurityScope",
+            "PALReviewSurface"
           ]
         },
         "props": {
@@ -423,6 +426,10 @@
         {
           "if": { "properties": { "component": { "const": "BookPageMetrics" } }, "required": ["component"] },
           "then": { "properties": { "props": { "$ref": "#/$defs/BookPageMetricsProps" } } }
+        },
+        {
+          "if": { "properties": { "component": { "const": "PALReviewSurface" } }, "required": ["component"] },
+          "then": { "properties": { "props": { "$ref": "#/$defs/PALReviewSurfaceProps" } } }
         }
       ]
     },
@@ -1578,6 +1585,30 @@
         "metric2Label": { "type": "string" },
         "metric3Value": { "type": "string" },
         "metric3Label": { "type": "string" }
+      },
+      "additionalProperties": true
+    },
+
+    "PALReviewSurfaceProps": {
+      "type": "object",
+      "description": "Props for PALReviewSurface, an Azure DevOps-style PAL data-contract PR review surface.",
+      "properties": {
+        "mode": { "type": "string", "enum": ["pr-detection", "impact-comment", "monitoring-report"] },
+        "eyebrow": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "statusText": { "type": "string" },
+        "scanLabel": { "type": "string" },
+        "repoName": { "type": "string" },
+        "branchName": { "type": "string" },
+        "prId": { "type": "string" },
+        "prTitle": { "type": "string" },
+        "changedFiles": { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "type": "object", "additionalProperties": true }] } },
+        "impactRows": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "reviewers": { "type": "array", "items": { "oneOf": [{ "type": "string" }, { "type": "object", "additionalProperties": true }] } },
+        "kpis": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "flaggedRows": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+        "repos": { "type": "array", "items": { "type": "string" } }
       },
       "additionalProperties": true
     },

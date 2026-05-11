@@ -12,6 +12,11 @@
     {{contentHtml}}           — Main pane (icon grid / detail list)
     {{statusLeftHtml}}        — Status bar left ("X items")
     {{statusRightHtml}}       — Status bar right (view mode toggle)
+    {{itemsJson}}             — Optional JSON array for generated Explorer content:
+                                [{ type:"folder"|"file", name:"..." }]
+    {{viewMode}}              — Optional generated content mode: "largeIcons"
+    {{sectionLabel}}          — Optional section label for generated content
+    {{selectedItem}}          — Optional item name to mark as selected
 
   VARIANT ATTRIBUTES on .fe-root:
     data-theme="light"          (only light variant in scope for PR 10e)
@@ -337,6 +342,62 @@
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
+/* Generated Explorer content API */
+.scene-{{sceneId}} .fe-generated-section {
+  padding: 16px 24px 4px;
+  font-size: 12px;
+  color: var(--fe-text-sec);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+}
+.scene-{{sceneId}} .fe-folder-grid {
+  flex: 1 1 auto;
+  padding: 20px 34px 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 150px);
+  grid-auto-rows: 124px;
+  gap: 28px 34px;
+  align-content: start;
+  justify-content: start;
+  overflow: hidden;
+}
+.scene-{{sceneId}} .fe-folder-tile {
+  width: 150px; height: 124px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
+  padding: 8px 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  cursor: default;
+}
+.scene-{{sceneId}} .fe-folder-tile--selected {
+  background: var(--fe-selected);
+  border-color: rgba(0,120,212,0.55);
+  box-shadow: 0 0 0 1px rgba(0,120,212,0.35);
+}
+.scene-{{sceneId}} .fe-folder-icon {
+  width: 116px; height: 82px;
+  display: flex; align-items: center; justify-content: center;
+}
+.scene-{{sceneId}} .fe-folder-icon svg {
+  width: 104px; height: 78px;
+  opacity: 1;
+}
+.scene-{{sceneId}} .fe-folder-label {
+  width: 148px;
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.25;
+  color: var(--fe-text);
+  text-align: center;
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
 /* ── Status bar (24px) ── */
 .scene-{{sceneId}} .fe-statusbar {
   display: flex; align-items: center;
@@ -385,6 +446,13 @@
   </symbol>
   <symbol id="fe-icon-folder-open" viewBox="0 0 16 16">
     <path fill="#dcb67a" d="M2 4.25A2.25 2.25 0 0 1 4.25 2h2.13c.6 0 1.18.24 1.6.66l.95.95c.14.14.34.22.54.22h4.28A2.25 2.25 0 0 1 16 6.08V8H2V4.25Zm0 5h14l-1.16 4.42A2 2 0 0 1 12.91 15H4.7a2 2 0 0 1-1.93-1.49L2 9.25Z"/>
+  </symbol>
+  <symbol id="fe-icon-folder-large" viewBox="0 0 128 96">
+    <path d="M8 24c0-7.7 6.3-14 14-14h28c5.1 0 8.1 2.2 11.5 5.5l7 6.5H106c7.7 0 14 6.3 14 14v8H8V24Z" fill="#FFC928"/>
+    <path d="M8 36h112v36c0 7.7-6.3 14-14 14H22C14.3 86 8 79.7 8 72V36Z" fill="#FFE28A"/>
+    <path d="M8 42h112v30c0 7.7-6.3 14-14 14H22C14.3 86 8 79.7 8 72V42Z" fill="#F7C84A"/>
+    <path d="M14 44h100v26c0 5.5-4.5 10-10 10H24c-5.5 0-10-4.5-10-10V44Z" fill="#FFE58A" opacity="0.62"/>
+    <path d="M8 42h112v6H8v-6Z" fill="#F4B400" opacity="0.35"/>
   </symbol>
   <symbol id="fe-icon-file" viewBox="0 0 16 16">
     <path fill="currentColor" d="M3.5 1A1.5 1.5 0 0 0 2 2.5v11A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V6.41a1.5 1.5 0 0 0-.44-1.06l-3.91-3.91A1.5 1.5 0 0 0 8.59 1H3.5Zm5.5 1.5 4 4H10a1 1 0 0 1-1-1V2.5Z"/>
@@ -506,7 +574,14 @@
 </defs>
 </svg>
 
-<div class="fe-root" data-scene-component="WindowsScene" data-theme="{{theme}}" style="position:absolute;inset:0">
+<div class="fe-root"
+     data-scene-component="WindowsScene"
+     data-theme="{{theme}}"
+     data-view-mode="{{viewMode}}"
+     data-items-json="{{itemsJson}}"
+     data-section-label="{{sectionLabel}}"
+     data-selected-item="{{selectedItem}}"
+     style="position:absolute;inset:0">
   <div class="fe-window">
 
     <!-- ═══ TITLEBAR (32px) ═══ -->

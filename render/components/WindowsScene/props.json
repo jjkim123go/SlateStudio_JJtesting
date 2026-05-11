@@ -1,0 +1,59 @@
+{
+  "$schema": "../_schemas/component-props.schema.json",
+  "name": "WindowsScene",
+  "description": "Windows 11 File Explorer scene with raw chrome slots and optional generated Explorer folder-grid content.",
+  "tokens": {
+    "theme": {
+      "type": "string",
+      "description": "Visual theme. Currently optimized for light File Explorer chrome."
+    },
+    "titlebarTabsHtml": {
+      "type": "string",
+      "description": "Raw HTML for File Explorer title-bar tabs."
+    },
+    "commandBarHtml": {
+      "type": "string",
+      "description": "Raw HTML for command-bar actions."
+    },
+    "breadcrumbHtml": {
+      "type": "string",
+      "description": "Raw HTML for address-bar breadcrumbs."
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "description": "Search box placeholder text."
+    },
+    "navTreeHtml": {
+      "type": "string",
+      "description": "Raw HTML for left navigation tree."
+    },
+    "contentHtml": {
+      "type": "string",
+      "description": "Raw HTML for main pane content. Leave empty when using itemsJson."
+    },
+    "statusLeftHtml": {
+      "type": "string",
+      "description": "Raw HTML for the left side of the status bar."
+    },
+    "statusRightHtml": {
+      "type": "string",
+      "description": "Raw HTML for the right side of the status bar."
+    },
+    "viewMode": {
+      "type": "string",
+      "description": "Generated content mode. Use largeIcons with itemsJson for realistic File Explorer folders."
+    },
+    "sectionLabel": {
+      "type": "string",
+      "description": "Optional uppercase section label above generated content."
+    },
+    "selectedItem": {
+      "type": "string",
+      "description": "Optional generated item name to render as selected."
+    },
+    "itemsJson": {
+      "type": "string",
+      "description": "JSON-encoded generated Explorer items: [{\"type\":\"folder\",\"name\":\"target-repo-01\"}]. Supports folder and file item types."
+    }
+  }
+}

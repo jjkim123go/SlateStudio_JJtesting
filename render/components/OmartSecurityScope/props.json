@@ -1,0 +1,11 @@
+{
+  "name": "OmartSecurityScope",
+  "description": "Omart-native report section access scoping visual with a protected MSRA revenue section.",
+  "props": {
+    "title": { "type": "string", "default": "Secure by audience, not by accident" },
+    "subtitle": { "type": "string", "default": "Sensitive report sections stay reusable while O-mart reveals them only to the right access group." },
+    "reportTitle": { "type": "string", "default": "MS Sales Revenue Report" },
+    "accessGroup": { "type": "string", "default": "MSRA access group" },
+    "accentColor": { "type": "string", "default": "#0078D4" }
+  }
+}

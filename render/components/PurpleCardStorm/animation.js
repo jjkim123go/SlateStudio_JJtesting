@@ -1,11 +1,4 @@
-/* PurpleCardStorm — premium 3D card storm animation.
- *
- * Stage 1 (0 → ~3s): cards storm in from extreme 3D positions
- *   (translate3d/rotate3d) with stagger, settle into Keynote-style arrangement.
- * Stage 2 (3s → end): continuous gentle parallax breathing + rotation drift
- *   (no static hold — premium feel).
- * Eyebrow + title fade in first; footer line fades in late.
- */
+// Intent: glass — calm executive credibility with stationary cards and subtle light sweeps.
 const root = document.querySelector('.scene-{{sceneId}} .pcs-root');
 if (!root) {
   console.warn('[PurpleCardStorm] root not found');
@@ -33,32 +26,36 @@ if (!root) {
     ];
   }
 
-  // ----- Resting positions for up to 8 cards (Keynote-style staggered grid) -----
+  const timeline = (typeof master !== 'undefined') ? master : gsap.timeline();
+  const baseTime = (typeof SCENE_START !== 'undefined') ? SCENE_START : 0;
+  const sceneDur = (typeof SCENE_DURATION !== 'undefined') ? SCENE_DURATION : 12;
+
+  // ----- Resting positions for up to 8 cards (spacious Keynote-style grid) -----
   // [x_pct, y_pct, rotateX, rotateY, rotateZ, depth_z]
   const layouts = {
     4: [
-      [-260, -150, -4,  6, -2, 0],
-      [ 220, -120,  6, -8,  3, -40],
-      [-200,  140,  4,  6,  2, 30],
-      [ 260,  170, -3, -6, -3, -60],
+      [-260, -145, -2,  3, -1, 0],
+      [ 260, -145,  2, -3,  1, -20],
+      [-260,  145,  1,  2,  1, 20],
+      [ 260,  145, -1, -2, -1, -20],
     ],
     6: [
-      [-340, -160, -3,  5, -1, 0],
-      [   0, -200,  5,  0,  0, -40],
-      [ 340, -150,  4, -6,  2, 20],
-      [-300,  120,  2,  4,  1, 30],
-      [   0,  170, -2,  0,  0, -10],
-      [ 320,  130,  3, -5,  0, -50],
+      [-430, -145, -2,  3, -1, 0],
+      [   0, -160,  2,  0,  0, -20],
+      [ 430, -145,  2, -3,  1, 0],
+      [-430,  135,  1,  2,  1, 10],
+      [   0,  160, -1,  0,  0, -20],
+      [ 430,  135,  1, -2, -1, 10],
     ],
     8: [
-      [-380, -180, -4,  6, -2, 0],
-      [ -90, -220,  4,  2,  1, -50],
-      [ 200, -200,  3, -4,  2, 10],
-      [ 380, -120,  6, -8,  3, -30],
-      [-340,  100, -2,  6,  1, 30],
-      [ -60,  170,  4,  0, -1, -20],
-      [ 220,  190, -3, -3,  0, 40],
-      [ 380,  110,  3, -7, -2, -60],
+      [-470, -180, -2,  3, -1, 0],
+      [-155, -205,  2,  1,  1, -25],
+      [ 155, -205,  2, -1,  1, 10],
+      [ 470, -180,  2, -3,  1, -10],
+      [-470,  120, -1,  3,  1, 20],
+      [-155,  170,  1,  0, -1, -10],
+      [ 155,  170, -1,  0,  0, 20],
+      [ 470,  120,  1, -3, -1, -20],
     ],
   };
   const positions = layouts[cards.length] || layouts[4];
@@ -69,6 +66,7 @@ if (!root) {
     el.className = 'pcs-card';
     el.dataset.accent = c.accent || 'primary';
     el.innerHTML = `
+      <div class="pcs-card-sheen"></div>
       <div class="pcs-card-bar"></div>
       <div class="pcs-card-idx">${c.idx || (i + 1).toString().padStart(2, '0')}</div>
       <div class="pcs-card-title">${c.title || ''}</div>
@@ -78,16 +76,16 @@ if (!root) {
     stage.appendChild(el);
     const [tx, ty, rx, ry, rz, tz] = positions[i];
     el._rest = { tx, ty, rx, ry, rz, tz };
-    // Storm origin — extreme 3D position outside frame
-    const angle = (i / cards.length) * Math.PI * 2;
-    const stormR = 1100 + Math.random() * 400;
+    // Deterministic entrance origin — no random jitter between renders.
+    const angle = (i / Math.max(cards.length, 1)) * Math.PI * 2;
+    const stormR = 1040;
     el._origin = {
       tx: Math.cos(angle) * stormR,
-      ty: Math.sin(angle) * stormR * 0.6 + (Math.random() - 0.5) * 200,
-      rx: (Math.random() - 0.5) * 60,
-      ry: (Math.random() - 0.5) * 80,
-      rz: (Math.random() - 0.5) * 40,
-      tz: -800 - Math.random() * 600,
+      ty: Math.sin(angle) * stormR * 0.58,
+      rx: i % 2 === 0 ? -18 : 18,
+      ry: i % 3 === 0 ? 22 : -22,
+      rz: i % 2 === 0 ? -9 : 9,
+      tz: -980 - i * 36,
     };
     // Set initial transform
     gsap.set(el, {
@@ -107,18 +105,15 @@ if (!root) {
   gsap.set([eyebrow, title], { y: 24, opacity: 0 });
   gsap.set(divider, { scaleX: 0, opacity: 0, transformOrigin: '50% 50%' });
 
-  // ----- Master timeline -----
-  const tl = gsap.timeline();
-
   // Phase 1: header fades in
-  tl.to(eyebrow, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, 0.2);
-  tl.to(title,   { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out' }, 0.5);
-  tl.to(divider, { scaleX: 1, opacity: 1, duration: 0.7, ease: 'power2.out' }, 0.8);
+  timeline.to(eyebrow, { y: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, baseTime + 0.2);
+  timeline.to(title,   { y: 0, opacity: 1, duration: 1.0, ease: 'power3.out' }, baseTime + 0.5);
+  timeline.to(divider, { scaleX: 1, opacity: 1, duration: 0.7, ease: 'power2.out' }, baseTime + 0.8);
 
   // Phase 2: cards storm in (staggered)
   els.forEach((el, i) => {
     const delay = 0.9 + i * 0.18;
-    tl.to(el, {
+    timeline.to(el, {
       x: el._rest.tx,
       y: el._rest.ty,
       z: el._rest.tz,
@@ -129,27 +124,30 @@ if (!root) {
       filter: 'blur(0px)',
       duration: 1.4,
       ease: 'power3.out',
-    }, delay);
+    }, baseTime + delay);
   });
 
-  // Phase 3: continuous parallax breathing — runs forever during scene hold
+  // Phase 3: subtle card sheens. Cards remain stationary after the settle.
   const settledTime = 0.9 + (els.length - 1) * 0.18 + 1.4;
   els.forEach((el, i) => {
-    const breathDur = 4.0 + Math.random() * 2.0;
-    const breathPhase = Math.random() * Math.PI * 2;
-    gsap.to(el, {
-      keyframes: [
-        { y: el._rest.ty - 12, x: el._rest.tx + 6,  rotationY: el._rest.ry - 1.2, duration: breathDur * 0.5, ease: 'sine.inOut' },
-        { y: el._rest.ty + 10, x: el._rest.tx - 5,  rotationY: el._rest.ry + 1.4, duration: breathDur * 0.5, ease: 'sine.inOut' },
-      ],
-      delay: settledTime - 0.3 + breathPhase * 0.1,
-      repeat: -1,
-      yoyo: false,
-    });
+    const sheen = el.querySelector('.pcs-card-sheen');
+    for (let pass = 0; pass < 4; pass += 1) {
+      const sweepStart = settledTime + 0.55 + pass * 3.6 + i * 0.16;
+      if (sweepStart > sceneDur - 1.2) continue;
+      timeline.fromTo(sheen,
+        { xPercent: -130, opacity: 0 },
+        { xPercent: 260, opacity: 0.55, duration: 1.0, ease: 'sine.inOut' },
+        baseTime + sweepStart);
+      timeline.to(sheen, { opacity: 0, duration: 0.28, ease: 'sine.out' }, baseTime + sweepStart + 0.72);
+    }
   });
+  timeline.fromTo(root.querySelector('.pcs-aurora'),
+    { x: -10, y: 6 },
+    { x: 10, y: -4, duration: Math.max(4, sceneDur - 0.8), ease: 'sine.inOut' },
+    baseTime + 0.3);
 
   // Phase 4: footer fade-in late
   if (footer) {
-    tl.to(footer, { opacity: 1, duration: 1.0, ease: 'power2.out' }, settledTime + 0.4);
+    timeline.to(footer, { opacity: 1, duration: 1.0, ease: 'power2.out' }, baseTime + settledTime + 0.4);
   }
 }

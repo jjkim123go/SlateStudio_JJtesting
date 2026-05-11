@@ -49,6 +49,7 @@ TIMING_SENSITIVE_COMPONENTS = {
     "StepByStep",
     "TerminalCast",
     "TerminalScene",
+    "PALReviewSurface",
     # 3D / WebGL components: continuous camera + material motion drives
     # perceptual change every frame even when there's only one "logical" beat.
     "ThreeScene",
