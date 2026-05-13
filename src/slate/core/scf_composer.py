@@ -29,6 +29,19 @@ logger = logging.getLogger(__name__)
 DEFAULT_PROFILE = {"width": 1920, "height": 1080, "fps": 30, "codec": "h264", "quality": "high"}
 
 
+def _is_dark_hex(value: str) -> bool:
+    color = str(value or "").lstrip("#")
+    if len(color) != 6:
+        return True
+    try:
+        red = int(color[0:2], 16) / 255
+        green = int(color[2:4], 16) / 255
+        blue = int(color[4:6], 16) / 255
+    except ValueError:
+        return True
+    return (0.2126 * red + 0.7152 * green + 0.0722 * blue) < 0.45
+
+
 @dataclass
 class AssetManifest:
     """Mapping of scene IDs to generated asset file paths.
@@ -153,6 +166,9 @@ class SCFComposer:
             for scene in scenario.get("scenes", [])
             if scene.get("id") and scene.get("component")
         }
+        for scene in scenes:
+            if scene.get("id") and scene.get("component"):
+                source_components.setdefault(scene["id"], scene["component"])
         scf["metadata"] = {
             "title": scenario.get("title", "Untitled"),
             "generated_by": "slate-scf-composer",
@@ -166,6 +182,11 @@ class SCFComposer:
         }
         if source_components:
             scf["metadata"]["source_components"] = source_components
+        if scenario.get("quality_first") or scenario.get("qualityFirst"):
+            scf["metadata"]["qualityFirst"] = True
+        scene_contracts = scenario.get("sceneContracts") or scenario.get("scene_contracts")
+        if scene_contracts:
+            scf["metadata"]["sceneContracts"] = scene_contracts
 
         return scf
 
@@ -194,6 +215,8 @@ class SCFComposer:
             narration_path = assets.scene_narrations.get(scene_id, "")
             if narration_path:
                 scene["narration"] = narration_path
+            if scene_data.get("narration"):
+                scene["narrationText"] = scene_data["narration"]
             return scene
 
         # Check if this is a video clip scene
@@ -201,70 +224,50 @@ class SCFComposer:
         if video_path:
             return self._build_video_scene(scene_id, scene_data, video_path, assets, duration)
 
-        # Image + narration scene (default)
+        # Designed narration scene (default). Older Slate builds used raw image
+        # plus text layers here, which made novice prompts drift into slideshow
+        # output. Route through SlideRenderer so typography, spacing, and reveal
+        # timing remain component-owned even when the agent did not explicitly
+        # choose a richer domain component.
         image_path = assets.scene_images.get(scene_id, "")
         narration_path = assets.scene_narrations.get(scene_id, "")
-
-        layers: list[dict[str, Any]] = []
-
-        if not image_path:
-            layers.append({
-                "type": "shape",
-                "fill": theme.background,
-            })
-
-        # Background image layer
-        if image_path:
-            layers.append({
-                "type": "image",
-                "src": image_path,
-            })
-
-        # Title overlay
         title = scene_data.get("title", "")
-        if title:
-            layers.append({
-                "type": "text",
-                "content": title,
-                "style": {
-                    "fontSize": 64,
-                    "fontWeight": 700,
-                    "fontFamily": brand_props.get("headingFont", "Inter"),
-                    "color": theme.text,
-                    "lineHeight": 1.08,
-                },
-                "animation": "fadeInUp",
-                "position": {"anchor": "top-center", "y": 0.1},
-            })
-
-        # Bullet points overlay
         bullets = scene_data.get("bullet_points", [])
-        if bullets:
-            layers.append({
-                "type": "text",
-                "content": "\n".join(f"• {b}" for b in bullets),
-                "style": {
-                    "fontSize": 32,
-                    "fontWeight": 500,
-                    "fontFamily": brand_props.get("bodyFont", "Inter"),
-                    "color": theme.muted_text,
-                    "lineHeight": 1.28,
-                },
-                "animation": "fadeIn",
-                "position": {"anchor": "center-left", "x": 0.08, "y": 0.4},
-                "startTime": 1.5,
-            })
+
+        if image_path and bullets:
+            layout = "title-bullets-image"
+        elif image_path:
+            layout = "title-image"
+        elif bullets:
+            layout = "title-bullets"
+        else:
+            layout = "title-only"
+
+        props: dict[str, Any] = {
+            "layout": layout,
+            "eyebrow": scene_data.get("eyebrow", ""),
+            "title": title or scene_id.replace("-", " ").title(),
+            "subtitle": scene_data.get("subtitle", ""),
+            "bullets": json.dumps(bullets),
+            "image": image_path,
+            "imagePosition": scene_data.get("image_position", "right"),
+            "accent": theme.primary,
+            "theme": "dark" if _is_dark_hex(theme.background) else "light",
+        }
 
         scene: dict[str, Any] = {
             "id": scene_id,
             "duration": duration,
-            "layers": layers,
-            "notes": scene_data.get("notes", f"Theme {theme.name}: {theme.rationale}"),
+            "component": "SlideRenderer",
+            "props": props,
+            "notes": scene_data.get("notes", f"Defaulted to SlideRenderer instead of raw text/image layers. Theme {theme.name}: {theme.rationale}"),
             "transition": scene_data.get("transition", "crossfade"),
         }
 
         if narration_path:
             scene["narration"] = narration_path
+        if scene_data.get("narration"):
+            scene["narrationText"] = scene_data["narration"]
 
         return scene
 
@@ -289,6 +292,8 @@ class SCFComposer:
         narration = assets.scene_narrations.get(scene_id)
         if narration:
             scene["narration"] = narration
+        if scene_data.get("narration"):
+            scene["narrationText"] = scene_data["narration"]
         return scene
 
     def _brand_props(self, scenario: dict[str, Any], theme: ThemeTokens) -> dict[str, Any]:

@@ -38,6 +38,7 @@ work-*/
 /_frame*.png
 /_src_*.png
 /_scene*_block.txt
+/render_log.txt
 
 # Test artifacts (stub-generated files)
 foundry_img_*.png

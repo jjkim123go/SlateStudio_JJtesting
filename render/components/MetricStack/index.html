@@ -9,12 +9,19 @@
   data-panel-glow="{{panelGlow}}"
   data-panel-bg="{{panelBg}}"
   data-panel-stroke="{{panelStroke}}"
+  data-surface-color="{{surfaceColor}}"
+  data-elevated-surface-color="{{elevatedSurfaceColor}}"
+  data-border-color="{{borderColor}}"
+  data-primary-color="{{primaryColor}}"
+  data-accent-color="{{accentColor}}"
+  data-text-color="{{textColor}}"
+  data-muted-text-color="{{mutedTextColor}}"
   style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
-    background:radial-gradient(circle at 30% 20%,rgba(56,189,248,0.10),transparent 50%),
-    linear-gradient(135deg,#020617 0%,#0f172a 100%);
-    font-family:Inter,-apple-system,sans-serif;color:#fff">
+    background:radial-gradient(circle at 30% 20%,color-mix(in srgb, {{accentColor}} 14%, transparent),transparent 50%),
+    linear-gradient(135deg,{{bgFrom}} 0%,{{bgTo}} 100%);
+    font-family:Inter,-apple-system,sans-serif;color:{{textColor}}">
   <div class="ms-panel" style="width:78%;max-width:1320px;padding:54px 64px;border-radius:32px;
-    background:rgba(15,23,42,0.62);border:1px solid rgba(148,163,184,0.18);
+    background:{{panelBg}};border:1px solid {{panelStroke}};
     box-shadow:0 32px 80px rgba(0,0,0,0.45);backdrop-filter:blur(18px);opacity:0">
     <h2 class="ms-title" style="margin:0 0 40px;font-size:56px;font-weight:700;line-height:1.1;
       letter-spacing:-0.03em;opacity:0">{{title}}</h2>

@@ -13,7 +13,7 @@
 .scene-{{sceneId}} .bd-root{
   position:absolute;inset:0;
   display:flex;align-items:center;justify-content:center;
-  background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);
+  background:linear-gradient(135deg,{{backgroundColor}} 0%,{{elevatedSurfaceColor}} 100%);
   font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   overflow:hidden;
 }
@@ -22,8 +22,8 @@
   display:flex;flex-direction:column;gap:16px;
   padding:32px 40px 24px;
   border-radius:24px;
-  background:rgba(15,23,42,0.7);
-  border:1px solid rgba(148,163,184,0.12);
+  background:{{surfaceColor}};
+  border:1px solid {{borderColor}};
   box-shadow:0 28px 64px rgba(0,0,0,0.25);
   overflow:hidden;
 }
@@ -31,7 +31,7 @@
   display:flex;align-items:baseline;gap:16px;opacity:0;
 }
 .scene-{{sceneId}} .bd-title{
-  margin:0;font-size:42px;font-weight:800;color:#FFFFFF;
+  margin:0;font-size:42px;font-weight:800;color:{{textColor}};
   letter-spacing:-0.03em;line-height:1.1;
 }
 .scene-{{sceneId}} .bd-title:empty{display:none}
@@ -49,7 +49,7 @@
 .scene-{{sceneId}} .bd-axis-label,
 .scene-{{sceneId}} .bd-axis-number{
   font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
-  fill:rgba(148,163,184,0.7);font-size:17px;
+  fill:{{mutedTextColor}};font-size:17px;
 }
 .scene-{{sceneId}} .bd-axis-number{font-variant-numeric:tabular-nums}
 .scene-{{sceneId}} .bd-gridline{stroke:rgba(148,163,184,0.15);stroke-width:1}
@@ -99,7 +99,7 @@
 }
 .scene-{{sceneId}} .bd-legend-item{
   display:flex;align-items:center;gap:8px;
-  font-size:15px;font-weight:500;color:rgba(255,255,255,0.7);
+  font-size:15px;font-weight:500;color:{{mutedTextColor}};
 }
 .scene-{{sceneId}} .bd-legend-swatch{
   width:24px;height:3px;border-radius:2px;flex-shrink:0;

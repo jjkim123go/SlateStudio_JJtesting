@@ -1,0 +1,14 @@
+{
+  "name": "StepByStep",
+  "description": "Animated ordered lesson/checklist scene with a title and stacked numbered steps.",
+  "props": {
+    "title": { "type": "string", "description": "Scene heading displayed above the step list." },
+    "steps": { "type": "array", "description": "Native ordered step list. Compiler serializes to stepsHtml when stepsHtml is absent.", "items": { "type": "object", "properties": { "number": { "type": ["string", "number"] }, "title": { "type": "string" }, "description": { "type": "string" } }, "required": ["title"] } },
+    "stepsHtml": { "type": "string", "description": "Pre-rendered step HTML. Use .sbs-step and .sbs-num classes if hand-authoring animation targets." }
+  },
+  "qualityNotes": [
+    "Use 3 to 5 steps for narrated lessons; too many rows become unreadable.",
+    "Each step should be an action, not a paragraph.",
+    "This is a teaching component, not a generic bullet slide."
+  ]
+}

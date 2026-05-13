@@ -34,6 +34,7 @@ class ThemeTokens:
     danger: str = "#FF6B6B"
     caption_highlight: str = "#E7D7A2"
     caption_highlight_background: str = "rgba(231,215,162,0.24)"
+    visual_family: str = "warm-dark"
     rationale: str = "Premium default chosen for cinematic contrast and component-safe surfaces."
 
     def to_scf_metadata(self) -> dict[str, str]:
@@ -52,6 +53,7 @@ class ThemeTokens:
             "danger": self.danger,
             "captionHighlight": self.caption_highlight,
             "captionHighlightBackground": self.caption_highlight_background,
+            "visualFamily": self.visual_family,
             "rationale": self.rationale,
         }
 
@@ -100,6 +102,7 @@ THEME_PRESETS: dict[str, ThemeTokens] = {
         border="#4B3A63",
         caption_highlight="#F3DFA2",
         caption_highlight_background="rgba(243,223,162,0.24)",
+        visual_family="warm-dark",
         rationale="Velvet aubergine, warm text, and champagne/cyan accents create a premium default without relying on blue.",
     ),
     "ai-native": ThemeTokens(
@@ -114,6 +117,7 @@ THEME_PRESETS: dict[str, ThemeTokens] = {
         border="#353B62",
         caption_highlight="#28D7E5",
         caption_highlight_background="rgba(40,215,229,0.22)",
+        visual_family="dark-blue",
         rationale="AI/product content benefits from a deep neutral base with violet intelligence cues and cyan signal accents.",
     ),
     "modern-dark-cinema": ThemeTokens(
@@ -128,6 +132,7 @@ THEME_PRESETS: dict[str, ThemeTokens] = {
         border="#343946",
         caption_highlight="#D4AF37",
         caption_highlight_background="rgba(212,175,55,0.24)",
+        visual_family="charcoal-gold",
         rationale="Cinematic charcoal with restrained spotlight accents works well for executive and launch narratives.",
     ),
     "enterprise-clear": ThemeTokens(
@@ -142,6 +147,7 @@ THEME_PRESETS: dict[str, ThemeTokens] = {
         border="#334155",
         caption_highlight="#9BB2FF",
         caption_highlight_background="rgba(155,178,255,0.22)",
+        visual_family="dark-blue",
         rationale="Enterprise-friendly contrast with less default-blue dominance and safer green signal accents.",
     ),
     "warm-editorial": ThemeTokens(
@@ -156,7 +162,53 @@ THEME_PRESETS: dict[str, ThemeTokens] = {
         border="#553C2E",
         caption_highlight="#F2C879",
         caption_highlight_background="rgba(242,200,121,0.24)",
+        visual_family="warm-dark",
         rationale="Warm editorial tones suit storytelling, hospitality, and human-centered content.",
+    ),
+    "light-enterprise": ThemeTokens(
+        name="light-enterprise",
+        background="#F7F8FB",
+        surface="#FFFFFF",
+        elevated_surface="#EEF2F7",
+        text="#172033",
+        muted_text="#526071",
+        primary="#3157C9",
+        accent="#0E8F6D",
+        border="#D7DEE9",
+        caption_highlight="#3157C9",
+        caption_highlight_background="rgba(49,87,201,0.14)",
+        visual_family="light-neutral",
+        rationale="Bright enterprise surfaces make product and training videos feel practical, readable, and less samey than navy decks.",
+    ),
+    "technical-paper": ThemeTokens(
+        name="technical-paper",
+        background="#F3F0E8",
+        surface="#FFFCF4",
+        elevated_surface="#E7E1D3",
+        text="#1F2933",
+        muted_text="#59636E",
+        primary="#275C5F",
+        accent="#B45309",
+        border="#D2C8B8",
+        caption_highlight="#275C5F",
+        caption_highlight_background="rgba(39,92,95,0.16)",
+        visual_family="light-warm",
+        rationale="Paper, ink, teal, and amber suit technical explainers without falling back to dark-blue dashboards.",
+    ),
+    "bold-social": ThemeTokens(
+        name="bold-social",
+        background="#FFF1F2",
+        surface="#FFFFFF",
+        elevated_surface="#FFE4E6",
+        text="#24111A",
+        muted_text="#6F4A58",
+        primary="#E11D48",
+        accent="#F59E0B",
+        border="#F3BBC5",
+        caption_highlight="#E11D48",
+        caption_highlight_background="rgba(225,29,72,0.16)",
+        visual_family="bright-warm",
+        rationale="High-energy rose, white, and amber give social teasers a distinct editorial identity instead of another navy technology frame.",
     ),
 }
 
@@ -329,21 +381,45 @@ def choose_theme(scenario: dict[str, Any] | None = None, brand: Any = None) -> T
         return theme_from_brand(brand)
 
     scenario = scenario or {}
-    explicit = str(scenario.get("theme") or scenario.get("style") or "").lower().strip()
+    explicit = str(
+        scenario.get("theme")
+        or scenario.get("visualTheme")
+        or scenario.get("visual_theme")
+        or scenario.get("style")
+        or ""
+    ).lower().strip()
     if explicit in THEME_PRESETS:
         return validate_theme(THEME_PRESETS[explicit])
+
+    visual_direction = str(
+        scenario.get("visualDirection")
+        or scenario.get("visual_direction")
+        or scenario.get("creativeDirection")
+        or scenario.get("creative_direction")
+        or ""
+    ).lower()
+    if any(term in visual_direction for term in ("light", "clean", "bright", "product demo", "training")):
+        return validate_theme(THEME_PRESETS["light-enterprise"])
+    if any(term in visual_direction for term in ("paper", "blueprint", "technical", "diagram", "docs")):
+        return validate_theme(THEME_PRESETS["technical-paper"])
+    if any(term in visual_direction for term in ("social", "teaser", "vibrant", "bold", "campaign")):
+        return validate_theme(THEME_PRESETS["bold-social"])
 
     text = _scenario_text(scenario)
     tokens = set(re.findall(r"[a-z0-9]+", text))
     def has_any(words: tuple[str, ...]) -> bool:
         return any(word in tokens for word in words)
 
-    if has_any(("ai", "copilot", "agent", "llm", "model", "automation")):
-        return validate_theme(THEME_PRESETS["ai-native"])
+    if has_any(("training", "onboarding", "workflow", "lesson", "policy")):
+        return validate_theme(THEME_PRESETS["light-enterprise"])
+    if has_any(("social", "teaser", "short", "campaign", "viral")):
+        return validate_theme(THEME_PRESETS["bold-social"])
+    if has_any(("developer", "api", "architecture", "code", "terminal", "github", "vscode")):
+        return validate_theme(THEME_PRESETS["technical-paper"])
     if has_any(("executive", "launch", "cinematic", "premium", "luxury", "keynote")):
         return validate_theme(THEME_PRESETS["modern-dark-cinema"])
-    if has_any(("developer", "api", "architecture", "code", "terminal", "github", "vscode")):
-        return validate_theme(THEME_PRESETS["enterprise-clear"])
+    if has_any(("ai", "copilot", "agent", "llm", "model", "automation")):
+        return validate_theme(THEME_PRESETS["premium-velvet"])
     if has_any(("story", "customer", "hospitality", "wellness", "human", "editorial")):
         return validate_theme(THEME_PRESETS["warm-editorial"])
     return validate_theme(THEME_PRESETS["premium-velvet"])
