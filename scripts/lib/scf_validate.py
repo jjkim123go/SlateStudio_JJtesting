@@ -9,7 +9,13 @@ import json
 import math
 import re
 import subprocess
+from copy import deepcopy
 from pathlib import Path
+
+try:
+    from component_inventory import build_component_manifest
+except Exception:  # pragma: no cover - validator still works without inventory helpers
+    build_component_manifest = None
 
 
 MEDIA_SUFFIXES = {".wav", ".mp3", ".m4a", ".aac", ".flac", ".ogg"}
@@ -57,6 +63,116 @@ TIMING_SENSITIVE_COMPONENTS = {
     "HTMLTextureWall",
     "MoneyTransferScene",
 }
+
+QUALITY_FIRST_METADATA_KEYS = {"qualityFirst", "quality_first", "requireSceneContracts", "require_scene_contracts"}
+QUALITY_PROFILES = {"draft", "guided", "publish", "ci"}
+DEFAULT_VALIDATION_PROFILE = "guided"
+
+STRUCTURAL_BLOCKER_GROUPS = {
+    "narration_overflows",
+    "video_layer_issues",
+    "missing_assets",
+}
+
+PUBLISH_BLOCKER_GROUPS = STRUCTURAL_BLOCKER_GROUPS | {
+    "component_regressions",
+    "caption_issues",
+    "visual_hold_issues",
+    "visual_support_issues",
+    "bridge_component_issues",
+    "narration_text_issues",
+    "narration_text_present_issues",
+    "component_prop_contract_issues",
+    "scene_contract_issues",
+    "reusable_footage_issues",
+    "text_on_image_issues",
+}
+
+CI_BLOCKER_GROUPS = PUBLISH_BLOCKER_GROUPS | {
+    "slideshow_warnings",
+    "precise_video_language_issues",
+}
+
+
+def normalize_quality_profile(profile: str | None) -> str:
+    normalized = (profile or DEFAULT_VALIDATION_PROFILE).strip().lower()
+    if normalized not in QUALITY_PROFILES:
+        raise ValueError(f"Unknown quality profile '{profile}'. Expected one of: {', '.join(sorted(QUALITY_PROFILES))}.")
+    return normalized
+
+
+def _default_caption_config(scf: dict) -> dict:
+    output_profile = scf.get("outputProfile") or {}
+    height = int(output_profile.get("height") or 1080)
+    portrait = height > int(output_profile.get("width") or 1920)
+    return {
+        "style": "word-highlight",
+        "font": "Aptos",
+        "fontSize": 30 if portrait else 32,
+        "color": "#172033",
+        "highlightColor": "#3157C9",
+        "highlightBackgroundColor": "rgba(49,87,201,0.14)",
+        "lineBackgroundColor": "rgba(255,255,255,0.78)",
+        "position": "bottom",
+        "maxWordsPerLine": 5 if portrait else 7,
+    }
+
+
+def repair_scf_for_profile(scf: dict, profile: str | None = None) -> tuple[dict, list[dict]]:
+    """Apply deterministic, low-risk SCF repairs before validation/render.
+
+    Repairs must be safe enough for first-time users: no component swaps, no
+    creative rewrites, and no hidden asset generation. Anything interpretive
+    remains a validator warning or publish blocker.
+    """
+    profile = normalize_quality_profile(profile)
+    repaired = deepcopy(scf)
+    repairs = []
+
+    if any(_has_narration(scene) for scene in repaired.get("scenes", [])):
+        captions = repaired.get("captions") or {}
+        if not captions or captions.get("style") == "none":
+            repaired["captions"] = _default_caption_config(repaired)
+            repairs.append({
+                "issue": "captions_auto_added",
+                "detail": "Added default visible word-highlight captions for narrated draft output.",
+                "profile": profile,
+            })
+
+    return repaired, repairs
+
+
+def _issue_blocks_profile(group: str, issue: dict, profile: str) -> bool:
+    if profile in {"draft", "guided"}:
+        if group in STRUCTURAL_BLOCKER_GROUPS:
+            return True
+        return group == "component_prop_contract_issues" and issue.get("severity") == "error"
+    if profile == "publish":
+        if group not in PUBLISH_BLOCKER_GROUPS:
+            return False
+        return issue.get("severity", "error") == "error"
+    if profile == "ci":
+        if group not in CI_BLOCKER_GROUPS:
+            return False
+        return issue.get("severity", "error") in {"error", "warning"}
+    return False
+
+
+def _annotate_profile_issues(issue_groups: dict[str, list[dict]], profile: str) -> tuple[list[dict], list[dict]]:
+    blocking = []
+    review = []
+    for group, issues in issue_groups.items():
+        for issue in issues:
+            annotated = dict(issue)
+            annotated.setdefault("severity", "error")
+            annotated["category"] = group
+            annotated["profile"] = profile
+            annotated["blocking"] = _issue_blocks_profile(group, annotated, profile)
+            if annotated["blocking"]:
+                blocking.append(annotated)
+            else:
+                review.append(annotated)
+    return blocking, review
 
 
 def _scene_id(scene: dict) -> str:
@@ -157,6 +273,47 @@ def _scene_surface_text(scene: dict) -> str:
         }, ensure_ascii=True).lower()
     except Exception:
         return str(scene).lower()
+
+
+def _scene_component_names(scene: dict) -> list[str]:
+    components = []
+    if scene.get("component"):
+        components.append(str(scene.get("component")))
+    for layer in scene.get("layers") or []:
+        if layer.get("type") == "component" and layer.get("component"):
+            components.append(str(layer.get("component")))
+    return components
+
+
+def _scene_contracts(scf: dict) -> dict[str, dict]:
+    metadata = scf.get("metadata") or {}
+    candidates = metadata.get("sceneContracts") or metadata.get("scene_contracts") or {}
+    if isinstance(candidates, list):
+        return {
+            str(item.get("sceneId") or item.get("scene_id") or item.get("id")): item
+            for item in candidates
+            if isinstance(item, dict) and (item.get("sceneId") or item.get("scene_id") or item.get("id"))
+        }
+    return candidates if isinstance(candidates, dict) else {}
+
+
+def _quality_first_enabled(scf: dict) -> bool:
+    metadata = scf.get("metadata") or {}
+    return any(bool(metadata.get(key)) for key in QUALITY_FIRST_METADATA_KEYS)
+
+
+def _inventory_by_name() -> dict[str, dict]:
+    if build_component_manifest is None:
+        return {}
+    try:
+        manifest = build_component_manifest()
+    except Exception:
+        return {}
+    return {
+        item.get("name"): item
+        for item in manifest.get("components", [])
+        if item.get("name")
+    }
 
 
 def _ffprobe_duration(path: str) -> float | None:
@@ -531,6 +688,18 @@ CINEMATIC_COMPONENTS = {
     "TypewriterDissolve",
 }
 
+BRIDGE_ONLY_COMPONENTS = {
+    "CollageShatter",
+    "DepthZoomPunch",
+    "FilmstripFlip",
+    "GlitchPulse",
+    "IrisZoom",
+    "PrismRefract",
+    "ShakeImpact",
+    "SwirlVortex",
+    "TypewriterDissolve",
+}
+
 
 def _visual_spec(scene: dict) -> dict:
     props = scene.get("props") or {}
@@ -567,6 +736,41 @@ def validate_precise_video_language(scf: dict) -> list[dict]:
                 "and reviewer checks share the same visible intent."
             ),
             "missing_aspects": missing,
+        })
+    return issues
+
+
+def validate_bridge_component_usage(scf: dict, max_bridge_scene_sec: float = 1.5) -> list[dict]:
+    """Reject bridge/transition components used as long standalone scenes.
+
+    These components are useful punctuation between content scenes, but novice
+    agents can mistake them for complete visual treatments. In rendered output
+    that creates empty color fields, flashes, or abstract motion with no story
+    information. Keep them short or wrap them in a content-bearing component.
+    """
+    issues = []
+    for scene in scf.get("scenes", []):
+        component = scene.get("component")
+        if component not in BRIDGE_ONLY_COMPONENTS:
+            continue
+        if (scene.get("props") or {}).get("allowStandaloneBridge") is True:
+            continue
+        try:
+            duration = float(scene.get("duration") or 0)
+        except Exception:
+            duration = 0.0
+        if duration <= max_bridge_scene_sec:
+            continue
+        issues.append({
+            "severity": "error",
+            "scene_id": _scene_id(scene),
+            "issue": "bridge_component_used_as_scene",
+            "detail": (
+                f"{component} is a bridge/transition component but this scene runs {duration:.1f}s. "
+                "Use it as a short transition beat, or choose a content component that renders visible story information."
+            ),
+            "component": component,
+            "duration": round(duration, 2),
         })
     return issues
 
@@ -613,6 +817,159 @@ def validate_narration_text_present(scf: dict) -> list[dict]:
                 "support, ellipses, redundancy) can read it."
             ),
         })
+    return issues
+
+
+def validate_component_prop_contracts(scf: dict) -> list[dict]:
+    """Warn when scenes use components without a machine-readable prop contract.
+
+    Components can render without a schema, but novice-quality UX depends on
+    the agent knowing what props are real. This warning gives evals a concrete
+    signal when a scene is relying on undocumented or arbitrary props.
+    """
+    inventory = _inventory_by_name()
+    if not inventory:
+        return []
+
+    issues = []
+    for scene in scf.get("scenes", []):
+        for component in _scene_component_names(scene):
+            record = inventory.get(component)
+            if not record:
+                issues.append({
+                    "severity": "error",
+                    "scene_id": _scene_id(scene),
+                    "issue": "component_not_in_inventory",
+                    "detail": f"Component {component} is not present in the live component inventory.",
+                    "component": component,
+                })
+                continue
+            if record.get("has_prop_contract"):
+                continue
+            issues.append({
+                "severity": "warning",
+                "scene_id": _scene_id(scene),
+                "issue": "component_prop_contract_missing",
+                "detail": (
+                    f"Component {component} has no schema guard or props.json. "
+                    "Scene may still render, but the agent cannot validate prop fit before render."
+                ),
+                "component": component,
+            })
+    return issues
+
+
+def validate_scene_contracts(scf: dict, require_contracts: bool | None = None) -> list[dict]:
+    """Validate quality-first scene contracts attached to SCF metadata.
+
+    Scene contracts are the bridge between a user's intent and the SCF. They
+    are not pixel prescriptions; they state what each scene must accomplish,
+    which component owns it, what motion beats keep it alive, and which cheap
+    fallback paths are forbidden.
+    """
+    if require_contracts is None:
+        require_contracts = _quality_first_enabled(scf)
+
+    contracts = _scene_contracts(scf)
+    issues = []
+    inventory = _inventory_by_name()
+
+    for scene in scf.get("scenes", []):
+        scene_id = _scene_id(scene)
+        contract = contracts.get(scene_id)
+
+        if not contract:
+            if require_contracts:
+                issues.append({
+                    "severity": "error",
+                    "scene_id": scene_id,
+                    "issue": "scene_contract_missing",
+                    "detail": "Quality-first SCF requires a scene contract for every scene before compose.",
+                })
+            continue
+
+        narrative_purpose = str(contract.get("narrativePurpose") or contract.get("narrative_purpose") or "").strip()
+        visual_treatment = str(contract.get("visualTreatment") or contract.get("visual_treatment") or contract.get("visualJob") or contract.get("visual_job") or "").strip()
+        primary = contract.get("primaryComponent") or contract.get("primary_component")
+        motion_beats = contract.get("motionBeats") or contract.get("motion_beats") or []
+        forbidden = [str(item).lower() for item in (contract.get("forbiddenFallbacks") or contract.get("forbidden_fallbacks") or [])]
+
+        if not narrative_purpose:
+            issues.append({
+                "severity": "error",
+                "scene_id": scene_id,
+                "issue": "scene_contract_missing_narrative_purpose",
+                "detail": "Scene contract must state why the scene exists in the story.",
+            })
+        if not visual_treatment:
+            issues.append({
+                "severity": "error",
+                "scene_id": scene_id,
+                "issue": "scene_contract_missing_visual_treatment",
+                "detail": "Scene contract must state the intended visual treatment or visual job.",
+            })
+
+        scene_components = _scene_component_names(scene)
+        if primary:
+            if inventory and primary not in inventory:
+                issues.append({
+                    "severity": "error",
+                    "scene_id": scene_id,
+                    "issue": "scene_contract_unknown_component",
+                    "detail": f"Scene contract names {primary}, but that component is not registered.",
+                    "component": primary,
+                })
+            if scene_components and primary not in scene_components:
+                issues.append({
+                    "severity": "error",
+                    "scene_id": scene_id,
+                    "issue": "scene_contract_component_mismatch",
+                    "detail": f"Scene contract expects {primary}, but SCF uses {', '.join(scene_components)}.",
+                    "component": primary,
+                })
+        elif scene_components:
+            issues.append({
+                "severity": "warning",
+                "scene_id": scene_id,
+                "issue": "scene_contract_primary_component_missing",
+                "detail": "Scene uses a component but the contract does not name the primary component.",
+            })
+
+        try:
+            duration = float(scene.get("duration") or 0)
+        except Exception:
+            duration = 0.0
+        if duration > MAX_VISUAL_HOLD_SEC and not _has_video_motion(scene):
+            required_beats = max(2, math.ceil(duration / MAX_VISUAL_HOLD_SEC))
+            if not isinstance(motion_beats, list) or len(motion_beats) < required_beats:
+                issues.append({
+                    "severity": "error",
+                    "scene_id": scene_id,
+                    "issue": "scene_contract_motion_beats_insufficient",
+                    "detail": (
+                        f"Scene runs {duration:.1f}s and needs at least {required_beats} motion beats "
+                        "in its contract so the visual stays alive through narration."
+                    ),
+                    "motion_beats": len(motion_beats) if isinstance(motion_beats, list) else 0,
+                    "required_beats": required_beats,
+                })
+
+        surface = _scene_surface_text(scene)
+        if "raw text layer" in forbidden and '"type": "text"' in surface:
+            issues.append({
+                "severity": "error",
+                "scene_id": scene_id,
+                "issue": "scene_contract_forbidden_raw_text_layer",
+                "detail": "Scene contract forbids raw text layers, but the SCF contains a text layer.",
+            })
+        if "generic ai image" in forbidden and '"type": "image"' in surface and not scene_components:
+            issues.append({
+                "severity": "error",
+                "scene_id": scene_id,
+                "issue": "scene_contract_forbidden_generic_image",
+                "detail": "Scene contract forbids generic image fallback, but the SCF uses image layers without a component.",
+            })
+
     return issues
 
 
@@ -730,7 +1087,7 @@ def validate_no_text_on_image_layers(scf: dict) -> list[dict]:
     return issues
 
 
-def validate_scf_pre_render(scf: dict, scf_dir: str) -> dict:
+def validate_scf_pre_render(scf: dict, scf_dir: str, profile: str | None = None) -> dict:
     """Run all pre-compose validations and return a structured report.
 
     Returns:
@@ -742,6 +1099,8 @@ def validate_scf_pre_render(scf: dict, scf_dir: str) -> dict:
             "summary": str,
         }
     """
+    profile = normalize_quality_profile(profile)
+
     narration_issues = validate_narration_fit(scf, scf_dir)
     video_issues = validate_video_layers(scf, scf_dir)
     missing = validate_missing_assets(scf, scf_dir)
@@ -751,25 +1110,34 @@ def validate_scf_pre_render(scf: dict, scf_dir: str) -> dict:
     visual_hold_issues = validate_visual_hold_duration(scf)
     visual_support_issues = validate_narration_visual_support(scf)
     precise_video_language_issues = validate_precise_video_language(scf)
+    bridge_component_issues = validate_bridge_component_usage(scf)
     narration_text_issues = validate_narration_text_quality(scf)
     narration_text_present_issues = validate_narration_text_present(scf)
+    component_prop_contract_issues = validate_component_prop_contracts(scf)
+    scene_contract_issues = validate_scene_contracts(scf)
     reusable_footage_issues = validate_reusable_footage_ratio(scf, scf_dir)
     text_on_image_issues = validate_no_text_on_image_layers(scf)
 
-    blocking_issues = (
-        len(narration_issues)
-        + len(video_issues)
-        + len(missing)
-        + len(component_regressions)
-        + len(caption_issues)
-        + len(visual_hold_issues)
-        + len(visual_support_issues)
-        + len(narration_text_issues)
-        + len(narration_text_present_issues)
-        + sum(1 for i in reusable_footage_issues if i.get("severity") == "error")
-        + len(text_on_image_issues)
-    )
-    passed = blocking_issues == 0
+    issue_groups = {
+        "narration_overflows": narration_issues,
+        "video_layer_issues": video_issues,
+        "missing_assets": missing,
+        "component_regressions": component_regressions,
+        "slideshow_warnings": slideshow_warnings,
+        "caption_issues": caption_issues,
+        "visual_hold_issues": visual_hold_issues,
+        "visual_support_issues": visual_support_issues,
+        "precise_video_language_issues": precise_video_language_issues,
+        "bridge_component_issues": bridge_component_issues,
+        "narration_text_issues": narration_text_issues,
+        "narration_text_present_issues": narration_text_present_issues,
+        "component_prop_contract_issues": component_prop_contract_issues,
+        "scene_contract_issues": scene_contract_issues,
+        "reusable_footage_issues": reusable_footage_issues,
+        "text_on_image_issues": text_on_image_issues,
+    }
+    blocking_issue_details, review_issue_details = _annotate_profile_issues(issue_groups, profile)
+    passed = len(blocking_issue_details) == 0
 
     parts = []
     if narration_issues:
@@ -790,19 +1158,38 @@ def validate_scf_pre_render(scf: dict, scf_dir: str) -> dict:
         parts.append(f"{len(visual_support_issues)} unsupported narration visual(s)")
     if precise_video_language_issues:
         parts.append(f"{len(precise_video_language_issues)} precise-video-language warning(s)")
+    if bridge_component_issues:
+        parts.append(f"{len(bridge_component_issues)} bridge-component issue(s)")
     if narration_text_issues:
         parts.append(f"{len(narration_text_issues)} narration text issue(s)")
     if narration_text_present_issues:
         parts.append(f"{len(narration_text_present_issues)} scene(s) missing narrationText")
+    if component_prop_contract_issues:
+        parts.append(f"{len(component_prop_contract_issues)} component prop-contract warning(s)")
+    if scene_contract_issues:
+        parts.append(f"{len(scene_contract_issues)} scene-contract issue(s)")
     if reusable_footage_issues:
         parts.append(f"{len(reusable_footage_issues)} reusable-footage warning(s)")
     if text_on_image_issues:
         parts.append(f"{len(text_on_image_issues)} text-on-image scene(s)")
 
-    summary = "All pre-render checks passed." if passed else f"Pre-render issues: {', '.join(parts)}"
+    if not parts:
+        summary = f"All pre-render checks passed for {profile} profile."
+    elif passed:
+        summary = f"Pre-render passed for {profile} profile with review issues: {', '.join(parts)}"
+    else:
+        blocking_categories = []
+        for category in sorted({issue["category"] for issue in blocking_issue_details}):
+            blocking_categories.append(f"{sum(1 for issue in blocking_issue_details if issue['category'] == category)} {category.replace('_', ' ')}")
+        summary = f"Pre-render blockers for {profile} profile: {', '.join(blocking_categories)}"
 
     return {
+        "profile": profile,
         "passed": passed,
+        "blocking_issue_count": len(blocking_issue_details),
+        "review_issue_count": len(review_issue_details),
+        "blocking_issues": blocking_issue_details,
+        "review_issues": review_issue_details,
         "narration_overflows": narration_issues,
         "video_layer_issues": video_issues,
         "missing_assets": missing,
@@ -812,8 +1199,11 @@ def validate_scf_pre_render(scf: dict, scf_dir: str) -> dict:
         "visual_hold_issues": visual_hold_issues,
         "visual_support_issues": visual_support_issues,
         "precise_video_language_issues": precise_video_language_issues,
+        "bridge_component_issues": bridge_component_issues,
         "narration_text_issues": narration_text_issues,
         "narration_text_present_issues": narration_text_present_issues,
+        "component_prop_contract_issues": component_prop_contract_issues,
+        "scene_contract_issues": scene_contract_issues,
         "reusable_footage_issues": reusable_footage_issues,
         "text_on_image_issues": text_on_image_issues,
         "summary": summary,
@@ -821,21 +1211,43 @@ def validate_scf_pre_render(scf: dict, scf_dir: str) -> dict:
 
 
 if __name__ == "__main__":
+    import argparse
     import sys
-    if len(sys.argv) < 2:
-        print("Usage: python scf_validate.py <scf-file.json>")
-        sys.exit(1)
 
-    scf_path = sys.argv[1]
+    parser = argparse.ArgumentParser(description="Validate an SCF before rendering.")
+    parser.add_argument("scf_file", help="Path to composition.scf.json")
+    parser.add_argument(
+        "--profile",
+        choices=sorted(QUALITY_PROFILES),
+        default=DEFAULT_VALIDATION_PROFILE,
+        help="Validation strictness. guided is the default authoring profile; publish/ci are stricter.",
+    )
+    parser.add_argument(
+        "--repair",
+        action="store_true",
+        help="Print safe auto-repair suggestions and validate the repaired SCF in memory.",
+    )
+    args = parser.parse_args()
+
+    scf_path = args.scf_file
     with open(scf_path, encoding="utf-8") as f:
         scf = json.load(f)
 
+    repairs = []
+    if args.repair:
+        scf, repairs = repair_scf_for_profile(scf, args.profile)
+
     scf_dir = str(Path(scf_path).parent)
-    report = validate_scf_pre_render(scf, scf_dir)
+    report = validate_scf_pre_render(scf, scf_dir, profile=args.profile)
 
     print(f"\n{'='*50}")
-    print(f"  SCF Pre-Render Validation: {'PASS' if report['passed'] else 'FAIL'}")
+    print(f"  SCF Pre-Render Validation ({report['profile']}): {'PASS' if report['passed'] else 'FAIL'}")
     print(f"{'='*50}")
+
+    if repairs:
+        print("\n  Safe repairs applied in-memory:")
+        for repair in repairs:
+            print(f"    - {repair['detail']}")
 
     if report["narration_overflows"]:
         print("\n  Narration overflows:")
@@ -870,7 +1282,10 @@ if __name__ == "__main__":
         ("visual_hold_issues", "Long visual holds"),
         ("visual_support_issues", "Unsupported narration visuals"),
         ("precise_video_language_issues", "Precise video language warnings"),
+        ("bridge_component_issues", "Bridge component issues"),
         ("narration_text_issues", "Narration text issues"),
+        ("component_prop_contract_issues", "Component prop-contract warnings"),
+        ("scene_contract_issues", "Scene contract issues"),
     ):
         if report[key]:
             print(f"\n  {label}:")

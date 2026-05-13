@@ -1,0 +1,21 @@
+{
+  "name": "DataFlow",
+  "description": "Animated governance/data-movement diagram with staged system cards, SVG edges, classification banners, optional legend, and callouts.",
+  "props": {
+    "title": { "type": "string", "description": "Optional scene title shown above the flow." },
+    "mode": { "type": "string", "enum": ["linear", "mesh", "hub"], "default": "linear", "description": "Layout mode for node placement. Use linear for left-to-right flows, mesh for grid-like topologies, hub for converging signals." },
+    "stages": { "type": "array", "description": "Native stage objects. Compiler serializes to stagesJson when stagesJson is absent.", "items": { "type": "object", "properties": { "id": { "type": "string" }, "label": { "type": "string" }, "systemType": { "type": "string" }, "classification": { "type": "string" }, "encryption": { "type": "string" }, "region": { "type": "string" } }, "required": ["id", "label"] } },
+    "edges": { "type": "array", "description": "Native edge objects. Compiler serializes to edgesJson when edgesJson is absent.", "items": { "type": "object", "properties": { "from": { "type": "string" }, "to": { "type": "string" }, "dataType": { "type": "string" }, "protocol": { "type": "string" }, "encrypted": { "type": "boolean" }, "gatedBy": { "type": "string" } }, "required": ["from", "to"] } },
+    "legend": { "type": "object", "description": "Native legend object. Compiler serializes to legendJson when legendJson is absent." },
+    "callouts": { "type": "array", "description": "Native callout objects. Compiler serializes to calloutsJson when calloutsJson is absent.", "items": { "type": "object", "properties": { "targetId": { "type": "string" }, "text": { "type": "string" } }, "required": ["targetId", "text"] } },
+    "stagesJson": { "type": "string", "description": "JSON-encoded stages. Prefer native stages in new SCF authoring." },
+    "edgesJson": { "type": "string", "description": "JSON-encoded edges. Prefer native edges in new SCF authoring." },
+    "legendJson": { "type": "string", "description": "JSON-encoded legend. Prefer native legend in new SCF authoring." },
+    "calloutsJson": { "type": "string", "description": "JSON-encoded callouts. Prefer native callouts in new SCF authoring." }
+  },
+  "qualityNotes": [
+    "Use stable stage ids; every edge.from and edge.to must match a stage id.",
+    "Keep labels short enough for node cards; use callouts for detail.",
+    "Do not use AI image generation for diagrams; this component renders exact labels and arrows."
+  ]
+}

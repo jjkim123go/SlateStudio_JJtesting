@@ -35,20 +35,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const COMPONENTS_DIR = resolve(__dirname, '..', 'components');
 
 const DEFAULT_THEME = {
-  name: 'premium-velvet',
-  background: '#120A1F',
-  surface: '#1D142C',
-  elevatedSurface: '#2A1B3D',
-  text: '#F8F4EC',
-  mutedText: '#C9BFD7',
-  primary: '#8B5CF6',
-  accent: '#E7D7A2',
-  border: '#4B3A63',
+  name: 'technical-paper',
+  background: '#F3F0E8',
+  surface: '#FFFCF4',
+  elevatedSurface: '#E7E1D3',
+  text: '#1F2933',
+  mutedText: '#59636E',
+  primary: '#275C5F',
+  accent: '#B45309',
+  border: '#D2C8B8',
   success: '#3DDC97',
   warning: '#F7C948',
   danger: '#FF6B6B',
-  captionHighlight: '#F3DFA2',
-  captionHighlightBackground: 'rgba(243,223,162,0.24)',
+  captionHighlight: '#275C5F',
+  captionHighlightBackground: 'rgba(39,92,95,0.16)',
+  visualFamily: 'light-warm',
 };
 
 // ---------- Component registry ----------------------------------------------
@@ -362,8 +363,8 @@ function validateThemeColors(theme) {
   return {
     ...theme,
     background,
-    surface: ensureSurfaceColor(theme.surface, background, 1.18),
-    elevatedSurface: ensureSurfaceColor(theme.elevatedSurface, background, 1.28),
+    surface: ensureSurfaceColor(theme.surface, background, 1.05),
+    elevatedSurface: ensureSurfaceColor(theme.elevatedSurface, background, 1.08),
     text: ensureReadableColor(theme.text, background, 7.0),
     mutedText: ensureReadableColor(theme.mutedText, theme.surface || background, 4.5),
     primary: ensureReadableColor(theme.primary, background, 3.0),
@@ -414,6 +415,7 @@ function normalizeThemeFromSCF(scf, brandPackage) {
     danger: source.danger || DEFAULT_THEME.danger,
     captionHighlight: source.captionHighlight || source.primary || brandColors.primary || DEFAULT_THEME.captionHighlight,
     captionHighlightBackground: source.captionHighlightBackground || DEFAULT_THEME.captionHighlightBackground,
+    visualFamily: source.visualFamily || DEFAULT_THEME.visualFamily,
   };
   return validateThemeColors(theme);
 }
@@ -438,6 +440,50 @@ function themeCssVars(theme) {
   return Object.entries(entries).map(([key, value]) => `${key}:${value};`).join('');
 }
 
+function isDarkBlueHex(value) {
+  if (!HEX_COLOR_RE.test(String(value || '').trim())) return false;
+  const [red, green, blue] = hexToRgb(value);
+  const luma = 0.2126 * red + 0.7152 * green + 0.0722 * blue;
+  const max = Math.max(red, green, blue);
+  const min = Math.min(red, green, blue);
+  const delta = max - min;
+  let hue = 0;
+  if (delta !== 0) {
+    if (max === red) hue = 60 * (((green - blue) / delta) % 6);
+    else if (max === green) hue = 60 * ((blue - red) / delta + 2);
+    else hue = 60 * ((red - green) / delta + 4);
+  }
+  if (hue < 0) hue += 360;
+  return luma < 70 && hue >= 200 && hue <= 250 && blue > red * 1.12 && blue >= green * 0.88;
+}
+
+function allowsDarkBlueSamenessSCF(scf) {
+  const metadata = scf?.metadata || {};
+  const theme = metadata.theme || {};
+  const visualDirection = metadata.visual_direction || metadata.visualDirection || {};
+  if (theme.visualFamily === 'dark-blue') return true;
+  if (visualDirection && typeof visualDirection === 'object' && visualDirection.allowDarkBlueSameness === true) return true;
+  const text = typeof visualDirection === 'string' ? visualDirection : JSON.stringify(visualDirection || {});
+  return /intentional dark blue|dark-blue|navy/i.test(text);
+}
+
+function sanitizeDarkBlueProps(props, sceneCtx) {
+  const compileCtx = sceneCtx.compileCtx || {};
+  if (allowsDarkBlueSamenessSCF(compileCtx.scf)) return props;
+  const theme = compileCtx.theme || DEFAULT_THEME;
+  const replacements = {
+    background: theme.background,
+    backgroundColor: theme.background,
+    bgFrom: theme.background,
+    bgTo: theme.surface,
+    panelBg: theme.elevatedSurface,
+  };
+  for (const [key, replacement] of Object.entries(replacements)) {
+    if (isDarkBlueHex(props[key])) props[key] = replacement;
+  }
+  return props;
+}
+
 function formatFontFamily(font, fallback = 'Inter') {
   const primary = font || fallback;
   const quoted = /\s/.test(primary) ? `'${primary.replace(/["']/g, '')}'` : primary;
@@ -450,6 +496,23 @@ function applyBrandDefaults(props, sceneCtx) {
   if (props.bodyFont == null) props.bodyFont = typography?.body?.font || 'Inter';
   if (typography?.headings?.weight && props.headingWeight == null) props.headingWeight = typography.headings.weight;
   if (typography?.body?.weight && props.bodyWeight == null) props.bodyWeight = typography.body.weight;
+  const theme = sceneCtx.compileCtx?.theme || DEFAULT_THEME;
+  if (props.themeName == null) props.themeName = theme.name;
+  if (props.visualFamily == null) props.visualFamily = theme.visualFamily || theme.visual_family || '';
+  if (props.backgroundColor == null) props.backgroundColor = theme.background;
+  if (props.background == null) props.background = theme.background;
+  if (props.surfaceColor == null) props.surfaceColor = theme.surface;
+  if (props.elevatedSurfaceColor == null) props.elevatedSurfaceColor = theme.elevatedSurface;
+  if (props.textColor == null) props.textColor = theme.text;
+  if (props.mutedTextColor == null) props.mutedTextColor = theme.mutedText;
+  if (props.borderColor == null) props.borderColor = theme.border;
+  if (props.primaryColor == null) props.primaryColor = theme.primary;
+  if (props.accentColor == null) props.accentColor = theme.accent;
+  if (props.bgFrom == null) props.bgFrom = theme.background;
+  if (props.bgTo == null) props.bgTo = theme.surface;
+  if (props.panelBg == null) props.panelBg = theme.elevatedSurface;
+  if (props.panelStroke == null) props.panelStroke = theme.border;
+  sanitizeDarkBlueProps(props, sceneCtx);
   return props;
 }
 
@@ -1822,7 +1885,7 @@ export function compileSCFToHTML(scf, options = {}) {
   const brandPackage = loadBrandPackage(scf.brandPackage);
   const theme = normalizeThemeFromSCF(scf, brandPackage);
   const captionConfig = normalizeCaptionConfig(scf.captions || {}, theme);
-  const ctx = { cursor: 0, index: 0, scfDir, projectDir, repoRoot, width, height, brandPackage, theme, captionConfig, componentsUsed: new Set(), lottieUsed: false, threeUsed: false };
+  const ctx = { cursor: 0, index: 0, scf, scfDir, projectDir, repoRoot, width, height, brandPackage, theme, captionConfig, componentsUsed: new Set(), lottieUsed: false, threeUsed: false };
   const fontFaceCss = brandFontFaceCss(brandPackage, ctx);
   const renderedScenes = [];
   for (const scene of scf.scenes || []) {
@@ -2115,11 +2178,11 @@ const PROP_TRANSFORMERS = {
     if (Array.isArray(props.subMetrics) && !props.subMetricsHtml) {
       props.subMetricsHtml = props.subMetrics.map(m =>
         `<div class="mc-sub" style="flex:1;padding:20px 24px;border-radius:16px;`
-        + `background:rgba(30,41,59,0.55);border:1px solid rgba(148,163,184,0.12);`
+        + `background:${escapeHtml(props.surfaceColor || 'rgba(30,41,59,0.55)')};border:1px solid ${escapeHtml(props.borderColor || 'rgba(148,163,184,0.12)')};`
         + `text-align:center;opacity:0">`
-        + `<span style="display:block;font-size:20px;font-weight:500;color:rgba(255,255,255,0.50);`
+        + `<span style="display:block;font-size:20px;font-weight:500;color:${escapeHtml(props.mutedTextColor || 'rgba(255,255,255,0.50)')};`
         + `letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px">${escapeHtml(m.label || '')}</span>`
-        + `<span style="display:block;font-size:36px;font-weight:700;color:#e2e8f0">${escapeHtml(m.value || '')}</span>`
+        + `<span style="display:block;font-size:36px;font-weight:700;color:${escapeHtml(props.textColor || '#e2e8f0')}">${escapeHtml(m.value || '')}</span>`
         + `</div>`
       ).join('');
     }
@@ -2609,10 +2672,10 @@ const PROP_TRANSFORMERS = {
       const num = escapeHtml(String(step.number ?? idx + 1));
       const title = escapeHtml(step.title || '');
       const desc = escapeHtml(step.description || '');
-      return `<div class="sbs-step" style="display:flex;align-items:center;gap:28px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px 32px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0">`
-           + `<div class="sbs-num" style="flex:0 0 56px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);font-size:28px;font-weight:800;color:#818cf8;opacity:0">${num}</div>`
-           + `<div style="flex:1;min-width:0"><div style="font-size:26px;font-weight:700;color:#FFFFFF;margin-bottom:4px">${title}</div>`
-           + `<div style="font-size:20px;font-weight:400;color:rgba(255,255,255,0.6);line-height:1.4">${desc}</div></div></div>`;
+      return `<div class="sbs-step" style="display:flex;align-items:center;gap:28px;background:${escapeHtml(props.surfaceColor || 'rgba(255,255,255,0.04)')};border:1px solid ${escapeHtml(props.borderColor || 'rgba(255,255,255,0.08)')};border-radius:16px;padding:24px 32px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);opacity:0">`
+           + `<div class="sbs-num" style="flex:0 0 56px;width:56px;height:56px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:color-mix(in srgb, ${escapeHtml(props.accentColor || '#818cf8')} 18%, transparent);border:1px solid ${escapeHtml(props.accentColor || '#818cf8')};font-size:28px;font-weight:800;color:${escapeHtml(props.accentColor || '#818cf8')};opacity:0">${num}</div>`
+           + `<div style="flex:1;min-width:0"><div style="font-size:26px;font-weight:700;color:${escapeHtml(props.textColor || '#FFFFFF')};margin-bottom:4px">${title}</div>`
+           + `<div style="font-size:20px;font-weight:400;color:${escapeHtml(props.mutedTextColor || 'rgba(255,255,255,0.6)')};line-height:1.4">${desc}</div></div></div>`;
     }).join('');
   },
 

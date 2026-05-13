@@ -1,0 +1,21 @@
+{
+  "name": "PlannerScene",
+  "description": "Microsoft Planner board/charts scene with optional task-detail modal for project, incident, and sprint workflows.",
+  "props": {
+    "variant": { "type": "string", "enum": ["board", "charts"], "default": "board" },
+    "state": { "type": "string", "enum": ["default", "task-open"], "default": "default" },
+    "planName": { "type": "string", "default": "My plan" },
+    "breadcrumb": { "type": "string", "default": "My plans" },
+    "activeTab": { "type": "string", "enum": ["Goals", "Grid", "Board", "Calendar", "Charts"], "description": "Highlighted tab. Defaults to Board for board variant and Charts for charts variant." },
+    "groupBy": { "type": "string", "default": "Bucket" },
+    "accountInitial": { "type": "string", "default": "A" },
+    "buckets": { "type": "array", "description": "Board buckets for variant=board.", "items": { "type": "object", "properties": { "name": { "type": "string" }, "hasHelpIcon": { "type": "boolean" }, "tasks": { "type": "array", "items": { "type": "object", "properties": { "title": { "type": "string" }, "recurrence": { "type": "boolean" }, "priority": { "type": "string", "enum": ["urgent", "important", "medium", "low"] }, "progress": { "type": "string", "enum": ["notStarted", "inProgress", "completed"] }, "labels": { "type": "array" }, "assignees": { "type": "array" }, "dueText": { "type": "string" } }, "required": ["title"] } } }, "required": ["name"] } },
+    "chartCards": { "type": "array", "description": "Chart cards for variant=charts. Cards use type=donut or type=bar." },
+    "selectedTask": { "type": "object", "description": "Task detail modal data when state=task-open: title, createdMeta, status, priority, startDate, dueDate, repeat, bucket, checklistItems, notes, showChat." }
+  },
+  "qualityNotes": [
+    "Use PlannerScene when task ownership, status, buckets, or sprint execution are part of the story.",
+    "For board scenes, keep bucket count to 3-4 and card titles short enough to scan.",
+    "For task-open scenes, provide selectedTask only when the modal is the visual focus."
+  ]
+}

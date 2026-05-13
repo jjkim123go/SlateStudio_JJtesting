@@ -2,24 +2,24 @@
   style="position:absolute;inset:0;overflow:hidden;display:flex;align-items:center;justify-content:center;font-family:'Inter','Segoe UI',system-ui,sans-serif">
 
   <!-- Deep gradient background -->
-  <div class="cta-bg" style="position:absolute;inset:0;background:linear-gradient(160deg,#06080f 0%,#0d1b2a 35%,#1a103a 70%,#0f172a 100%)"></div>
+  <div class="cta-bg" style="position:absolute;inset:0;background:linear-gradient(160deg,{{backgroundColor}} 0%,{{surfaceColor}} 52%,{{elevatedSurfaceColor}} 100%)"></div>
 
   <!-- Radial glow behind button area -->
-  <div class="cta-glow" style="position:absolute;width:900px;height:900px;top:50%;left:50%;transform:translate(-50%,-20%);background:radial-gradient(circle,rgba(99,102,241,0.18) 0%,rgba(99,102,241,0.06) 40%,transparent 70%);border-radius:50%;opacity:0;visibility:hidden"></div>
+  <div class="cta-glow" style="position:absolute;width:900px;height:900px;top:50%;left:50%;transform:translate(-50%,-20%);background:radial-gradient(circle,color-mix(in srgb, {{accentColor}} 22%, transparent) 0%,color-mix(in srgb, {{accentColor}} 8%, transparent) 40%,transparent 70%);border-radius:50%;opacity:0;visibility:hidden"></div>
 
   <!-- Content stack -->
   <div class="cta-content" style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 120px">
 
-    <h1 class="cta-headline" style="margin:0;font-size:64px;font-weight:800;color:#ffffff;line-height:1.1;letter-spacing:-0.03em;opacity:0;visibility:hidden">{{headline}}</h1>
+    <h1 class="cta-headline" style="margin:0;font-size:64px;font-weight:800;color:{{textColor}};line-height:1.1;letter-spacing:-0.03em;opacity:0;visibility:hidden">{{headline}}</h1>
 
-    <p class="cta-body" style="margin:28px 0 0;font-size:28px;font-weight:400;color:rgba(255,255,255,0.55);line-height:1.5;max-width:900px;opacity:0;visibility:hidden">{{body}}</p>
+    <p class="cta-body" style="margin:28px 0 0;font-size:28px;font-weight:400;color:{{mutedTextColor}};line-height:1.5;max-width:900px;opacity:0;visibility:hidden">{{body}}</p>
 
     <!-- Glassmorphic pill button with glow -->
     <div class="cta-btn-wrap" style="margin:56px 0 0;position:relative;opacity:0;visibility:hidden">
       <!-- Glow layer -->
-      <div class="cta-btn-glow" style="position:absolute;inset:-24px;background:radial-gradient(circle,rgba(99,102,241,0.5) 0%,transparent 70%);border-radius:80px;filter:blur(24px);opacity:0;visibility:hidden"></div>
+      <div class="cta-btn-glow" style="position:absolute;inset:-24px;background:radial-gradient(circle,color-mix(in srgb, {{accentColor}} 48%, transparent) 0%,transparent 70%);border-radius:80px;filter:blur(24px);opacity:0;visibility:hidden"></div>
       <!-- Button -->
-      <div class="cta-btn" style="position:relative;display:inline-flex;align-items:center;gap:14px;padding:22px 56px;background:rgba(255,255,255,0.07);color:#ffffff;font-size:32px;font-weight:700;border-radius:60px;border:1.5px solid rgba(255,255,255,0.15);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.08);overflow:hidden">
+      <div class="cta-btn" style="position:relative;display:inline-flex;align-items:center;gap:14px;padding:22px 56px;background:{{surfaceColor}};color:{{textColor}};font-size:32px;font-weight:700;border-radius:60px;border:1.5px solid {{borderColor}};backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.08);overflow:hidden">
         <span>{{buttonText}}</span>
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
         <!-- Shine sweep layer -->

@@ -1,0 +1,27 @@
+{
+  "name": "GitHubScene",
+  "description": "Synthetic GitHub repository and pull request surface. Supports modern slot HTML and a legacy PR-diff contract for quick incident/review scenes.",
+  "props": {
+    "variant": { "type": "string", "enum": ["repo-home", "pr-diff"], "default": "pr-diff", "description": "Primary GitHub surface. Legacy PR props default to pr-diff." },
+    "theme": { "type": "string", "enum": ["light", "dark"], "default": "light" },
+    "repoOwner": { "type": "string", "default": "contoso" },
+    "repoName": { "type": "string", "default": "repo" },
+    "repoBranchHtml": { "type": "string", "description": "Branch label or HTML slot shown in the repository chrome." },
+    "branch": { "type": "string", "default": "main", "description": "Legacy shorthand used when repoBranchHtml is omitted." },
+    "prTitle": { "type": "string", "description": "Legacy PR title. Triggers PR-diff body generation when bodyHtml is omitted." },
+    "prNumber": { "type": ["string", "number"], "description": "Legacy PR number rendered beside prTitle." },
+    "stepsHtml": { "type": "string", "description": "Legacy animated PR body HTML. Use .gh-step elements with data-kind/data-duration for sequenced reveals." },
+    "bodyHtml": { "type": "string", "description": "Full main body HTML slot. Overrides legacy PR body generation." },
+    "repoTabsHtml": { "type": "string", "description": "Repository tab strip HTML. Defaults to Code/Issues/Pull requests/Actions/Security." },
+    "watchersCount": { "type": ["string", "number"], "default": "24" },
+    "forksCount": { "type": ["string", "number"], "default": "8" },
+    "starsCount": { "type": ["string", "number"], "default": "128" },
+    "searchPlaceholder": { "type": "string", "default": "Type / to search" },
+    "footerStatusHtml": { "type": "string", "default": "" }
+  },
+  "qualityNotes": [
+    "Prefer visible PR, issue, review, or repository artifacts over decorative code-like panels.",
+    "Use stepsHtml only for small legacy sequences; use bodyHtml for precise custom layouts.",
+    "Keep demo data fictional and use Contoso-style names/repos unless the user supplied public source material."
+  ]
+}

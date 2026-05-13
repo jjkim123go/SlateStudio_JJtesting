@@ -1,11 +1,15 @@
 from __future__ import annotations
 
 from scripts.lib.scf_validate import (
+    repair_scf_for_profile,
     validate_captions_required,
     validate_component_regression,
     validate_narration_text_quality,
     validate_narration_visual_support,
+    validate_bridge_component_usage,
     validate_precise_video_language,
+    validate_scene_contracts,
+    validate_scf_pre_render,
     validate_slideshow_drift,
     validate_visual_hold_duration,
 )
@@ -54,6 +58,41 @@ def test_captions_required_for_narrated_scf():
 
     assert issues
     assert issues[0]["issue"] == "captions_required"
+
+
+def test_guided_profile_warns_but_does_not_block_missing_captions(tmp_path):
+    scf = {"scenes": [{"id": "s1", "duration": 3, "narrationText": "A narrated draft scene."}]}
+
+    report = validate_scf_pre_render(scf, str(tmp_path), profile="guided")
+
+    assert report["passed"] is True
+    assert report["blocking_issue_count"] == 0
+    assert report["review_issue_count"] == 1
+    assert report["caption_issues"][0]["issue"] == "captions_required"
+
+
+def test_publish_profile_blocks_missing_captions(tmp_path):
+    scf = {"scenes": [{"id": "s1", "duration": 3, "narrationText": "A narrated publish scene."}]}
+
+    report = validate_scf_pre_render(scf, str(tmp_path), profile="publish")
+
+    assert report["passed"] is False
+    assert report["blocking_issue_count"] == 1
+    assert report["blocking_issues"][0]["issue"] == "captions_required"
+
+
+def test_repair_scf_for_profile_adds_default_captions():
+    scf = {
+        "outputProfile": {"width": 720, "height": 1280},
+        "scenes": [{"id": "s1", "duration": 3, "narrationText": "A narrated vertical draft."}],
+    }
+
+    repaired, repairs = repair_scf_for_profile(scf, profile="guided")
+
+    assert repairs[0]["issue"] == "captions_auto_added"
+    assert repaired["captions"]["style"] == "word-highlight"
+    assert repaired["captions"]["maxWordsPerLine"] == 5
+    assert "captions" not in scf
 
 
 def test_visual_hold_duration_blocks_long_static_scene():
@@ -160,3 +199,77 @@ def test_precise_video_language_accepts_complete_visual_spec():
     }
 
     assert validate_precise_video_language(scf) == []
+
+def test_bridge_component_rejected_as_long_standalone_scene():
+    scf = {
+        "scenes": [
+            {"id": "punch", "duration": 2.6, "component": "DepthZoomPunch", "props": {}}
+        ]
+    }
+
+    issues = validate_bridge_component_usage(scf)
+
+    assert issues
+    assert issues[0]["issue"] == "bridge_component_used_as_scene"
+
+def test_bridge_component_allowed_as_short_transition_beat():
+    scf = {
+        "scenes": [
+            {"id": "punch", "duration": 1.0, "component": "DepthZoomPunch", "props": {}}
+        ]
+    }
+
+    assert validate_bridge_component_usage(scf) == []
+
+def test_scene_contracts_required_in_quality_first_mode():
+    scf = {
+        "metadata": {"qualityFirst": True},
+        "scenes": [{"id": "s1", "duration": 5, "component": "DataFlow", "props": {}}],
+    }
+
+    issues = validate_scene_contracts(scf)
+
+    assert issues
+    assert issues[0]["issue"] == "scene_contract_missing"
+
+
+def test_scene_contracts_block_component_mismatch_and_weak_motion_beats():
+    scf = {
+        "metadata": {
+            "qualityFirst": True,
+            "sceneContracts": {
+                "s1": {
+                    "narrativePurpose": "Show the pull request risk path.",
+                    "visualTreatment": "Synthetic GitHub workflow.",
+                    "primaryComponent": "GitHubScene",
+                    "motionBeats": ["PR opens"],
+                }
+            },
+        },
+        "scenes": [{"id": "s1", "duration": 9, "component": "VSCodeScene", "props": {"steps": ["open file"]}}],
+    }
+
+    issues = validate_scene_contracts(scf)
+    issue_names = {issue["issue"] for issue in issues}
+
+    assert "scene_contract_component_mismatch" in issue_names
+    assert "scene_contract_motion_beats_insufficient" in issue_names
+
+
+def test_scene_contracts_accept_matching_component_and_motion_beats():
+    scf = {
+        "metadata": {
+            "qualityFirst": True,
+            "sceneContracts": {
+                "s1": {
+                    "narrativePurpose": "Show the pull request risk path.",
+                    "visualTreatment": "Synthetic GitHub workflow.",
+                    "primaryComponent": "GitHubScene",
+                    "motionBeats": ["PR opens", "impact table appears", "reviewers added"],
+                }
+            },
+        },
+        "scenes": [{"id": "s1", "duration": 9, "component": "GitHubScene", "props": {"steps": ["open PR", "add reviewers"]}}],
+    }
+
+    assert validate_scene_contracts(scf) == []

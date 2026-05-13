@@ -1,0 +1,25 @@
+{
+  "name": "TeamsScene",
+  "description": "Synthetic Microsoft Teams shell for chat, channel posts, calendar, activity, and shared-file workflows.",
+  "props": {
+    "theme": { "type": "string", "enum": ["light", "dark"], "default": "light" },
+    "view": { "type": "string", "enum": ["chat", "channel_post", "calendar", "activity", "shared"], "default": "chat" },
+    "topBar": { "type": "object", "description": "Structured top bar config: workspace, optimizedPillLabel, searchPlaceholder, user." },
+    "rail": { "type": "object", "description": "Left rail config: active, badges, showLabels, optional items." },
+    "navigator": { "type": "object", "description": "Middle navigation config: title, actions, searchBox/searchPlaceholder, sections, selectedItemId, miniCalendar." },
+    "contentHeader": { "type": "object", "description": "Structured header for chat/channel/calendar/activity/shared content." },
+    "steps": { "type": "array", "description": "Structured chat/activity steps. Renderer normalizes reactions and builds content when stepsHtml/contentHtml are absent." },
+    "stepsHtml": { "type": "string", "description": "Legacy chat content HTML used when contentHtml is absent." },
+    "topBarHtml": { "type": "string", "description": "Full top bar HTML slot. Overrides topBar." },
+    "railHtml": { "type": "string", "description": "Full rail HTML slot. Overrides rail." },
+    "navigatorHtml": { "type": "string", "description": "Full navigator HTML slot. Overrides navigator." },
+    "contentHtml": { "type": "string", "description": "Full main content HTML slot. Overrides generated content." },
+    "calendar": { "type": "object", "description": "Calendar view data when view=calendar." },
+    "shared": { "type": "object", "description": "Shared files view data when view=shared." }
+  },
+  "qualityNotes": [
+    "Choose the view that matches the story; do not use Teams as a generic chat-colored background.",
+    "For incident/training videos, make the active artifact visible: chat decision, owner mention, meeting, or shared file.",
+    "Keep navigation labels and message text short enough to read at video scale."
+  ]
+}

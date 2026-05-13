@@ -18,11 +18,11 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
 .scene-{{sceneId}} .df-root{
-  --df-bg-deep:#050816;
-  --df-bg-center:#0a0e27;
-  --df-text:#f0f4ff;
-  --df-muted:#7b8db5;
-  --df-accent:#38bdf8;
+  --df-bg-deep:{{backgroundColor}};
+  --df-bg-center:{{elevatedSurfaceColor}};
+  --df-text:{{textColor}};
+  --df-muted:{{mutedTextColor}};
+  --df-accent:{{accentColor}};
   --df-accent-glow:rgba(56,189,248,0.5);
   --df-glass-bg:rgba(255,255,255,0.06);
   --df-glass-border:rgba(255,255,255,0.12);
@@ -82,7 +82,7 @@
   display:flex;flex-direction:column;
   align-items:center;justify-content:center;
   gap:4px;
-  background:var(--df-glass-bg);
+  background:{{surfaceColor}};
   backdrop-filter:blur(20px);
   -webkit-backdrop-filter:blur(20px);
   border:1px solid var(--df-glass-border);
@@ -124,8 +124,8 @@
 /* edge label pills */
 .scene-{{sceneId}} .df-edge-pill{opacity:0}
 .scene-{{sceneId}} .df-edge-pill-bg{
-  fill:rgba(10,14,39,0.85);
-  stroke:rgba(255,255,255,0.10);stroke-width:1;
+  fill:{{surfaceColor}};
+  stroke:{{borderColor}};stroke-width:1;
   rx:12;ry:12;
 }
 .scene-{{sceneId}} .df-edge-pill-text{
@@ -149,9 +149,9 @@
 .scene-{{sceneId}} .df-callout{
   position:absolute;max-width:260px;
   padding:10px 14px;border-radius:12px;
-  background:rgba(10,14,39,0.88);
+  background:{{surfaceColor}};
   backdrop-filter:blur(12px);
-  border:1px solid rgba(56,189,248,0.3);
+  border:1px solid {{borderColor}};
   font-size:14px;line-height:1.35;color:var(--df-text);
   box-shadow:0 0 20px rgba(56,189,248,0.1),0 12px 32px rgba(2,6,23,0.55);
   opacity:0;pointer-events:none;
@@ -160,9 +160,9 @@
 .scene-{{sceneId}} .df-legend{
   display:flex;flex-wrap:wrap;gap:18px 24px;
   padding:14px 18px;border-radius:14px;
-  background:rgba(255,255,255,0.04);
+  background:{{surfaceColor}};
   backdrop-filter:blur(12px);
-  border:1px solid rgba(255,255,255,0.08);
+  border:1px solid {{borderColor}};
   opacity:0;position:relative;z-index:1;
 }
 .scene-{{sceneId}} .df-legend:empty{display:none}

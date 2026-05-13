@@ -1,0 +1,28 @@
+{
+  "name": "OutlookScene",
+  "description": "Synthetic Outlook mail/calendar/compose shell with structured chrome defaults, optional slot HTML, and Contoso demo-data scrubbing.",
+  "props": {
+    "theme": { "type": "string", "enum": ["light", "dark"], "default": "light" },
+    "ribbonVariant": { "type": "string", "enum": ["mail-home", "mail-view", "mail-help", "compose-message", "compose-format", "compose-insert", "search", "calendar-home", "none"], "default": "mail-home" },
+    "activeRail": { "type": "string", "enum": ["mail", "calendar", "people", "tasks", "groups", "apps"], "default": "mail" },
+    "toastState": { "type": "string", "enum": ["hidden", "visible"], "default": "hidden" },
+    "accountName": { "type": "string", "default": "Alex Chen" },
+    "accountInitial": { "type": "string", "description": "Single initial shown in account chrome. Derived from accountName when omitted." },
+    "currentFolder": { "type": "string", "default": "Inbox", "description": "Legacy mail-folder selection used with stepsHtml." },
+    "stepsHtml": { "type": "string", "description": "Legacy message-list or event-card HTML inserted into the generated Outlook body." },
+    "viewBodyHtml": { "type": "string", "description": "Main Outlook body HTML slot. Overrides legacy body generation." },
+    "eventCardHtml": { "type": "string", "description": "Calendar/event card HTML slot." },
+    "floatingTabsHtml": { "type": "string", "description": "Optional floating contextual tabs HTML." },
+    "contextualTabs": { "type": "string", "description": "Ribbon contextual tab HTML." },
+    "rightHeaderSlot": { "type": "string", "description": "Right-side header slot HTML." },
+    "toastTitle": { "type": "string", "description": "Toast title when toastState is visible." },
+    "toastBody": { "type": "string", "description": "Toast body when toastState is visible." },
+    "searchPlaceholder": { "type": "string", "default": "Search" },
+    "notifCount": { "type": ["string", "number"], "default": 9 }
+  },
+  "qualityNotes": [
+    "Use OutlookScene when the story actually needs mail, calendar, search, or compose context.",
+    "Prefer structured slot HTML over screenshots so text remains deterministic.",
+    "Demo content is scrubbed toward Contoso-style names/domains for internal-safe renders."
+  ]
+}

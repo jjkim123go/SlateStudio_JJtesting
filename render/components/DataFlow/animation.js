@@ -23,6 +23,13 @@
       try { return JSON.parse(raw); } catch (_e) { return fallback; }
     }
 
+    var bounds = root.getBoundingClientRect ? root.getBoundingClientRect() : { width: 1920, height: 1080 };
+    var portraitFlow = bounds.height > bounds.width * 1.15;
+    if (portraitFlow) {
+      VIEW_W = 760;
+      VIEW_H = 1060;
+    }
+
     var stages = safeParse(root.getAttribute('data-df-stages'), []);
     var edges = safeParse(root.getAttribute('data-df-edges'), []);
     var legend = safeParse(root.getAttribute('data-df-legend'), null);
@@ -39,8 +46,10 @@
     var calloutsLayer = root.querySelector('.df-callouts-layer');
     var legendEl = root.querySelector('.df-legend');
     if (!svg || !stagesLayer || !edgesLayer) return;
+    svg.setAttribute('viewBox', '0 0 ' + VIEW_W + ' ' + VIEW_H);
 
-    var STAGE_W = 220, STAGE_H = 130;
+    var STAGE_W = portraitFlow ? 540 : 220;
+    var STAGE_H = portraitFlow ? 156 : 130;
 
     // icon map for systemType
     function typeIcon(t) {
@@ -59,6 +68,16 @@
     function layoutLinear(items) {
       var n = items.length;
       if (n === 0) return [];
+      if (portraitFlow) {
+        var totalH = n * STAGE_H;
+        var vGap = (VIEW_H - totalH) / (n + 1);
+        vGap = Math.max(44, Math.min(92, vGap));
+        var startY = (VIEW_H - (n * STAGE_H + (n - 1) * vGap)) / 2;
+        var x = (VIEW_W - STAGE_W) / 2;
+        return items.map(function (s, i) {
+          return { id: s.id, raw: s, x: x, y: startY + i * (STAGE_H + vGap) };
+        });
+      }
       var totalW = n * STAGE_W;
       var gap = (VIEW_W - totalW) / (n + 1);
       gap = Math.max(50, gap);
@@ -189,6 +208,13 @@
       var dx = dst.x;
       var dy = dst.y + STAGE_H / 2;
 
+      if (portraitFlow && mode === 'linear') {
+        sx = src.x + STAGE_W / 2;
+        sy = src.y + STAGE_H;
+        dx = dst.x + STAGE_W / 2;
+        dy = dst.y;
+      }
+
       // for mesh mode or non-horizontal, use smarter anchoring
       if (mode === 'mesh') {
         var csx = src.x + STAGE_W / 2, csy = src.y + STAGE_H / 2;
@@ -206,10 +232,19 @@
 
       // smooth cubic bezier for clean curves
       var cpOff = Math.min(Math.abs(dx - sx) * 0.4, 120);
-      var d = 'M' + sx + ',' + sy +
-              ' C' + (sx + cpOff) + ',' + sy +
-              ' ' + (dx - cpOff) + ',' + dy +
-              ' ' + dx + ',' + dy;
+      var d;
+      if (portraitFlow && mode === 'linear') {
+        cpOff = Math.min(Math.abs(dy - sy) * 0.42, 120);
+        d = 'M' + sx + ',' + sy +
+        ' C' + sx + ',' + (sy + cpOff) +
+        ' ' + dx + ',' + (dy - cpOff) +
+        ' ' + dx + ',' + dy;
+      } else {
+        d = 'M' + sx + ',' + sy +
+        ' C' + (sx + cpOff) + ',' + sy +
+        ' ' + (dx - cpOff) + ',' + dy +
+        ' ' + dx + ',' + dy;
+      }
 
       var encrypted = e.encrypted === true || e.encrypted === 'true';
       var explicitFalse = e.encrypted === false || e.encrypted === 'false';
