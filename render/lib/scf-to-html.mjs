@@ -83,6 +83,7 @@ const KNOWN_COMPONENTS = new Set([
   'PowerPointScene',
   'PowerBIScene',
   'FabricScene',
+  'KustoExplorerScene',
   'WindowsScene',
   'AdminCenterScene',
   // Phase II — overlays / framing / dataviz / slides

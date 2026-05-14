@@ -62,6 +62,7 @@
 |-----------|-------------|-------------|
 | **TerminalCast** | Polished terminal with typing animation + shell themes | CLI demos, command sequences |
 | **VSCodeScene** | Full VS Code UI with editor, sidebar, extensions | Code editing, Copilot demos |
+| **KustoExplorerScene** | Realistic Kusto Explorer desktop surface with connection tree, KQL editor, result grid, and callout layer | KQL query walkthroughs, ADX investigation paths, finance-control classifier demos |
 | **GitHubScene** | GitHub UI (repo, PR, diff views) | Repository walkthroughs, PR reviews |
 | **ScreenDemoFrame** | Browser chrome wrapping a screenshot or inner content | Any web app demo with browser UI |
 

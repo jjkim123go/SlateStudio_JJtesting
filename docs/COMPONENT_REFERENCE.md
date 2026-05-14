@@ -26,6 +26,7 @@
 | [VSCodeScene](#vscodescene) | IDE / Demo | ✅ |
 | [TerminalScene](#terminalscene) | IDE / Demo | ✅ |
 | [TerminalCast](#terminalcast) | IDE / Demo | ✅ |
+| [KustoExplorerScene](#kustoexplorerscene) | IDE / Demo | — |
 | [ScreenDemoFrame](#screendemoframe) | IDE / Demo | ✅ |
 | [CTABlock](#ctablock) | Engagement | ✅ |
 | [CustomerStory](#customerstory) | Engagement | ✅ |
@@ -583,7 +584,29 @@ StepByStep, StickyNote, SwipeCarousel, TestimonialWall, Timeline, TreeMap,
 VideoEmbed, WordCloud.
 
 Product-showcase composites: BookPageMetrics, ComponentOverlay, MetricStack.
+Synthetic data surfaces: KustoExplorerScene.
 Premium motion / WebGL: ThreeScene, DeviceStage3D, HTMLTextureWall.
+
+### KustoExplorerScene
+
+High-fidelity Kusto Explorer desktop-style query surface for KQL investigations.
+Use it when a scene needs a credible connection tree, query editor, result grid,
+and timed focus highlights without recording a real Kusto session.
+
+Important: pass mock data only. Do not pass real tenant, cluster, database,
+table, query, file path, or user/account names.
+
+| Prop | Type | Default | Notes |
+|------|------|---------|-------|
+| `connections` | array | mock finance-control tree | Rows with `name`, `type`, `depth`, `expanded`, `selected`. |
+| `tabs` | array | three mock tabs | Query tab labels with optional `active`. |
+| `address` | string | mock cluster/database locator | Shown above the editor. |
+| `queryLines` | string[] | mock classifier KQL | Lines rendered in the editor with lightweight KQL coloring. |
+| `highlightLines` | integer[] | `[1,3,4,8,9]` | 1-based editor lines highlighted over time. |
+| `results` | object | mock classifier buckets | `{ columns, rows }` result grid. |
+| `requestId` | string | mock request id | Status bar value. |
+| `visualBeats` | array | — | Motion-beat metadata for validation and review. |
+| `callout` | object | mock workspace callout | `{ eyebrow, title, body }` floating glass card. |
 
 ### Premium motion / WebGL components
 

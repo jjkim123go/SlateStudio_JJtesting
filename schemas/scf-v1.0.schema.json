@@ -152,6 +152,7 @@
             "PowerPointScene",
             "PowerBIScene",
             "FabricScene",
+            "KustoExplorerScene",
             "WindowsScene",
             "AdminCenterScene",
             "ComplianceBadgeWall",

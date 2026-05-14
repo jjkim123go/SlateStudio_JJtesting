@@ -1,0 +1,163 @@
+<!--
+  KustoExplorerScene - high-fidelity Microsoft Kusto Explorer desktop surface.
+  All visible cluster/database/table/query/result values are supplied by props
+  or by mock defaults in animation.js. Do not render real tenant data here.
+-->
+<div class="kx-root" data-scene-component="KustoExplorerScene" style="position:absolute;inset:0;overflow:hidden;font-family:'Segoe UI Variable','Segoe UI',Arial,sans-serif">
+  <style data-component="KustoExplorerScene">
+    .scene-{{sceneId}} .kx-root {
+      --kx-bg: #eef7ff;
+      --kx-bg-2: #f7fbff;
+      --kx-window: #ffffff;
+      --kx-chrome: #f5f7fb;
+      --kx-ribbon: #f9fbff;
+      --kx-panel: #ffffff;
+      --kx-panel-2: #f6f9fd;
+      --kx-border: #cdd8e5;
+      --kx-border-soft: #e4ecf5;
+      --kx-text: #1b1f27;
+      --kx-muted: #5e6b7a;
+      --kx-blue: #0078d4;
+      --kx-blue-2: #0f6cbd;
+      --kx-blue-soft: #d8ecff;
+      --kx-amber: #b7791f;
+      --kx-green: #107c10;
+      --kx-shadow: 0 34px 100px rgba(23, 71, 115, .18), 0 0 0 1px rgba(0, 120, 212, .12);
+
+      background:
+        radial-gradient(circle at 16% 12%, rgba(0,120,212,.14), transparent 32%),
+        radial-gradient(circle at 78% 20%, rgba(90,169,230,.12), transparent 34%),
+        linear-gradient(135deg, var(--kx-bg) 0%, #ffffff 48%, #e9f5ff 100%);
+      color: var(--kx-text);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .scene-{{sceneId}} .kx-root * { box-sizing: border-box; }
+    .scene-{{sceneId}} .kx-bg-grid {
+      position:absolute;inset:0;opacity:.36;pointer-events:none;
+      background-image: linear-gradient(rgba(0,120,212,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(0,120,212,.08) 1px, transparent 1px);
+      background-size: 38px 38px;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,.85), rgba(0,0,0,.18));
+    }
+    .scene-{{sceneId}} .kx-window {
+      position:absolute;inset:30px 38px;border-radius:10px;background:var(--kx-window);box-shadow:var(--kx-shadow);overflow:hidden;border:1px solid rgba(0,120,212,.16);opacity:0;
+    }
+    .scene-{{sceneId}} .kx-menu {height:28px;display:flex;align-items:center;gap:2px;background:#ffffff;border-bottom:1px solid var(--kx-border-soft);font-size:12px;color:#2b3542;}
+    .scene-{{sceneId}} .kx-menu-item {height:28px;padding:6px 13px;display:flex;align-items:center;border-right:1px solid transparent;}
+    .scene-{{sceneId}} .kx-menu-item.kx-menu-active {background:var(--kx-blue);color:white;font-weight:600;}
+    .scene-{{sceneId}} .kx-ribbon {height:78px;background:linear-gradient(#fbfdff,#f4f7fb);border-bottom:1px solid var(--kx-border);display:flex;align-items:stretch;gap:0;}
+    .scene-{{sceneId}} .kx-ribbon-group {min-width:104px;padding:8px 10px 5px;border-right:1px solid var(--kx-border-soft);display:flex;flex-direction:column;align-items:center;justify-content:space-between;}
+    .scene-{{sceneId}} .kx-ribbon-tools {display:flex;gap:8px;align-items:center;justify-content:center;min-height:34px;}
+    .scene-{{sceneId}} .kx-tool {width:30px;height:30px;border-radius:4px;border:1px solid transparent;display:flex;align-items:center;justify-content:center;color:var(--kx-blue-2);background:rgba(255,255,255,.55);}
+    .scene-{{sceneId}} .kx-tool svg {width:17px;height:17px;display:block;}
+    .scene-{{sceneId}} .kx-tool.kx-tool-run {background:#e8f5e8;color:var(--kx-green);border-color:#c9e8c9;}
+    .scene-{{sceneId}} .kx-ribbon-label {font-size:11px;color:#566273;white-space:nowrap;}
+    .scene-{{sceneId}} .kx-tabbar {height:28px;background:#edf2f8;border-bottom:1px solid var(--kx-border);display:flex;align-items:flex-end;padding-left:335px;gap:3px;}
+    .scene-{{sceneId}} .kx-query-tab {height:25px;min-width:178px;max-width:248px;padding:5px 28px 4px 12px;border:1px solid var(--kx-border);border-bottom:0;border-radius:5px 5px 0 0;background:#f7f9fc;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;position:relative;color:#2f3d4f;}
+    .scene-{{sceneId}} .kx-query-tab.kx-tab-active {background:#ffffff;color:#111827;font-weight:600;}
+    .scene-{{sceneId}} .kx-query-tab::after {content:'x';position:absolute;right:9px;top:3px;color:#5d6a7a;font-weight:400;}
+    .scene-{{sceneId}} .kx-main {height:calc(100% - 134px);display:grid;grid-template-columns:322px 1fr;background:#fff;}
+    .scene-{{sceneId}} .kx-left {border-right:1px solid var(--kx-border);display:flex;flex-direction:column;min-width:0;background:#fbfdff;}
+    .scene-{{sceneId}} .kx-left-title {height:30px;display:flex;align-items:center;padding:0 10px;border-bottom:1px solid var(--kx-border-soft);font-size:12px;font-weight:600;color:#344052;background:#f6f9fd;}
+    .scene-{{sceneId}} .kx-left-toolbar {height:30px;display:flex;align-items:center;gap:8px;padding:0 9px;border-bottom:1px solid var(--kx-border-soft);color:var(--kx-blue-2);}
+    .scene-{{sceneId}} .kx-left-toolbar span {width:17px;height:17px;border-radius:3px;background:#e8f3ff;display:inline-flex;align-items:center;justify-content:center;font-size:11px;}
+    .scene-{{sceneId}} .kx-filter {height:30px;border:0;border-bottom:1px solid var(--kx-border-soft);padding:0 12px;font-size:12px;color:#637083;background:white;}
+    .scene-{{sceneId}} .kx-tree {flex:1;overflow:hidden;padding:7px 0 14px;font-size:12px;}
+    .scene-{{sceneId}} .kx-tree-row {height:25px;display:flex;align-items:center;gap:6px;padding-right:8px;color:#293545;white-space:nowrap;}
+    .scene-{{sceneId}} .kx-tree-row[data-depth="0"] {padding-left:10px;font-weight:600;}
+    .scene-{{sceneId}} .kx-tree-row[data-depth="1"] {padding-left:28px;}
+    .scene-{{sceneId}} .kx-tree-row[data-depth="2"] {padding-left:46px;}
+    .scene-{{sceneId}} .kx-tree-row[data-depth="3"] {padding-left:64px;}
+    .scene-{{sceneId}} .kx-tree-row.kx-selected {background:#cfe5fb;box-shadow:inset 3px 0 0 var(--kx-blue);}
+    .scene-{{sceneId}} .kx-twist {width:10px;color:#536274;}
+    .scene-{{sceneId}} .kx-icon {width:15px;height:15px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 15px;color:#516174;}
+    .scene-{{sceneId}} .kx-icon svg {width:14px;height:14px;}
+    .scene-{{sceneId}} .kx-tree-name {overflow:hidden;text-overflow:ellipsis;}
+    .scene-{{sceneId}} .kx-work {display:grid;grid-template-rows:minmax(368px, 63%) 1fr;min-width:0;}
+    .scene-{{sceneId}} .kx-editor-wrap {position:relative;border-bottom:1px solid var(--kx-border);overflow:hidden;background:#fff;}
+    .scene-{{sceneId}} .kx-editor-toolbar {height:28px;border-bottom:1px solid var(--kx-border-soft);display:flex;align-items:center;gap:6px;padding:0 8px;background:#f9fbff;color:#415166;font-size:12px;}
+    .scene-{{sceneId}} .kx-editor-toolbar .kx-run-chip {height:22px;display:flex;align-items:center;gap:6px;border:1px solid #bde0bd;background:#eef9ee;color:#0e6f0e;padding:0 8px;border-radius:4px;font-weight:600;}
+    .scene-{{sceneId}} .kx-address {margin-left:auto;max-width:460px;height:22px;border:1px solid var(--kx-border);border-radius:3px;background:white;color:#4a5565;padding:3px 8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;}
+    .scene-{{sceneId}} .kx-editor {position:absolute;inset:28px 0 0 0;display:grid;grid-template-columns:48px 1fr;background:#ffffff;font-family:'Cascadia Code','Consolas',monospace;font-size:18px;line-height:1.55;}
+    .scene-{{sceneId}} .kx-lines {background:#fbfdff;border-right:1px solid var(--kx-border-soft);padding:11px 0;color:#7b8797;text-align:right;}
+    .scene-{{sceneId}} .kx-line-no {height:28px;padding-right:10px;}
+    .scene-{{sceneId}} .kx-code {position:relative;padding:11px 0 80px 12px;overflow:hidden;color:#111827;}
+    .scene-{{sceneId}} .kx-code-line {height:28px;white-space:pre;position:relative;padding-left:4px;}
+    .scene-{{sceneId}} .kx-code-line.kx-line-active {background:#eaf5ff;box-shadow:inset 3px 0 0 var(--kx-blue);}
+    .scene-{{sceneId}} .kx-kw {color:#0000ff;font-weight:600;}
+    .scene-{{sceneId}} .kx-fn {color:#795e26;}
+    .scene-{{sceneId}} .kx-str {color:#a31515;}
+    .scene-{{sceneId}} .kx-op {color:#af00db;font-weight:600;}
+    .scene-{{sceneId}} .kx-num {color:#098658;}
+    .scene-{{sceneId}} .kx-comment {color:#008000;}
+    .scene-{{sceneId}} .kx-ident {color:#c2188b;}
+    .scene-{{sceneId}} .kx-runner {position:absolute;right:26px;bottom:22px;display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:999px;background:#ffffff;border:1px solid var(--kx-border);box-shadow:0 12px 35px rgba(0,120,212,.16);font-size:12px;color:#344052;opacity:0;}
+    .scene-{{sceneId}} .kx-spinner {width:14px;height:14px;border-radius:50%;border:2px solid #b7d9f7;border-top-color:var(--kx-blue);}
+    .scene-{{sceneId}} .kx-results {display:flex;flex-direction:column;min-height:0;background:#fff;}
+    .scene-{{sceneId}} .kx-result-tabs {height:28px;background:#f6f8fb;border-bottom:1px solid var(--kx-border-soft);display:flex;align-items:flex-end;padding-left:8px;gap:3px;font-size:11px;color:#566273;}
+    .scene-{{sceneId}} .kx-result-tab {height:24px;padding:5px 10px;border:1px solid transparent;border-bottom:0;border-radius:4px 4px 0 0;}
+    .scene-{{sceneId}} .kx-result-tab.kx-active {background:white;border-color:var(--kx-border);color:var(--kx-blue-2);font-weight:600;}
+    .scene-{{sceneId}} .kx-grid {flex:1;min-height:0;overflow:hidden;position:relative;}
+    .scene-{{sceneId}} .kx-table {width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px;color:#263241;}
+    .scene-{{sceneId}} .kx-table th {height:28px;background:#f3f6fa;border-right:1px solid var(--kx-border);border-bottom:1px solid var(--kx-border);font-weight:600;text-align:left;padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .scene-{{sceneId}} .kx-table td {height:27px;border-right:1px solid var(--kx-border-soft);border-bottom:1px solid var(--kx-border-soft);padding:0 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:#fff;}
+    .scene-{{sceneId}} .kx-table tbody tr:nth-child(even) td {background:#fbfdff;}
+    .scene-{{sceneId}} .kx-table .kx-amount {text-align:right;font-variant-numeric:tabular-nums;}
+    .scene-{{sceneId}} .kx-status {height:24px;background:#f7f9fc;border-top:1px solid var(--kx-border-soft);display:flex;align-items:center;padding:0 10px;font-size:11px;color:#59677a;gap:18px;}
+    .scene-{{sceneId}} .kx-status .kx-ok {color:var(--kx-green);font-weight:600;}
+    .scene-{{sceneId}} .kx-callout {position:absolute;right:42px;top:160px;width:380px;border-radius:14px;background:rgba(255,255,255,.88);border:1px solid rgba(0,120,212,.25);box-shadow:0 22px 60px rgba(0,120,212,.18);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding:18px 20px;opacity:0;}
+    .scene-{{sceneId}} .kx-callout-eyebrow {font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--kx-blue-2);margin-bottom:7px;}
+    .scene-{{sceneId}} .kx-callout-title {font-size:24px;font-weight:700;color:#172033;margin-bottom:7px;}
+    .scene-{{sceneId}} .kx-callout-body {font-size:15px;line-height:1.38;color:#4b5a6c;}
+  </style>
+
+  <div class="kx-bg-grid"></div>
+  <div class="kx-window">
+    <div class="kx-menu">
+      <div class="kx-menu-item">Home</div>
+      <div class="kx-menu-item kx-menu-active">File</div>
+      <div class="kx-menu-item">Connections</div>
+      <div class="kx-menu-item">View</div>
+      <div class="kx-menu-item">Tools</div>
+      <div class="kx-menu-item">Monitoring</div>
+      <div class="kx-menu-item">Management</div>
+      <div class="kx-menu-item">Help</div>
+    </div>
+    <div class="kx-ribbon" aria-hidden="true">
+      <div class="kx-ribbon-group"><div class="kx-ribbon-tools"><span class="kx-tool">-></span><span class="kx-tool">C</span></div><div class="kx-ribbon-label">Share</div></div>
+      <div class="kx-ribbon-group"><div class="kx-ribbon-tools"><span class="kx-tool">|</span><span class="kx-tool">=</span><span class="kx-tool">[]</span></div><div class="kx-ribbon-label">Visualizations</div></div>
+      <div class="kx-ribbon-group"><div class="kx-ribbon-tools"><span class="kx-tool kx-tool-run">></span><span class="kx-tool">R</span><span class="kx-tool">*</span></div><div class="kx-ribbon-label">Query</div></div>
+      <div class="kx-ribbon-group"><div class="kx-ribbon-tools"><span class="kx-tool">[]</span><span class="kx-tool">A</span><span class="kx-tool">Kb</span></div><div class="kx-ribbon-label">View</div></div>
+      <div class="kx-ribbon-group" style="min-width:170px"><div class="kx-ribbon-tools"><span class="kx-tool">!</span><span class="kx-tool">@</span><span class="kx-tool">?</span></div><div class="kx-ribbon-label">Help</div></div>
+    </div>
+    <div class="kx-tabbar"><div class="kx-query-tabs"></div></div>
+    <div class="kx-main">
+      <aside class="kx-left">
+        <div class="kx-left-title">Connections</div>
+        <div class="kx-left-toolbar"><span>R</span><span>+</span><span>[]</span><span>?</span><span>*</span></div>
+        <input class="kx-filter" value="[Type for filtering]" readonly />
+        <div class="kx-tree"></div>
+      </aside>
+      <section class="kx-work">
+        <div class="kx-editor-wrap">
+          <div class="kx-editor-toolbar">
+            <div class="kx-run-chip">&gt; Run</div>
+            <span>Cancel</span><span>Clear</span><span>Format</span><span>Export</span>
+            <div class="kx-address"></div>
+          </div>
+          <div class="kx-editor">
+            <div class="kx-lines"></div>
+            <div class="kx-code"></div>
+          </div>
+          <div class="kx-runner"><span class="kx-spinner"></span><span>Executing KQL query...</span></div>
+        </div>
+        <div class="kx-results">
+          <div class="kx-result-tabs"><div class="kx-result-tab kx-active">Results</div><div class="kx-result-tab">Query Summary</div><div class="kx-result-tab">Query Completion Information</div><div class="kx-result-tab">Issues: (0)</div></div>
+          <div class="kx-grid"><table class="kx-table"><thead></thead><tbody></tbody></table></div>
+          <div class="kx-status"><span class="kx-done">Done</span><span class="kx-row-count">0 records</span><span class="kx-request-id">KE.Mock.QueryId</span></div>
+        </div>
+      </section>
+    </div>
+    <div class="kx-callout"><div class="kx-callout-eyebrow"></div><div class="kx-callout-title"></div><div class="kx-callout-body"></div></div>
+  </div>
+</div>

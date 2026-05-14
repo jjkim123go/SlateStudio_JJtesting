@@ -1,0 +1,66 @@
+{
+  "name": "KustoExplorerScene",
+  "description": "High-fidelity Kusto Explorer desktop query surface with mockable connection tree, KQL editor, result grid, and timed highlights.",
+  "props": {
+    "connections": {
+      "type": "array",
+      "description": "Mock connection tree rows. Do not pass real tenant, cluster, database, or table names.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "detail": { "type": "string" },
+          "type": { "type": "string", "enum": ["root", "cluster", "database", "folder", "table"] },
+          "depth": { "type": "integer", "minimum": 0, "maximum": 4 },
+          "expanded": { "type": "boolean" },
+          "selected": { "type": "boolean" }
+        },
+        "required": ["name"]
+      }
+    },
+    "tabs": {
+      "type": "array",
+      "description": "Open query tabs using mock workspace names.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "active": { "type": "boolean" }
+        },
+        "required": ["title"]
+      }
+    },
+    "address": { "type": "string", "description": "Mock cluster/database locator shown above the editor." },
+    "queryLines": { "type": "array", "description": "KQL lines to render in the editor. Use mock cluster/db/table names.", "items": { "type": "string" } },
+    "highlightLines": { "type": "array", "description": "1-based line numbers to highlight over time.", "items": { "type": "integer", "minimum": 1 } },
+    "results": {
+      "type": "object",
+      "description": "Mock result grid.",
+      "properties": {
+        "columns": { "type": "array", "items": { "type": "string" } },
+        "rows": { "type": "array", "items": { "type": "array", "items": { "type": ["string", "number", "boolean"] } } }
+      },
+      "required": ["columns", "rows"]
+    },
+    "requestId": { "type": "string", "description": "Mock request id shown in the status bar." },
+    "visualBeats": {
+      "type": "array",
+      "description": "Motion-beat metadata for validation and review. The component animates chrome, tree rows, query lines, active-line focus, results, runner, and callout over time.",
+      "items": { "type": "object" }
+    },
+    "callout": {
+      "type": "object",
+      "description": "Optional glass callout layered over the Kusto surface.",
+      "properties": {
+        "eyebrow": { "type": "string" },
+        "title": { "type": "string" },
+        "body": { "type": "string" }
+      }
+    }
+  },
+  "qualityNotes": [
+    "Never use screenshots of real Kusto data inside this component; use mock props only.",
+    "Use this component when a scene needs a credible Kusto Explorer query or result-grid surface.",
+    "Keep query lines short enough to fit at 1920px; split complex queries across scenes."
+  ]
+}
