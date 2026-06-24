@@ -1,0 +1,41 @@
+{
+  "name": "ExpandableCardGrid",
+  "prefix": "ecg-",
+  "summary": "A row of glassmorphic cards that reveal together, then each card expands into focus in turn (scales up + reveals a detail paragraph) while siblings dim. Continuous background orb drift keeps the frame alive for deterministic capture.",
+  "bestFor": "Explaining a small set (2-5) of related items one at a time — file anatomy, rule sets, do/don't lists, capability tiers — where the active item should grow and reveal more detail as narration discusses it.",
+  "props": {
+    "title": { "type": "string", "required": false, "description": "Scene heading." },
+    "subtitle": { "type": "string", "required": false, "description": "Short supporting line under the title." },
+    "cards": {
+      "type": "array",
+      "required": true,
+      "description": "2-5 cards. Each is focused in array order, evenly spread across the scene duration.",
+      "items": {
+        "icon": { "type": "string", "description": "Single emoji or 1-2 char glyph shown in the accent chip." },
+        "label": { "type": "string", "required": true, "description": "Card title." },
+        "summary": { "type": "string", "description": "One-line summary, always visible." },
+        "detail": { "type": "string", "description": "Longer explanation revealed when the card expands into focus. Supports <b> for accent emphasis." },
+        "accent": { "type": "string", "description": "Optional per-card CSS accent color; defaults to props.accentColor." }
+      }
+    },
+    "backgroundColor": { "type": "string", "default": "#EAF7FF" },
+    "elevatedSurfaceColor": { "type": "string", "default": "#F8FCFF" },
+    "surfaceColor": { "type": "string", "default": "rgba(255,255,255,0.92)" },
+    "textColor": { "type": "string", "default": "#10233F" },
+    "mutedTextColor": { "type": "string", "default": "#5F7088" },
+    "accentColor": { "type": "string", "default": "#0078D4" },
+    "borderColor": { "type": "string", "default": "rgba(0,120,212,0.22)" }
+  },
+  "minimalExample": {
+    "component": "ExpandableCardGrid",
+    "props": {
+      "title": "Three files do the work",
+      "subtitle": "Each one has a job",
+      "cards": [
+        { "icon": "🪪", "label": "ID card", "summary": "Registers the skill", "detail": "Declares the marker and the inputs the assistant can read." },
+        { "icon": "🧠", "label": "Brain", "summary": "Holds the rules", "detail": "Embeds the mapping and reviewer lookup so no external call is needed." },
+        { "icon": "⚡", "label": "Trigger", "summary": "Decides when to wake", "detail": "Path filters gate whether the skill runs at all." }
+      ]
+    }
+  }
+}

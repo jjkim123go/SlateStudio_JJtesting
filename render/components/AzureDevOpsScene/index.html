@@ -1,0 +1,573 @@
+<style data-component="AzureDevOpsScene">
+.scene-{{sceneId}} .ado-root {
+  --ado-bg: #eaf7ff;
+  --ado-bg-2: #f8fcff;
+  --ado-surface: rgba(255,255,255,0.92);
+  --ado-surface-strong: #ffffff;
+  --ado-text: #17253a;
+  --ado-muted: #5f7088;
+  --ado-subtle: #8aa0b8;
+  --ado-border: rgba(67, 117, 166, 0.18);
+  --ado-border-strong: rgba(0, 120, 212, 0.28);
+  --ado-primary: #0078d4;
+  --ado-primary-2: #50e6ff;
+  --ado-success: #107c10;
+  --ado-warning: #b7791f;
+  --ado-danger: #c50f1f;
+  --ado-purple: #5c2d91;
+  --ado-code-bg: #f7fbff;
+  --ado-added-bg: #e9f8ee;
+  --ado-added-border: #82d18a;
+  --ado-removed-bg: #fff0f0;
+  --ado-removed-border: #f2a0a8;
+  --ado-shadow: 0 32px 88px rgba(20, 54, 90, 0.22), 0 0 0 1px rgba(255,255,255,0.72) inset;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 42px;
+  color: var(--ado-text);
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-size: 15px;
+  background:
+    radial-gradient(circle at 18% 16%, rgba(80,230,255,0.30), transparent 30%),
+    radial-gradient(circle at 82% 6%, rgba(0,120,212,0.22), transparent 28%),
+    linear-gradient(135deg, var(--ado-bg) 0%, var(--ado-bg-2) 45%, #ffffff 100%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.scene-{{sceneId}} .ado-ambient {
+  position: absolute;
+  inset: 80px;
+  border-radius: 42px;
+  border: 1px solid rgba(0,120,212,0.10);
+  background: linear-gradient(135deg, rgba(255,255,255,0.24), rgba(80,230,255,0.08));
+  filter: blur(0.2px);
+}
+
+.scene-{{sceneId}} .ado-window {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background: rgba(250,253,255,0.96);
+  border: 1px solid rgba(255,255,255,0.82);
+  box-shadow: var(--ado-shadow);
+  opacity: 0;
+}
+
+.scene-{{sceneId}} .ado-topbar {
+  flex: 0 0 58px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 22px;
+  background: linear-gradient(90deg, #0078d4, #0099e5 56%, #50e6ff);
+  color: #ffffff;
+}
+
+.scene-{{sceneId}} .ado-waffle {
+  display: grid;
+  grid-template-columns: repeat(3, 4px);
+  gap: 3px;
+  width: 20px;
+  height: 20px;
+}
+.scene-{{sceneId}} .ado-waffle span { width: 4px; height: 4px; border-radius: 1px; background: rgba(255,255,255,0.95); }
+
+.scene-{{sceneId}} .ado-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 210px;
+  font-weight: 650;
+  font-size: 17px;
+}
+.scene-{{sceneId}} .ado-brand-mark {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255,255,255,0.36);
+}
+.scene-{{sceneId}} .ado-brand-mark svg { width: 15px; height: 15px; fill: #ffffff; }
+
+.scene-{{sceneId}} .ado-search {
+  height: 34px;
+  max-width: 620px;
+  flex: 1 1 460px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 13px;
+  border-radius: 7px;
+  background: rgba(255,255,255,0.20);
+  border: 1px solid rgba(255,255,255,0.32);
+  color: rgba(255,255,255,0.92);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .ado-search svg { width: 15px; height: 15px; stroke: #ffffff; stroke-width: 2; opacity: 0.9; }
+
+.scene-{{sceneId}} .ado-top-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.scene-{{sceneId}} .ado-icon-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.16);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #ffffff;
+  font-size: 15px;
+}
+.scene-{{sceneId}} .ado-avatar {
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: #ffffff;
+  color: var(--ado-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 750;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.42);
+}
+
+.scene-{{sceneId}} .ado-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 232px minmax(0, 1fr);
+}
+.scene-{{sceneId}} .ado-sidebar {
+  background: rgba(246,251,255,0.86);
+  border-right: 1px solid var(--ado-border);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.scene-{{sceneId}} .ado-project {
+  padding: 22px 20px 16px;
+  border-bottom: 1px solid var(--ado-border);
+}
+.scene-{{sceneId}} .ado-project-kicker {
+  font-size: 12px;
+  color: var(--ado-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 6px;
+}
+.scene-{{sceneId}} .ado-project-name {
+  font-size: 20px;
+  font-weight: 750;
+  line-height: 1.15;
+  color: var(--ado-text);
+}
+.scene-{{sceneId}} .ado-side-nav {
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.scene-{{sceneId}} .ado-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 9px;
+  color: var(--ado-muted);
+  font-weight: 560;
+}
+.scene-{{sceneId}} .ado-nav-item svg { width: 17px; height: 17px; stroke: currentColor; stroke-width: 1.9; fill: none; }
+.scene-{{sceneId}} .ado-nav-item--active {
+  color: var(--ado-primary);
+  background: rgba(0,120,212,0.10);
+}
+.scene-{{sceneId}} .ado-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+.scene-{{sceneId}} .ado-page-head {
+  flex: 0 0 124px;
+  padding: 22px 28px 0;
+  background: rgba(255,255,255,0.84);
+  border-bottom: 1px solid var(--ado-border);
+}
+.scene-{{sceneId}} .ado-breadcrumb {
+  font-size: 13px;
+  color: var(--ado-muted);
+  margin-bottom: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.scene-{{sceneId}} .ado-title-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.scene-{{sceneId}} .ado-title {
+  margin: 0;
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 760;
+  color: var(--ado-text);
+  letter-spacing: 0;
+}
+.scene-{{sceneId}} .ado-subtitle {
+  margin-top: 6px;
+  color: var(--ado-muted);
+  font-size: 14px;
+  line-height: 1.35;
+  max-width: 1120px;
+}
+.scene-{{sceneId}} .ado-branch-chip,
+.scene-{{sceneId}} .ado-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 0 11px;
+  border-radius: 999px;
+  border: 1px solid var(--ado-border-strong);
+  background: rgba(255,255,255,0.78);
+  color: var(--ado-primary);
+  font-size: 13px;
+  font-weight: 650;
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .ado-pills { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+.scene-{{sceneId}} .ado-tabs {
+  height: 42px;
+  margin-top: 15px;
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+.scene-{{sceneId}} .ado-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 14px;
+  border-radius: 9px 9px 0 0;
+  color: var(--ado-muted);
+  position: relative;
+  font-weight: 580;
+  font-size: 14px;
+}
+.scene-{{sceneId}} .ado-tab--active {
+  color: var(--ado-primary);
+  background: rgba(0,120,212,0.08);
+}
+.scene-{{sceneId}} .ado-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: -1px;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(90deg, var(--ado-primary), var(--ado-primary-2));
+}
+.scene-{{sceneId}} .ado-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  padding: 24px 28px 28px;
+}
+.scene-{{sceneId}} .ado-grid-2 {
+  height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  min-height: 0;
+}
+.scene-{{sceneId}} .ado-grid-3 {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr) 330px;
+  gap: 18px;
+  min-height: 0;
+}
+.scene-{{sceneId}} .ado-card {
+  min-width: 0;
+  min-height: 0;
+  background: var(--ado-surface);
+  border: 1px solid var(--ado-border);
+  border-radius: 14px;
+  box-shadow: 0 16px 42px rgba(24, 76, 124, 0.08);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ado-card-head {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--ado-border);
+  background: rgba(255,255,255,0.72);
+  font-weight: 720;
+  color: var(--ado-text);
+}
+.scene-{{sceneId}} .ado-card-head small { margin-left: auto; color: var(--ado-muted); font-weight: 560; }
+.scene-{{sceneId}} .ado-card-body { padding: 14px 16px; min-height: 0; overflow: hidden; }
+.scene-{{sceneId}} .ado-list { display: flex; flex-direction: column; }
+.scene-{{sceneId}} .ado-row {
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgba(67,117,166,0.10);
+  color: var(--ado-text);
+  font-size: 14px;
+}
+.scene-{{sceneId}} .ado-row:last-child { border-bottom: 0; }
+.scene-{{sceneId}} .ado-row--active { background: rgba(0,120,212,0.08); }
+.scene-{{sceneId}} .ado-file-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ado-primary);
+  background: rgba(0,120,212,0.10);
+  flex: 0 0 24px;
+}
+.scene-{{sceneId}} .ado-row-main { min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.scene-{{sceneId}} .ado-row-meta { flex: 0 0 auto; color: var(--ado-muted); font-size: 12px; white-space: nowrap; }
+.scene-{{sceneId}} .ado-tree { padding: 10px; }
+.scene-{{sceneId}} .ado-tree-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 32px;
+  padding: 0 9px;
+  border-radius: 8px;
+  color: var(--ado-muted);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .ado-tree-row--active { color: var(--ado-primary); background: rgba(0,120,212,0.08); font-weight: 650; }
+.scene-{{sceneId}} .ado-tree-indent-1 { padding-left: 24px; }
+.scene-{{sceneId}} .ado-tree-indent-2 { padding-left: 40px; }
+.scene-{{sceneId}} .ado-tree-icon { width: 16px; text-align: center; color: var(--ado-primary); font-size: 12px; }
+.scene-{{sceneId}} .ado-code {
+  height: 100%;
+  overflow: hidden;
+  background: var(--ado-code-bg);
+  font-family: "Cascadia Mono", Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.55;
+  color: #1f2937;
+}
+.scene-{{sceneId}} .ado-code-row,
+.scene-{{sceneId}} .ado-diff-row {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  min-height: 25px;
+  border-bottom: 1px solid rgba(67,117,166,0.06);
+}
+.scene-{{sceneId}} .ado-code-num,
+.scene-{{sceneId}} .ado-diff-num {
+  padding: 2px 13px 2px 0;
+  color: #7c8da1;
+  text-align: right;
+  user-select: none;
+  background: rgba(255,255,255,0.56);
+}
+.scene-{{sceneId}} .ado-code-text,
+.scene-{{sceneId}} .ado-diff-text { padding: 2px 12px; white-space: pre; overflow: hidden; text-overflow: ellipsis; }
+.scene-{{sceneId}} .ado-code-row--highlight { background: rgba(0,120,212,0.10); }
+.scene-{{sceneId}} .ado-diff-row--add { background: var(--ado-added-bg); }
+.scene-{{sceneId}} .ado-diff-row--remove { background: var(--ado-removed-bg); }
+.scene-{{sceneId}} .ado-diff-row--add .ado-diff-num { border-left: 4px solid var(--ado-added-border); }
+.scene-{{sceneId}} .ado-diff-row--remove .ado-diff-num { border-left: 4px solid var(--ado-removed-border); }
+.scene-{{sceneId}} .ado-diff-row--hunk { background: rgba(0,120,212,0.08); color: var(--ado-primary); font-weight: 650; }
+.scene-{{sceneId}} .ado-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.scene-{{sceneId}} .ado-status--success { color: var(--ado-success); background: rgba(16,124,16,0.10); }
+.scene-{{sceneId}} .ado-status--warning { color: var(--ado-warning); background: rgba(183,121,31,0.13); }
+.scene-{{sceneId}} .ado-status--danger { color: var(--ado-danger); background: rgba(197,15,31,0.10); }
+.scene-{{sceneId}} .ado-status--info { color: var(--ado-primary); background: rgba(0,120,212,0.10); }
+.scene-{{sceneId}} .ado-check-row,
+.scene-{{sceneId}} .ado-reviewer,
+.scene-{{sceneId}} .ado-activity {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(67,117,166,0.10);
+}
+.scene-{{sceneId}} .ado-check-row:last-child,
+.scene-{{sceneId}} .ado-reviewer:last-child,
+.scene-{{sceneId}} .ado-activity:last-child { border-bottom: 0; }
+.scene-{{sceneId}} .ado-check-icon,
+.scene-{{sceneId}} .ado-activity-dot {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  flex: 0 0 25px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 800;
+}
+.scene-{{sceneId}} .ado-check-main,
+.scene-{{sceneId}} .ado-activity-main { min-width: 0; flex: 1 1 auto; }
+.scene-{{sceneId}} .ado-check-title,
+.scene-{{sceneId}} .ado-activity-title { font-weight: 700; color: var(--ado-text); margin-bottom: 2px; }
+.scene-{{sceneId}} .ado-check-sub,
+.scene-{{sceneId}} .ado-activity-sub { color: var(--ado-muted); font-size: 12px; line-height: 1.35; }
+.scene-{{sceneId}} .ado-reviewer-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0078d4, #50e6ff);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  flex: 0 0 32px;
+}
+.scene-{{sceneId}} .ado-reviewer-main { min-width: 0; flex: 1 1 auto; }
+.scene-{{sceneId}} .ado-reviewer-name { font-weight: 720; color: var(--ado-text); }
+.scene-{{sceneId}} .ado-reviewer-role { color: var(--ado-muted); font-size: 12px; margin-top: 1px; }
+.scene-{{sceneId}} .ado-comment {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 14px;
+  height: 100%;
+}
+.scene-{{sceneId}} .ado-bot-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--ado-primary), var(--ado-purple));
+  box-shadow: 0 14px 30px rgba(0,120,212,0.20);
+}
+.scene-{{sceneId}} .ado-comment-bubble {
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--ado-border);
+  border-radius: 14px;
+  background: var(--ado-surface-strong);
+  overflow: hidden;
+}
+.scene-{{sceneId}} .ado-comment-head {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--ado-border);
+  font-weight: 760;
+}
+.scene-{{sceneId}} .ado-comment-head span { color: var(--ado-muted); font-weight: 560; font-size: 12px; }
+.scene-{{sceneId}} .ado-comment-content { padding: 16px; color: var(--ado-text); line-height: 1.45; }
+.scene-{{sceneId}} .ado-impact-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-top: 12px;
+  border: 1px solid var(--ado-border);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 13px;
+}
+.scene-{{sceneId}} .ado-impact-table th,
+.scene-{{sceneId}} .ado-impact-table td {
+  padding: 9px 10px;
+  text-align: left;
+  border-bottom: 1px solid rgba(67,117,166,0.10);
+  vertical-align: top;
+}
+.scene-{{sceneId}} .ado-impact-table th { background: #f2f9ff; color: var(--ado-muted); font-size: 12px; }
+.scene-{{sceneId}} .ado-impact-table tr:last-child td { border-bottom: 0; }
+.scene-{{sceneId}} .ado-recommendations { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 8px; }
+.scene-{{sceneId}} .ado-recommendations li {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 9px 10px;
+  border-radius: 10px;
+  background: rgba(0,120,212,0.07);
+  color: var(--ado-text);
+  font-size: 13px;
+}
+.scene-{{sceneId}} .ado-callout {
+  border-radius: 13px;
+  padding: 14px;
+  background: linear-gradient(135deg, rgba(0,120,212,0.11), rgba(80,230,255,0.12));
+  border: 1px solid rgba(0,120,212,0.18);
+  color: var(--ado-text);
+  line-height: 1.4;
+}
+.scene-{{sceneId}} .ado-callout strong { color: var(--ado-primary); }
+.scene-{{sceneId}} .ado-muted { color: var(--ado-muted); }
+.scene-{{sceneId}} .ado-mono { font-family: "Cascadia Mono", Consolas, monospace; font-size: 12px; }
+.scene-{{sceneId}} .ado-stack { display: grid; gap: 14px; }
+.scene-{{sceneId}} .ado-fill { height: 100%; }
+</style>
+
+<div class="ado-root" data-scene-component="AzureDevOpsScene" data-variant="{{variant}}" data-theme="{{theme}}">
+  <div class="ado-ambient"></div>
+  <div class="ado-window">
+    <div class="ado-topbar">
+      <div class="ado-waffle" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="ado-brand"><span class="ado-brand-mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7.4 11.7 3v4.1L8.2 9.2v5.6l3.5 2.1V21L4 16.6V7.4Zm16 1.2v6.8L12.3 20v-4.1l3.5-2.1V10.2l-3.5-2.1V4L20 8.6Z"/></svg></span><span>Azure DevOps</span></div>
+      <div class="ado-search"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></svg><span>{{searchPlaceholder}}</span></div>
+      <div class="ado-top-actions"><div class="ado-icon-btn">+</div><div class="ado-icon-btn">?</div><div class="ado-icon-btn">!</div><div class="ado-avatar">{{userInitials}}</div></div>
+    </div>
+    <div class="ado-shell">
+      <aside class="ado-sidebar">
+        <div class="ado-project"><div class="ado-project-kicker">Project</div><div class="ado-project-name">{{projectName}}</div></div>
+        <nav class="ado-side-nav">{{{sideNavHtml}}}</nav>
+      </aside>
+      <main class="ado-main">
+        <header class="ado-page-head">
+          <div class="ado-breadcrumb">{{breadcrumb}}</div>
+          <div class="ado-title-row"><h1 class="ado-title">{{pageTitle}}</h1><span class="ado-branch-chip">{{repoName}}</span><div class="ado-pills">{{{headerPillsHtml}}}</div></div>
+          <div class="ado-subtitle">{{subtitle}}</div>
+          <div class="ado-tabs">{{{tabsHtml}}}</div>
+        </header>
+        <section class="ado-body">{{{bodyHtml}}}</section>
+      </main>
+    </div>
+  </div>
+</div>

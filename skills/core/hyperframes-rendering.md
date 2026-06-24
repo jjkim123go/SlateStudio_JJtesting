@@ -100,6 +100,8 @@ Use these pre-built components whenever possible — they handle animation, bran
 |-----------------|--------------------------------------------------------------|-----------|
 | `TerminalScene` | **Synthetic terminal/CLI demo without screen capture.** Steps include `cmd` (typed character-by-character), `out` (block reveal), `pause` (hold), `pill` (status badge). Ideal for product demos, install flows, deploy walkthroughs. See [`synthetic-screen-recording.md`](synthetic-screen-recording.md) for the step-kind contract. | `titlebar`, `linesHtml` (raw `<div class="ts-line" data-kind="…" data-duration="…">…</div>` rows) |
 | `KustoExplorerScene` | **Synthetic Kusto Explorer / ADX query demo without screen capture.** Desktop-style ribbon, connection tree, KQL editor, result grid, and callout overlay. Use mock data only. | `connections`, `tabs`, `queryLines`, `highlightLines`, `results`, `callout` |
+| `AzureDevOpsScene` | **Synthetic Azure DevOps repo / file / pull request / PR Assistant surface.** Use for anonymized ADO repo walkthroughs, PAL impact-review explanations, reviewer activity, and PR Assistant comments without screen recording. | `variant`, `projectName`, `repoName`, `files`, `codeLines`, `diffLines`, `checks`, `reviewers`, `impactRows`, `recommendations`, `activity` |
+| `DualMetricShowcase` | **Side-by-side executive metric panels** for two products, programs, or operating moments. Use when both sets of numbers must remain visible together. | `leftTitle`, `leftMetricsJson`, `rightTitle`, `rightMetricsJson`, `title`, `footer` |
 
 > **Routing note:** `MetricsCard`, `ArchitectureDiagram`, and `TerminalScene`
 > override the default `structured_image` routing for their respective

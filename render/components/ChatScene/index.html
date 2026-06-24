@@ -1,0 +1,105 @@
+<!-- ChatScene — clean, light LLM chat surface. User messages + assistant replies
+     stream in (word-by-word) with a typing indicator. Thread is built in
+     animation.js from SCENE_PROPS.turns. Anti-freeze via drifting orbs. -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+.scene-{{sceneId}} .cs-root{
+  position:absolute;inset:0;overflow:hidden;
+  font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+  --cs-bg:{{backgroundColor}}; --cs-surface:{{surfaceColor}}; --cs-elev:{{elevatedSurfaceColor}};
+  --cs-text:{{textColor}}; --cs-muted:{{mutedTextColor}}; --cs-accent:{{accentColor}};
+  --cs-border:{{borderColor}}; --cs-user:{{userBubbleColor}}; --cs-asst:{{assistantBubbleColor}};
+  color:var(--cs-text,#0B2A4A);
+  background:
+    radial-gradient(circle at 80% 12%,rgba(14,165,233,.12),transparent 38%),
+    radial-gradient(circle at 12% 88%,rgba(82,196,255,.12),transparent 34%),
+    linear-gradient(160deg, var(--cs-bg,#F4F9FF) 0%, #EAF4FF 100%);
+}
+.scene-{{sceneId}} .cs-grid{position:absolute;inset:0;
+  background-image:linear-gradient(rgba(14,165,233,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(14,165,233,.045) 1px,transparent 1px);
+  background-size:72px 72px;mask-image:radial-gradient(circle at 50% 42%,#000 0%,transparent 80%);}
+.scene-{{sceneId}} .cs-orb{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;}
+.scene-{{sceneId}} .cs-orb-a{width:520px;height:520px;left:-120px;top:-120px;background:radial-gradient(circle,rgba(14,165,233,.34),transparent 68%);}
+.scene-{{sceneId}} .cs-orb-b{width:560px;height:560px;right:-140px;bottom:-160px;background:radial-gradient(circle,rgba(124,196,255,.30),transparent 70%);}
+
+/* Header (eyebrow + title) */
+.scene-{{sceneId}} .cs-head{position:absolute;left:50%;top:84px;transform:translateX(-50%);text-align:center;z-index:4;width:1200px;}
+.scene-{{sceneId}} .cs-kicker{font-size:20px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--cs-accent,#0EA5E9);}
+.scene-{{sceneId}} .cs-title{font-size:46px;font-weight:800;letter-spacing:-.02em;margin-top:10px;color:var(--cs-text,#0B2A4A);}
+
+/* Chat window */
+.scene-{{sceneId}} .cs-window{position:absolute;left:50%;top:54%;transform:translate(-50%,-50%);
+  width:1160px;max-height:780px;border-radius:24px;
+  background:var(--cs-surface,#FFFFFF);
+  border:1px solid var(--cs-border,#CFE4F7);
+  box-shadow:0 60px 130px rgba(11,42,74,.16),0 20px 46px rgba(11,42,74,.10);
+  overflow:hidden;display:flex;flex-direction:column;}
+.scene-{{sceneId}} .cs-bar{height:64px;flex-shrink:0;display:flex;align-items:center;gap:14px;padding:0 26px;
+  background:linear-gradient(180deg,#FFFFFF,var(--cs-elev,#E8F2FD));border-bottom:1px solid var(--cs-border,#CFE4F7);}
+.scene-{{sceneId}} .cs-mark{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-weight:900;font-size:18px;background:linear-gradient(135deg,var(--cs-accent,#0EA5E9),#7CC4FF);
+  box-shadow:0 8px 18px rgba(14,165,233,.34);}
+.scene-{{sceneId}} .cs-bar-title{font-size:22px;font-weight:800;letter-spacing:-.01em;color:var(--cs-text,#0B2A4A);}
+.scene-{{sceneId}} .cs-bar-dot{width:11px;height:11px;border-radius:50%;background:#36D399;margin-left:auto;box-shadow:0 0 0 5px rgba(54,211,153,.16);}
+
+.scene-{{sceneId}} .cs-thread{flex:1;min-height:0;padding:30px 34px;display:flex;flex-direction:column;gap:22px;overflow:hidden;}
+
+.scene-{{sceneId}} .cs-msg{display:flex;gap:14px;max-width:86%;}
+.scene-{{sceneId}} .cs-msg.user{align-self:flex-end;flex-direction:row-reverse;}
+.scene-{{sceneId}} .cs-msg.assistant{align-self:flex-start;}
+.scene-{{sceneId}} .cs-av{width:42px;height:42px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:17px;color:#fff;}
+.scene-{{sceneId}} .cs-av.assistant{background:linear-gradient(135deg,var(--cs-accent,#0EA5E9),#7CC4FF);box-shadow:0 8px 18px rgba(14,165,233,.30);}
+.scene-{{sceneId}} .cs-av.user{background:linear-gradient(135deg,#5B7FB5,#8AA9D6);box-shadow:0 8px 18px rgba(91,112,136,.28);}
+.scene-{{sceneId}} .cs-bubble{padding:16px 20px;border-radius:18px;font-size:30px;line-height:1.42;font-weight:500;
+  background:var(--cs-asst,#F2F8FF);color:var(--cs-text,#0B2A4A);border:1px solid var(--cs-border,#CFE4F7);
+  box-shadow:0 10px 24px rgba(11,42,74,.07);}
+.scene-{{sceneId}} .cs-msg.user .cs-bubble{
+  background:linear-gradient(135deg,var(--cs-accent,#0EA5E9),#39B6F0);color:#fff;border-color:rgba(14,165,233,.4);}
+.scene-{{sceneId}} .cs-bubble .cs-label{display:block;font-size:16px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--cs-muted,#5B7088);margin-bottom:8px;}
+.scene-{{sceneId}} .cs-msg.user .cs-bubble .cs-label{color:rgba(255,255,255,.82);}
+.scene-{{sceneId}} .cs-bubble .ex{display:block;font-family:'JetBrains Mono',Consolas,monospace;font-size:24px;line-height:1.6;}
+.scene-{{sceneId}} .cs-bubble .ex .in{color:var(--cs-muted,#5B7088);}
+.scene-{{sceneId}} .cs-bubble .ex .arrow{color:var(--cs-accent,#0EA5E9);font-weight:700;padding:0 8px;}
+.scene-{{sceneId}} .cs-bubble .ex .out{color:var(--cs-text,#0B2A4A);font-weight:700;}
+.scene-{{sceneId}} .cs-msg.user .cs-bubble .ex .in,
+.scene-{{sceneId}} .cs-msg.user .cs-bubble .ex .out{color:#fff;}
+.scene-{{sceneId}} .cs-msg.user .cs-bubble .ex .arrow{color:#DCEEFF;}
+.scene-{{sceneId}} .cs-w{display:inline-block;}
+.scene-{{sceneId}} .cs-caret{display:inline-block;width:3px;height:0.96em;vertical-align:-0.12em;margin-left:3px;
+  background:var(--cs-accent,#0EA5E9);border-radius:2px;}
+
+.scene-{{sceneId}} .cs-dots{display:inline-flex;gap:8px;align-items:center;padding:4px 2px;}
+.scene-{{sceneId}} .cs-dots span{width:11px;height:11px;border-radius:50%;background:var(--cs-accent,#0EA5E9);opacity:.55;}
+
+/* Composer */
+.scene-{{sceneId}} .cs-composer{flex-shrink:0;padding:16px 26px 22px;border-top:1px solid var(--cs-border,#CFE4F7);background:var(--cs-surface,#FFFFFF);}
+.scene-{{sceneId}} .cs-input{height:58px;border-radius:14px;background:var(--cs-elev,#E8F2FD);border:1px solid var(--cs-border,#CFE4F7);
+  padding:0 20px;display:flex;align-items:center;color:var(--cs-muted,#5B7088);font-size:24px;font-weight:500;}
+.scene-{{sceneId}} .cs-send{margin-left:auto;width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:20px;background:linear-gradient(135deg,var(--cs-accent,#0EA5E9),#39B6F0);}
+</style>
+<div class="cs-root" data-scene-component="ChatScene">
+  <div class="cs-grid"></div>
+  <div class="cs-orb cs-orb-a"></div>
+  <div class="cs-orb cs-orb-b"></div>
+
+  <div class="cs-head">
+    <div class="cs-kicker">{{kicker}}</div>
+    <div class="cs-title">{{title}}</div>
+  </div>
+
+  <div class="cs-window">
+    <div class="cs-bar">
+      <div class="cs-mark">✦</div>
+      <div class="cs-bar-title">{{modelName}}</div>
+      <div class="cs-bar-dot"></div>
+    </div>
+    <div class="cs-thread"></div>
+    <div class="cs-composer">
+      <div class="cs-input">Message {{modelName}}…<div class="cs-send">↑</div></div>
+    </div>
+  </div>
+</div>

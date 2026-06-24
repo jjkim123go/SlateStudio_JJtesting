@@ -619,8 +619,8 @@ SEMANTIC_VISUAL_RULES = [
     {
         "issue": "vscode_visual_missing",
         "keywords": ("vs code", "visual studio code", "copilot", "developer", "typing a prompt"),
-        "required": ("vscodescene", "terminalcast", "terminalscene", "githubscene", "stepshtml", "codecontenthtml", "primarysidebarbodyhtml"),
-        "detail": "Developer/Copilot narration needs a moving VS Code, terminal, or GitHub synthetic surface with visible actions.",
+        "required": ("vscodescene", "terminalcast", "terminalscene", "githubscene", "azuredevopsscene", "stepshtml", "codecontenthtml", "primarysidebarbodyhtml"),
+        "detail": "Developer/Copilot narration needs a moving VS Code, terminal, GitHub, or Azure DevOps synthetic surface with visible actions.",
     },
     {
         "issue": "spreadsheet_visual_missing",

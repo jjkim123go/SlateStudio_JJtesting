@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Quote",
+  "description": "Large quotation with attribution (name + role + optional logo/photo), staggered reveal. Supports a dark default and an on-theme light variant.",
+  "type": "object",
+  "required": ["text"],
+  "properties": {
+    "text": { "type": "string", "description": "The quotation text. Keep short (<= ~14 words) for on-screen readability." },
+    "author": { "type": "string", "description": "Attribution name / source (e.g. 'Anthropic', 'Tobi Lutke')." },
+    "role": { "type": "string", "description": "Attribution role / source detail (e.g. 'Claude prompt-engineering docs')." },
+    "photoSrc": { "type": "string", "description": "Optional source logo / author photo (rendered as a 96px circle). Hidden if it fails to load." },
+    "variant": {
+      "type": "string",
+      "enum": ["dark", "light"],
+      "default": "dark",
+      "description": "Color treatment. 'dark' (default) = accent-to-navy gradient with white text (backward compatible). 'light' = on-theme light card (surface/elevatedSurface background, theme text + muted text, accent rule) for light themes like the sky-blue Learning Friday series."
+    },
+    "qtBgFrom": { "type": "string", "description": "Override: gradient start color. Defaults from variant + theme." },
+    "qtBgTo": { "type": "string", "description": "Override: gradient end color. Defaults from variant + theme." },
+    "qtText": { "type": "string", "description": "Override: quote + author text color." },
+    "qtSub": { "type": "string", "description": "Override: role / attribution-detail color." },
+    "qtMark": { "type": "string", "description": "Override: large quotation-mark color." },
+    "qtAccent": { "type": "string", "description": "Override: accent rule color. Defaults to theme accent." },
+    "qtBorder": { "type": "string", "description": "Override: photo border color." }
+  }
+}

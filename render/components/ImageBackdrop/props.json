@@ -1,0 +1,24 @@
+{
+  "name": "ImageBackdrop",
+  "prefix": "ib-",
+  "summary": "Full-bleed CSS background image (no <img> element, so the @hyperframes/producer does NOT pillarbox it) with a slow Ken-Burns push and a fade-up lower caption. Use for showing a generated or provided image edge-to-edge with continuous motion.",
+  "bestFor": "Hero / concept image scenes where a single illustration or photo should fill the frame with premium motion and a short caption.",
+  "props": {
+    "imageSrc": { "type": "string", "required": true, "description": "Image path (relative to the SCF/project dir). Resolved as an asset (key ends in 'Src')." },
+    "kicker": { "type": "string", "required": false, "description": "Small uppercase eyebrow above the title." },
+    "title": { "type": "string", "required": false, "description": "Headline shown over the image." },
+    "subtitle": { "type": "string", "required": false, "description": "Supporting line under the title." },
+    "backgroundColor": { "type": "string", "default": "#EAF7FF", "description": "Fallback background behind the image while it loads." },
+    "accentColor": { "type": "string", "default": "#0078D4", "description": "Kicker color." },
+    "visualBeats": { "type": "array", "required": false, "description": "Optional declared beats for the pre-render visual-hold validator (ceil(duration/4))." }
+  },
+  "minimalExample": {
+    "component": "ImageBackdrop",
+    "props": {
+      "imageSrc": "assets/img/factory-worker.png",
+      "kicker": "The mental model",
+      "title": "PAL is the factory. The assistant is the worker.",
+      "subtitle": "The factory builds the package ahead of time; the worker reads it at PR time."
+    }
+  }
+}

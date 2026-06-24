@@ -34,12 +34,14 @@
     var edges = safeParse(root.getAttribute('data-df-edges'), []);
     var legend = safeParse(root.getAttribute('data-df-legend'), null);
     var callouts = safeParse(root.getAttribute('data-df-callouts'), []);
+    var groups = safeParse(root.getAttribute('data-df-groups'), []);
     var mode = (root.getAttribute('data-df-mode') || 'linear').toLowerCase();
     if (mode !== 'mesh') mode = 'linear';
 
     var svg = root.querySelector('.df-svg');
     var stagesLayer = root.querySelector('.df-stages-layer');
     var edgesLayer = root.querySelector('.df-edges-layer');
+    var groupsLayer = root.querySelector('.df-groups-layer');
     var bannersLayer = root.querySelector('.df-banners-layer');
     var packetsLayer = root.querySelector('.df-packets-layer');
     var locksLayer = root.querySelector('.df-locks-layer');
@@ -109,6 +111,17 @@
     }
 
     var positioned = (mode === 'mesh') ? layoutMesh(stages) : layoutLinear(stages);
+    // Honor per-stage explicit position overrides (x/y as 0..1 normalized fractions
+    // of VIEW_W/VIEW_H referring to top-left of the card). Anything outside [0,1]
+    // is treated as already-pixel coordinates.
+    positioned.forEach(function (p) {
+      var raw = p.raw || {};
+      if (raw.x !== undefined && raw.y !== undefined) {
+        var nx = Number(raw.x), ny = Number(raw.y);
+        p.x = (nx > 0 && nx <= 1) ? nx * VIEW_W : nx;
+        p.y = (ny > 0 && ny <= 1) ? ny * VIEW_H : ny;
+      }
+    });
     var byId = {};
     positioned.forEach(function (p) { byId[p.id] = p; });
 
@@ -193,6 +206,68 @@
         bl.textContent = String(p.raw.classification).toUpperCase();
       }
     });
+
+    // ---- groups (dashed bounding-box around a set of stages) ----------------
+    if (groups && groups.length > 0 && groupsLayer) {
+      groups.forEach(function (grp, gi) {
+        var ids = grp.stageIds || [];
+        var members = ids.map(function (id) { return byId[id]; }).filter(Boolean);
+        if (members.length === 0) return;
+        var pad = 22;
+        var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+        members.forEach(function (m) {
+          if (m.x < minX) minX = m.x;
+          if (m.y < minY) minY = m.y;
+          if (m.x + STAGE_W > maxX) maxX = m.x + STAGE_W;
+          if (m.y + STAGE_H > maxY) maxY = m.y + STAGE_H;
+        });
+        // leave room above for the label
+        var labelGap = grp.label ? 18 : 0;
+        var bx = minX - pad;
+        var by = minY - pad - labelGap;
+        var bw = (maxX - minX) + pad * 2;
+        var bh = (maxY - minY) + pad * 2 + labelGap;
+        var stroke = grp.color || 'rgba(245, 158, 11, 0.9)';
+        var style = (grp.style || 'dashed').toLowerCase();
+        var dash = style === 'dotted' ? '3 6' : style === 'solid' ? null : '12 8';
+        var rectAttrs = {
+          'class': 'df-group-rect',
+          'data-group': gi,
+          'x': bx, 'y': by, 'width': bw, 'height': bh,
+          'rx': 18, 'ry': 18,
+          'fill': 'rgba(245, 158, 11, 0.05)',
+          'stroke': stroke,
+          'stroke-width': 2.5
+        };
+        if (dash) rectAttrs['stroke-dasharray'] = dash;
+        el('rect', rectAttrs, groupsLayer);
+        if (grp.label) {
+          var lblPadX = 14, lblH = 26;
+          var labelText = grp.label;
+          var lblW = labelText.length * 8 + lblPadX * 2;
+          var lx = bx + 24;
+          var ly = by - lblH / 2 + 4;
+          var lg = el('g', {
+            'class': 'df-group-label',
+            'data-group': gi,
+            'transform': 'translate(' + lx + ',' + ly + ')'
+          }, groupsLayer);
+          el('rect', {
+            'x': 0, 'y': 0, 'width': lblW, 'height': lblH, 'rx': 13, 'ry': 13,
+            'fill': stroke
+          }, lg);
+          var lt = el('text', {
+            'x': lblW / 2, 'y': lblH / 2 + 5,
+            'text-anchor': 'middle',
+            'font-size': 13, 'font-weight': 700,
+            'fill': '#0F172A',
+            'font-family': 'Inter, system-ui, sans-serif',
+            'letter-spacing': '0.04em'
+          }, lg);
+          lt.textContent = labelText.toUpperCase();
+        }
+      });
+    }
 
     // ---- edges + glow lines + pills + pulse orbs --------------------------
     var edgePaths = [];
@@ -416,6 +491,16 @@
     { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'back.out(1.4)',
       stagger: 0.15 },
     SCENE_START + 0.3);
+
+  // Phase 1b: Group bounding boxes fade in after their stages have landed
+  master.fromTo(S + ' .df-group-rect',
+    { autoAlpha: 0, scale: 0.96, transformOrigin: '50% 50%' },
+    { autoAlpha: 1, scale: 1, duration: 0.6, ease: 'power2.out' },
+    SCENE_START + 1.4);
+  master.fromTo(S + ' .df-group-label',
+    { autoAlpha: 0, y: 6 },
+    { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out' },
+    SCENE_START + 1.7);
 
   // Phase 2: Connection lines draw in via strokeDashoffset (1.2–2.0s)
   // Set initial stroke-dash state synchronously, then tween on master

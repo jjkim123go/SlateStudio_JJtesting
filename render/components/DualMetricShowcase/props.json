@@ -1,0 +1,23 @@
+{
+  "$schema": "../_schemas/component-props.schema.json",
+  "name": "DualMetricShowcase",
+  "description": "Side-by-side executive metric panels for PAL/MAGE-style proof moments.",
+  "tokens": {
+    "eyebrow": { "type": "string" },
+    "title": { "type": "string" },
+    "leftKicker": { "type": "string" },
+    "leftTitle": { "type": "string" },
+    "leftSubtitle": { "type": "string" },
+    "leftMetricsJson": { "type": "string", "description": "JSON-encoded metric rows: [{label,value,delta,note}]" },
+    "leftAccent": { "type": "string" },
+    "rightKicker": { "type": "string" },
+    "rightTitle": { "type": "string" },
+    "rightSubtitle": { "type": "string" },
+    "rightMetricsJson": { "type": "string", "description": "JSON-encoded metric rows: [{label,value,delta,note}]" },
+    "rightAccent": { "type": "string" },
+    "footer": { "type": "string" },
+    "bgFrom": { "type": "string" },
+    "bgTo": { "type": "string" },
+    "textColor": { "type": "string" }
+  }
+}

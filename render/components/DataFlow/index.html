@@ -178,12 +178,15 @@
 .scene-{{sceneId}} .df-legend-swatch{
   width:14px;height:14px;border-radius:4px;
 }
+.scene-{{sceneId}} .df-group-rect{opacity:0}
+.scene-{{sceneId}} .df-group-label{opacity:0}
 </style>
 <div class="df-root" data-scene-component="DataFlow"
   data-df-stages="{{stagesJson}}"
   data-df-edges="{{edgesJson}}"
   data-df-legend="{{legendJson}}"
   data-df-callouts="{{calloutsJson}}"
+  data-df-groups="{{groupsJson}}"
   data-df-mode="{{mode}}">
   <header class="df-header">
     <h2 class="df-title">{{title}}</h2>
@@ -213,6 +216,7 @@
         </marker>
       </defs>
       <g class="df-edges-layer"></g>
+      <g class="df-groups-layer"></g>
       <g class="df-stages-layer"></g>
       <g class="df-banners-layer"></g>
       <g class="df-packets-layer"></g>

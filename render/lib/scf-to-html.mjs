@@ -21,6 +21,7 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync } from 'fs';
 import { basename, dirname, isAbsolute, join, resolve } from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
+import { transformAzureDevOpsScene } from './azure-devops-scene-transformer.mjs';
 import { transformBookingsScene } from './bookings-scene-transformer.mjs';
 import { transformFormsScene } from './forms-scene-transformer.mjs';
 import { transformGitHubScene } from './github-scene-transformer.mjs';
@@ -75,6 +76,7 @@ const KNOWN_COMPONENTS = new Set([
   // Phase I — Microsoft synthetic surfaces (proposal §11A)
   'VSCodeScene',
   'AzurePortalScene',
+  'AzureDevOpsScene',
   'GitHubScene',
   'EdgeBrowserScene',
   'TeamsScene',
@@ -165,7 +167,11 @@ const KNOWN_COMPONENTS = new Set([
   // Slate-original components
   'ParticleTextForm',
   'PurpleCardStorm',
+  'DualMetricShowcase',
   'PALReviewSurface',
+  'ExpandableCardGrid',
+  'ImageBackdrop',
+  'ChatScene',
 ]);
 
 // Components that depend on the lazy three.js driver. Adding a name here
@@ -2114,6 +2120,38 @@ function stageVideoAsset(rawSrc, sceneCtx) {
 }
 
 const PROP_TRANSFORMERS = {
+  Quote(props, sceneCtx) {
+    // Quote ships dark by default (accent→navy gradient, white text) for
+    // backward compatibility. `variant: "light"` produces an on-theme light
+    // card (e.g. for the sky-blue Learning Friday series) by pulling the
+    // active theme's surface/text/accent tokens (already populated on props by
+    // applyBrandDefaults, which runs before this transformer).
+    const theme = sceneCtx?.compileCtx?.theme || DEFAULT_THEME;
+    const accent = props.accentColor || theme.accent || '#0EA5E9';
+    const toRgba = (color, alpha) => {
+      if (!HEX_COLOR_RE.test(String(color || '').trim())) return color;
+      const [r, g, b] = hexToRgb(color);
+      return `rgba(${r},${g},${b},${alpha})`;
+    };
+    const variant = String(props.variant || 'dark').toLowerCase();
+    if (variant === 'light') {
+      if (props.qtBgFrom == null) props.qtBgFrom = props.elevatedSurfaceColor || theme.elevatedSurface;
+      if (props.qtBgTo == null) props.qtBgTo = props.surfaceColor || theme.surface;
+      if (props.qtText == null) props.qtText = props.textColor || theme.text;
+      if (props.qtSub == null) props.qtSub = props.mutedTextColor || theme.mutedText;
+      if (props.qtMark == null) props.qtMark = toRgba(accent, 0.22);
+      if (props.qtBorder == null) props.qtBorder = props.borderColor || theme.border;
+    } else {
+      if (props.qtBgFrom == null) props.qtBgFrom = accent;
+      if (props.qtBgTo == null) props.qtBgTo = '#0f172a';
+      if (props.qtText == null) props.qtText = '#FFFFFF';
+      if (props.qtSub == null) props.qtSub = 'rgba(255,255,255,0.7)';
+      if (props.qtMark == null) props.qtMark = 'rgba(255,255,255,0.25)';
+      if (props.qtBorder == null) props.qtBorder = 'rgba(255,255,255,0.4)';
+    }
+    if (props.qtAccent == null) props.qtAccent = accent;
+  },
+
   DataFlow(props) {
     // DataFlow expects stagesJson/edgesJson/legendJson/calloutsJson as JSON strings.
     // SCF authors pass stages/edges/legend/callouts as native arrays/objects.
@@ -2121,6 +2159,7 @@ const PROP_TRANSFORMERS = {
     if (props.edges && !props.edgesJson) props.edgesJson = JSON.stringify(props.edges);
     if (props.legend && !props.legendJson) props.legendJson = JSON.stringify(props.legend);
     if (props.callouts && !props.calloutsJson) props.calloutsJson = JSON.stringify(props.callouts);
+    if (props.groups && !props.groupsJson) props.groupsJson = JSON.stringify(props.groups);
   },
 
   DeviceStage3D(props, sceneCtx) {
@@ -2166,6 +2205,7 @@ const PROP_TRANSFORMERS = {
   TeamsScene: transformTeamsScene,
   OutlookScene: transformOutlookScene,
   VSCodeScene: transformVSCodeScene,
+  AzureDevOpsScene: transformAzureDevOpsScene,
   GitHubScene: transformGitHubScene,
   StreamScene: transformStreamScene,
   ListsScene: transformListsScene,
@@ -2690,6 +2730,31 @@ const PROP_TRANSFORMERS = {
     // Compute glow color from pinColor (same color at 70% opacity)
     props.pinGlow = props.pinColor + 'b3';
     if (!props.baseSrc) props.baseSrc = '';
+  },
+
+  ExpandableCardGrid(props) {
+    if (typeof props.cardsHtml === 'string') return;
+    if (!Array.isArray(props.cards)) {
+      props.cardsHtml = '';
+      return;
+    }
+    const accentDefault = props.accentColor || '#0078D4';
+    props.cardsHtml = props.cards.map((card, idx) => {
+      const accent = escapeHtml(card.accent || accentDefault);
+      const icon = escapeHtml(card.icon || '');
+      const label = escapeHtml(card.label || '');
+      const summary = escapeHtml(card.summary || '');
+      // detail may carry simple <b> emphasis — allow only <b>/</b>, escape the rest.
+      const detailRaw = String(card.detail || '');
+      const detail = escapeHtml(detailRaw).replace(/&lt;b&gt;/g, '<b>').replace(/&lt;\/b&gt;/g, '</b>');
+      return `<div class="ecg-card" data-card-index="${idx}" style="--ecg-accent:${accent}">`
+           + `<div class="ecg-card-glow" style="--ecg-accent:${accent}"></div>`
+           + (icon ? `<div class="ecg-icon" style="background:linear-gradient(135deg, ${accent} 0%, color-mix(in srgb, ${accent} 70%, #000 0%) 100%)">${icon}</div>` : '')
+           + `<div class="ecg-label">${label}</div>`
+           + `<div class="ecg-summary">${summary}</div>`
+           + (detail ? `<div class="ecg-divider"></div><div class="ecg-detail">${detail}</div>` : '')
+           + `</div>`;
+    }).join('');
   },
 
   CompareSlider(props) {

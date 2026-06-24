@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://slate.local/components/AzureDevOpsScene.props.json",
+  "title": "AzureDevOpsScene props",
+  "type": "object",
+  "description": "Reusable synthetic Azure DevOps repo, file, pull request, diff, PR Assistant comment, and reviewer activity surface. Use anonymized names and demo data by default.",
+  "additionalProperties": true,
+  "properties": {
+    "variant": {
+      "type": "string",
+      "default": "repo-files",
+      "enum": ["repo-files", "file-view", "pr-overview", "pr-diff", "assistant-comment", "reviewer-activity"],
+      "description": "Visual layout variant."
+    },
+    "theme": {
+      "type": "string",
+      "default": "sky-premium",
+      "description": "Theme identifier. Currently sky-premium is the built-in look."
+    },
+    "projectName": { "type": "string", "default": "Commerce Platform" },
+    "repoName": { "type": "string", "default": "Commerce-Financials-Controls" },
+    "branchName": { "type": "string", "default": "main" },
+    "pageTitle": { "type": "string", "description": "Page title in the main header." },
+    "subtitle": { "type": "string", "description": "Short explanatory subtitle." },
+    "breadcrumb": { "type": "string", "description": "Breadcrumb text above the page title." },
+    "searchPlaceholder": { "type": "string", "default": "Search project, files, work items, or PRs" },
+    "userInitials": { "type": "string", "default": "AB" },
+    "files": {
+      "type": "array",
+      "description": "Rows for repo file lists. Each row accepts name, path, type, meta, active.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "tree": {
+      "type": "array",
+      "description": "Folder tree rows. Each row accepts name, type, indent, active.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "codeLines": {
+      "type": "array",
+      "description": "Code viewer lines as strings or objects with number, text, highlight.",
+      "items": { "oneOf": [{ "type": "string" }, { "type": "object", "additionalProperties": true }] }
+    },
+    "fileLocation": {
+      "type": "string",
+      "description": "Display-only folder or repo location for the active file. Avoids Slate asset-path handling for props ending in Path."
+    },
+    "diffLines": {
+      "type": "array",
+      "description": "Diff lines. Each row accepts type add/remove/context/hunk, oldNumber, newNumber, text.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "checks": {
+      "type": "array",
+      "description": "PR check rows. Each row accepts title, subtitle, status.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "reviewers": {
+      "type": "array",
+      "description": "Reviewer rows. Each row accepts name, role, status, initials.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "impactRows": {
+      "type": "array",
+      "description": "PR Assistant impact table rows. Each row accepts contract, changedFile, affectedRepo, owner, reason, severity.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "recommendations": {
+      "type": "array",
+      "description": "PR Assistant recommendations rendered as compact bullets.",
+      "items": { "type": "string" }
+    },
+    "activity": {
+      "type": "array",
+      "description": "Timeline rows for reviewer activity. Each row accepts title, subtitle, status, time.",
+      "items": { "type": "object", "additionalProperties": true }
+    },
+    "bodyHtml": {
+      "type": "string",
+      "description": "Raw HTML override for the main body. Use only for tightly controlled bespoke scenes."
+    },
+    "sideNavHtml": { "type": "string", "description": "Raw HTML override for the side nav." },
+    "tabsHtml": { "type": "string", "description": "Raw HTML override for top tabs." },
+    "headerPillsHtml": { "type": "string", "description": "Raw HTML override for header status pills." }
+  }
+}

@@ -24,6 +24,7 @@
 | [OKRStatus](#okrstatus) | Data | ✅ |
 | [ProgressBar](#progressbar) | Data | ✅ |
 | [VSCodeScene](#vscodescene) | IDE / Demo | ✅ |
+| [AzureDevOpsScene](#azuredevopsscene) | IDE / Demo | — |
 | [TerminalScene](#terminalscene) | IDE / Demo | ✅ |
 | [TerminalCast](#terminalcast) | IDE / Demo | ✅ |
 | [KustoExplorerScene](#kustoexplorerscene) | IDE / Demo | — |
@@ -321,6 +322,53 @@ Full-fidelity VS Code chrome recreation. Accepts **legacy short-form** props
     "filename": "app.ts",
     "stepsHtml": "<div data-step='1'>const greeting = 'Hello';</div>",
     "statusbarText": "TypeScript UTF-8 LF"
+  }
+}
+```
+
+---
+
+### AzureDevOpsScene
+
+Reusable synthetic Azure DevOps surface for repository files, code file views,
+pull request overviews, diffs, PR Assistant comments, and reviewer activity.
+Use anonymized values by default; pass structured arrays for most scenes and
+reserve raw `bodyHtml` for bespoke one-off layouts.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | enum | `"repo-files"` | `repo-files`, `file-view`, `pr-overview`, `pr-diff`, `assistant-comment`, or `reviewer-activity` |
+| `projectName` | string | `"Commerce Platform"` | Project name shown in the sidebar |
+| `repoName` | string | `"Commerce-Financials-Controls"` | Repository chip and breadcrumb text |
+| `branchName` | string | `"main"` | Branch/status pill text |
+| `files` | array | demo rows | Repo or changed-file rows: `name`, `path`, `meta`, `active` |
+| `tree` | array | demo tree | Folder tree rows: `name`, `type`, `indent`, `active` |
+| `fileLocation` | string | demo location | Display-only folder or repo location for the active file |
+| `codeLines` | array | demo code | Strings or `{ number, text, highlight }` rows |
+| `diffLines` | array | demo diff | `{ type, oldNumber, newNumber, text }` rows |
+| `checks` | array | demo checks | PR check rows: `title`, `subtitle`, `status` |
+| `reviewers` | array | demo reviewers | Reviewer rows: `name`, `role`, `status`, `initials` |
+| `impactRows` | array | demo impact rows | PR Assistant table rows for impacted contracts and owners |
+| `recommendations` | string[] | demo recommendations | Compact PR Assistant recommendation bullets |
+| `activity` | array | demo timeline | Reviewer activity rows: `title`, `subtitle`, `status`, `time` |
+| `bodyHtml` | string | generated | Raw body override for precise custom layouts |
+
+```jsonc
+{
+  "component": "AzureDevOpsScene",
+  "props": {
+    "variant": "assistant-comment",
+    "projectName": "Commerce Platform",
+    "repoName": "Commerce-Financials-Controls",
+    "impactRows": [
+      {
+        "contract": "BillingGroup",
+        "changedFile": "schemas/billing_group.py",
+        "affectedRepo": "Collector Service",
+        "owner": "Priya Shah",
+        "reason": "Shared field set changed"
+      }
+    ]
   }
 }
 ```

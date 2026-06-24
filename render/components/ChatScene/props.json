@@ -1,0 +1,44 @@
+{
+  "name": "ChatScene",
+  "prefix": "cs-",
+  "summary": "A clean, light LLM chat surface. User messages and assistant replies stream into a centered chat window — assistant turns show a typing indicator then stream word-by-word (or fade in a structured few-shot block). Continuous orb drift + window breathing keep the frame alive for deterministic headless capture.",
+  "bestFor": "Showing how a prompt is sent to a model and how the model responds — few-shot / in-context learning demos, vague-vs-specific prompt comparisons, reasoning-model 'thinking then answering' beats.",
+  "props": {
+    "kicker": { "type": "string", "required": false, "description": "Small uppercase eyebrow above the window." },
+    "title": { "type": "string", "required": false, "description": "Heading above the chat window." },
+    "modelName": { "type": "string", "required": false, "default": "Language model", "description": "Name shown in the chat title bar and composer." },
+    "turns": {
+      "type": "array",
+      "required": true,
+      "description": "Ordered chat turns. Auto-distributed across the scene duration (override with per-turn `t` seconds).",
+      "items": {
+        "role": { "type": "string", "enum": ["user", "assistant"], "description": "Who is speaking." },
+        "text": { "type": "string", "description": "Plain text. Assistant text streams in word-by-word." },
+        "html": { "type": "string", "description": "Raw HTML body (e.g. few-shot example lines using <span class=\"ex\"><span class=\"in\">in</span><span class=\"arrow\">→</span><span class=\"out\">out</span></span>). Used instead of `text`; fades in as a block." },
+        "label": { "type": "string", "description": "Optional uppercase label chip at the top of the bubble (e.g. 'Few-shot prompt')." },
+        "t": { "type": "number", "description": "Optional explicit start time (seconds from scene start) overriding auto-distribution." }
+      }
+    },
+    "backgroundColor": { "type": "string", "default": "#F4F9FF" },
+    "surfaceColor": { "type": "string", "default": "#FFFFFF" },
+    "elevatedSurfaceColor": { "type": "string", "default": "#E8F2FD" },
+    "textColor": { "type": "string", "default": "#0B2A4A" },
+    "mutedTextColor": { "type": "string", "default": "#5B7088" },
+    "accentColor": { "type": "string", "default": "#0EA5E9" },
+    "borderColor": { "type": "string", "default": "#CFE4F7" },
+    "userBubbleColor": { "type": "string", "default": "#0EA5E9" },
+    "assistantBubbleColor": { "type": "string", "default": "#F2F8FF" }
+  },
+  "minimalExample": {
+    "component": "ChatScene",
+    "props": {
+      "kicker": "In-context learning",
+      "title": "Show the pattern — it continues it",
+      "modelName": "GPT-3",
+      "turns": [
+        { "role": "user", "label": "Few-shot prompt", "html": "<span class=\"ex\"><span class=\"in\">happy</span><span class=\"arrow\">→</span><span class=\"out\">positive</span></span><span class=\"ex\"><span class=\"in\">awful</span><span class=\"arrow\">→</span><span class=\"out\">negative</span></span><span class=\"ex\"><span class=\"in\">brilliant</span><span class=\"arrow\">→</span><span class=\"out\">?</span></span>" },
+        { "role": "assistant", "text": "positive" }
+      ]
+    }
+  }
+}

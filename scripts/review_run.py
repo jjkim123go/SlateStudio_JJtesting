@@ -173,6 +173,8 @@ def _load_review_inputs(video_path: Path, scenario_arg: str, scf_arg: str) -> tu
     for scene in scf.get("scenes", []):
         layers = scene.get("layers", [])
         components = layer_components(layers)
+        if scene.get("component"):
+            has_component_layers = True
         normalized = {
             "id": scene.get("id"),
             "title": scene.get("title") or scene.get("id"),
@@ -199,6 +201,8 @@ def _load_review_inputs(video_path: Path, scenario_arg: str, scf_arg: str) -> tu
         scenario["scenes"].append(normalized)
 
     if has_video_layers and has_image_layers:
+        scenario["motion_style"] = "hybrid"
+    elif has_video_layers and has_component_layers:
         scenario["motion_style"] = "hybrid"
     elif has_video_layers:
         scenario["motion_style"] = "motion"

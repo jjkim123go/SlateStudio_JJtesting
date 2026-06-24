@@ -8,10 +8,12 @@
     "edges": { "type": "array", "description": "Native edge objects. Compiler serializes to edgesJson when edgesJson is absent.", "items": { "type": "object", "properties": { "from": { "type": "string" }, "to": { "type": "string" }, "dataType": { "type": "string" }, "protocol": { "type": "string" }, "encrypted": { "type": "boolean" }, "gatedBy": { "type": "string" } }, "required": ["from", "to"] } },
     "legend": { "type": "object", "description": "Native legend object. Compiler serializes to legendJson when legendJson is absent." },
     "callouts": { "type": "array", "description": "Native callout objects. Compiler serializes to calloutsJson when calloutsJson is absent.", "items": { "type": "object", "properties": { "targetId": { "type": "string" }, "text": { "type": "string" } }, "required": ["targetId", "text"] } },
+    "groups": { "type": "array", "description": "Optional visual grouping. Each group draws a dashed bounding rect around its stage cards with an optional label. Compiler serializes to groupsJson when groupsJson is absent.", "items": { "type": "object", "properties": { "label": { "type": "string" }, "stageIds": { "type": "array", "items": { "type": "string" } }, "color": { "type": "string", "description": "Stroke color (CSS). Defaults to accent." }, "style": { "type": "string", "enum": ["dashed", "dotted", "solid"], "default": "dashed" } }, "required": ["stageIds"] } },
     "stagesJson": { "type": "string", "description": "JSON-encoded stages. Prefer native stages in new SCF authoring." },
     "edgesJson": { "type": "string", "description": "JSON-encoded edges. Prefer native edges in new SCF authoring." },
     "legendJson": { "type": "string", "description": "JSON-encoded legend. Prefer native legend in new SCF authoring." },
-    "calloutsJson": { "type": "string", "description": "JSON-encoded callouts. Prefer native callouts in new SCF authoring." }
+    "calloutsJson": { "type": "string", "description": "JSON-encoded callouts. Prefer native callouts in new SCF authoring." },
+    "groupsJson": { "type": "string", "description": "JSON-encoded groups. Prefer native groups in new SCF authoring." }
   },
   "qualityNotes": [
     "Use stable stage ids; every edge.from and edge.to must match a stage id.",

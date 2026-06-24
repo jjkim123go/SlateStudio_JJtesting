@@ -1,0 +1,33 @@
+<div class="dms-root" data-scene-component="DualMetricShowcase"
+  data-left-metrics="{{leftMetricsJson}}"
+  data-right-metrics="{{rightMetricsJson}}"
+  data-left-accent="{{leftAccent}}"
+  data-right-accent="{{rightAccent}}"
+  style="position:absolute;inset:0;overflow:hidden;font-family:Inter,'Segoe UI',system-ui,sans-serif;color:{{textColor}}">
+  <div class="dms-bg" style="position:absolute;inset:0;background:
+    radial-gradient(circle at 22% 24%, color-mix(in srgb, {{leftAccent}} 24%, transparent), transparent 34%),
+    radial-gradient(circle at 78% 30%, color-mix(in srgb, {{rightAccent}} 22%, transparent), transparent 34%),
+    linear-gradient(135deg, {{bgFrom}} 0%, {{bgTo}} 100%);"></div>
+  <div class="dms-orbit dms-orbit-left"></div>
+  <div class="dms-orbit dms-orbit-right"></div>
+
+  <section class="dms-stage">
+    <div class="dms-eyebrow">{{eyebrow}}</div>
+    <h1 class="dms-title">{{title}}</h1>
+    <div class="dms-columns">
+      <article class="dms-panel dms-left" style="--accent:{{leftAccent}}">
+        <div class="dms-panel-kicker">{{leftKicker}}</div>
+        <h2>{{leftTitle}}</h2>
+        <p>{{leftSubtitle}}</p>
+        <div class="dms-metrics dms-left-metrics"></div>
+      </article>
+      <article class="dms-panel dms-right" style="--accent:{{rightAccent}}">
+        <div class="dms-panel-kicker">{{rightKicker}}</div>
+        <h2>{{rightTitle}}</h2>
+        <p>{{rightSubtitle}}</p>
+        <div class="dms-metrics dms-right-metrics"></div>
+      </article>
+    </div>
+    <div class="dms-footer">{{footer}}</div>
+  </section>
+</div>

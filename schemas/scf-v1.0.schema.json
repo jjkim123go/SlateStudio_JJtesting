@@ -143,6 +143,7 @@
             "TerminalScene",
             "VSCodeScene",
             "AzurePortalScene",
+            "AzureDevOpsScene",
             "GaugeRing",
             "GitHubScene",
             "EdgeBrowserScene",
@@ -198,6 +199,7 @@
             "ParticleAssemble",
             "ParticleTextForm",
             "PurpleCardStorm",
+            "DualMetricShowcase",
             "GlitchPulse",
             "ShakeImpact",
             "AssetCascade",
@@ -214,7 +216,10 @@
             "OmartMarketplaceDemo",
             "OmartCopilotChat",
             "OmartSecurityScope",
-            "PALReviewSurface"
+            "PALReviewSurface",
+            "ExpandableCardGrid",
+            "ImageBackdrop",
+            "ChatScene"
           ]
         },
         "props": {

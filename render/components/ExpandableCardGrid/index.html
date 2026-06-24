@@ -1,0 +1,73 @@
+<style>
+.scene-{{sceneId}} .ecg-root {
+  position: absolute; inset: 0; overflow: hidden;
+  background: radial-gradient(140% 120% at 50% -10%, {{elevatedSurfaceColor}} 0%, {{backgroundColor}} 62%);
+  font-family: 'Segoe UI', Inter, -apple-system, sans-serif;
+  color: {{textColor}};
+  display: flex; flex-direction: column; align-items: center;
+  padding: 84px 96px 96px;
+}
+.scene-{{sceneId}} .ecg-orb {
+  position: absolute; border-radius: 50%; filter: blur(46px); opacity: 0.5;
+  pointer-events: none; mix-blend-mode: screen;
+}
+.scene-{{sceneId}} .ecg-orb-a { width: 620px; height: 620px; left: -120px; top: -160px;
+  background: radial-gradient(circle, {{accentColor}} 0%, transparent 68%); }
+.scene-{{sceneId}} .ecg-orb-b { width: 560px; height: 560px; right: -140px; bottom: -180px;
+  background: radial-gradient(circle, {{accentColor}} 0%, transparent 70%); opacity: 0.38; }
+.scene-{{sceneId}} .ecg-title {
+  margin: 0 0 14px; font-size: 50px; font-weight: 700; letter-spacing: -0.02em;
+  text-align: center; opacity: 0; position: relative; z-index: 2; max-width: 1500px;
+}
+.scene-{{sceneId}} .ecg-sub {
+  margin: 0 0 52px; font-size: 23px; font-weight: 400; color: {{mutedTextColor}};
+  text-align: center; opacity: 0; position: relative; z-index: 2; max-width: 1100px;
+}
+.scene-{{sceneId}} .ecg-row {
+  display: flex; justify-content: center; align-items: stretch; gap: 30px;
+  width: 100%; max-width: 1660px; position: relative; z-index: 2; flex-wrap: nowrap;
+}
+.scene-{{sceneId}} .ecg-card {
+  position: relative; flex: 1 1 0; min-width: 0; max-width: 360px;
+  min-height: 360px; border-radius: 22px;
+  background: {{surfaceColor}};
+  border: 1px solid {{borderColor}};
+  box-shadow: 0 18px 40px rgba(8,28,54,0.10);
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+  padding: 34px 30px; display: flex; flex-direction: column;
+  transform-origin: center center; will-change: transform, opacity; opacity: 0;
+}
+.scene-{{sceneId}} .ecg-card-glow {
+  position: absolute; inset: -2px; border-radius: 24px; opacity: 0; pointer-events: none;
+  box-shadow: 0 0 0 2px var(--ecg-accent, {{accentColor}}), 0 26px 60px -12px var(--ecg-accent, {{accentColor}});
+}
+.scene-{{sceneId}} .ecg-icon {
+  width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center;
+  justify-content: center; font-size: 30px; margin-bottom: 22px;
+  color: #ffffff; box-shadow: 0 8px 20px -6px var(--ecg-accent, {{accentColor}});
+}
+.scene-{{sceneId}} .ecg-label {
+  font-size: 27px; font-weight: 700; line-height: 1.2; margin-bottom: 10px;
+  color: {{textColor}};
+}
+.scene-{{sceneId}} .ecg-summary {
+  font-size: 19px; font-weight: 500; line-height: 1.4; color: {{mutedTextColor}};
+}
+.scene-{{sceneId}} .ecg-divider {
+  height: 1px; background: {{borderColor}}; margin: 18px 0 0; opacity: 0.7;
+}
+.scene-{{sceneId}} .ecg-detail {
+  margin-top: 16px; font-size: 18px; font-weight: 400; line-height: 1.5;
+  color: {{textColor}}; opacity: 0;
+}
+.scene-{{sceneId}} .ecg-detail b { color: var(--ecg-accent, {{accentColor}}); font-weight: 700; }
+</style>
+<div class="ecg-root" data-scene-component="ExpandableCardGrid">
+  <div class="ecg-orb ecg-orb-a"></div>
+  <div class="ecg-orb ecg-orb-b"></div>
+  <h2 class="ecg-title">{{title}}</h2>
+  <p class="ecg-sub">{{subtitle}}</p>
+  <div class="ecg-row">
+    {{{cardsHtml}}}
+  </div>
+</div>

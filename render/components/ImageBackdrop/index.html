@@ -1,0 +1,25 @@
+<style>
+.scene-{{sceneId}} .ib-root { position:absolute; inset:0; overflow:hidden; background:{{backgroundColor}};
+  font-family:'Segoe UI', Inter, -apple-system, sans-serif; }
+.scene-{{sceneId}} .ib-img { position:absolute; inset:-7%;
+  background-image:url('{{imageSrc}}'); background-size:cover; background-position:center;
+  will-change:transform; transform:scale(1.05); }
+.scene-{{sceneId}} .ib-scrim { position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(180deg, rgba(8,22,44,0.04) 0%, rgba(8,22,44,0.0) 34%, rgba(8,22,44,0.10) 64%, rgba(8,22,44,0.72) 100%); }
+.scene-{{sceneId}} .ib-copy { position:absolute; left:104px; right:104px; bottom:92px; z-index:2; }
+.scene-{{sceneId}} .ib-kicker { font-size:18px; font-weight:700; letter-spacing:0.16em; text-transform:uppercase;
+  color:{{accentColor}}; opacity:0; margin-bottom:14px; }
+.scene-{{sceneId}} .ib-title { margin:0; font-size:62px; font-weight:780; line-height:1.04; letter-spacing:-0.025em;
+  color:#FFFFFF; opacity:0; max-width:1360px; text-shadow:0 2px 24px rgba(4,14,30,0.45); }
+.scene-{{sceneId}} .ib-sub { margin:18px 0 0; font-size:26px; font-weight:400; line-height:1.4;
+  color:rgba(238,245,255,0.92); opacity:0; max-width:1100px; text-shadow:0 2px 18px rgba(4,14,30,0.4); }
+</style>
+<div class="ib-root" data-scene-component="ImageBackdrop">
+  <div class="ib-img"></div>
+  <div class="ib-scrim"></div>
+  <div class="ib-copy">
+    <div class="ib-kicker">{{kicker}}</div>
+    <h1 class="ib-title">{{title}}</h1>
+    <p class="ib-sub">{{subtitle}}</p>
+  </div>
+</div>
