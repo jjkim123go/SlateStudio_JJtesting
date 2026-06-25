@@ -77,8 +77,8 @@ First time? Slate detects what's missing, presents a deployment plan, and can pr
 ### Recommended: VS Code + GitHub Copilot
 
 ```powershell
-git clone https://github.com/gim-home/Slate.git
-cd Slate
+git clone https://github.com/gim-home/SlateStudio.git
+cd SlateStudio
 .\setup.ps1        # checks/installs runtime prerequisites and project deps
 ```
 
@@ -108,8 +108,8 @@ Recommended agent models for Slate sessions:
 ### Manual Setup
 
 ```bash
-git clone https://github.com/gim-home/Slate.git
-cd Slate
+git clone https://github.com/gim-home/SlateStudio.git
+cd SlateStudio
 python -m pip install -e .
 python -m pip install openai azure-identity python-pptx python-docx openpyxl
 cd render && npm install && cd ..
