@@ -363,7 +363,7 @@ library at session start — read skills only when their trigger fires.
    tells you which other skills to pull as you go (e.g. structured visuals,
    component authoring, brand linting, narration sync).
 3. **Component authoring or modification** — Before editing any file under
-   `render/components/<X>/` (animation.js, index.html, props.json, or adding
+   `render/components/<category>/<X>/` (animation.js, index.html, props.json, or adding
    a new component folder), read the **Component-modification contract** at
    the top of [`skills/INDEX.md`](../skills/INDEX.md). It lists the four
    always-load skills (`component-authoring`, `animation/sequencing`,

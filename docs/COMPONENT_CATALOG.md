@@ -3,6 +3,12 @@
 > **When to read:** At scene-plan stage, before choosing a component for any scene.
 > This catalog tells you what each component does, what it looks like, and when
 > to pick it. For detailed props, see `docs/COMPONENT_REFERENCE.md`.
+>
+> **Folder map:** components now live in category folders under
+> `render/components/` (`chrome/` · `3d/` · `brand/` · `overlays/` · `effects/` ·
+> `design/`, plus retired `_deprecated/` · `_archive/`). See
+> [`render/components/README.md`](../render/components/README.md). SCFs reference
+> components by **name** — the renderer resolves the folder.
 
 > ## How to use this catalog — two classes
 >
