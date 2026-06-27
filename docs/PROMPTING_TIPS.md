@@ -24,20 +24,30 @@
 
 ---
 
-## 🚨 The #1 Failure Mode: Component Improvisation
+## 🚨 The #1 Failure Mode: two opposite traps (chrome vs design)
 
-This is the single most common reason a Slate video looks like AI-slop on
-the first pass.
+There are **two** opposite traps, and which one applies depends on the kind of
+scene. Getting this backwards is the most common reason a first pass looks like
+AI-slop.
 
-**What happens:** You ask for a scene that involves a real software UI —
-"show a Windows File Explorer with our evidence files", "show an Outlook
-calendar with the rollout dates", "show a VS Code workspace". Slate has
-**polished, registered components** for all of these (`WindowsScene`,
-`OutlookScene`, `VSCodeScene`, `TerminalCast`, `ScreenDemoFrame`, …). But
-unless you name them, the agent often **improvises** — it draws a window
-chrome from rectangles + text, or pastes a generated screenshot, or uses
-boring grid-of-tiles to fake a calendar. The result looks hand-drawn and
-PowerPoint-y, not premium.
+**Trap A — faking real product chrome.** When a scene shows real software —
+"a Windows File Explorer with our evidence files", "an Outlook calendar with the
+rollout dates", "a VS Code workspace" — Slate has polished, registered **chrome**
+components (`WindowsScene`, `OutlookScene`, `VSCodeScene`, `TerminalCast`,
+`ScreenDemoFrame`, …). If you don't name them, the agent may hand-draw window
+chrome from rectangles + text, or paste a generated screenshot — which looks
+hand-drawn and PowerPoint-y. **For product chrome: name the component; never
+hand-draw a fake app.**
+
+**Trap B — filling a catalog "design" component.** The opposite trap, and the more
+insidious one: for *design / explanatory* scenes (diagrams, charts, metrics,
+steps, comparisons, abstract or hero moments), reaching for a finished catalog
+component (`MetricsCard`, `DataFlow`, `StepByStep`, `CompareSlider`,
+`TerminologyCard`…) makes every video converge on the same ~10 looks. **For
+design scenes: don't fill a catalog component — have Slate commit a per-video art
+direction and hand-stitch the scene from primitives** (GSAP / SVG / Canvas). See
+[`skills/creative/art-direction.md`](../skills/creative/art-direction.md) and
+[`scene-primitives.md`](../skills/creative/scene-primitives.md).
 
 **Why it happens:** The agent is biased toward "build something" over
 "discover what exists". Without an explicit instruction, scene planning
@@ -121,10 +131,12 @@ This is the **single biggest lever** for premium output. It's so important
 it's also called out as the #1 failure mode at the top of this doc — read
 that section first.
 
-- **Always discover before building.** Tell the agent:
-  > *"Before scene planning, list which registered Slate components match
-  > each scene's content type. Use them. If none exists, create a new one
-  > via sub-agent. Do not roll your own from shapes/text."*
+- **Reuse chrome; hand-stitch design.** Tell the agent:
+  > *"For product-UI scenes, use the matching registered chrome component
+  > (`VSCodeScene`, `OutlookScene`, …) — never hand-draw a fake app. For design /
+  > explanatory scenes (diagrams, charts, metrics, steps, comparisons), do NOT
+  > fill a catalog component — commit an art direction and hand-stitch from
+  > primitives so the video doesn't look like every other one."*
 - Say **"create a new component if none exists"** — Slate has
   component-authoring skills it won't invoke unless asked.
 - Stitching divs on top of a screenshot looks cheap and drifts under camera
@@ -417,41 +429,53 @@ though the render technically succeeded.
 
 ---
 
-## 🧠 Working With Slate's Component Library — Ask First, Build Second
+## 🧠 Working With Slate's Component Library — reuse chrome, hand-stitch design
 
-**The discovery step is non-negotiable.** Before any scene is planned,
-the agent should enumerate which registered Slate components map to each
-scene's content type. If you don't force this discovery step, the agent
-will improvise — and improvisation looks like PowerPoint.
+**The classification step is non-negotiable.** Before any scene is planned,
+the agent should split scenes into two kinds and treat them oppositely:
+
+- **Product chrome** (real software UIs) → **reuse** the registered chrome
+  component; never hand-draw a fake app.
+- **Design / explanatory / abstract** (diagrams, charts, metrics, steps,
+  comparisons, hero moments) → **hand-stitch** from primitives under a committed
+  art direction; do **not** fill a catalog component (that's the sameness trap).
 
 Lead your brief with:
 
-> *"For every scene, name the registered Slate component that will render
-> it. If no existing component fits, build a new one via sub-agent (load
-> component-authoring + component-design-system + gsap-component-patterns
-> skills). Do not assemble scenes from raw shapes, divs, or SVG primitives
-> when a component exists. Show me the component map before approving the
-> scene plan."*
+> *"Classify every scene: product-chrome vs design. For chrome, name the
+> registered chrome component (VSCodeScene, OutlookScene, …) and never hand-draw
+> a fake UI. For design / explanatory scenes, commit a per-video art direction
+> and hand-stitch from primitives (GSAP/SVG/Canvas) — don't fill a catalog design
+> component. Show me the per-scene treatment plan before approving the scene
+> plan."*
 
-Key components to reference by name in your prompts:
+Reference by name in your prompts:
+
+**Product chrome — reuse the component (don't fake it):**
 
 | If you want to show… | Ask for… |
 |---|---|
-| Code, CLI commands | "Use TerminalCast / VSCodeScene — animated typing, no screenshots" |
-| Architecture / data flow | "DataFlow component — nodes pop in, arrows stroke-draw" |
-| Numbers / KPIs | "MetricsCard or MetricStack — animated counters" |
-| Charts | "DataChart — animated bar / donut with reveal" |
-| Tables / comparisons | "PricingTable or ExcelScene — row-by-row reveal" |
-| Synthetic UI demo | "ScreenDemoFrame around a custom component — not a screenshot" |
-| **Windows Explorer / file browser** | **"WindowsScene — real File Explorer chrome with file rows"** |
-| **Outlook / calendar** | **"OutlookScene — real Outlook chrome with calendar/inbox modes"** |
-| Chat / Copilot interaction | "OmartCopilotChat-style — VS Code chrome + chat panel + phase pills" |
-| Particle text reveal | "ParticleTextForm — particles converge into wordmark/logo" |
+| Code, CLI commands | "TerminalCast / VSCodeScene — animated typing, no screenshots" |
+| Windows Explorer / file browser | "WindowsScene — real File Explorer chrome with file rows" |
+| Outlook / calendar | "OutlookScene — real Outlook chrome with calendar/inbox modes" |
+| Teams / Excel / Azure portal / GitHub | "TeamsScene / ExcelScene / AzurePortalScene / GitHubScene" |
+| Synthetic web / app demo | "ScreenDemoFrame / EdgeBrowserScene around the content" |
 | Brand bookends | "BrandIntro / BrandOutro — logo reveal + tagline" |
 
-If a component you need doesn't exist, **say so explicitly**: "There's no
-good component for this — please create one." Slate will spawn a sub-agent
-to build it (component-authoring + design-system + GSAP skills auto-load).
+**Design / explanatory — hand-stitch from primitives (don't fill a catalog look):**
+
+| If you want to show… | Ask for… |
+|---|---|
+| Architecture / data flow | "a hand-stitched node+arrow diagram on this video's art direction — not the default DataFlow" |
+| Numbers / KPIs | "a bespoke count-up / data moment in the art-direction's material — not a default MetricsCard" |
+| Charts | "a hand-stitched chart (SVG/Canvas); use DataChart only if you need exact chart.js axes, then restyle it" |
+| Steps / comparisons | "a bespoke sequence / split designed for this video — not a default StepByStep / CompareSlider" |
+
+For design scenes, point the agent at
+[`art-direction.md`](../skills/creative/art-direction.md) +
+[`scene-primitives.md`](../skills/creative/scene-primitives.md). Bespoke one-offs
+are authored project-scoped (`projects/<slug>/components/`), not added to the
+global catalog.
 
 **Audit hardcoded colors before render** — see the *Lock the Palette*
 section above. A component may ship with a default cyan-indigo gradient
@@ -514,8 +538,10 @@ Copy, fill the blanks, paste:
 > **Arc**: [pain] → [solution] → [magic moment / CTA].
 >
 > **Constraints**:
-> - For every scene, **name the registered Slate component** that will
->   render it before approving the scene plan. If none fits, build one.
+> - **Reuse chrome, hand-stitch design**: name the chrome component for
+>   product-UI scenes; for design / explanatory scenes commit an art direction
+>   and hand-stitch from primitives (don't fill a catalog component). Show the
+>   per-scene treatment plan before approving.
 > - **Lock the palette via swatch** before any render. Hex codes, not
 >   color words. Audit components for hardcoded colors.
 > - **Animation must run the full narration length** of every scene.

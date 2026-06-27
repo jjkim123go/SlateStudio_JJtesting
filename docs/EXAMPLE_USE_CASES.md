@@ -14,6 +14,15 @@
 > Cost caps. Content safety. Audit trail. Locked elements. Demo-data
 > classification for external vs internal delivery profiles.
 
+> **Note on the `Components` columns (2026 doctrine).** These name the *content*
+> each video conveys, not a fixed recipe. Product-chrome surfaces (`VSCodeScene`,
+> `OutlookScene`, `AzurePortalScene`, …) are still reused as named. But design /
+> explanatory visuals (charts, diagrams, steps, metrics — `MetricsCard`,
+> `DataFlow`, `StepByStep`, `Roadmap`, …) are now **hand-stitched per video** under
+> a committed art direction, not filled from a fixed catalog component. Read those
+> design-component names as *what the scene shows*, not a prescription. See
+> [`skills/creative/scene-primitives.md`](../skills/creative/scene-primitives.md).
+
 This document maps Slate's capabilities to concrete roles, the kinds of
 videos they produce today (often painfully, or not at all), and the impact
 Slate has on each.
