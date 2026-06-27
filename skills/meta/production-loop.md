@@ -140,17 +140,25 @@ match actual TTS output. Strip audio from AI video clips. Do not render
 with known timing mismatches.
 
 **Captions (default-on for narrated videos):** When the composition has
-narration, generate word-level captions by default:
+narration, generate caption blocks by default. **Use `style: "static"`, not
+`word-highlight`.** Per-word highlighting is retired across all videos: its
+per-word timing is unreliable (the highlight drifts off the spoken word), which
+reads worse than no highlight. Static shows each caption line as a block that
+appears/disappears on its own timing, with **no** individual word recolored.
 
 1. After TTS generation, transcribe each narration WAV via `foundry_transcribe`
-   / `scripts/lib/live_subtitles.py` to get word-level timestamps.
-2. Include the captions in the SCF (`captions: { style: "word-highlight" }`).
-3. If the user opted out during the brief ("no captions"), skip this step.
+   / `scripts/lib/live_subtitles.py` to get word-level timestamps (still used for
+   per-line block timing).
+2. Include the captions in the SCF (`captions: { style: "static" }`).
+3. **Contrast is mandatory** (there's no highlight to lean on): the caption block
+   must stay readable on every scene — a dark, mostly-opaque line background
+   (≥0.88 alpha) under bright near-white text, or the inverse. Match the block to
+   the art direction but never drop below a legible contrast ratio.
+4. If the user opted out during the brief ("no captions"), skip this step.
 
 Caption generation costs ~$0.006/min of audio — negligible. Surface this
-during the brief: *"I’ll add word-highlight captions to the narration by
-default — would you like to keep them, change the style, or skip captions?"*
-Scenes without narration do not get captions.
+during the brief: *"I’ll add captions to the narration by default — keep them,
+restyle, or skip?"* Scenes without narration do not get captions.
 
 **Music (default-on):** A finished video has a music bed, ducked under
 narration. Source it from the brand-package music dir, the org / built-in
@@ -187,6 +195,44 @@ artifact.
 The 8-dimension rubric covers: brand compliance, pacing, content coverage,
 audio quality, visual consistency, caption accuracy, content redundancy,
 and **narration timing** (overflow detection).
+
+### Rule 7 — Fan out scene authoring for long videos (director + crew)
+
+A single agent authoring every scene of a long video (10+ beats) degrades:
+context fills, quality slips, shortcuts creep in ("it feels like too much").
+A single sub-agent told to "build all the scenes" runs out of runway and
+returns fragments. For anything beyond ~6–8 bespoke scenes, **fan out**: stay
+the director, delegate the hands.
+
+- **The director (main agent) keeps** what only it can do well: the
+  `art-direction.json`; a precise per-scene **brief** (primary visual subject,
+  assigned technique, exact on-screen text, narration file + measured duration,
+  palette / material / motion tokens, the component name + prop contract); asset
+  generation; SCF composition + `scf_validate`; render orchestration; and the
+  **design-critic gate** — cross-scene variety and distinctness can only be
+  judged by the one agent that sees every scene.
+- **The crew (parallel sub-agents, high-frontier model)** each author **one**
+  project-scoped component to the brief, on the tested runtime (master timeline,
+  transform-only, seeded randomness, GSAP / SVG / Canvas / CSS), **self-verify a
+  keyframe**, and return the finished `projects/<slug>/components/<Name>/` folder
+  plus a one-line report. Keep each sub-agent's scope **small (1–3 simple
+  scenes)** so it never exhausts its runway — the cause of the fragment problem.
+- **Why it stays coherent across many hands:** every sub-agent receives the
+  *same* `art-direction.json` + the runtime capability harness + the
+  component-authoring contract, so independently-built scenes share one world.
+  Project-scoped components need **no** global registration, so parallel writes
+  never collide; scenes are independent, so they parallelize cleanly.
+- **Author the hero / signature beats yourself** (or give them the most detailed
+  briefs): the hook, the one or two "medium-enacts-the-story" moments, and the
+  close carry the most weight and are least forgiving of misinterpretation.
+- **Verify one scene before fanning out the rest.** Build a single
+  representative scene end-to-end (render a draft, check a keyframe) to prove the
+  world + runtime conventions, then parallelize with that proven pattern baked
+  into the brief.
+
+This reconciles autonomy with quality: the agent still "drives" (direction +
+integration + the gate); the crew executes tightly-specified work. For long
+videos this is the default, not an exception.
 
 ---
 

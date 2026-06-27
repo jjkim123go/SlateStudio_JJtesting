@@ -368,6 +368,21 @@ function hexToRgb(value) {
   return [0, 2, 4].map((idx) => parseInt(hex.slice(idx, idx + 2), 16));
 }
 
+// Reduce any CSS colour (hex or rgb/rgba) to a solid hex for contrast math.
+// Caption blocks use rgba() with alpha; we approximate by its rgb channels
+// (blocks are near-opaque) so readability is judged against the block, not the
+// page theme. Falls back to `fallbackHex` for unparseable values.
+function solidifyColor(value, fallbackHex) {
+  const str = String(value || '').trim();
+  if (HEX_COLOR_RE.test(str)) return normalizeHexColor(str, fallbackHex);
+  const m = str.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/i);
+  if (m) {
+    const toHex = (n) => Math.max(0, Math.min(255, parseInt(n, 10))).toString(16).padStart(2, '0');
+    return `#${toHex(m[1])}${toHex(m[2])}${toHex(m[3])}`.toUpperCase();
+  }
+  return normalizeHexColor(fallbackHex, '#000000');
+}
+
 function channelLuminance(channel) {
   const value = channel / 255;
   return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
@@ -720,9 +735,9 @@ function resolveNestedAssetPaths(value, scfDir, depth = 0, maxDepth = 6) {
 function normalizeCaptionConfig(config = {}, theme = DEFAULT_THEME) {
   const style = ['word-highlight', 'sentence', 'karaoke', 'static', 'none'].includes(config?.style)
     ? config.style
-    : 'word-highlight';
+    : 'static';
   const panel = config?.panel === true;
-  const lineBackgroundColor = config?.lineBackgroundColor || 'rgba(3, 10, 22, 0.78)';
+  const lineBackgroundColor = config?.lineBackgroundColor || 'rgba(6, 12, 24, 0.92)';
   const parsedTimingOffsetSec = Number(config?.timingOffsetSec ?? 0.07);
   const normalized = {
     style,
@@ -738,8 +753,14 @@ function normalizeCaptionConfig(config = {}, theme = DEFAULT_THEME) {
     maxWordsPerLine: Math.max(3, Math.min(15, Number(config?.maxWordsPerLine || 5))),
     timingOffsetSec: Number.isFinite(parsedTimingOffsetSec) ? Math.max(-0.5, Math.min(0.5, parsedTimingOffsetSec)) : 0.07,
   };
-  normalized.color = ensureReadableColor(normalized.color, theme.background, 4.5);
-  normalized.highlightColor = ensureReadableColor(normalized.highlightColor, theme.background, 3.0);
+  // Captions render on their own block (the per-line background, or the panel
+  // background) — NOT on the page/theme background. Judge readability against
+  // that block, so light text on a dark caption block stays light (and dark text
+  // on a light block stays dark) instead of being "corrected" toward the theme.
+  const captionBlockBg = panel ? normalized.backgroundColor : lineBackgroundColor;
+  const captionBgRef = solidifyColor(captionBlockBg, theme.background);
+  normalized.color = ensureReadableColor(normalized.color, captionBgRef, 4.5);
+  normalized.highlightColor = ensureReadableColor(normalized.highlightColor, captionBgRef, 3.0);
   return normalized;
 }
 
@@ -831,6 +852,7 @@ function renderSceneCaptions(scene, sceneCtx, captionsConfig) {
     'box-shadow:0 10px 34px rgba(0,0,0,0.38)',
     'backdrop-filter:blur(7px)',
     '-webkit-backdrop-filter:blur(7px)',
+    'text-shadow:0 2px 6px rgba(0,0,0,0.55)',
     'opacity:0',
   ].join(';');
   const indexedWordsHtml = indexedRows.map((row, rowIndex) => (
@@ -870,15 +892,21 @@ function renderSceneCaptions(scene, sceneCtx, captionsConfig) {
     lines.push(`master.set('${rowSel}', { autoAlpha: 1, y: 0 }, ${rowStart});`);
     lines.push(`master.set('${rowSel}', { autoAlpha: 0, y: -6 }, ${rowEnd});`);
   });
-  indexedRows.flat().forEach((word) => {
-    const wordStart = Number(word.start || 0) + captionsConfig.timingOffsetSec;
-    const wordEnd = Number(word.end || word.start || 0) + captionsConfig.timingOffsetSec;
-    const start = sceneCtx.sceneStart + Math.min(sceneCtx.duration, Math.max(0, wordStart));
-    const end = sceneCtx.sceneStart + Math.min(sceneCtx.duration, Math.max(wordEnd, wordStart + 0.06));
-    const sel = `${rootSel} .slate-caption-word-${word.__idx}`;
-    lines.push(`master.set('${sel}', { color: ${JSON.stringify(captionsConfig.highlightColor)}, backgroundColor: ${JSON.stringify(captionsConfig.highlightBackgroundColor)} }, ${start});`);
-    lines.push(`master.set('${sel}', { color: ${JSON.stringify(captionsConfig.color)}, backgroundColor: 'transparent' }, ${end});`);
-  });
+  // Per-word highlight is only for the karaoke-style "word-highlight" / "karaoke"
+  // modes. For "static" / "sentence" the row blocks still appear/disappear on
+  // their own timing, but individual words are NOT recolored (avoids unreliable
+  // per-word highlight timing while keeping the caption blocks/look identical).
+  if (captionsConfig.style === 'word-highlight' || captionsConfig.style === 'karaoke') {
+    indexedRows.flat().forEach((word) => {
+      const wordStart = Number(word.start || 0) + captionsConfig.timingOffsetSec;
+      const wordEnd = Number(word.end || word.start || 0) + captionsConfig.timingOffsetSec;
+      const start = sceneCtx.sceneStart + Math.min(sceneCtx.duration, Math.max(0, wordStart));
+      const end = sceneCtx.sceneStart + Math.min(sceneCtx.duration, Math.max(wordEnd, wordStart + 0.06));
+      const sel = `${rootSel} .slate-caption-word-${word.__idx}`;
+      lines.push(`master.set('${sel}', { color: ${JSON.stringify(captionsConfig.highlightColor)}, backgroundColor: ${JSON.stringify(captionsConfig.highlightBackgroundColor)} }, ${start});`);
+      lines.push(`master.set('${sel}', { color: ${JSON.stringify(captionsConfig.color)}, backgroundColor: 'transparent' }, ${end});`);
+    });
+  }
   return { html, js: lines.join('\n') };
 }
 

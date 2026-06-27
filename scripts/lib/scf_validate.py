@@ -106,13 +106,11 @@ def _default_caption_config(scf: dict) -> dict:
     height = int(output_profile.get("height") or 1080)
     portrait = height > int(output_profile.get("width") or 1920)
     return {
-        "style": "word-highlight",
+        "style": "static",
         "font": "Aptos",
         "fontSize": 30 if portrait else 32,
         "color": "#172033",
-        "highlightColor": "#3157C9",
-        "highlightBackgroundColor": "rgba(49,87,201,0.14)",
-        "lineBackgroundColor": "rgba(255,255,255,0.78)",
+        "lineBackgroundColor": "rgba(255,255,255,0.92)",
         "position": "bottom",
         "maxWordsPerLine": 5 if portrait else 7,
     }
@@ -135,7 +133,7 @@ def repair_scf_for_profile(scf: dict, profile: str | None = None) -> tuple[dict,
             repaired["captions"] = _default_caption_config(repaired)
             repairs.append({
                 "issue": "captions_auto_added",
-                "detail": "Added default visible word-highlight captions for narrated draft output.",
+                "detail": "Added default visible static captions for narrated draft output.",
                 "profile": profile,
             })
 
