@@ -20,12 +20,12 @@ This skill defines that loop. It is short on purpose. The deeper how-to lives in
 ## The loop
 
 ```
-INTENT → BRIEF → DECIDE → CHECKPOINT → ACT → LOG → REVIEW → LOG → DELIVER
-                  ▲                            │
-                  └────── adjust on feedback ──┘
+INTENT → BRIEF → ART-DIRECTION → DECIDE → CHECKPOINT → ACT → LOG → REVIEW → LOG → DELIVER
+                  ▲                                          │
+                  └──────────────── adjust on feedback ──────┘
 ```
 
-Five rules govern the loop. Follow all five every project.
+These rules govern the loop. Follow them every project.
 
 ### Rule 1 — Always start from intent, not from a template
 
@@ -68,6 +68,33 @@ routers. A real video often blends archetypes:
 
 Load every director the brief implicates. If their advice conflicts on a
 specific scene, the brief's audience and outcome decide. Log the call.
+
+### Rule 3b — Commit an art direction, then plan scene-treatment variety
+
+Before planning scenes for **any** video, commit a per-video art direction and
+write `projects/<slug>/art-direction.json`. Load
+[`skills/creative/art-direction.md`](../creative/art-direction.md) (the identity
+contract: concept, palette, material, motion signature, composition, signature
+motif, per-scene techniques) and
+[`skills/creative/scene-primitives.md`](../creative/scene-primitives.md) (the
+hand-stitch toolbox). Two rules make or break the result:
+
+- **Reuse chrome, hand-stitch design.** Product-chrome scenes (VS Code, Terminal,
+  Teams, Outlook, Excel, Azure, browser) use the reusable chrome components.
+  Design / explanatory scenes (diagrams, data-viz, kinetic type, metaphor, hero
+  moments) are **hand-stitched from primitives** — never a finished design
+  component (DataFlow, DataChart, StepByStep, CompareSlider…) as default content.
+- **Variety, not one motif.** Assign each scene a *distinct* technique
+  (`sceneTreatments`). No technique is the hero of more than ~1/3 of scenes;
+  never the same technique in two adjacent scenes. The signature motif is
+  connective tissue (a transition / recurring mark / edge element), **not** the
+  hero of every scene — the lesson of the token-tape pilot, where one beautiful
+  component in all ten scenes still read as a template.
+
+For factual / current topics, also load
+[`skills/meta/topic-research.md`](topic-research.md) before scripting so claims
+are grounded, not hallucinated. Gate the finished scenes with
+[`skills/creative/design-critic.md`](../creative/design-critic.md) (Rule 6).
 
 ### Rule 4 — Checkpoint before any irreversible or expensive step
 
@@ -124,6 +151,24 @@ Caption generation costs ~$0.006/min of audio — negligible. Surface this
 during the brief: *"I’ll add word-highlight captions to the narration by
 default — would you like to keep them, change the style, or skip captions?"*
 Scenes without narration do not get captions.
+
+**Music (default-on):** A finished video has a music bed, ducked under
+narration. Source it from the brand-package music dir, the org / built-in
+library, or a user-supplied track — verify the path exists during the Rule 2
+availability scan; don't promise a library that isn't there. Add it to the SCF
+(`music: { src, volume, duck_on_narration: true }`) and bake a full-length
+looped + faded bed (HTML `<audio loop>` is **not** honored by the deterministic
+capture, so a short track plays once then goes silent). If you ship without
+music, write down why — don't just forget it (the token-tape pilot shipped
+silent because music wasn't on the checklist).
+
+**Design-critic gate (variety + PPT-smell):** Alongside the technical reviewer,
+run the [`design-critic`](../creative/design-critic.md) loop — render 2–3
+keyframes per scene and score PPT-smell, premium signals, art-direction
+adherence, distinctiveness, and reliability (1–3). Revise any scene that scores
+1; **fail the video** if it is mostly default catalog or one motif repeated
+across scenes. Write `projects/<slug>/design-review.json`. This is the gate that
+catches the "every scene looks the same" failure before delivery.
 
 **Post-render review (mandatory):** After rendering the MP4, deploy a
 **reviewer sub-agent** (via `runSubagent`) to evaluate the output. The main

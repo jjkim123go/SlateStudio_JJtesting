@@ -16,6 +16,17 @@
 > → T3 Sora-2 hybrid → T4 true 3D) and prevents "3D for a single text scene"
 > failures.
 
+> **⚠ Doctrine precedence (supersedes this router for design scenes).** This
+> selector applies to **product-chrome** scenes (VS Code, Terminal, Teams,
+> Outlook, Excel, Azure, GitHub, browser) and to *restyle-base* reuse only.
+> For **design / explanatory / abstract** scenes (diagrams, data-viz, metrics,
+> steps, comparisons, kinetic type, hero moments), do **not** route to a
+> finished design component — commit a
+> [`creative/art-direction`](../creative/art-direction.md) and **hand-stitch
+> from primitives** ([`creative/scene-primitives`](../creative/scene-primitives.md)).
+> A design component may appear only as a restyled base, never default, never
+> two adjacent; [`creative/design-critic`](../creative/design-critic.md) enforces it.
+
 ---
 
 ## Trigger vocabulary

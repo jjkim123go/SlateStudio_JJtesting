@@ -4,7 +4,32 @@
 > This catalog tells you what each component does, what it looks like, and when
 > to pick it. For detailed props, see `docs/COMPONENT_REFERENCE.md`.
 
-## Data & Metrics
+> ## How to use this catalog — two classes
+>
+> **Chrome components are reusable; design components are not.** Before picking
+> anything here, classify the scene:
+>
+> - **Product / chrome** (Code & Developer Surfaces, Microsoft 365 Surfaces,
+>   EdgeBrowserScene) — imitations of real software. **Reuse these,
+>   component-first.** They must look real and consistent.
+> - **Design / explanatory** (Data & Metrics, Diagrams & Architecture,
+>   Comparisons & Tables, plus the design entries under Text & Narrative /
+>   PM & Release / Governance) — diagrams, data-viz, steps, comparisons,
+>   definitions. These are the **sameness trap**. Use them **only as a *restyled
+>   base***, never their default look, and never two back-to-back. For design /
+>   abstract / hero scenes, **hand-stitch from primitives** instead — see
+>   [`skills/creative/scene-primitives.md`](../skills/creative/scene-primitives.md)
+>   under a committed
+>   [`skills/creative/art-direction.md`](../skills/creative/art-direction.md).
+> - **Brand & structure / transitions / overlays** — use as accents (BrandIntro,
+>   SectionDivider, Transitions & Effects, WebcamOverlay, AudienceSafe…).
+>
+> The 3D hero stages (ThreeScene, DeviceStage3D, HTMLTextureWall) are primitive
+> *surfaces* you compose into — fine for bespoke hero scenes. The
+> [`design-critic`](../skills/creative/design-critic.md) gate fails any video that
+> is mostly default catalog or one motif repeated.
+
+## Data & Metrics  ·  design — restyle-base only
 
 | Component | What it does | When to use |
 |-----------|-------------|-------------|
@@ -17,14 +42,14 @@
 | **ProgressBar** | Multi-section horizontal progress indicator | Feature rollout, migration progress |
 | **ROICalculator** | Structured ROI narrative with formula tokens | Business case, cost justification |
 
-## Diagrams & Architecture
+## Diagrams & Architecture  ·  design — restyle-base only
 
 | Component | What it does | When to use |
 |-----------|-------------|-------------|
 | **DataFlow** | Glassmorphic pipeline with glowing connections + energy pulses | "How it works" flows, data pipelines, ETL |
 | **ArchitectureDiagram** | System topology with boxes + arrows, sequential reveal | Service architecture, microservices, dependency maps |
 
-## Comparisons & Tables
+## Comparisons & Tables  ·  design — restyle-base only
 
 | Component | What it does | When to use |
 |-----------|-------------|-------------|
@@ -56,7 +81,7 @@
 | **LowerThird** | Professional name + title bar overlay | Speaker identification |
 | **AnimatedCaption** | Word-highlight / sentence / karaoke captions | Narrated scenes (auto-added) |
 
-## Code & Developer Surfaces
+## Code & Developer Surfaces  ·  chrome — reusable
 
 | Component | What it does | When to use |
 |-----------|-------------|-------------|
@@ -67,7 +92,7 @@
 | **GitHubScene** | GitHub UI (repo, PR, diff views) | Repository walkthroughs, PR reviews |
 | **ScreenDemoFrame** | Browser chrome wrapping a screenshot or inner content | Any web app demo with browser UI |
 
-## Microsoft 365 Surfaces
+## Microsoft 365 Surfaces  ·  chrome — reusable
 
 | Component | What it does | When to use |
 |-----------|-------------|-------------|

@@ -4,6 +4,17 @@
 > stages whenever a scene needs deterministic rendering of code, tables,
 > diagrams, charts, or UI mockups.
 
+> **⚠ Doctrine precedence (supersedes the component-first principle for design
+> scenes).** "Component-first" below applies to **product-chrome** (code, CLI,
+> IDE, app UI, Microsoft surfaces) and to *restyle-base* reuse only. For
+> **design / explanatory** content (diagrams, data-viz, charts, metrics, steps,
+> comparisons, architecture), **hand-stitch from primitives** under a committed
+> [`creative/art-direction`](../creative/art-direction.md) — see
+> [`creative/scene-primitives`](../creative/scene-primitives.md). A finished
+> design component (DataFlow, DataChart, StepByStep, CompareSlider…) is a
+> *restyled base* only, never default, never two adjacent;
+> [`creative/design-critic`](../creative/design-critic.md) gates the result.
+
 ## Routing principle: component-first, create-if-missing
 
 Most content types that need deterministic rendering have a matching
