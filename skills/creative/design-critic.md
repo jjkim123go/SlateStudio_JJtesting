@@ -28,6 +28,8 @@ ffmpeg -ss <t> -i <scene.mp4> -frames:v 1 _crit.png   # view it
 - identical rounded rectangles in a grid
 - instant or linear reveals; motion that only decorates
 - a catalog component shipped with its **default** styling
+- the **tech-dark default idiom** — dark bg + glowing neon nodes / grid / threads
+  with no committed, subject-resonant world (the *new* sameness; polish doesn't save it)
 - the title sits dead-center with even margins all around
 
 3+ fail signals = score 1. This axis is a **hard gate**.
@@ -45,10 +47,13 @@ ffmpeg -ss <t> -i <scene.mp4> -frames:v 1 _crit.png   # view it
 signatureMotif}? Is the `signatureMotif` present? Same material + palette as
 every other scene?
 
-**4. Distinctiveness (3 = unmistakable, 1 = generic).** Two questions:
-- Could this exact scene appear in *any* explainer? (generic = 1)
+**4. Distinctiveness (3 = unmistakable, 1 = generic).** Three questions:
+- Could this exact scene appear in *any* product's explainer? (generic = 1)
 - Could it be mistaken for a *different Slate video*? (fingerprint clash = 1)
-A 3 means: only THIS video, with THIS art direction, produces this scene.
+- Is the look a **committed, subject-resonant world**, or the agent's default
+  "premium tech" idiom (dark + neon nodes)? Default idiom = 1, even if polished.
+A 3 means: only THIS video, with THIS art direction and *this subject's* world,
+produces this scene.
 
 **5. Reliability (3 = clean, 1 = broken).** No overflow/clipping, text legible
 at 1080p, contrast ≥ 4.5:1, no black/garbled frames, motif renders, no frozen
@@ -71,6 +76,19 @@ regress correctness.)
   two adjacent scenes use the same technique — even if every scene is bespoke and
   scores well on its own. One beautiful component repeated is still a template.
   Re-treat the offending scenes with different primitives.
+- **Scene-distinctness gate.** Inventory each scene's PRIMARY visual subject
+  (a character / diagram / piece of evidence / landscape / typographic moment /
+  the motif / a void) and its first frame. If any two scenes share their primary
+  subject → CRITICAL → re-plan (one is filler, or templating at the scene level).
+- **No hero-component spine.** The `signatureMotif` may anchor at most 1–2 beats
+  (the climax). If it scaffolds most scenes → the piece is branded slides → fail.
+- **Caption ≠ on-screen text.** If a scene's burned caption repeats the same words
+  as its on-screen headline, flag it — the doubled phrase reads amateurish; pick
+  one role (meaning-caption vs subtitle) per the art direction.
+- **Medium-enacts-story (hero check).** At least one beat should make the material
+  *perform* the meaning (paper chars as a library burns; a curve draws off the
+  page as a number compounds) — not just text-and-motion over a backdrop. If no
+  scene does, the video is *animated*, not *crafted*.
 - **Completeness (final cut).** Music present + ducked, captions on and styled,
   and ≥1 generated image / Sora clip or chrome scene for texture — or a written
   reason it's intentionally absent.
@@ -80,6 +98,13 @@ regress correctness.)
 Write `projects/<slug>/design-review.json`: per-scene scores on the five axes,
 the specific fix for anything < 2, and a one-line "fingerprint" of the video's
 look (used by the next video's anti-sameness check).
+
+Every `fix` must be **constructive and concrete** — name the frame and element and
+prescribe the change ("b04 mid-frame: centered 3-up cards = StepByStep default;
+re-author as a particle network that draws n² links then thins, carry the cyan
+motif, asymmetric"), not just label the problem. And be **complete**: when you
+catch one PPT-smell or default-idiom scene, scan for the rest of that class before
+returning — a pass that fixes one and misses three is worse than continuing.
 
 ```json
 {
