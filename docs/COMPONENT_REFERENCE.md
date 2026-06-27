@@ -4,6 +4,18 @@
 > [SCF v1.0 schema](../schemas/scf-v1.0.schema.json).
 > Each component with a `$defs` entry has a **full prop table** below;
 > components without one accept arbitrary props (schema enforcement pending).
+>
+> **This is a prop reference, not a routing guide (2026 doctrine).** Components
+> now live in category folders under `render/components/` — `chrome/` (reusable
+> product surfaces) · `3d/` · `brand/` · `overlays/` · `effects/` · `design/`,
+> plus retired `_deprecated/` / `_archive/` (see
+> [`render/components/README.md`](../render/components/README.md)). Reuse
+> **chrome** freely. The **design** components listed here (apart from
+> `DataChart` / `ImageBackdrop`) are mostly **retired** — bespoke design scenes
+> are now hand-stitched per video from primitives
+> ([`scene-primitives.md`](../skills/creative/scene-primitives.md) under an
+> [`art-direction.md`](../skills/creative/art-direction.md)), not filled from this
+> list. Use this doc for props when feeding a chrome component or restyling a base.
 
 ---
 

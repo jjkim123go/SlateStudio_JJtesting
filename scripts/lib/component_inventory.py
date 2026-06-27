@@ -71,7 +71,20 @@ def registered_components() -> set[str]:
 
 
 def component_directories() -> set[str]:
-    return {path.name for path in COMPONENTS_DIR.iterdir() if path.is_dir()}
+    # Components may sit flat (render/components/<Name>/) or in category subfolders
+    # (render/components/<category>/<Name>/). A component dir is identified by an
+    # index.html; recurse one level into category folders.
+    names: set[str] = set()
+    for path in COMPONENTS_DIR.iterdir():
+        if not path.is_dir():
+            continue
+        if (path / "index.html").exists():
+            names.add(path.name)
+        else:
+            for sub in path.iterdir():
+                if sub.is_dir() and (sub / "index.html").exists():
+                    names.add(sub.name)
+    return names
 
 
 def schema_components() -> set[str]:
@@ -85,7 +98,9 @@ def schema_prop_guards() -> set[str]:
 
 
 def props_json_components() -> set[str]:
-    return {path.parent.name for path in COMPONENTS_DIR.glob("*/props.json")}
+    names = {path.parent.name for path in COMPONENTS_DIR.glob("*/props.json")}
+    names |= {path.parent.name for path in COMPONENTS_DIR.glob("*/*/props.json")}
+    return names
 
 
 def component_skill_path(component_name: str) -> Path | None:

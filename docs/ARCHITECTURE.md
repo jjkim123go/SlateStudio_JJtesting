@@ -897,6 +897,18 @@ The SCF schema currently registers 79 renderable component IDs. The filesystem
 may contain extra legacy or experimental component folders; schema registration
 is the source of truth for what an agent can reference in `scene.component`.
 
+> **2026 doctrine + layout update.** Components are now organized into category
+> folders under `render/components/` (`chrome/` · `3d/` · `brand/` · `overlays/`
+> · `effects/` · `design/`, plus retired `_deprecated/` / `_archive/`); the
+> renderer resolves them by name (see
+> [`render/components/README.md`](../render/components/README.md)). The
+> "reusable scene components" below are mostly **retired**: under the bespoke
+> doctrine, product **chrome** is reused, but **design / explanatory** scenes are
+> hand-stitched per video from primitives under a committed art direction
+> ([`skills/creative/scene-primitives.md`](../skills/creative/scene-primitives.md),
+> [`art-direction.md`](../skills/creative/art-direction.md)), and bespoke one-offs
+> live project-scoped in `projects/<slug>/components/`, not in this global list.
+
 #### Framing primitives (5)
 `BrandIntro` · `BrandOutro` · `TitleCard` · `AnimatedCaption` · `LowerThird`
 

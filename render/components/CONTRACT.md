@@ -4,7 +4,7 @@
 > Existing components MAY be progressively migrated when touched.
 
 This document is the **authoritative contract** for any component that lives
-under `render/components/<Name>/` and is consumable by the SCF compiler
+under `render/components/<category>/<Name>/` and is consumable by the SCF compiler
 (`render/lib/scf-to-html.mjs`). Read this before adding, modifying, or
 reviewing a component.
 
@@ -12,15 +12,27 @@ reviewing a component.
 
 ## 1. File layout
 
+Global components are organized by **category folder**; the renderer resolves a
+component by NAME across categories, so an SCF never references the path.
+
 ```
-render/components/<ComponentName>/
+render/components/<category>/<ComponentName>/
   index.html          # required — root markup with mustache template vars
   animation.js        # optional — GSAP timeline calls; runs once per scene
   style.css           # optional — extra CSS (rare; prefer scoped <style> in index.html)
 ```
 
-The compiler inlines all three. There is no module boundary, no bundler step,
-no imports/exports.
+`<category>` is one of: **chrome** (real product surfaces — reusable), **3d**
+(WebGL scaffolding), **brand** (brand lockups + caption system + framing),
+**overlays** (presenter / governance / compositing utilities), **effects**
+(transitions), **design** (a few reusable data/media utilities — DataChart,
+ImageBackdrop — restyle-base). Two retirement buckets are **not** for new work:
+**_deprecated** (finished design components bespoke now replaces) and **_archive**
+(project-specific one-offs). New *design* scenes are hand-stitched per video
+(see [`scene-primitives`](../../skills/creative/scene-primitives.md)), not added here.
+
+The compiler inlines all three files. There is no module boundary, no bundler
+step, no imports/exports.
 
 ---
 

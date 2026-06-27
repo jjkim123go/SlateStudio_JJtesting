@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BuildingBlocksScene props",
+  "type": "object",
+  "properties": {
+    "variant": {
+      "type": "string",
+      "enum": ["storm", "tangle", "architecture", "block-grid", "composition", "consumption", "domain-map", "blueprint", "storm-v2", "tangle-v2", "pressure", "pattern-extract", "assembly-v2", "dual-path", "domain-orbit", "architecture-morph"]
+    },
+    "eyebrow": { "type": "string" },
+    "title": { "type": "string" },
+    "subtitle": { "type": "string" },
+    "hero": { "type": "string" },
+    "footer": { "type": "string" },
+    "chipsJson": { "type": "string" },
+    "nodesJson": { "type": "string" },
+    "edgesJson": { "type": "string" },
+    "formulaLinesJson": { "type": "string" },
+    "domainsJson": { "type": "string" }
+  },
+  "additionalProperties": true
+}

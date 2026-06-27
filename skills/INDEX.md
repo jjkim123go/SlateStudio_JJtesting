@@ -23,8 +23,8 @@ The trigger rows below tell you which skills to load when **planning a scene**
 that uses a component. They do **not** cover the inverse case: editing the
 component's source itself. That path has its own required skills.
 
-**Before editing any file under `render/components/<X>/`** (e.g.
-`render/components/MetricsCard/animation.js`, `index.html`, `props.json`,
+**Before editing any file under `render/components/<category>/<X>/`** (e.g.
+`render/components/chrome/OutlookScene/animation.js`, `index.html`, `props.json`,
 or adding a new component folder), load all of the following:
 
 | Always load | Why |

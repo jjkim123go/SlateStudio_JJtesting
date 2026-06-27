@@ -41,6 +41,37 @@ const COMPONENTS_DIR = resolve(__dirname, '..', 'components');
 // pollute the shared catalog. Set per-compile from options.scfDir; null = global-only.
 let PROJECT_COMPONENTS_DIR = null;
 
+// Global components may be organized into category subfolders
+// (render/components/<category>/<Name>/) OR sit flat (render/components/<Name>/).
+// This index maps a component NAME to its directory regardless of layout, so SCFs
+// always reference components by name. Built lazily and cached for the process.
+let GLOBAL_COMPONENT_INDEX = null;
+function globalComponentDir(name) {
+  // Fast path: flat layout (backward-compatible).
+  const flat = resolve(COMPONENTS_DIR, name);
+  if (existsSync(resolve(flat, 'index.html'))) return flat;
+  // Categorized layout: scan one level of category subfolders.
+  if (!GLOBAL_COMPONENT_INDEX) {
+    GLOBAL_COMPONENT_INDEX = new Map();
+    let cats = [];
+    try { cats = readdirSync(COMPONENTS_DIR, { withFileTypes: true }); } catch { /* ignore */ }
+    for (const c of cats) {
+      if (!c.isDirectory()) continue;
+      const catDir = resolve(COMPONENTS_DIR, c.name);
+      let comps = [];
+      try { comps = readdirSync(catDir, { withFileTypes: true }); } catch { continue; }
+      for (const comp of comps) {
+        if (comp.isDirectory() && existsSync(resolve(catDir, comp.name, 'index.html'))) {
+          if (!GLOBAL_COMPONENT_INDEX.has(comp.name)) {
+            GLOBAL_COMPONENT_INDEX.set(comp.name, resolve(catDir, comp.name));
+          }
+        }
+      }
+    }
+  }
+  return GLOBAL_COMPONENT_INDEX.get(name) || null;
+}
+
 const DEFAULT_THEME = {
   name: 'technical-paper',
   background: '#F3F0E8',
@@ -221,7 +252,13 @@ function loadComponent(name) {
         `project-scoped component at <project>/components/${name}/index.html)`
       );
     }
-    dir = resolve(COMPONENTS_DIR, name);
+    dir = globalComponentDir(name);
+    if (!dir) {
+      throw new Error(
+        `Component ${name} is registered but no folder was found under ` +
+        `render/components/ (searched flat + one level of category subfolders).`
+      );
+    }
   }
   const html = readFileSync(resolve(dir, 'index.html'), 'utf-8');
   const css = existsSync(resolve(dir, 'style.css'))

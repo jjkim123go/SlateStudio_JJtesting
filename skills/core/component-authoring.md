@@ -49,7 +49,7 @@ would tell you.
 
 ### 1. Components are HTML fragments, not pages
 
-A component lives at `render/components/<Name>/index.html` and contains only
+A component lives at `render/components/<category>/<Name>/index.html` and contains only
 the markup for that scene's content. No `<html>`, `<head>`, `<body>`, or
 `<script>` tags — the SCF compiler wraps and injects everything.
 
@@ -58,7 +58,7 @@ them from the scene's `props` object.
 
 ### 2. Animations live in a sibling `animation.js`
 
-Each component has `render/components/<Name>/animation.js` that pushes
+Each component has `render/components/<category>/<Name>/animation.js` that pushes
 tweens onto a **shared master timeline** named `master` (created by the SCF
 compiler, in scope for every component). HyperFrames seeks `master`
 frame-by-frame during capture; nothing should auto-play.
@@ -170,9 +170,10 @@ under `runtime_libraries.render_components`.
 ## Adding a new component (checklist)
 
 > **First decide where it lives.** A **durable / reusable** component (product
-> chrome, or a genuinely shared design base) lives in the global
-> `render/components/<Name>/` and follows every step below, including global
-> registration (step 4). A **project one-off** — a bespoke design scene used by
+> chrome, or a genuinely shared data/media utility) lives in the global catalog
+> under its **category folder** — `render/components/<category>/<Name>/`
+> (`chrome` · `3d` · `brand` · `overlays` · `effects` · `design`) — and follows
+> every step below, including global registration (step 4). A **project one-off** — a bespoke design scene used by
 > exactly one video — instead lives in **`projects/<slug>/components/<Name>/`**
 > (next to that video's SCF) and **skips global registration (steps 4–5)**: the
 > renderer auto-resolves a project-local component by name, and `scf_validate`
@@ -180,10 +181,10 @@ under `runtime_libraries.render_components`.
 > schema. (One-offs should be 2D — GSAP/SVG/Canvas/CSS; a WebGL one-off still
 > needs the global three.js driver wiring, so register those globally.)
 
-1. Create `render/components/<Name>/index.html` with `{{prop}}` placeholders.
-2. Create `render/components/<Name>/animation.js` following the master
+1. Create `render/components/<category>/<Name>/index.html` with `{{prop}}` placeholders (categories: chrome · 3d · brand · overlays · effects · design).
+2. Create `render/components/<category>/<Name>/animation.js` following the master
    timeline pattern above.
-3. *(Optional)* Create `render/components/<Name>/props.json` with a JSON
+3. *(Optional)* Create `render/components/<category>/<Name>/props.json` with a JSON
    Schema describing accepted props.
 4. **Register the component** (all three are required):
    - Add `<Name>` to the `component` enum in
