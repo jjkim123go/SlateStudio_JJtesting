@@ -132,7 +132,10 @@ Before starting any production, read `schemas/scf-v1.0.schema.json` to understan
 Follow the pipeline stages in order (ingest → research → script → scene_plan → assets → compose → review → publish). The workflow is deterministic. The content within each stage is creative. Don't skip stages.
 
 ### P4: SCF-First Composition
-Generate video compositions as **SCF JSON** (Slate Composition Format). The SCF is compiled to a HyperFrames HTML composition by `render/lib/scf-to-html.mjs` and rendered to MP4 via `@hyperframes/producer`. Use the pre-built components (BrandIntro, BrandOutro, TitleCard, AnimatedCaption, LowerThird) whenever possible. Only use FFmpeg for operations the renderer doesn't handle (audio probing, transcoding outside the render pipeline).
+Generate video compositions as **SCF JSON** (Slate Composition Format). The SCF is compiled to a HyperFrames HTML composition by `render/lib/scf-to-html.mjs` and rendered to MP4 via `@hyperframes/producer`. Reuse the pre-built components for **brand and product-chrome** scenes only — BrandIntro, BrandOutro, LowerThird, TitleCard, AnimatedCaption, and the chrome surfaces (TerminalCast, VSCodeScene, Teams/Outlook/Excel, Azure Portal, browser/phone shells). For **design / explanatory / abstract** scenes (diagrams, data-viz, kinetic type, metaphor, hero moments) **do not fill a finished design component's props** — commit an art direction and hand-stitch the scene from primitives (see P4b). Only use FFmpeg for operations the renderer doesn't handle (audio probing, transcoding outside the render pipeline).
+
+### P4b: Art-Direction-First for design scenes (anti-sameness)
+Slate videos look the same when the creative act is *"pick a catalog component and fill its props."* Before scene-planning **every** video, commit a per-video art direction (`projects/<slug>/art-direction.json`) and assign each scene a **distinct** visual technique. Load [`skills/creative/art-direction.md`](../skills/creative/art-direction.md) (the identity contract), [`skills/creative/scene-primitives.md`](../skills/creative/scene-primitives.md) (hand-stitch toolbox + technique variety), and gate the result with [`skills/creative/design-critic.md`](../skills/creative/design-critic.md). Reusable components are for product **chrome**; design visuals are **hand-stitched** from primitives. A finished design component (DataFlow, DataChart, StepByStep, CompareSlider, TerminologyCard…) may appear only as a *restyled base* — never its default look, never two back-to-back. For factual/current topics, also load [`skills/meta/topic-research.md`](../skills/meta/topic-research.md) before scripting.
 
 ### P5: Deep Artifact Understanding
 When the user provides media files (images, videos, audio, documents), **analyze them thoroughly** before proceeding:
@@ -229,9 +232,11 @@ Read it once at session start (or any time you're producing a video).
 
 In one paragraph: understand what the user wants → run a concrete
 availability scan → present a brief and get approval → write the script
-and get approval → plan scenes (mix director skills as needed) and get
-approval → generate assets within budget → compose SCF → render →
-self-review → deliver. Pause at every checkpoint listed in
+and get approval → **commit an art direction (`art-direction.json`) and give
+each scene a distinct technique** → plan scenes (mix director skills as needed)
+and get approval → generate assets within budget → compose SCF → render →
+self-review (incl. the design-critic variety gate) → deliver. Pause at every
+checkpoint listed in
 [`skills/meta/checkpoint-protocol.md`](../skills/meta/checkpoint-protocol.md).
 Persist every decision and cost into the project's append-only
 `ledger.jsonl` and `decisions.jsonl` (see
@@ -593,24 +598,39 @@ Slate supports five types of content scenes:
 - Model auto-selected by prompt content, or override with `model_hint`
 - Combined with TTS narration to create a scene video
 
-### 2. Component-First Visual Scenes (always animated — create if needed)
-- **Prefer animated HyperFrames components** for all deterministic content — they provide motion, reveal animations, and audience engagement that static PNGs cannot match.
-- **If no component exists**, spawn a sub-agent to create one (load `component-authoring.md`, `component-design-system.md`, and `gsap-component-patterns.md`). Every video scene gets an animated component — never a static PNG.
-- **`structured_image` (Pillow)** is reserved for non-video outputs only (thumbnails, social preview cards, static exports).
-- AI image models CANNOT reliably render code, tables, charts, or UI mockups — they hallucinate syntax and misspell labels. Never use AI image generation for these content types.
+### 2. Component-First **only for product chrome**; hand-stitch design scenes
+Slate has **two classes of visual, and only one is reusable** (full doctrine:
+[`skills/creative/scene-primitives.md`](../skills/creative/scene-primitives.md)):
+
+- **Product / chrome — REUSABLE, component-first.** Anything imitating real
+  software must look real and consistent: VS Code, Terminal, GitHub/ADO, Teams,
+  Outlook, Excel, PowerPoint, Power BI, Azure Portal, a browser or phone shell.
+  Use the chrome catalog (TerminalCast, VSCodeScene, ScreenDemoFrame, ExcelScene,
+  TeamsScene, …) and feed it content. **Never hand-draw a fake Outlook.**
+- **Design / explanatory / abstract — HAND-STITCHED from primitives.** Diagrams,
+  data-viz, kinetic type, metaphor scenes, transitions, hero moments. **Do not
+  reach for a finished design component** (DataFlow, DataChart, StepByStep,
+  CompareSlider, TerminologyCard, MetricsCard, ArchitectureDiagram…) as the
+  scene's content — that is the sameness trap. Commit an art direction, then
+  compose each scene from primitives (GSAP, SVG, Canvas, WebGL/3D, CSS) on the
+  HyperFrames runtime so every scene is its own thing.
+
+Rules:
+- **Never use AI image generation for code/tables/charts/UI mockups** — they
+  hallucinate. Use chrome components (code/UI) or hand-stitched SVG/Canvas (charts/diagrams).
+- **`structured_image` (Pillow)** is reserved for non-video outputs only (thumbnails, social cards).
+- A finished **design** component is allowed only as a *restyled base*, never its
+  default look, and never two back-to-back. The [`design-critic`](../skills/creative/design-critic.md)
+  gate fails a video that is mostly default catalog or one motif repeated.
 - There is **no** `structured_visual` field in the SCF schema.
 
-**Routing by content type (component-first):**
+**Routing by content type:**
 
-| Content | Preferred treatment | If no component exists |
-|---------|--------------------|----------------------|
-| **Code / JSON / CLI** | `TerminalCast`, `VSCodeScene`, or `TerminalScene` — render code natively with typing animation, no pre-generation needed. | N/A — these components handle code perfectly. |
-| **Diagrams / flow charts** | `DataFlow` or `ArchitectureDiagram` — animated node+arrow reveal. | N/A — these components handle flow perfectly. |
-| **Bar / donut charts** | `DataChart` — animated bar/donut with counter tweens and segment reveal. | Create a specialized audit-quality chart component if needed. |
-| **Metrics / KPIs** | `MetricsCard`, `MetricStack`, `BurnDown`, or `OKRStatus` — animated counters, deltas, sparklines. | Create a new component via sub-agent. |
-| **Tables / comparisons** | `PricingTable`, `CompareSlider`, or `ExcelScene` — animated row/column reveal. | Create a new component via sub-agent. |
-| **UI mockups** | `ScreenDemoFrame` for component chrome (browser/device bezel). Inner content should also use a component when possible. | Create a new component for the inner content via sub-agent. |
-| **Architecture** | `ArchitectureDiagram` — boxes pop in, arrows stroke-draw. | Create a new component for complex topologies via sub-agent. |
+| Content | Treatment |
+|---------|-----------|
+| **Code / JSON / CLI / IDE / app UI** | Chrome component — `TerminalCast`, `VSCodeScene`, `ScreenDemoFrame`, `EdgeBrowserScene`, M365 surfaces. Reusable by design. |
+| **Diagrams / data-viz / charts / metrics / steps / comparisons / architecture** | **Hand-stitch** from primitives per the scene's `art-direction.json` technique (SVG stroke-draw, Canvas fields, kinetic type, WebGL). A catalog design component (`DataFlow`, `DataChart`, `StepByStep`, `CompareSlider`…) only as a *restyled base*, never default, never two adjacent. |
+| **Generated imagery / texture / hero bed** | gpt-image-2 still (Ken-Burns/parallax) or Sora-2 clip. |
 
 > See [`docs/COMPONENT_REFERENCE.md`](../docs/COMPONENT_REFERENCE.md) for full
 > component prop schemas. See [`docs/COMPONENT_CATALOG.md`](../docs/COMPONENT_CATALOG.md)
@@ -618,6 +638,11 @@ Slate supports five types of content scenes:
 > component prop schemas (TerminalCast, VSCodeScene, ScreenDemoFrame, DataFlow, DataChart, etc.).
 
 **SCF examples (these validate against `schemas/scf-v1.0.schema.json`):**
+
+> These show SCF **shape** only. The DataFlow / DataChart examples are
+> *restyle-base* references — for a real video, hand-stitch the design scene
+> from primitives per `art-direction.json` (see P4b). The chrome examples
+> (TerminalCast, ScreenDemoFrame) are reusable as-is.
 
 Diagram via DataFlow component:
 ```json
@@ -689,7 +714,7 @@ UI mockup via ScreenDemoFrame:
 }
 ```
 
-**Routing rule:** For code, use `TerminalCast`, `VSCodeScene`, or `TerminalScene`. For diagrams, use `DataFlow` or `ArchitectureDiagram`. For charts, use `DataChart`. For metrics, use `MetricsCard` or `MetricStack`. For tables, use `PricingTable` or `ExcelScene`. If no registered component matches the scene's content type, create a new one using a sub-agent (load `component-authoring`, `component-design-system`, and `gsap-component-patterns` skills). The `structured_image` tool is not used for video scenes. Do not ask AI image models for code, JSON, charts with specific numbers, or UI mockups — they hallucinate.
+**Routing rule (two classes):** For product **chrome** (code, CLI, IDE, app UI, Microsoft surfaces) reuse the chrome components — `TerminalCast`, `VSCodeScene`, `ScreenDemoFrame`, `EdgeBrowserScene`, Teams/Outlook/Excel/Azure, etc. For **design / explanatory** content (diagrams, charts, metrics, steps, comparisons, architecture, kinetic type, hero moments) **hand-stitch from primitives** per the scene's `art-direction.json` technique (load [`scene-primitives`](../skills/creative/scene-primitives.md) + `gsap-component-patterns`, author via sub-agent, gate with [`design-critic`](../skills/creative/design-critic.md)); a finished design component may be used only as a *restyled base*, never default, never two back-to-back. The `structured_image` tool is not used for video scenes. Do not ask AI image models for code, JSON, charts with specific numbers, or UI mockups — they hallucinate.
 
 ### 3. Video Clip Scenes
 - User-provided video clips (MP4, MOV, WebM, AVI)

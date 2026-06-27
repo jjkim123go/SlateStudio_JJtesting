@@ -5,6 +5,15 @@
 > library. It does **not** replace the per-component skills; it routes you
 > to the right one in one read.
 
+> **⚠ Doctrine precedence (supersedes this map for design scenes).** These are
+> mostly **design** components (metrics, charts, steps, comparisons, callouts).
+> They are *restyle-bases*, not default scene content. For design / explanatory
+> / abstract scenes, **hand-stitch from primitives** under a committed
+> [`creative/art-direction`](../creative/art-direction.md) — see
+> [`creative/scene-primitives`](../creative/scene-primitives.md); never use a
+> finished design component as its default look or twice in a row.
+> [`creative/design-critic`](../creative/design-critic.md) gates variety.
+
 ## When to load
 
 Load early in `scene_plan` whenever the script contains *any* of:

@@ -169,6 +169,17 @@ under `runtime_libraries.render_components`.
 
 ## Adding a new component (checklist)
 
+> **First decide where it lives.** A **durable / reusable** component (product
+> chrome, or a genuinely shared design base) lives in the global
+> `render/components/<Name>/` and follows every step below, including global
+> registration (step 4). A **project one-off** — a bespoke design scene used by
+> exactly one video — instead lives in **`projects/<slug>/components/<Name>/`**
+> (next to that video's SCF) and **skips global registration (steps 4–5)**: the
+> renderer auto-resolves a project-local component by name, and `scf_validate`
+> treats it as known. This keeps single-use scenes out of the shared catalog and
+> schema. (One-offs should be 2D — GSAP/SVG/Canvas/CSS; a WebGL one-off still
+> needs the global three.js driver wiring, so register those globally.)
+
 1. Create `render/components/<Name>/index.html` with `{{prop}}` placeholders.
 2. Create `render/components/<Name>/animation.js` following the master
    timeline pattern above.

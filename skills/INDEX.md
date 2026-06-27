@@ -72,6 +72,20 @@ break when composed.
 
 ## Layer 2 — Component skills (load when planning a scene that uses one)
 
+> **Two classes — read before routing.** **Chrome** components (TerminalCast,
+> VSCodeScene, AzureDevOpsScene, GitHubScene, ScreenDemoFrame, Teams / Outlook /
+> Excel / PowerPoint / PowerBI / Loop / Whiteboard, Windows / Admin surfaces,
+> EdgeBrowserScene) imitate real software — **reuse them, component-first.**
+> **Design** components (DataFlow, DataChart, MetricsCard, MetricStack, GaugeRing,
+> BurnDown, StepByStep, CompareSlider, TerminologyCard, ArchitectureDiagram,
+> PricingTable, CompetitiveMatrix, ProgressBar, roadmap / okr-status…) are the
+> **sameness trap**: use them only as a *restyled base*, never their default look,
+> never two adjacent. For design / explanatory / abstract scenes, **hand-stitch
+> from primitives** ([`creative/scene-primitives`](creative/scene-primitives.md))
+> under a committed [`creative/art-direction`](creative/art-direction.md). The
+> transition / effect rows (collage-shatter, depth-zoom-punch, swirl-vortex…)
+> are fine as accents.
+
 | Skill | File | Trigger |
 |-------|------|---------|
 | `components/architecture-diagram` | [`skills/core/components/architecture-diagram.md`](core/components/architecture-diagram.md) | architecture, system architecture, service map, topology, dependency graph, component diagram, integration flow, microservices, boxes and arrows, data flow with sequential reveal |
@@ -192,8 +206,20 @@ break when composed.
 
 ## Creative skills
 
+> **Creative doctrine (load these FIRST when producing any video).** The creative
+> act is *not* "pick a finished component and fill its props" — that is the
+> sameness trap. Commit a per-video **art direction**, **hand-stitch** each design
+> scene from primitives, and **gate** for variety. Reusable components are for
+> product **chrome** only (VS Code, Terminal, Teams, Outlook, Excel, Azure,
+> GitHub, browser). The design-component rows under *Layer 2 — Component skills*
+> (DataFlow, DataChart, StepByStep, CompareSlider, TerminologyCard, MetricsCard,
+> ArchitectureDiagram…) are **restyle-bases only**, never default scene content.
+
 | Skill | File | Trigger |
 |-------|------|---------|
+| `creative/art-direction` | [`skills/creative/art-direction.md`](creative/art-direction.md) | **brief & scene-plan of every video** — visual identity, art direction, "looks like every other video", "looks like a PPT", sameness, palette/material/motion-signature, per-scene technique variety, `art-direction.json` |
+| `creative/scene-primitives` | [`skills/creative/scene-primitives.md`](creative/scene-primitives.md) | scene-plan & authoring any non-chrome scene — hand-stitch from primitives (GSAP/SVG/Canvas/WebGL), technique palette, "don't use a finished design component", diagram / data-viz / kinetic-type / metaphor / hero scene |
+| `creative/design-critic` | [`skills/creative/design-critic.md`](creative/design-critic.md) | before delivery / in review — variety gate, PPT-smell, premium signals, distinctiveness, keyframe scoring, `design-review.json` |
 | `creative/voice-selection` | [`skills/creative/voice-selection.md`](creative/voice-selection.md) | choosing a TTS voice, user voice preference, tone × audience matrix, voice override, "use a male voice", "warm voice" |
 | `creative/component-design-system` | [`skills/creative/component-design-system.md`](creative/component-design-system.md) | creating a new component, choosing visual style, selecting colors/typography without a brand package, chart type selection, design system query |
 | `creative/gsap-component-patterns` | [`skills/creative/gsap-component-patterns.md`](creative/gsap-component-patterns.md) | authoring or modifying a HyperFrames component animation, choosing GSAP patterns, stagger reveals, counter tweens, node+arrow diagrams, chart animations, data visualization motion |
@@ -204,6 +230,7 @@ break when composed.
 | Skill | File | Trigger |
 |-------|------|---------|
 | `production-loop` | [`skills/meta/production-loop.md`](meta/production-loop.md) | every video production — agentic operating model, intent → brief → script → scenes → assets → compose → review → deliver |
+| `topic-research` | [`skills/meta/topic-research.md`](meta/topic-research.md) | factual / current / technical topic — ground claims before scripting, cite sources, avoid hallucinated versions / dates / numbers, `research.md` |
 | `checkpoint-protocol` | [`skills/meta/checkpoint-protocol.md`](meta/checkpoint-protocol.md) | every approval gate — what to present, when to pause, how to resume |
 | `state-and-decisions` | [`skills/meta/state-and-decisions.md`](meta/state-and-decisions.md) | start of every project — project folder layout, append-only `ledger.jsonl` and `decisions.jsonl`, recovery from interruption |
 | `brand-package-linting` | [`skills/meta/brand-package-linting.md`](meta/brand-package-linting.md) | composing with a non-empty `brandPackage` field. Also: brand, color, logo, safe area, typography, watermark |
