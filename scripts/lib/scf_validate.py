@@ -302,18 +302,28 @@ def _quality_first_enabled(scf: dict) -> bool:
     return any(bool(metadata.get(key)) for key in QUALITY_FIRST_METADATA_KEYS)
 
 
-def _inventory_by_name() -> dict[str, dict]:
+def _inventory_by_name(scf_dir: str | None = None) -> dict[str, dict]:
     if build_component_manifest is None:
         return {}
     try:
         manifest = build_component_manifest()
     except Exception:
         return {}
-    return {
+    inventory = {
         item.get("name"): item
         for item in manifest.get("components", [])
         if item.get("name")
     }
+    # Project-scoped one-off components live in `<project>/components/<Name>/`
+    # and render without a global registration; treat them as known here so the
+    # scene-contract check does not flag a bespoke one-off as "unregistered".
+    if scf_dir:
+        comp_root = Path(scf_dir) / "components"
+        if comp_root.is_dir():
+            for child in comp_root.iterdir():
+                if child.is_dir() and (child / "index.html").exists():
+                    inventory.setdefault(child.name, {"name": child.name, "project_scoped": True, "has_prop_contract": (child / "props.json").exists()})
+    return inventory
 
 
 def _ffprobe_duration(path: str) -> float | None:
@@ -820,14 +830,14 @@ def validate_narration_text_present(scf: dict) -> list[dict]:
     return issues
 
 
-def validate_component_prop_contracts(scf: dict) -> list[dict]:
+def validate_component_prop_contracts(scf: dict, scf_dir: str | None = None) -> list[dict]:
     """Warn when scenes use components without a machine-readable prop contract.
 
     Components can render without a schema, but novice-quality UX depends on
     the agent knowing what props are real. This warning gives evals a concrete
     signal when a scene is relying on undocumented or arbitrary props.
     """
-    inventory = _inventory_by_name()
+    inventory = _inventory_by_name(scf_dir)
     if not inventory:
         return []
 
@@ -859,7 +869,7 @@ def validate_component_prop_contracts(scf: dict) -> list[dict]:
     return issues
 
 
-def validate_scene_contracts(scf: dict, require_contracts: bool | None = None) -> list[dict]:
+def validate_scene_contracts(scf: dict, require_contracts: bool | None = None, scf_dir: str | None = None) -> list[dict]:
     """Validate quality-first scene contracts attached to SCF metadata.
 
     Scene contracts are the bridge between a user's intent and the SCF. They
@@ -872,7 +882,7 @@ def validate_scene_contracts(scf: dict, require_contracts: bool | None = None) -
 
     contracts = _scene_contracts(scf)
     issues = []
-    inventory = _inventory_by_name()
+    inventory = _inventory_by_name(scf_dir)
 
     for scene in scf.get("scenes", []):
         scene_id = _scene_id(scene)
@@ -1113,8 +1123,8 @@ def validate_scf_pre_render(scf: dict, scf_dir: str, profile: str | None = None)
     bridge_component_issues = validate_bridge_component_usage(scf)
     narration_text_issues = validate_narration_text_quality(scf)
     narration_text_present_issues = validate_narration_text_present(scf)
-    component_prop_contract_issues = validate_component_prop_contracts(scf)
-    scene_contract_issues = validate_scene_contracts(scf)
+    component_prop_contract_issues = validate_component_prop_contracts(scf, scf_dir=scf_dir)
+    scene_contract_issues = validate_scene_contracts(scf, scf_dir=scf_dir)
     reusable_footage_issues = validate_reusable_footage_ratio(scf, scf_dir)
     text_on_image_issues = validate_no_text_on_image_layers(scf)
 

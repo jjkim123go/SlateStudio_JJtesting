@@ -123,18 +123,23 @@ in `art-direction.json`.)
    [`gsap-component-patterns`](gsap-component-patterns.md), plus
    [`render/three-js`](../core/render/three-js.md) for WebGL and
    [`render/html-in-canvas`](../core/render/html-in-canvas.md) if you bake text
-   into a texture. Register the component in `scf-to-html.mjs` `KNOWN_COMPONENTS`
-   + the schema enum, then run the mandatory visual-QA frame check. Keep text-fit
-   and timeline on the tested runtime so it can't break.
+   into a texture. Put it in **`projects/<slug>/components/<Name>/`** (next to the
+   SCF) — a project one-off needs **no** global registration; the renderer
+   auto-resolves project-local components by name. Then run the mandatory
+   visual-QA frame check. Keep text-fit and timeline on the tested runtime so it
+   can't break.
 3. **Stay on-identity** — express ≥3 of {palette, material, motionSignature,
    composition, signatureMotif}. Same material + palette as every other scene.
 4. **Gate it** — run the [`design-critic`](design-critic.md) keyframe loop
    (render → look → score → fix). Bespoke is safe because it's *verified*, not
    because it was pre-built.
 
-A one-off scene component is cheap: it lives in `render/components/<sceneId>/`
-(or as inline layers) and is used by exactly one scene. It does **not** need to
-generalize — resist adding props/modes for reuse. Reusability is for chrome.
+A one-off scene component is cheap: it lives in **`projects/<slug>/components/<Name>/`**
+(next to the video's SCF) and is used by exactly one scene. **It needs no global
+registration** — the renderer resolves project-local components by name, so
+single-use scenes never touch the shared catalog or schema. It does **not** need
+to generalize — resist adding props/modes for reuse. Reusability is for chrome
+(the global `render/components/`).
 
 ## The signature motif is connective tissue, not the scene
 

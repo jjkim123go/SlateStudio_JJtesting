@@ -35,6 +35,12 @@ import { transformVSCodeScene } from './vscode-scene-transformer.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const COMPONENTS_DIR = resolve(__dirname, '..', 'components');
 
+// Project-scoped one-off components: a video may ship bespoke scene components
+// in `<project>/components/<Name>/` (next to its SCF). These render WITHOUT a
+// global KNOWN_COMPONENTS / schema entry, so single-use design scenes don't
+// pollute the shared catalog. Set per-compile from options.scfDir; null = global-only.
+let PROJECT_COMPONENTS_DIR = null;
+
 const DEFAULT_THEME = {
   name: 'technical-paper',
   background: '#F3F0E8',
@@ -199,10 +205,24 @@ const TRANSITION_COMPONENTS = new Set([
 ]);
 
 function loadComponent(name) {
-  if (!KNOWN_COMPONENTS.has(name)) {
-    throw new Error(`Unknown SCF component: ${name}`);
+  // Resolution order: a project-scoped one-off component (in
+  // `<project>/components/<name>/`) wins over the shared catalog and renders
+  // without a global KNOWN_COMPONENTS / schema entry. Otherwise fall back to the
+  // registered component in `render/components/`.
+  let dir = null;
+  if (PROJECT_COMPONENTS_DIR) {
+    const projDir = resolve(PROJECT_COMPONENTS_DIR, name);
+    if (existsSync(resolve(projDir, 'index.html'))) dir = projDir;
   }
-  const dir = resolve(COMPONENTS_DIR, name);
+  if (!dir) {
+    if (!KNOWN_COMPONENTS.has(name)) {
+      throw new Error(
+        `Unknown SCF component: ${name} (not in the global registry, and no ` +
+        `project-scoped component at <project>/components/${name}/index.html)`
+      );
+    }
+    dir = resolve(COMPONENTS_DIR, name);
+  }
   const html = readFileSync(resolve(dir, 'index.html'), 'utf-8');
   const css = existsSync(resolve(dir, 'style.css'))
     ? readFileSync(resolve(dir, 'style.css'), 'utf-8')
@@ -1882,6 +1902,8 @@ function buildSceneVisibilityJs(renderedScenes) {
 
 export function compileSCFToHTML(scf, options = {}) {
   const scfDir = options.scfDir || process.cwd();
+  // Project-scoped one-off components resolve from `<project>/components/`.
+  PROJECT_COMPONENTS_DIR = scfDir ? resolve(scfDir, 'components') : null;
   const profile = scf.outputProfile || {};
   const width = profile.width || 1920;
   const height = profile.height || 1080;
