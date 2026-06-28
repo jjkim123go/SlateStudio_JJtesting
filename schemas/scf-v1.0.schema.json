@@ -669,8 +669,8 @@
         "style": {
           "type": "string",
           "enum": ["word-highlight", "sentence", "karaoke", "static", "none"],
-          "default": "word-highlight",
-          "description": "Caption display style"
+          "default": "static",
+          "description": "Caption display style. 'static' (default) shows caption blocks with no per-word highlight; 'word-highlight'/'karaoke' recolor each word at its timestamp (retired by default — per-word timing is unreliable)."
         },
         "font": {
           "type": "string",

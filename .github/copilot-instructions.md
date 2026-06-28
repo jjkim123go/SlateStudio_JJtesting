@@ -54,8 +54,9 @@ opens any conversation that involves making, changing, or planning a video.
    - Build polished motion graphics locally with the component library
    - Create UI / workflow / product demos without recording a real screen
    - Add narration, subtitles, music, and brand styling
-   - Captions are added by default on narrated videos (word-highlight style) —
-     mention this in the brief so the user can opt out or change style
+   - Captions are added by default on narrated videos (static, high-contrast
+     blocks — per-word highlighting is retired) — mention this in the brief so
+     the user can opt out or restyle
    - Show you brief → script → scene plan before spending money or rendering
 
    Archetype hints:
@@ -408,7 +409,7 @@ Example SCF:
     }
   ],
   "music": { "src": "assets/bg-music.mp3", "volume": 0.15, "duck_on_narration": true },
-  "captions": { "style": "word-highlight", "position": "bottom", "fontSize": 24 }
+  "captions": { "style": "static", "position": "bottom", "fontSize": 24 }
 }
 ```
 

@@ -38,6 +38,42 @@ an example value (or a previous video's choice) into a new video.**
 | `sceneTreatments` | A per-scene plan assigning each scene a **distinct visual technique** (see [`scene-primitives.md`](scene-primitives.md)). This is how you get variety instead of one motif repeated. | s1 kinetic-type · s2 3D-stack · s3 hand-drawn line · s4 particle-field · s5 chrome-demo · … |
 | `referenceDirection` | 1–2 named looks to design *toward* (raises the ceiling above the agent's bland prior). | "Apple keynote dark", "Stripe docs", "noir title sequence", "Kurzgesagt flat-depth". |
 
+### Find the world in the subject — never default to an idiom
+
+The `concept` is the whole game. The agent's lazy default is **"dark background +
+glowing neon nodes / grid" — 'premium tech'**. Resist it. That idiom is the *new*
+sameness: competent, expected, forgettable. **There is no house style — every
+video earns its own world**, and the strongest worlds *resonate with the subject*
+so the look itself carries meaning:
+
+- a film about a **library** → aged paper, letterpress serif, ink that can *burn*;
+- a film about **compound interest** → a personal ledger / graph-paper notebook;
+- a film about **security threats** → rain-slick neon-noir.
+
+Ask: **what visual world belongs to *this* subject, audience, and emotion that I
+have not used before?** If your answer resembles a past video — or the tech-dark
+default — you haven't found it yet. Push until the world surprises you. The brief
+and script stages are where a human signs off on the world, so be **bold** in
+proposing one.
+
+**A gallery to stretch your range — NOT a menu.** These ten worlds are
+deliberately unalike; the point is the *breadth* of the space, not the items.
+**Invent one that is not on this list, derived from your subject** — listing them
+is to break the default, never to pick from.
+
+| World | Material & type | Resonates with |
+|---|---|---|
+| Archival / illuminated manuscript | aged paper, letterpress serif, ink, wax seal, foxing | history, knowledge, provenance, "the record" |
+| Engineer's blueprint | cyan line on slate, graph paper, compass arcs, annotations | architecture, systems, planning |
+| Wet-ink newsprint / risograph | newsprint grain, halftone, bold condensed heads, 2-colour misregistration | news, announcements, bold claims |
+| Botanical / natural-history plate | copperplate engraving, sepia, hand-labelled specimens, gold leaf | growth, taxonomy, organic systems |
+| Antique star-chart / cartography | indigo, constellations, brass instruments, map linework | discovery, navigation, exploration |
+| Brutalist Swiss grid | raw concrete, stark Helvetica, primary blocks, hard shadow | infrastructure, policy, modern statements |
+| Paper-craft diorama | layered cut paper, felt, soft studio light, tactile shadow | human stories, onboarding, simple ideas |
+| Neon-noir, rain-slick city | wet asphalt reflections, neon signage, volumetric fog | security, mystery, high-stakes drama |
+| Chalk on slate / vintage textbook | chalk dust, handwritten equations, eraser smudge | education, math, fundamentals |
+| Molten glass / liquid metal | chrome, refraction, caustics, HDR bloom | transformation, fluidity, premium hardware |
+
 **Ground it, then deviate.** Query the design system for a credible starting
 point, then push it somewhere specific:
 ```
@@ -80,9 +116,13 @@ material, SVG assembly, photographic collage). Record it as `sceneTreatments`.
     scenes; never the same technique in two adjacent scenes. One bespoke
     component reused everywhere is a prettier template — the exact failure the
     design-critic now gates on.
-  - **Motif = accent.** The `signatureMotif` is connective tissue (transition /
-    mark / edge element / material echo), not the hero of every scene. It owns
-    the hook + one hero + the close; elsewhere ≤20% of the frame.
+  - **No hero-component spine.** The `signatureMotif` is connective tissue, and it
+    appears in **one or at most two beats** (typically the climax) — never as the
+    visual scaffolding of every scene. It earns its weight by being *scarce*.
+    Test: if a scene still works with the motif removed, the motif doesn't belong
+    there. (Picking one striking visual and reusing it every scene with different
+    text underneath *feels* custom but is mechanically branded slides — the
+    SignalTape mistake.)
   - **Hero / signature beats: author bespoke** — express ≥3 of {palette,
     material, motionSignature, composition, signatureMotif}. Use
     [`scene-primitives.md`](scene-primitives.md) +
@@ -93,6 +133,28 @@ material, SVG assembly, photographic collage). Record it as `sceneTreatments`.
   - `material` + `palette` identical across all scenes; `motionSignature`
     governs every entrance/transition.
 
+### Make each scene its own composition
+
+Before writing any scene, answer concretely:
+
+- **What is this scene's PRIMARY visual subject?** A character · a diagram · a
+  piece of evidence · a landscape · a typographic moment · a void. It must be
+  *different* from the previous scene's. (The design-critic fails the video if any
+  two scenes share their primary subject.)
+- **Why does this beat exist?** What does it do that no other beat does? If two
+  scenes collapse into one without losing meaning, collapse them.
+- **How does it differ from its neighbours?** Vary at least two of: composition
+  (thirds / centred / split), scale (intimate close vs wide field), motion
+  register (still vs busy), palette emphasis, type treatment.
+
+### Let the medium enact the story
+
+The strongest scenes don't *decorate* the narration — the visual **performs** it.
+When the script says a library burned, the paper on screen chars and tears; when
+it says a number compounds, the curve draws itself off the page. Find the one or
+two moments per video where the material can *become* the meaning, and build those
+beats bespoke. This is the line between "nicely animated" and "crafted."
+
 ## Step 4 — Don't forget the production layers
 
 A finished video has **music** (always, ducked under narration), **captions**
@@ -100,6 +162,14 @@ A finished video has **music** (always, ducked under narration), **captions**
 Sora clip** for texture/variety. If you skip one, write down why — don't just
 forget it. (The token-tape pilot shipped with no music and zero generated
 media because these weren't on the checklist; they are now.)
+
+**Captions ≠ on-screen text — pick one role.** Decide once per video: are captions
+carrying meaning the spoken words can't (a number, a name, a quote attribution),
+or are they accessibility subtitles echoing the narration? If a scene already
+shows a big headline that reads the script line verbatim, do **not** also burn a
+caption with the same words — the doubled phrase looks amateurish even when the
+scene is beautiful. Either scope captions to scenes whose on-screen text differs
+from what's said, or keep captions and keep the on-screen text minimal.
 
 ## Step 5 — Gate it
 
