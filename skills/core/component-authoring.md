@@ -149,8 +149,8 @@ Notes:
 
 ### 6. What you must NOT use
 
-Slate excludes several GSAP capabilities, either because they don't apply or
-because their licenses don't fit Slate's enterprise posture:
+Slate excludes a few GSAP capabilities that don't apply to a headless,
+non-interactive seek-render:
 
 | Excluded | Why |
 |----------|-----|
@@ -158,8 +158,14 @@ because their licenses don't fit Slate's enterprise posture:
 | Observer / Draggable | No interaction surface |
 | React / Vue / Svelte hooks | Slate renders plain HTML |
 | `gsap.matchMedia` reduced-motion | Render target, not a UI |
-| Club GSAP plugins (DrawSVG, MorphSVG, MotionPath, SplitText, ScrambleText, Inertia, Physics2D, GSDevTools) | Paid license; not redistributable |
 | `kill()` / `revert()` cleanup | Page is destroyed after capture |
+
+> **Now AVAILABLE (GSAP went 100% free in v3.13):** SplitText, DrawSVGPlugin,
+> MorphSVGPlugin, MotionPathPlugin, Physics2DPlugin, InertiaPlugin, and
+> CustomEase / CustomBounce / CustomWiggle are loaded from the CDN and
+> `registerPlugin`-ed on every render — use them directly (no per-component
+> registration). They are deterministic / seek-safe. Only the scroll &
+> interaction plugins above stay excluded.
 
 These are enforced via the allowlist/forbidden list in
 [`config/org/governance-policy.yaml`](../../config/org/governance-policy.yaml)

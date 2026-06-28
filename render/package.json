@@ -14,9 +14,9 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@hyperframes/core": "0.4.3",
-    "@hyperframes/engine": "0.4.3",
-    "@hyperframes/producer": "^0.4.3",
+    "@hyperframes/core": "0.5.7",
+    "@hyperframes/engine": "0.5.7",
+    "@hyperframes/producer": "0.5.7",
     "three": "0.171.0"
   }
 }

@@ -2041,7 +2041,16 @@ export function compileSCFToHTML(scf, options = {}) {
 <meta name="viewport" content="width=${width}, height=${height}" />
 <title>${escapeHtml(scf.metadata?.title || 'Slate Composition')}</title>
 ${threeImportMapTag}
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomBounce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomWiggle.min.js"></script>
 ${lottieVendorTag}
 <style>
 :root { color-scheme: dark; ${themeCssVars(theme)} }
@@ -2069,6 +2078,10 @@ window.__slateFontsReady = !document.fonts;
 if (document.fonts) {
   document.fonts.ready.then(function(){ window.__slateFontsReady = true; document.documentElement.setAttribute('data-fonts-ready', 'true'); });
 }
+// Register the now-free GSAP plugins (loaded from CDN above). GSAP went fully
+// free in v3.13; these were previously Club-only. Defensive registration: only
+// register plugins that actually loaded, so a CDN hiccup degrades gracefully.
+[window.Flip, window.SplitText, window.DrawSVGPlugin, window.MorphSVGPlugin, window.MotionPathPlugin, window.Physics2DPlugin, window.CustomEase, window.CustomBounce, window.CustomWiggle].forEach(function(p){ if (p) { try { gsap.registerPlugin(p); } catch (e) {} } });
 const master = gsap.timeline({ paused: true });
 
 // Per-scene visibility — only the active scene is shown at any time

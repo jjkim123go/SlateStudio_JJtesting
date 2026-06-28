@@ -183,7 +183,7 @@ and surfaced through the skills index and JIT-loaded skill files.
 ┌─────────────────────────────────────────────────────────────────────────┐
 │                  HYPERFRAMES RENDERING ENGINE                            │
 │                                                                         │
-│  Node.js ≥22  ──  @hyperframes/{core,engine,producer}@0.4.3             │
+│  Node.js ≥22  ──  @hyperframes/{core,engine,producer}@0.5.7             │
 │                                                                         │
 │  scf-to-html.mjs  →  HTML (79 components + GSAP timelines)              │
 │  render.mjs       →  headless Chrome  →  frames  →  FFmpeg  →  MP4      │
@@ -283,7 +283,7 @@ C:\Projects\Slate\
 │   ├── lib/scf-to-html.mjs             SCF → HyperFrames HTML compiler
 │   ├── components/                     79 SCF-registered HyperFrames components (see §11)
 │   │   └── CONTRACT.md                 Component authoring contract
-│   └── package.json                    @hyperframes/{core,engine,producer}@0.4.3
+│   └── package.json                    @hyperframes/{core,engine,producer}@0.5.7
 ├── tests/                              Pytest suite (core, tools, e2e, governance, hyperframes)
 ├── output/                             Ad-hoc work, HTML probes, render staging
 ├── NOTICE.md                           Third-party attribution (HyperFrames, OpenMontage, GSAP)
@@ -763,10 +763,14 @@ The schema's `deliveryProfile` enum drives governance strictness:
 ### 10.1 Stack
 
 - **Node.js ≥ 22**, ESM modules.
-- **`@hyperframes/core@0.4.3`**, **`@hyperframes/engine@0.4.3`**,
-  **`@hyperframes/producer@0.4.3`** — Apache-2.0.
-- **GSAP 3.12** (free standard license) — animation timelines, injected via
-  CDN at render time.
+- **`@hyperframes/core@0.5.7`**, **`@hyperframes/engine@0.5.7`**,
+  **`@hyperframes/producer@0.5.7`** — Apache-2.0. (0.6.0+ introduces a
+  sub-composition timeline requirement incompatible with Slate's current
+  `data-composition-id` emission — see `render/PATCHES.md`.)
+- **GSAP 3.14** (fully free since v3.13, Webflow “No-Charge” license) —
+  animation timelines + plugins (Flip, SplitText, DrawSVG, MorphSVG,
+  MotionPath, Physics2D, CustomEase/Bounce/Wiggle), injected via CDN at
+  render time.
 - **FFmpeg** — audio mix, subtitle burn, transcoding, AI-clip integration.
 
 ### 10.2 Render Flow

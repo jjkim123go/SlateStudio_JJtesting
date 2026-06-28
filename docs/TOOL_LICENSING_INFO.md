@@ -64,9 +64,9 @@ All HyperFrames packages are part of a single monorepo released by HeyGen Inc. u
 
 | Package | Version | License | Enterprise Risk |
 |---------|---------|---------|-----------------|
-| @hyperframes/producer | ^0.4.3 | Apache-2.0 | ✅ None |
-| @hyperframes/core     | ^0.4.3 | Apache-2.0 | ✅ None |
-| @hyperframes/engine   | ^0.4.3 | Apache-2.0 | ✅ None |
+| @hyperframes/producer | 0.5.7 | Apache-2.0 | ✅ None |
+| @hyperframes/core     | 0.5.7 | Apache-2.0 | ✅ None |
+| @hyperframes/engine   | 0.5.7 | Apache-2.0 | ✅ None |
 
 **Source:** [HyperFrames GitHub repository](https://github.com/HeyGen-Official/hyperframes) — Apache-2.0
 license confirmed in LICENSE at repo root. Slate preserves the upstream NOTICE file (when
@@ -76,17 +76,23 @@ owners; Slate is not affiliated with or endorsed by HeyGen Inc.
 ### 4a. GSAP (Runtime Animation Library)
 
 GSAP is **not bundled** with Slate. It is injected into HyperFrames compositions at compile
-time via CDN (`https://cdn.jsdelivr.net/npm/gsap@3.12.5`) and used by component animation
-timelines under `render/components/**`. Slate consumes only the free core API.
+time via CDN (`https://cdn.jsdelivr.net/npm/gsap@3.14.2`) and used by component animation
+timelines under `render/components/**`. As of GSAP 3.13 (Webflow, 2025) the whole library —
+including the formerly-paid plugins (SplitText, DrawSVG, MorphSVG, MotionPath, Physics2D,
+Custom* eases) — is free under the Standard "No Charge" license; Slate consumes the core API
+plus these now-free plugins.
 
 | Package | Version | License | Distribution model | Enterprise Risk |
 |---------|---------|---------|---------------------|-----------------|
-| gsap    | ^3.12   | Standard "No Charge" license (https://gsap.com/standard-license) | CDN injection at render time; not redistributed by Slate | ✅ None for free-tier usage |
+| gsap    | 3.14    | Standard "No Charge" license (https://gsap.com/standard-license) | CDN injection at render time; not redistributed by Slate | ✅ None — entire library free since v3.13 |
 
 **Allowlist enforcement:** `config/org/governance-policy.yaml` enumerates the libraries
-permitted in render artifacts under `runtime_libraries.render_components.allowed`. Club GSAP
-(paid) plugins and irrelevant plugins (ScrollTrigger, etc.) are explicitly listed under
-`runtime_libraries.render_components.forbidden` to prevent accidental inclusion.
+permitted in render artifacts under `runtime_libraries.render_components.allowed` (GSAP core +
+Flip, SplitText, DrawSVG, MorphSVG, MotionPath, Physics2D, CustomEase/Bounce/Wiggle). Since
+GSAP 3.13 the whole library is free, so the `forbidden` list now exists for *technical*
+reasons only — scroll/pointer-driven plugins (ScrollTrigger, ScrollSmoother, ScrollToPlugin,
+Draggable, Observer) are incompatible with deterministic headless seek-render and are listed
+to prevent accidental inclusion.
 
 ### 4b. three.js (WebGL Runtime)
 

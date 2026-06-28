@@ -333,8 +333,15 @@ function addMusicToFinalRender({ concatMp4, outputMp4, music, scfDir, projectDir
     return;
   }
   const volume = music.volume ?? 0.15;
-  console.log(`[Slate] Mixing continuous music bed (vol=${volume}) into ${outputMp4}`);
-  const filter = `[1:a]volume=${volume}[mus];[0:a][mus]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[outa]`;
+  // The concatenated video only has an audio stream when at least one scene had
+  // narration. For a narration-less reel (music-only), [0:a] doesn't exist and
+  // amix would fail ("Stream specifier ':a' matches no streams") — in that case
+  // the looped music bed becomes the sole audio track.
+  const baseHasAudio = hasAudioStream(concatMp4);
+  const filter = baseHasAudio
+    ? `[1:a]volume=${volume}[mus];[0:a][mus]amix=inputs=2:duration=first:dropout_transition=0:normalize=0[outa]`
+    : `[1:a]volume=${volume}[outa]`;
+  console.log(`[Slate] Mixing continuous music bed (vol=${volume}, base audio: ${baseHasAudio ? 'yes' : 'none'}) into ${outputMp4}`);
   const args = [
     '-y', '-hide_banner',
     '-i', concatMp4,
@@ -362,6 +369,20 @@ function resolveMusicSrc(src, { scfDir, projectDir, repoRoot }) {
     if (existsSync(candidate)) return candidate;
   }
   return resolve(scfDir, src);
+}
+
+/** True if the given MP4 has at least one audio stream (probed via ffprobe). */
+function hasAudioStream(mp4) {
+  try {
+    const r = spawnSync(
+      'ffprobe',
+      ['-v', 'error', '-select_streams', 'a', '-show_entries', 'stream=index', '-of', 'csv=p=0', mp4],
+      { encoding: 'utf-8' },
+    );
+    return r.status === 0 && String(r.stdout || '').trim().length > 0;
+  } catch {
+    return false;
+  }
 }
 
 async function main() {

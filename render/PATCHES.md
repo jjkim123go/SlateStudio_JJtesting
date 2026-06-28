@@ -2,6 +2,42 @@
 
 This file documents local patches applied to `node_modules/@hyperframes/producer/dist/index.js`. **These patches will be lost on `npm install`** — they are re-applied automatically by `render/scripts/apply-producer-patches.mjs`, which is wired as a `postinstall` hook in `render/package.json`. Run it manually with `npm run apply-patches` (from `render/`) if needed.
 
+## Status (runtime @hyperframes 0.5.7) — NO patches required
+
+As of the pinned **`@hyperframes@0.5.7`** runtime, the `PATCHES` array in
+`apply-producer-patches.mjs` is **empty**. All four 0.4.x-era patches below are
+**obsolete**: the Windows path-separator bugs (Patches 1 & 2) and the
+short-audio loop (Patch 4) were fixed upstream / had their surrounding source
+refactored, and the configurable WebGL backend (Patch 3) is unnecessary because
+0.5.x defaults to a working `swiftshader` backend with no `assertSwiftShader`
+guard. Validated on Windows: external-asset copy, narration + music mixing, and
+multi-scene split-render all succeed unpatched.
+
+The sections below are retained as **historical reference** for the 0.4.x line.
+
+### ⛔ Why not 0.6.0+ / 0.7.x (the npm `latest`)
+
+HyperFrames **0.6.0** introduced a **sub-composition timeline requirement**: the
+producer scans the DOM for *every* `[data-composition-id]` element and waits for
+a matching `window.__timelines[id]` to be registered, failing with
+`[FrameCapture] Sub-composition timelines not registered after 45000ms` if any
+is missing. Slate's compiler (`scf-to-html.mjs`) currently emits
+`data-composition-id` on nested **scene / narration / music** wrappers (the
+0.4.x track/clip contract) but registers only the **root** composition timeline
+— so on 0.6/0.7 every scene stays `opacity:0` and renders blank. 0.6.0 also adds
+an `assertSwiftShader` guard requiring a pure-software GL backend for parallel
+renders.
+
+Re-pinning to 0.6/0.7 therefore requires a **compiler contract migration**
+(stop emitting nested `data-composition-id`; adopt the 0.6+ track/clip
+attributes; register sub-composition timelines where genuinely needed), not a
+producer patch. Tracked as a follow-up. **`0.5.7` is the highest version
+compatible with the current compiler.**
+
+---
+
+## Historical patches (0.4.x line — no longer applied)
+
 ## Patch 1 + 2: Windows path separator in external-asset rewriter
 
 **Symptom (Windows only):** Relative `<video src="assets/foo.mp4">` and `<source src="assets/foo.mp3">` references are misclassified as "external" assets, then either rewritten to broken `hf-ext/<absPath>` URLs or blocked entirely by the staging-copy safety check. Net effect: the asset never loads, and on video the frame extractor receives a path that resolves but the runtime `<video>` element shows nothing.
@@ -78,15 +114,18 @@ const args = [
 
 ## Note: companion fix in render.mjs (not a producer patch)
 
-\ender.mjs --split-scenes\ mode renders each scene independently and
+\
+ender.mjs --split-scenes\ mode renders each scene independently and
 concatenates with ffmpeg. Composition-level music in a per-scene SCF would
 cause the producer to extract music starting at \	=0\ for every scene,
 making the final concat play the same music intro 12 times instead of one
 continuous track.
 
-**Fix lives in \ender/render.mjs\:**
+**Fix lives in \
+ender/render.mjs\:**
 
-1. \enderSplitScenes\ strips \scf.music\ before writing each per-scene SCF.
+1. \
+enderSplitScenes\ strips \scf.music\ before writing each per-scene SCF.
 2. After concat, \ddMusicToFinalRender\ mixes one continuous looped music
    bed over the joined video via:
    \\\

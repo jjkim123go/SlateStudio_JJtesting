@@ -68,17 +68,56 @@ runtime_libraries:
     # composition HTML emitted by render/lib/scf-to-html.mjs.
     allowed:
       - name: gsap
-        version: "^3.12"
-        license: MIT
-        provider: GreenSock
-        injection: cdn
-        notes: "Injected by HyperFrames at compile time; required by component animation timelines."
-      - name: gsap-flip
-        version: "^3.12"
-        license: "GSAP Standard License (Webflow)"
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
         provider: GreenSock / Webflow
         injection: cdn
-        notes: "Free for commercial use as of 2025-04-30. Load only when a component needs FLIP layout choreography. See skills/core/render/gsap-flip.md."
+        notes: "Core animation runtime. GSAP became 100% free in v3.13 (2025-04-30). Injected at compile time by render/lib/scf-to-html.mjs; required by every component timeline."
+      - name: gsap-flip
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "FLIP layout choreography. Loaded for every render alongside gsap. See skills/core/render/gsap-flip.md."
+      # Formerly Club-only GSAP plugins — free since v3.13 (2025-04-30). All are
+      # seek-safe (deterministic under HyperFrames' frame-by-frame capture).
+      # Loaded from the same CDN as gsap and registered in scf-to-html.mjs.
+      - name: gsap-splittext
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "SplitText — per-char/word/line kinetic typography. Supersedes the manual <span> split recipe."
+      - name: gsap-drawsvg
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "DrawSVGPlugin — true SVG stroke draw-on. Supersedes the manual stroke-dashoffset recipe."
+      - name: gsap-morphsvg
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "MorphSVGPlugin — true shape morphing. Supersedes the manual cross-fade recipe."
+      - name: gsap-motionpath
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "MotionPathPlugin — animate along an SVG path. Supersedes the manual getPointAtLength recipe."
+      - name: gsap-physics2d
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "Physics2DPlugin — deterministic velocity/gravity motion (seed-free; seek-safe)."
+      - name: gsap-customease
+        version: "^3.14"
+        license: "GSAP Standard ('No Charge') License (Webflow)"
+        provider: GreenSock / Webflow
+        injection: cdn
+        notes: "CustomEase / CustomBounce / CustomWiggle — bespoke easing curves."
       - name: shiki
         version: "^1.0"
         license: MIT
