@@ -2,16 +2,28 @@
 /**
  * Slate — HyperFrames producer postinstall patcher
  *
- * Idempotently re-applies the two Windows-path-separator patches documented
- * in render/PATCHES.md to `node_modules/@hyperframes/producer/dist/index.js`.
+ * Applies any producer-version-specific source patches documented in
+ * render/PATCHES.md to `node_modules/@hyperframes/producer/dist/index.js`.
+ *
+ * As of @hyperframes 0.5.7 (the pinned runtime) NO patches are required: the
+ * four 0.4.x-era patches (2× Windows path separator, configurable WebGL ANGLE
+ * backend, short-audio loop) were all either fixed upstream or had their
+ * surrounding source refactored away. The PATCHES array is therefore empty.
+ * It is kept (not deleted) as the wiring + idempotency harness so a future
+ * runtime bump that needs a patch can re-populate it.
+ *
+ * NOTE: HyperFrames 0.6.0+ is a deliberate non-target — it introduces a
+ * sub-composition timeline requirement that is incompatible with Slate's
+ * current data-composition-id emission (see render/PATCHES.md and
+ * docs/ARCHITECTURE.md). Re-pinning to 0.6/0.7 requires a compiler migration,
+ * not a producer patch.
  *
  * Behaviour:
  *   - If the producer file is missing (e.g. fresh checkout before `npm install`
  *     finishes resolving deps), exit 0 with a warning so we don't break install.
- *   - If both patches are already present, exit 0 with a "verified" log.
+ *   - With an empty PATCHES array, exit 0 with a "no patches required" log.
  *   - If a patch needle is missing AND the patched form is also missing, log a
  *     loud warning so the developer knows the producer version drifted.
- *   - Otherwise apply the patch and exit 0.
  *
  * Wired via `"postinstall": "node scripts/apply-producer-patches.mjs"` in
  * render/package.json, so it runs automatically after every `npm install` /
@@ -19,8 +31,8 @@
  */
 
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PRODUCER_PATH = resolve(
@@ -33,36 +45,12 @@ const PRODUCER_PATH = resolve(
   'index.js',
 );
 
-// Each patch declares the original (broken) needle and the patched replacement.
-// `replacement` doubles as the idempotency sentinel — if it's already present
-// in the file, we skip.
-const PATCHES = [
-  {
-    name: 'Site 1 — collectExternalAssets (Windows path separator)',
-    needle: 'absPath.startsWith(absProjectDir + "/")',
-    replacement:
-      'absPath.startsWith(absProjectDir + (process.platform === "win32" ? "\\\\" : "/"))',
-  },
-  {
-    name: 'Site 2 — external-asset copy safety check (Windows path separator)',
-    needle: 'outPath.startsWith(compileDir + "/")',
-    replacement:
-      'outPath.startsWith(compileDir + (process.platform === "win32" ? "\\\\" : "/"))',
-  },
-  {
-    name: 'Site 3 — configurable WebGL ANGLE backend',
-    needle: '"--use-angle=swiftshader",',
-    replacement:
-      '...(process.env.PRODUCER_WEBGL_BACKEND && process.env.PRODUCER_WEBGL_BACKEND !== "default" ? [`--use-angle=${process.env.PRODUCER_WEBGL_BACKEND}`] : []),',
-  },
-  {
-    name: 'Site 4 — loop short audio sources to fill requested duration',
-    needle:
-      'async function prepareAudioTrack(srcPath, outputPath, mediaStart, duration, signal, config2) {\n  const ffmpegProcessTimeout = config2?.ffmpegProcessTimeout ?? DEFAULT_CONFIG.ffmpegProcessTimeout;\n  const outputDir = dirname7(outputPath);\n  if (!existsSync9(outputDir)) mkdirSync6(outputDir, { recursive: true });\n  const args = [\n    "-ss",\n    String(mediaStart),\n    "-t",\n    String(duration),\n    "-i",\n    srcPath,',
-    replacement:
-      'async function prepareAudioTrack(srcPath, outputPath, mediaStart, duration, signal, config2) {\n  const ffmpegProcessTimeout = config2?.ffmpegProcessTimeout ?? DEFAULT_CONFIG.ffmpegProcessTimeout;\n  const outputDir = dirname7(outputPath);\n  if (!existsSync9(outputDir)) mkdirSync6(outputDir, { recursive: true });\n  const args = [\n    "-stream_loop",\n    "-1",\n    "-ss",\n    String(mediaStart),\n    "-t",\n    String(duration),\n    "-i",\n    srcPath,',
-  },
-];
+// Producer source patches, keyed by needle → replacement; `replacement`
+// doubles as the idempotency sentinel when populated.
+//
+// EMPTY for the pinned @hyperframes 0.5.7 runtime — no patches required
+// (see the file header for the history of the retired 0.4.x patches).
+const PATCHES = [];
 
 function main() {
   if (!existsSync(PRODUCER_PATH)) {
@@ -97,6 +85,10 @@ function main() {
   if (modified) {
     writeFileSync(PRODUCER_PATH, src, 'utf-8');
     console.log('[Slate] HyperFrames producer patches applied:');
+  } else if (PATCHES.length === 0) {
+    console.log(
+      '[Slate] HyperFrames producer: no source patches required for the pinned 0.5.x runtime.',
+    );
   } else {
     console.log('[Slate] HyperFrames producer patches verified:');
   }

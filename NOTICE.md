@@ -35,11 +35,16 @@ project:
 - **License:** Standard "No Charge" license (free for most uses) — see https://gsap.com/standard-license
 - **Copyright:** Copyright (c) GreenSock, Inc.
 - **Usage:** GSAP is injected into HyperFrames compositions at render time
-  via CDN (`cdn.jsdelivr.net/npm/gsap@3.12.5`). It powers all component
+  via CDN (`cdn.jsdelivr.net/npm/gsap@3.14.2`). It powers all component
   animation timelines under `render/components/**`. GSAP is not bundled or
   redistributed by Slate — it is fetched at compile time by HyperFrames.
-  Slate uses only the free core API and does not depend on Club GSAP plugins.
-  "GSAP" and "GreenSock" are trademarks of GreenSock, Inc.
+  As of GSAP 3.13 (Webflow, 2025) the entire library — including the
+  formerly-paid plugins (SplitText, DrawSVG, MorphSVG, MotionPath, Physics2D,
+  Custom* eases) — is free under the Standard "No Charge" license; Slate uses
+  the core API plus these now-free plugins. Plugins requiring scroll/pointer
+  interaction (ScrollTrigger, ScrollSmoother, Draggable, Observer) are excluded
+  for technical reasons (incompatible with deterministic headless seek-render),
+  not licensing. "GSAP" and "GreenSock" are trademarks of GreenSock, Inc.
 
 ### GSAP AI Skills (greensock/gsap-skills)
 - **Repository:** https://github.com/greensock/gsap-skills

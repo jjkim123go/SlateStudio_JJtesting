@@ -36,8 +36,8 @@ design components are the sameness trap — the user called this out explicitly.
 
 | Primitive | Use for |
 |---|---|
-| **GSAP 3.12 core + Flip** | The motion backbone of every scene. Sequence reveals, physics-y settles, camera drifts, layout moves (Flip). Paid Club plugins (DrawSVG / MorphSVG / MotionPath / SplitText) are **NOT** loaded — see the capability harness below for manual recipes. |
-| **SVG** | Line-art, masks, crisp diagrams / charts at 1080p. "Stroke-draw" = tween `stroke-dashoffset` yourself; "morph" = cross-fade or keyframe `d` (no DrawSVG / MorphSVG). |
+| **GSAP 3.14 core + Flip + plugins** | The motion backbone of every scene. Sequence reveals, settles, camera drifts, layout moves (Flip). Since GSAP 3.13 went free, the ex-Club plugins (DrawSVG / MorphSVG / MotionPath / SplitText / Physics2D / CustomEase) are **loaded + registered on every render** — use them directly. See the capability harness below. |
+| **SVG** | Line-art, masks, crisp diagrams / charts at 1080p. Stroke-draw with **DrawSVGPlugin** (`drawSVG: '0%'→'100%'`); morph with **MorphSVGPlugin** (`morphSVG: '#target'`); travel a path with **MotionPathPlugin**. (Manual `stroke-dashoffset` / cross-fade still work as a fallback.) |
 | **Canvas 2D** | Particles, generative texture, hand-drawn charts, flow fields, noise. |
 | **WebGL / three.js** | 3D objects, depth, camera moves, shader materials, displacement. (Render with `--safe-webgl`; budget render time.) |
 | **HTML / CSS** | Layout, type, gradient-mesh, glass (`backdrop-filter`), grain, soft shadow, masks. |
@@ -52,9 +52,15 @@ Know them *before* you hand-stitch, or you'll reach for a plugin that isn't ther
 and the render breaks.
 
 **Loaded:**
-- **GSAP 3.12 core** (timeline, tweens, stagger, eases) — injected on every scene.
+- **GSAP 3.14 core** (timeline, tweens, stagger, eases) — injected on every scene.
 - **GSAP Flip** — layout choreography (reorder / expand / swap position). Load
   [`render/gsap-flip`](../core/render/gsap-flip.md).
+- **GSAP plugins — free since v3.13, loaded + registered on every render:**
+  **SplitText** (per-char/word/line type), **DrawSVGPlugin** (stroke draw-on),
+  **MorphSVGPlugin** (shape morph), **MotionPathPlugin** (travel a path),
+  **Physics2DPlugin** (velocity/gravity), and **CustomEase / CustomBounce /
+  CustomWiggle** (bespoke eases). All deterministic / seek-safe — use them
+  directly; no `registerPlugin` needed in your component.
 - **three.js 0.171.0** — WebGL / 3D, embedded only for `ThreeScene` / three-backed
   components. Load [`render/three-js`](../core/render/three-js.md).
 - **shiki** (code highlighting), **mermaid** (text→diagram), **chart.js** (true
@@ -63,20 +69,20 @@ and the render breaks.
   mesh, grain, soft shadow, CSS filters. Most bespoke design lives here.
 
 **NOT available (do NOT reach for these — they silently break the render):**
-- Paid **Club GSAP plugins**: DrawSVG, MorphSVG, MotionPath, SplitText,
-  ScrambleText, Physics2D / Inertia, GSDevTools.
-- ScrollTrigger / ScrollSmoother / Observer / Draggable (no scroll or
-  interaction surface in a headless seek-render).
+- ScrollTrigger / ScrollSmoother / ScrollToPlugin / Observer / Draggable — no
+  scroll or pointer surface in a headless seek-render.
+- Anything driven by `requestAnimationFrame` / `gsap.ticker` alone, or unseeded
+  `Math.random()` / `Date.now()` — non-deterministic under seek capture.
 
-**Manual recipes (use instead of the excluded plugins):**
-- **Stroke-draw a path** (≠ DrawSVG): set `stroke-dasharray` = path length, then
-  GSAP-tween `stroke-dashoffset` from length → 0.
-- **Kinetic / per-letter type** (≠ SplitText): split into `<span>`s yourself (in
-  `index.html` or a server-built `{{{html}}}` prop), then stagger.
-- **Move along a path** (≠ MotionPath): sample `path.getPointAtLength()` in a
-  setup pass and tween x / y through the points — or use Flip for layout moves.
-- **Morph shapes** (≠ MorphSVG): cross-fade two shapes or keyframe the path `d`
-  between a few hand-authored states; avoid true morphing.
+**Prefer the real plugins now (the old manual recipes are a fallback):**
+- **Stroke-draw**: `gsap.fromTo(path,{drawSVG:'0%'},{drawSVG:'100%'})` (DrawSVGPlugin).
+  Fallback: tween `stroke-dashoffset` from `getTotalLength()` → 0.
+- **Kinetic / per-letter type**: `new SplitText(el,{type:'chars'})` then stagger
+  `split.chars` (split synchronously at setup). Fallback: hand-split `<span>`s.
+- **Move along a path**: `motionPath:{path:'#p',align:'#p',alignOrigin:[0.5,0.5]}`
+  (MotionPathPlugin). Fallback: sample `getPointAtLength()`.
+- **Morph shapes**: `gsap.to(a,{morphSVG:'#b'})` (MorphSVGPlugin). Fallback:
+  cross-fade / keyframe `d`.
 - **Particles / fields**: Canvas 2D or three.js with a **seeded** PRNG, driven by
   the master timeline's progress — never an independent `rAF` loop.
 
