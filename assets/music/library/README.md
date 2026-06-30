@@ -14,14 +14,24 @@ repo ignores generated audio elsewhere. They are approved built-in assets, and
 
 ## What belongs here
 
-Royalty-free background tracks suitable for video production. Core mood
-categories are expected (see `MANIFEST.yaml` for the full track catalog):
+Royalty-free background tracks suitable for video production. `MANIFEST.yaml`
+remains the source of truth; the full slot catalog is:
 
 | Slot | Mood | Use case |
 |------|------|----------|
-| `uplifting` | Uplifting, celebratory, positive energy | Recaps, win announcements, milestone videos |
-| `neutral` | Neutral, professional, unobtrusive | Explainers, walkthroughs, training content |
-| `ambient_low` | Low-energy ambient, no melody, texture only | Tutorials, calm narration, background filler |
+| `ambient_low` | Low-energy ambient, no melody, texture only | Cold opens, narration beds, background filler |
+| `neutral` | Documentary cinematic, restrained | Explainers, walkthroughs, under-narration |
+| `uplifting` | Uplifting, celebratory, positive energy | Recaps, win announcements, milestone resolves |
+| `corporate_technology` | Corporate, technology, clean, confident | Enterprise demos, capability overviews |
+| `synthwave_chill` | Synthwave, chill, technology | AI/product demos, theme showcases |
+| `electronic_future_beats` | Electronic, future beats, upbeat | Innovation stories, premium showcases |
+| `cinematic_build` | Cinematic, inspiring, building energy | Brand reveals, feature highlights |
+| `upbeat_corporate` | Upbeat, motivational, energetic | Launch hype, feature reveals, social teasers |
+| `suspense_tension` | Suspense, tension, dramatic build | Problem framing, incident response, risk beats |
+| `epic_trailer` | Epic, orchestral, cinematic trailer | Major launches, hero reveals, exec announcements |
+| `lofi_focus` | Lo-fi, chill hop, calm focus | Dev walkthroughs, tutorials, follow-along training |
+| `acoustic_warm` | Warm acoustic, inspiring, human | Customer stories, culture, mission moments |
+| `cinematic_soft` | Soft cinematic, restrained, emotional | Emotional resolves, reflective moments, closers |
 
 ## Suggested royalty-free sources
 
