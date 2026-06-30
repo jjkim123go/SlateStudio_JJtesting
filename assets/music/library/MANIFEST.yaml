@@ -70,3 +70,59 @@ tracks:
     license: "Pixabay Content License"
     composer: "Penguinmusic"
     source_url: "https://pixabay.com/music/-186374/"
+
+  # --- Extended mood palette (broader emotional range: energy, tension, warmth, focus) ---
+
+  upbeat_corporate:
+    path: "the_mountain-upbeat-motivational-199145.mp3"
+    duration_sec: 126.59
+    mood: "upbeat, motivational, energetic corporate"
+    use_case: "launch hype, feature reveals, social teasers, win announcements"
+    license: "Pixabay Content License"
+    composer: "The_Mountain"
+    source_url: "https://pixabay.com/music/-199145/"
+
+  suspense_tension:
+    path: "atlasaudio-suspense-tension-511877.mp3"
+    duration_sec: 102.03
+    mood: "suspense, tension, dramatic build"
+    use_case: "problem framing, incident response, risk and challenge beats"
+    license: "Pixabay Content License"
+    composer: "AtlasAudio"
+    source_url: "https://pixabay.com/music/-511877/"
+
+  epic_trailer:
+    path: "audioatlant-total-war-epic-action-cinematic-trailer-main-513668.mp3"
+    duration_sec: 70.56
+    mood: "epic, orchestral, cinematic trailer, powerful"
+    use_case: "major launches, hero reveals, executive announcements"
+    license: "Pixabay Content License"
+    composer: "AudioAtlant"
+    source_url: "https://pixabay.com/music/-513668/"
+
+  lofi_focus:
+    path: "fassounds-lofi-study-calm-peaceful-chill-hop-112191.mp3"
+    duration_sec: 147.23
+    mood: "lo-fi, chill hop, calm focus"
+    use_case: "developer walkthroughs, tutorials, follow-along training"
+    license: "Pixabay Content License"
+    composer: "FASSounds"
+    source_url: "https://pixabay.com/music/-112191/"
+
+  acoustic_warm:
+    path: "music_for_creators-inspiring-acoustic-corporate-534747.mp3"
+    duration_sec: 144.56
+    mood: "warm acoustic, inspiring, human"
+    use_case: "customer stories, culture, mission and why-we-built-this moments"
+    license: "Pixabay Content License"
+    composer: "Music_for_Creators"
+    source_url: "https://pixabay.com/music/-534747/"
+
+  cinematic_soft:
+    path: "atlasaudio-cinematic-softness-511863.mp3"
+    duration_sec: 120.03
+    mood: "soft cinematic, restrained, emotional"
+    use_case: "emotional resolves, reflective moments, vision closers"
+    license: "Pixabay Content License"
+    composer: "AtlasAudio"
+    source_url: "https://pixabay.com/music/-511863/"
