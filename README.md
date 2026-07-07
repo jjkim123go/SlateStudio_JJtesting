@@ -42,6 +42,60 @@ https://github.com/user-attachments/assets/ee85370d-f6de-4c63-8a8f-e806cf7d3757
 
 ---
 
+## 🎬 Watch It Happen — Soundstage, the Living Storyboard
+
+Chat tells you what the agent *said*. **Soundstage shows you what the production
+is actually doing** — a local, read-only board that fills itself in as the
+pipeline runs. When a production starts, the agent opens it for you
+automatically; it derives everything from the project files Slate already writes
+(`decisions.jsonl`, `ledger.jsonl`, the SCF, renders), so there's no reporting
+step and nothing to keep in sync.
+
+<p align="center"><img src="docs/images/soundstage/board-live.png" alt="Soundstage board — storyboard, narration timeline, gates, cost" width="920"></p>
+
+**The storyboard is a Figma-style scene wall with a video-editor narration
+timeline underneath.** Each block is scaled to its scene's real duration, shows
+the spoken line, and turns amber/red when narration overruns the shot — so
+pacing problems are visible *before* you render. A **Variety Meter** reads each
+scene's technique and flags sameness.
+
+<p align="center"><img src="docs/images/soundstage/timeline.png" alt="Narration timeline — proportional blocks, waveforms, pacing safety" width="920"></p>
+
+**The script lands as a cream screenplay page** with an approval stamp; long
+scripts stay compact and expand into a modal. Approval **gates** are impossible
+to miss, and every creative decision — model picks, retries, "also considered"
+roads not taken — stays on the wall as a **decision trail**.
+
+<p align="center"><img src="docs/images/soundstage/script-modal.png" alt="Cream screenplay script card, expanded" width="760"></p>
+
+**Light and dark**, and each board is tinted with the video's own theme:
+
+<p align="center"><img src="docs/images/soundstage/board-light.png" alt="Soundstage in light mode" width="920"></p>
+
+**A library across every production** — live, awaiting review, or delivered:
+
+<p align="center"><img src="docs/images/soundstage/library.png" alt="Soundstage library of productions" width="920"></p>
+
+You never start it manually during normal use — the agent runs it at project
+creation (idempotent, non-fatal; the board is an observer, never a blocker). To
+open it yourself:
+
+```powershell
+python -m slate.soundstage open <slug>     # a project board (starts the server if needed)
+python -m slate.soundstage open            # the library (all productions)
+```
+
+Soundstage is read-only by design: agents and tools write the source of truth to
+disk; the board renders that truth. Design doc:
+[docs/design/LIVING_STORYBOARD.md](docs/design/LIVING_STORYBOARD.md). It is a
+clean-room reimagining of **Backlot**, the living storyboard from
+[OpenMontage](https://github.com/calesthio/OpenMontage/pull/273) (same author) —
+reimplemented against Slate's append-only state contract and extended (SCF-native
+storyboard, narration timeline, variety meter, provenance trail). See
+[NOTICE.md](NOTICE.md).
+
+---
+
 ## ✨ What Makes Slate Different
 
 ### 🎬 Agent-as-Director

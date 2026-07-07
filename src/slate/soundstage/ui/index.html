@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Soundstage — Library</title>
+<script>try{var t=localStorage.getItem('soundstage-theme')||(matchMedia('(prefers-color-scheme: light)').matches?'light':'dark');document.documentElement.setAttribute('data-theme',t);}catch(e){document.documentElement.setAttribute('data-theme','dark');}</script>
+<link rel="stylesheet" href="/ui/board.css" />
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <div class="clapper"></div>
+    <div class="brand">
+      <span class="mark">Soundstage</span>
+      <h1>Library</h1>
+    </div>
+    <div class="spacer"></div>
+    <span class="chip" id="count"></span>
+    <span id="tgl-slot" style="margin-left:12px"></span>
+  </header>
+  <div class="lib-grid" id="grid"></div>
+  <p class="hint" id="empty" style="display:none">No productions yet — run one and it appears here.</p>
+</div>
+<script type="module" src="/ui/library.js"></script>
+</body>
+</html>

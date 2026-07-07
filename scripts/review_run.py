@@ -6,6 +6,16 @@ import time
 import types
 from pathlib import Path
 
+# Windows cp1252 stdout raises UnicodeEncodeError on the summary's box-drawing
+# characters when output is piped/redirected — which killed the run AFTER
+# scoring but BEFORE writing the report files. Force UTF-8 so review output is
+# robust regardless of how stdout is captured.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding="utf-8")
+    except (AttributeError, ValueError):
+        pass
+
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT / "src"))

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Soundstage — GitHub Copilot in VS Code</title>
+<!--
+  SOUNDSTAGE — static visual prototype (design mockup, not the live board).
+  Populated with the REAL projects/copilot-vscode-tour data (decisions.jsonl,
+  ledger.jsonl, scene-plan.md, art-direction.json). This is Phase-2 UI design
+  validation: the layout + visual language the real server-driven board will
+  implement. Inspired by OpenMontage Backlot (PR #273, same author) — credited.
+-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+  :root {
+    --bg: #0b0d10;
+    --surface: #121519;
+    --surface-2: #171b20;
+    --surface-3: #1d222a;
+    --border: #23282f;
+    --border-soft: #191d23;
+    --text: #e9edf2;
+    --text-2: #9aa4b0;
+    --text-3: #5c6672;
+    --accent: #4ea1ff;        /* Slate signal-blue */
+    --accent-dim: rgba(78,161,255,0.14);
+    --spark: #6ee7a8;         /* mint — live / success */
+    --spark-dim: rgba(110,231,168,0.12);
+    --gate: #ffb454;          /* amber — awaiting-you */
+    --gate-dim: rgba(255,180,84,0.14);
+    --danger: #f0655d;
+    --danger-dim: rgba(240,101,93,0.12);
+    --violet: #8957e5;        /* project accent (copilot) */
+    --film: #2b3038;
+    --sans: 'Inter', -apple-system, sans-serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --screenplay: 'Courier Prime', 'Courier New', monospace;
+    --fs-scale: 1.06;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { color-scheme: dark; }
+  ::-webkit-scrollbar { width: 10px; height: 9px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #262b33; border-radius: 6px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: #333a44; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: calc(14px * var(--fs-scale));
+    line-height: 1.5;
+    min-height: 100vh;
+    background-image: radial-gradient(1200px 620px at 50% -140px, #12161c 0%, var(--bg) 70%);
+  }
+  .wrap { max-width: 1440px; margin: 0 auto; padding: 22px 30px 60px; }
+
+  /* ---------- header slate ---------- */
+  .slate { display: flex; align-items: center; gap: 14px; padding: 6px 0 20px; }
+  .clapper {
+    width: 40px; height: 40px; border-radius: 8px; flex: none; position: relative;
+    background: linear-gradient(135deg, #1c2128 0%, #12161c 100%);
+    border: 1px solid var(--border); overflow: hidden;
+  }
+  .clapper::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 13px;
+    background: repeating-linear-gradient(115deg, var(--text) 0 9px, #0b0d10 9px 18px);
+    transform: rotate(-8deg) translateY(-2px) scaleX(1.4); transform-origin: left;
+  }
+  .clapper::after {
+    content: ""; position: absolute; inset: 15px 7px 8px; border-radius: 2px;
+    background: linear-gradient(120deg, var(--violet) 0%, var(--accent) 50%, var(--spark) 100%);
+    opacity: .85;
+  }
+  .wordmark { font-family: var(--mono); font-weight: 600; letter-spacing: .04em; color: var(--text); font-size: calc(13px * var(--fs-scale)); }
+  .slate h1 { font-size: calc(20px * var(--fs-scale)); font-weight: 650; letter-spacing: -.01em; line-height: 1.2; }
+  .chip {
+    font-family: var(--mono); font-size: calc(10.5px * var(--fs-scale));
+    color: var(--text-2); background: var(--surface-2); border: 1px solid var(--border-soft);
+    padding: 4px 9px; border-radius: 999px; white-space: nowrap;
+  }
+  .chip .em { color: var(--accent); }
+  .chips { display: flex; gap: 7px; flex-wrap: wrap; }
+  .spacer { flex: 1; }
+  .live { display: inline-flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: calc(11px * var(--fs-scale)); letter-spacing: .1em; color: var(--spark); white-space: nowrap; }
+  .live .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--spark); box-shadow: 0 0 0 4px var(--spark-dim); }
+  .live.delivered { color: var(--spark); }
+  .cost { text-align: right; font-family: var(--mono); }
+  .cost .big { font-size: calc(15px * var(--fs-scale)); color: var(--text); font-weight: 600; }
+  .cost .sub { font-size: calc(10px * var(--fs-scale)); color: var(--text-3); letter-spacing: .04em; }
+
+  /* ---------- stage rail ---------- */
+  .rail { display: flex; gap: 6px; align-items: stretch; margin: 6px 0 20px; overflow-x: auto; padding-bottom: 4px; }
+  .stage { flex: 1 1 0; min-width: 118px; background: var(--surface); border: 1px solid var(--border-soft); border-radius: 10px; padding: 11px 12px 12px; position: relative; }
+  .stage .node { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border); font-size: 11px; color: var(--text-3); margin-bottom: 8px; }
+  .stage .name { font-family: var(--mono); font-size: calc(11px * var(--fs-scale)); color: var(--text-2); letter-spacing: .03em; }
+  .stage .sub { font-size: calc(10px * var(--fs-scale)); color: var(--text-3); margin-top: 2px; min-height: 14px; }
+  .stage.done .node { border-color: var(--spark); color: var(--spark); background: var(--spark-dim); }
+  .stage.done .name { color: var(--text); }
+  .stage.gate::after { content: "◆ gate"; position: absolute; top: 10px; right: 10px; font-family: var(--mono); font-size: calc(8.5px * var(--fs-scale)); color: var(--gate); letter-spacing: .06em; }
+  .stage.await .node { border-color: var(--gate); color: var(--gate); background: var(--gate-dim); }
+  .stage.await .name, .stage.await .sub { color: var(--gate); }
+
+  /* ---------- delivered banner ---------- */
+  .banner { display: flex; align-items: center; gap: 12px; border-radius: 11px; padding: 13px 17px; margin-bottom: 20px; border: 1px solid; font-size: calc(13px * var(--fs-scale)); }
+  .banner.ok { background: var(--spark-dim); border-color: rgba(110,231,168,.4); color: var(--text); }
+  .banner .glyph { font-size: 18px; color: var(--spark); }
+  .banner b { color: var(--spark); }
+  .banner a { color: var(--accent); text-decoration: none; font-family: var(--mono); font-size: calc(11.5px * var(--fs-scale)); }
+  .banner .rt { margin-left: auto; font-family: var(--mono); color: var(--text-3); font-size: calc(11px * var(--fs-scale)); }
+
+  /* ---------- layout ---------- */
+  .board { display: grid; grid-template-columns: 1fr 340px; gap: 22px; align-items: start; }
+  .main-col { min-width: 0; }
+  .panel { background: var(--surface); border: 1px solid var(--border-soft); border-radius: 13px; }
+  .panel + .panel { margin-top: 18px; }
+  .panel-head { display: flex; align-items: baseline; gap: 10px; padding: 13px 17px 11px; border-bottom: 1px solid var(--border-soft); }
+  .panel-head h2 { font-family: var(--mono); font-size: calc(11px * var(--fs-scale)); font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text-2); }
+  .panel-head .meta { margin-left: auto; font-family: var(--mono); font-size: calc(10.5px * var(--fs-scale)); color: var(--text-3); }
+  .panel-body { padding: 15px 17px 18px; }
+
+  /* ---------- variety meter ---------- */
+  .variety { display: flex; align-items: center; gap: 18px; padding: 13px 17px; border-bottom: 1px solid var(--border-soft); flex-wrap: wrap; }
+  .vbar { display: flex; height: 10px; border-radius: 5px; overflow: hidden; flex: 1; min-width: 220px; border: 1px solid var(--border); }
+  .vbar span { display: block; height: 100%; }
+  .vlegend { display: flex; gap: 14px; flex-wrap: wrap; font-family: var(--mono); font-size: calc(10px * var(--fs-scale)); color: var(--text-2); }
+  .vlegend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
+  .verdict { font-family: var(--mono); font-size: calc(10.5px * var(--fs-scale)); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+  .verdict.ok { color: var(--spark); background: var(--spark-dim); border: 1px solid rgba(110,231,168,.35); }
+  .vnote { font-size: calc(11px * var(--fs-scale)); color: var(--text-3); width: 100%; margin-top: 2px; }
+  .vnote b { color: var(--text-2); font-weight: 600; }
+
+  /* ---------- filmstrip ---------- */
+  .filmstrip { display: flex; gap: 0; overflow-x: auto; padding: 24px 6px 20px;
+    background:
+      radial-gradient(circle 3px, #262b33 97%, transparent) 0 7px / 22px 9px repeat-x,
+      radial-gradient(circle 3px, #262b33 97%, transparent) 0 calc(100% - 15px) / 22px 9px repeat-x;
+  }
+  .scene-card { flex: none; display: flex; flex-direction: column; }
+  .sc-slate { display: flex; align-items: baseline; gap: 7px; font-family: var(--mono); font-size: calc(10px * var(--fs-scale)); color: var(--text-3); padding: 0 2px 6px; }
+  .sc-slate .num { color: var(--text-2); font-weight: 600; }
+  .sc-slate .dur { margin-left: auto; }
+  .sc-slate .hero { color: var(--gate); letter-spacing: .08em; }
+  .thumb { aspect-ratio: 16/9; border-radius: 7px; overflow: hidden; border: 1px solid var(--border); position: relative; background: #0d1117; }
+  .badge-row { display: flex; gap: 5px; padding: 7px 2px 0; flex-wrap: wrap; }
+  .tbadge { font-family: var(--mono); font-size: calc(9px * var(--fs-scale)); padding: 2px 7px; border-radius: 999px; letter-spacing: .03em; }
+  .tbadge.chrome { color: var(--accent); background: var(--accent-dim); }
+  .tbadge.hand { color: var(--violet); background: rgba(137,87,229,.16); }
+  .tbadge.gen { color: var(--spark); background: var(--spark-dim); }
+  /* narration timing bar */
+  .ntime { margin: 7px 2px 0; }
+  .ntime .track { height: 5px; border-radius: 3px; background: var(--surface-3); position: relative; overflow: hidden; }
+  .ntime .fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: var(--spark); }
+  .ntime .fill.tight { background: var(--gate); }
+  .ntime .lbl { font-family: var(--mono); font-size: calc(8.5px * var(--fs-scale)); color: var(--text-3); margin-top: 3px; display: flex; justify-content: space-between; }
+  .ntime .lbl .tightlbl { color: var(--gate); }
+  .ntime.none .track { background: repeating-linear-gradient(90deg,var(--surface-3) 0 6px, transparent 6px 12px); }
+  /* transition ribbon between cards */
+  .ribbon { flex: none; width: 34px; display: flex; align-items: center; justify-content: center; align-self: stretch; padding-top: 18px; }
+  .ribbon span { font-family: var(--mono); font-size: calc(8px * var(--fs-scale)); color: var(--text-3); writing-mode: vertical-rl; transform: rotate(180deg); letter-spacing: .1em; opacity: .8; }
+  /* critique chips */
+  .crit { display: flex; gap: 4px; padding: 7px 2px 0; }
+  .crit .c { font-family: var(--mono); font-size: calc(8.5px * var(--fs-scale)); color: var(--text-3); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; }
+  .crit .c b { color: var(--spark); font-weight: 600; }
+  .crit .c.warn b { color: var(--gate); }
+
+  /* ---------- scene thumbnail mocks ---------- */
+  .mk { position: absolute; inset: 0; font-family: var(--mono); }
+  /* kinetic type (s1, s6) */
+  .mk-type { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; }
+  .mk-type .ghost { color: var(--text-3); font-size: 11px; }
+  .mk-type .solid { font-weight: 700; font-size: 15px; background: linear-gradient(100deg,var(--violet),var(--accent) 55%,var(--spark)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .mk-type .caret { width: 2px; height: 16px; background: var(--spark); box-shadow: 0 0 8px var(--spark); animation: blink 1.1s step-end infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .s1bed { background: radial-gradient(120px 80px at 30% 40%, rgba(137,87,229,.5), transparent), radial-gradient(120px 80px at 70% 60%, rgba(110,231,168,.4), transparent), #0d1117; }
+  .s6bed { background: linear-gradient(120deg,#0D1117,#161B22 60%,rgba(137,87,229,.28)); }
+  .mk-type .sub { color: var(--text-2); font-size: 9px; letter-spacing: .05em; }
+  .mk-type .credit { position: absolute; bottom: 7px; font-size: 7.5px; color: var(--text-3); }
+  /* VS Code chrome (s2-s5) */
+  .vsc { display: grid; grid-template-columns: 14px 1fr; grid-template-rows: 1fr; height: 100%; background: #1e1e1e; }
+  .vsc .act { background: #333842; display: flex; flex-direction: column; align-items: center; gap: 6px; padding-top: 8px; }
+  .vsc .act i { width: 6px; height: 6px; border-radius: 2px; background: #5c6672; }
+  .vsc .act i.on { background: var(--accent); }
+  .vsc .body { position: relative; display: flex; min-width: 0; }
+  .vsc .expl { width: 26%; background: #252526; border-right: 1px solid #333; padding: 6px 5px; }
+  .vsc .expl b { display: block; height: 4px; border-radius: 2px; background: #3a3f47; margin-bottom: 4px; }
+  .vsc .expl b.a { width: 70%; } .vsc .expl b.b { width: 50%; } .vsc .expl b.c { width: 62%; background: var(--accent-dim); }
+  .vsc .edit { flex: 1; padding: 7px 8px; min-width: 0; }
+  .vsc .ln { height: 4px; border-radius: 2px; margin-bottom: 5px; background: #3a3f47; }
+  .vsc .ln.k { background: #4a5568; width: 80%; }
+  .vsc .ln.g { background: #45505f; width: 66%; opacity: .55; } /* ghost */
+  .vsc .ln.add { background: rgba(110,231,168,.5); width: 72%; }
+  .vsc .ln.del { background: rgba(240,101,93,.45); width: 58%; }
+  .vsc .chat { width: 40%; background: #202124; border-left: 1px solid #333; padding: 6px 6px; }
+  .vsc .chat .cap { font-size: 6.5px; color: var(--text-3); letter-spacing: .1em; margin-bottom: 5px; }
+  .vsc .bub { border-radius: 5px; padding: 3px 4px; margin-bottom: 4px; }
+  .vsc .bub.u { background: #2d333b; } .vsc .bub.a { background: rgba(78,161,255,.14); }
+  .vsc .bub b { display: block; height: 3px; border-radius: 2px; background: #4a5568; margin: 2px 0; }
+  .vsc .term { position: absolute; left: 0; right: 0; bottom: 0; height: 34%; background: #0e0e0e; border-top: 1px solid #333; padding: 5px 7px; }
+  .vsc .term .p { font-size: 7px; color: var(--spark); }
+  .vsc .term .p2 { font-size: 7px; color: var(--text-2); }
+  .vsc .pill { position: absolute; font-size: 7px; padding: 1px 6px; border-radius: 999px; background: var(--accent-dim); color: var(--accent); }
+  .vsc .inline { position: absolute; left: 12%; top: 40%; right: 30%; background: #2d333b; border: 1px solid var(--accent); border-radius: 5px; height: 16px; }
+  .vsc .chk { font-size: 7px; color: var(--spark); margin-bottom: 3px; }
+  /* image hero (s5b) */
+  .hero { display: flex; align-items: center; justify-content: center; background: radial-gradient(160px 100px at 40% 45%, rgba(110,231,168,.45), transparent), linear-gradient(120deg,#161018,#0d1117 60%,rgba(137,87,229,.3)); }
+  .hero .kb { position: absolute; inset: 26% 18% 30%; border-radius: 6px; background: linear-gradient(180deg,rgba(255,255,255,.08),transparent); border: 1px solid rgba(255,255,255,.12); }
+  .hero .phrase { font-family: var(--sans); font-weight: 700; font-size: 13px; color: #fff; text-shadow: 0 1px 12px rgba(0,0,0,.6); z-index: 2; text-align: center; }
+
+  /* ---------- script card ---------- */
+  .script { font-family: var(--screenplay); }
+  .sp-slug { font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-2); font-size: calc(11px * var(--fs-scale)); margin-top: 12px; }
+  .sp-slug .tc { color: var(--text-3); font-weight: 400; margin-left: 8px; }
+  .sp-action { color: var(--text); margin: 3px 0 0 0; max-width: 62ch; }
+  .sp-action.first { margin-top: 5px; }
+
+  /* ---------- right rail ---------- */
+  .aside .panel-body { padding: 12px 15px 15px; }
+  .dec { display: flex; gap: 9px; padding: 7px 0; border-bottom: 1px solid var(--border-soft); }
+  .dec:last-child { border-bottom: none; }
+  .dec .tk { font-family: var(--mono); font-size: calc(9px * var(--fs-scale)); color: var(--text-3); white-space: nowrap; padding-top: 2px; }
+  .dec .bd { min-width: 0; }
+  .dec .ty { font-family: var(--mono); font-size: calc(9.5px * var(--fs-scale)); letter-spacing: .04em; text-transform: uppercase; }
+  .dec .ty.tc { color: var(--accent); } .dec .ty.dir { color: var(--violet); } .dec .ty.ck { color: var(--gate); } .dec .ty.ok { color: var(--spark); } .dec .ty.note { color: var(--text-3); }
+  .dec .msg { font-size: calc(12px * var(--fs-scale)); color: var(--text); }
+  .dec .why { font-size: calc(11px * var(--fs-scale)); color: var(--text-3); }
+  .dec .verdict-chip { font-family: var(--mono); font-size: calc(9px * var(--fs-scale)); padding: 0 6px; border-radius: 4px; }
+  .dec .verdict-chip.approved { color: var(--spark); background: var(--spark-dim); }
+  .dec .verdict-chip.changed { color: var(--gate); background: var(--gate-dim); }
+
+  /* cost burndown */
+  .burn { }
+  .burn .row { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: calc(11px * var(--fs-scale)); padding: 4px 0; }
+  .burn .row .lbl { color: var(--text-2); width: 92px; }
+  .burn .row .track { flex: 1; height: 7px; border-radius: 4px; background: var(--surface-3); overflow: hidden; }
+  .burn .row .track i { display: block; height: 100%; }
+  .burn .row .amt { color: var(--text); width: 54px; text-align: right; }
+  .burn .total { display: flex; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-soft); font-family: var(--mono); }
+  .burn .total .l { color: var(--text-2); font-size: calc(11px * var(--fs-scale)); }
+  .burn .total .v { color: var(--text); font-weight: 600; }
+  .burn .budgetline { height: 8px; border-radius: 5px; background: var(--surface-3); position: relative; margin-top: 10px; overflow: hidden; }
+  .burn .budgetline i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg,var(--accent),var(--spark)); border-radius: 5px; }
+  .burn .budgetline .warn, .burn .budgetline .pause { position: absolute; top: -3px; bottom: -3px; width: 2px; }
+  .burn .budgetline .warn { background: var(--gate); } .burn .budgetline .pause { background: var(--danger); }
+  .burn .thresholds { display: flex; justify-content: space-between; font-family: var(--mono); font-size: calc(8.5px * var(--fs-scale)); color: var(--text-3); margin-top: 4px; }
+
+  /* activity */
+  .act-row { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: calc(10.5px * var(--fs-scale)); padding: 4px 0; }
+  .act-row .tool { color: var(--text-2); } .act-row .target { color: var(--text-3); }
+  .act-row .status { margin-left: auto; }
+  .act-row .status.ok { color: var(--spark); } .act-row .status.cost { color: var(--text-3); }
+
+  /* governance */
+  .gov { display: flex; flex-direction: column; gap: 7px; }
+  .gov .g { display: flex; justify-content: space-between; font-family: var(--mono); font-size: calc(11px * var(--fs-scale)); }
+  .gov .g .k { color: var(--text-3); } .gov .g .v { color: var(--text-2); }
+  .gov .g .v.ok { color: var(--spark); }
+
+  footer { margin-top: 34px; padding-top: 16px; border-top: 1px solid var(--border-soft); font-family: var(--mono); font-size: calc(10px * var(--fs-scale)); color: var(--text-3); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  footer a { color: var(--text-2); text-decoration: none; }
+  footer .spacer { flex: 1; }
+
+  @media (max-width: 1000px) {
+    .board { grid-template-columns: 1fr; }
+    .rail { }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ HEADER SLATE ============ -->
+  <header class="slate">
+    <div class="clapper"></div>
+    <div>
+      <div class="wordmark">Soundstage</div>
+      <h1>GitHub Copilot in VS Code — 60s Getting-Started Tour</h1>
+    </div>
+    <div class="spacer"></div>
+    <div class="chips" style="max-width:520px;justify-content:flex-end">
+      <span class="chip">walkthrough<span class="em">+</span>explainer</span>
+      <span class="chip">7 scenes · <span class="em">1:03</span></span>
+      <span class="chip">AD: ghost-text made physical</span>
+      <span class="chip">voice: shimmer</span>
+    </div>
+  </header>
+
+  <div class="slate" style="padding:0 0 16px;align-items:center">
+    <span class="live delivered"><span class="dot"></span>DELIVERED</span>
+    <span class="chip">theme <span class="em">vs-code-dark</span></span>
+    <div class="spacer"></div>
+    <div class="cost">
+      <div class="big">$0.84 <span style="color:var(--text-3);font-weight:400">/ $25.00</span></div>
+      <div class="sub">3.4% OF BUDGET · 10 PAID CALLS</div>
+    </div>
+  </div>
+
+  <!-- ============ STAGE RAIL ============ -->
+  <div class="rail">
+    <div class="stage done"><div class="node">✓</div><div class="name">ingest</div><div class="sub">brief approved</div></div>
+    <div class="stage done"><div class="node">✓</div><div class="name">research</div><div class="sub">auto · light</div></div>
+    <div class="stage done gate"><div class="node">✓</div><div class="name">script</div><div class="sub">CK-REVIEW ✓</div></div>
+    <div class="stage done gate"><div class="node">✓</div><div class="name">scene_plan</div><div class="sub">changed → ✓</div></div>
+    <div class="stage done gate"><div class="node">✓</div><div class="name">assets</div><div class="sub">CK-CONFIRM ✓</div></div>
+    <div class="stage done"><div class="node">✓</div><div class="name">compose</div><div class="sub">render v1</div></div>
+    <div class="stage done gate"><div class="node">✓</div><div class="name">review</div><div class="sub">21/24 PASS</div></div>
+    <div class="stage done gate"><div class="node">✓</div><div class="name">publish</div><div class="sub">delivered</div></div>
+  </div>
+
+  <!-- ============ DELIVERED BANNER ============ -->
+  <div class="banner ok">
+    <span class="glyph">✓</span>
+    <span><b>Delivered.</b> Final render passed review (21/24, no blocker). All five gates cleared.</span>
+    <a href="#">▶ renders/final.mp4</a>
+    <a href="#" style="margin-left:14px">↺ REPLAY RUN</a>
+    <span class="rt">1:03 · 1080p30</span>
+  </div>
+
+  <!-- ============ BOARD ============ -->
+  <div class="board">
+
+    <!-- ---------- MAIN COLUMN ---------- -->
+    <div class="main-col">
+
+      <!-- STORYBOARD -->
+      <div class="panel">
+        <div class="panel-head">
+          <h2>Storyboard</h2>
+          <span class="meta">SCF · 7 scenes · 1:03 · composition.scf.json</span>
+        </div>
+
+        <!-- VARIETY METER -->
+        <div class="variety">
+          <div class="vbar">
+            <span style="width:57.1%;background:var(--accent)"></span>
+            <span style="width:28.6%;background:var(--violet)"></span>
+            <span style="width:14.3%;background:var(--spark)"></span>
+          </div>
+          <span class="verdict ok">✓ VARIED</span>
+          <div class="vlegend">
+            <span><i style="background:var(--accent)"></i>chrome ×4</span>
+            <span><i style="background:var(--violet)"></i>hand-stitched ×2</span>
+            <span><i style="background:var(--spark)"></i>generated ×1</span>
+          </div>
+          <div class="vnote">
+            <b>4-scene chrome run detected (s2–s5)</b> — allowed: product surfaces are exempt from the anti-sameness rule,
+            and each layout is <b>distinct</b> (editor · right-chat · inline-diff · terminal). Two bespoke kinetic beats (s1, s6) bracket the run. No design-component repeat.
+          </div>
+        </div>
+
+        <!-- FILMSTRIP -->
+        <div class="filmstrip">
+
+          <!-- s1 -->
+          <div class="scene-card" style="width:150px">
+            <div class="sc-slate"><span class="num">S1</span><span>hook</span><span class="dur">6.0s</span></div>
+            <div class="thumb"><div class="mk mk-type s1bed">
+              <div class="ghost">GitHub Cop…</div>
+              <div class="solid">GitHub Copilot</div>
+              <div style="display:flex;gap:2px;align-items:center"><span class="sub">in Visual Studio Code</span><span class="caret"></span></div>
+            </div></div>
+            <div class="badge-row"><span class="tbadge hand">kinetic-type</span><span class="tbadge gen">Sora bed</span></div>
+            <div class="ntime"><div class="track"><div class="fill" style="width:72%"></div></div><div class="lbl"><span>narr 4.35s</span><span>scene 6.0s</span></div></div>
+            <div class="crit"><span class="c">premium <b>3</b></span><span class="c">distinct <b>3</b></span></div>
+          </div>
+          <div class="ribbon"><span>caret streak →</span></div>
+
+          <!-- s2 -->
+          <div class="scene-card" style="width:210px">
+            <div class="sc-slate"><span class="num">S2</span><span>completions</span><span class="dur">12.9s</span></div>
+            <div class="thumb"><div class="mk vsc">
+              <div class="act"><i></i><i class="on"></i><i></i><i></i></div>
+              <div class="body">
+                <div class="expl"><b class="a"></b><b class="b"></b><b class="c"></b><b class="b"></b></div>
+                <div class="edit"><div class="ln k"></div><div class="ln g"></div><div class="ln g" style="width:52%"></div><div class="ln" style="width:30%"></div></div>
+                <div class="pill" style="right:8px;bottom:8px">⇥ Tab to accept</div>
+              </div>
+            </div></div>
+            <div class="badge-row"><span class="tbadge chrome">VSCodeScene</span><span class="tbadge chrome">editor + minimap</span></div>
+            <div class="ntime"><div class="track"><div class="fill tight" style="width:95%"></div></div><div class="lbl"><span>narr 12.3s</span><span class="tightlbl">tight · scene 12.9s</span></div></div>
+          </div>
+          <div class="ribbon"><span>crossfade</span></div>
+
+          <!-- s3 -->
+          <div class="scene-card" style="width:210px">
+            <div class="sc-slate"><span class="num">S3</span><span>chat</span><span class="dur">10.8s</span></div>
+            <div class="thumb"><div class="mk vsc">
+              <div class="act"><i></i><i></i><i class="on"></i><i></i></div>
+              <div class="body">
+                <div class="edit" style="flex:1"><div class="ln k"></div><div class="ln" style="width:60%"></div><div class="ln" style="width:44%"></div></div>
+                <div class="chat"><div class="cap">CHAT</div>
+                  <div class="bub u"><b style="width:70%"></b></div>
+                  <div class="bub a"><b></b><b style="width:80%"></b><b style="width:60%"></b></div>
+                </div>
+              </div>
+            </div></div>
+            <div class="badge-row"><span class="tbadge chrome">VSCodeScene</span><span class="tbadge chrome">right chat</span></div>
+            <div class="ntime"><div class="track"><div class="fill" style="width:87%"></div></div><div class="lbl"><span>narr 10.2s</span><span>scene 10.8s</span></div></div>
+          </div>
+          <div class="ribbon"><span>crossfade</span></div>
+
+          <!-- s4 -->
+          <div class="scene-card" style="width:210px">
+            <div class="sc-slate"><span class="num">S4</span><span>edits</span><span class="dur">11.5s</span></div>
+            <div class="thumb"><div class="mk vsc">
+              <div class="act"><i></i><i class="on"></i><i></i></div>
+              <div class="body">
+                <div class="edit"><div class="ln k"></div><div class="ln del"></div><div class="ln add"></div><div class="ln add" style="width:64%"></div></div>
+                <div class="inline"></div>
+                <div class="pill" style="right:8px;bottom:8px">✓ Accept · Discard</div>
+              </div>
+            </div></div>
+            <div class="badge-row"><span class="tbadge chrome">VSCodeScene</span><span class="tbadge chrome">inline diff</span></div>
+            <div class="ntime"><div class="track"><div class="fill" style="width:88%"></div></div><div class="lbl"><span>narr 10.9s</span><span>scene 11.5s</span></div></div>
+          </div>
+          <div class="ribbon"><span>crossfade</span></div>
+
+          <!-- s5 -->
+          <div class="scene-card" style="width:210px">
+            <div class="sc-slate"><span class="num">S5</span><span>agent</span><span class="dur">10.2s</span></div>
+            <div class="thumb"><div class="mk vsc">
+              <div class="act"><i></i><i></i><i class="on"></i></div>
+              <div class="body">
+                <div class="edit" style="flex:1"><div class="chk">✓ Edit models/post.ts</div><div class="chk">✓ Edit api/routes.ts</div><div class="chk" style="color:var(--text-3)">• Add test</div></div>
+                <div class="chat" style="width:34%"><div class="cap">AGENT</div><div class="bub u"><b style="width:80%"></b></div></div>
+                <div class="term"><div class="p">$ npm test</div><div class="p2">✓ 3 passing</div></div>
+              </div>
+            </div></div>
+            <div class="badge-row"><span class="tbadge chrome">VSCodeScene</span><span class="tbadge chrome">terminal panel</span></div>
+            <div class="ntime"><div class="track"><div class="fill" style="width:85%"></div></div><div class="lbl"><span>narr 9.55s</span><span>scene 10.2s</span></div></div>
+          </div>
+          <div class="ribbon"><span>caret streak →</span></div>
+
+          <!-- s5b -->
+          <div class="scene-card" style="width:150px">
+            <div class="sc-slate"><span class="num">S5b</span><span class="hero">★ HERO</span><span class="dur">3.5s</span></div>
+            <div class="thumb"><div class="mk hero"><div class="kb"></div><div class="phrase">Less boilerplate.<br>More building.</div></div></div>
+            <div class="badge-row"><span class="tbadge gen">gpt-image-2</span><span class="tbadge gen">Ken-Burns</span></div>
+            <div class="ntime none"><div class="track"></div><div class="lbl"><span>no narration</span><span>music breath</span></div></div>
+            <div class="crit"><span class="c">premium <b>3</b></span><span class="c">distinct <b>3</b></span></div>
+          </div>
+          <div class="ribbon"><span>caret streak →</span></div>
+
+          <!-- s6 -->
+          <div class="scene-card" style="width:150px">
+            <div class="sc-slate"><span class="num">S6</span><span>cta</span><span class="dur">6.2s</span></div>
+            <div class="thumb"><div class="mk mk-type s6bed">
+              <div class="solid" style="font-size:13px">GitHub Copilot · VS Code</div>
+              <div style="display:flex;gap:3px;align-items:center"><span class="sub">Turn it on. Build faster.</span><span class="caret"></span></div>
+              <div class="credit">Made with Slate → gim-home/SlateStudio</div>
+            </div></div>
+            <div class="badge-row"><span class="tbadge hand">kinetic-type</span><span class="tbadge gen">image bg</span></div>
+            <div class="ntime"><div class="track"><div class="fill" style="width:90%"></div></div><div class="lbl"><span>narr 5.6s</span><span>scene 6.2s</span></div></div>
+            <div class="crit"><span class="c">premium <b>3</b></span><span class="c">distinct <b>3</b></span></div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- SCRIPT -->
+      <div class="panel">
+        <div class="panel-head"><h2>Script</h2><span class="meta">script.md · shimmer · 58s narration</span></div>
+        <div class="panel-body script">
+          <div class="sp-slug">S1 — HOOK <span class="tc">0:00 – 0:06</span></div>
+          <div class="sp-action first">Meet GitHub Copilot — your AI pair programmer, right inside VS Code.</div>
+          <div class="sp-slug">S2 — COMPLETIONS <span class="tc">0:06 – 0:19</span></div>
+          <div class="sp-action first">Just start typing. Copilot reads your intent and suggests whole lines — even entire functions — as ghost text. Like what you see? Press Tab, and it's yours.</div>
+          <div class="sp-slug">S3 — CHAT <span class="tc">0:19 – 0:30</span></div>
+          <div class="sp-action first">Got a question? Open Chat and just ask, in plain English. Explain this code. How do I fix this? Copilot answers using the context of your own files.</div>
+          <div class="sp-slug">S4 — EDITS <span class="tc">0:30 – 0:41</span></div>
+          <div class="sp-action first">Need a change? Select your code, press Control I, and describe it — add error handling. Copilot rewrites it in place and shows a clean diff to accept.</div>
+          <div class="sp-slug">S5 — AGENT <span class="tc">0:41 – 0:51</span></div>
+          <div class="sp-action first">For bigger jobs, switch to Agent mode. Describe a goal, and Copilot edits across multiple files and runs commands for you — while you stay in control.</div>
+          <div class="sp-slug">S6 — CTA <span class="tc">0:57 – 1:03</span></div>
+          <div class="sp-action first">That's Copilot in VS Code. Turn it on, and start building faster today.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---------- RIGHT RAIL ---------- -->
+    <aside class="aside">
+
+      <!-- DECISION TRAIL -->
+      <div class="panel">
+        <div class="panel-head"><h2>Decision Trail</h2><span class="meta">decisions.jsonl</span></div>
+        <div class="panel-body">
+          <div class="dec"><div class="tk">17:00</div><div class="bd"><div class="ty dir">director</div><div class="msg">walkthrough + explainer</div><div class="why">synthetic VS Code demo is the spine; hook+payoff framing</div></div></div>
+          <div class="dec"><div class="tk">17:01</div><div class="bd"><div class="ty tc">treatment</div><div class="msg">aesthetic · vs-code-dark + violet→green</div><div class="why">real product; avoid Contoso demo brand</div></div></div>
+          <div class="dec"><div class="tk">17:05</div><div class="bd"><div class="ty ck">CK-REVIEW · brief <span class="verdict-chip approved">approved</span></div><div class="why">user changed voice coral → shimmer</div></div></div>
+          <div class="dec"><div class="tk">17:15</div><div class="bd"><div class="ty ck">CK-REVIEW · script <span class="verdict-chip approved">approved</span></div></div></div>
+          <div class="dec"><div class="tk">17:25</div><div class="bd"><div class="ty tc">art direction</div><div class="msg">ghost-text made physical</div><div class="why">→ art-direction.json · spark-caret signature</div></div></div>
+          <div class="dec"><div class="tk">17:40</div><div class="bd"><div class="ty ck">CK-REVIEW · scene plan <span class="verdict-chip changed">changed</span></div><div class="why">user: add AI images + 1 Sora clip → placed in bookend beats</div></div></div>
+          <div class="dec"><div class="tk">17:50</div><div class="bd"><div class="ty ck">CK-CONFIRM · assets <span class="verdict-chip approved">approved</span></div><div class="why">6 TTS + 2 images + 1 Sora + transcription</div></div></div>
+          <div class="dec"><div class="tk">20:05</div><div class="bd"><div class="ty ok">render complete</div><div class="msg">final.mp4 · 62.77s · 7 scenes</div></div></div>
+          <div class="dec"><div class="tk">20:05</div><div class="bd"><div class="ty ok">CK-REVIEW · review <span class="verdict-chip approved">passed</span></div><div class="why">21/24 · no dimension scored 1</div></div></div>
+        </div>
+      </div>
+
+      <!-- COST BURNDOWN -->
+      <div class="panel">
+        <div class="panel-head"><h2>Cost</h2><span class="meta">ledger.jsonl</span></div>
+        <div class="panel-body burn">
+          <div class="row"><span class="lbl">Sora-2</span><span class="track"><i style="width:84%;background:var(--violet)"></i></span><span class="amt">$0.71</span></div>
+          <div class="row"><span class="lbl">gpt-image-2</span><span class="track"><i style="width:10%;background:var(--accent)"></i></span><span class="amt">$0.08</span></div>
+          <div class="row"><span class="lbl">TTS</span><span class="track"><i style="width:6%;background:var(--spark)"></i></span><span class="amt">$0.05</span></div>
+          <div class="total"><span class="l">spent / planned</span><span class="v">$0.84 <span style="color:var(--text-3);font-weight:400">/ ~$1.75</span></span></div>
+          <div class="budgetline"><i style="width:3.4%"></i><span class="warn" style="left:50%"></span><span class="pause" style="left:90%"></span></div>
+          <div class="thresholds"><span>$0</span><span style="color:var(--gate)">warn 50%</span><span style="color:var(--danger)">pause 90%</span><span>$25</span></div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY -->
+      <div class="panel">
+        <div class="panel-head"><h2>Activity</h2><span class="meta">events.jsonl</span></div>
+        <div class="panel-body">
+          <div class="act-row"><span class="tool">foundry_video_gen</span><span class="target">s1 bed</span><span class="status cost">$0.71</span></div>
+          <div class="act-row"><span class="tool">foundry_image_gen</span><span class="target">s6 cta-bg</span><span class="status cost">$0.04</span></div>
+          <div class="act-row"><span class="tool">foundry_image_gen</span><span class="target">s5b hero</span><span class="status cost">$0.04</span></div>
+          <div class="act-row"><span class="tool">foundry_tts</span><span class="target">s2–s6</span><span class="status ok">✓ 6</span></div>
+          <div class="act-row"><span class="tool">hyperframes_render</span><span class="target">final.mp4</span><span class="status ok">✓</span></div>
+        </div>
+      </div>
+
+      <!-- GOVERNANCE -->
+      <div class="panel">
+        <div class="panel-head"><h2>Governance</h2></div>
+        <div class="panel-body gov">
+          <div class="g"><span class="k">brand package</span><span class="v">none (custom aesthetic)</span></div>
+          <div class="g"><span class="k">demo-data</span><span class="v ok">clean ✓</span></div>
+          <div class="g"><span class="k">captions</span><span class="v ok">on · static band ✓</span></div>
+          <div class="g"><span class="k">theme polarity</span><span class="v ok">dark · consistent ✓</span></div>
+          <div class="g"><span class="k">flags</span><span class="v ok">none</span></div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <footer>
+    <span>Soundstage — Slate's living storyboard</span>
+    <span>· read-only observer</span>
+    <span>· inspired by <a href="https://github.com/calesthio/OpenMontage/pull/273">OpenMontage Backlot</a></span>
+    <span class="spacer"></span>
+    <span>static prototype · real data: projects/copilot-vscode-tour</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -27,6 +27,21 @@ INTENT → BRIEF → ART-DIRECTION → DECIDE → CHECKPOINT → ACT → LOG →
 
 These rules govern the loop. Follow them every project.
 
+### Rule 0 — Open the living storyboard when you create the project
+
+The instant you create `projects/<slug>/` and write `project.json` (before any
+stage runs), open **Soundstage** so the user can watch the production happen:
+
+```powershell
+python -m slate.soundstage open <slug>
+```
+
+Idempotent and non-fatal — it starts the board server if needed and opens the
+project (browser, or a VS Code Simple Browser tab). If it fails, **continue** —
+the board is a read-only observer, never a blocker. It updates live off disk as
+you write the brief, script, SCF, ledger, and checkpoints. Full contract:
+[`skills/meta/living-storyboard.md`](living-storyboard.md).
+
 ### Rule 1 — Always start from intent, not from a template
 
 The user's first message rarely names a "pipeline". They name a goal:
@@ -119,6 +134,9 @@ The next session that opens this project should be able to reconstruct
 - Every paid call → append to `ledger.jsonl` (record AFTER the call returns)
 - Every checkpoint → append to `decisions.jsonl` with `type=checkpoint`,
   including what was shown to the user and their verdict
+- *(optional)* wrap each scene's asset generation with the Soundstage event
+  emitter (`slate.soundstage.events.generating`) so the board's storyboard card
+  shimmers "generating…" live — see [`living-storyboard.md`](living-storyboard.md)
 
 Append-only. Never edit prior lines. If a decision is reversed, append a
 new decision that supersedes it and says so. The full state contract is in

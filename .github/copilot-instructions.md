@@ -454,14 +454,17 @@ Each video lives in its own project folder under `projects/<slug>/`
 
 ```
 projects/<slug>/
+  project.json          # {name, slug, budget_usd, created_at, brief_path}
   brief.md              # Approved creative brief
   script.md             # Approved narration script
   scene-plan.md         # Approved scene plan
+  art-direction.json    # Per-video identity (P4b)
   composition.scf.json  # Generated SCF
   assets/               # Generated images, audio, video clips
   renders/              # Final rendered MP4s
   ledger.jsonl          # Append-only cost log
   decisions.jsonl       # Append-only decision log (model picks, retries, escalations)
+  events.jsonl          # (optional) live tool events -> Soundstage "generating" shimmer
   trace.json            # ProductionTrace snapshot (governance audit)
 ```
 
@@ -469,6 +472,21 @@ The full state-and-decisions contract is in
 [`skills/meta/state-and-decisions.md`](../skills/meta/state-and-decisions.md).
 Create the project folder at the start of each video; never lose state
 to memory.
+
+**Open the living storyboard.** The moment you create the project (right after
+writing `project.json`), open **Soundstage** — Slate's read-only board that lets
+the user *watch* the production happen (stage rail, script, storyboard + narration
+timeline, gates, cost, Final Cut player):
+
+```powershell
+python -m slate.soundstage open <slug>
+```
+
+Idempotent and non-fatal — it starts the board server if needed and opens the
+project in a browser (or a VS Code Simple Browser tab). If it fails, **continue**
+the production; the board is an observer, never a blocker. It then updates **live**
+off disk as you write files. Full contract:
+[`skills/meta/living-storyboard.md`](../skills/meta/living-storyboard.md).
 
 ---
 
