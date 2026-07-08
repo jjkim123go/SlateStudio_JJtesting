@@ -429,12 +429,18 @@ function render() {
   const banner = renderBanner(state);
   if (banner) app.append(banner);
 
-  if (!state.has_scf) {
+  const sb0 = state.storyboard;
+  if (!sb0 || !(sb0.scenes || []).length) {
     app.append(el("div", { class: "empty", style: "margin-top:30px" },
-      el("div", { class: "big" }, "No composition yet"),
-      el("div", {}, "This project has no SCF — Soundstage is showing what it found on disk. "
-        + "Runs that reach the scene plan get the full storyboard.")));
+      el("div", { class: "big" }, "Nothing to storyboard yet"),
+      el("div", {}, "Soundstage fills in live as the pipeline writes the script, "
+        + "scene plan, and assets — no need to wait for the final render.")));
   } else {
+    if (sb0.planned) app.append(el("div", {
+      style: "margin-top:16px;padding:10px 14px;border:1px dashed rgba(127,127,127,.4);"
+        + "border-radius:8px;color:var(--text-2);font-size:13px" },
+      "◑ Planned storyboard — script, scene plan & narration are live below; "
+        + "scene thumbnails fill in as each scene renders."));
     const story = renderStoryboard(state); if (story) app.append(story);
     const tl = renderTimeline(state); if (tl) app.append(el("div", { style: "margin-top:24px" }, tl));
     const scr = renderScript(state); if (scr) app.append(scr);
