@@ -107,3 +107,55 @@ def test_events_emitter(tmp_path):
         pass
     lines = (tmp_path / "events.jsonl").read_text(encoding="utf-8").strip().splitlines()
     assert [json.loads(x)["event"] for x in lines] == ["start", "start", "finish"]
+
+
+def _planned_fixture(root: Path) -> Path:
+    """A project with script + art-direction + narration sidecars, but NO SCF."""
+    d = root / "planned-video"
+    _write(d / "project.json", {"name": "Planned", "slug": "planned-video", "budget_usd": 25.0})
+    _write(d / "script.md",
+           "# Planned — Script\n\n"
+           "## Scene 1 — Hook: the cold open (~10s)\n\n"
+           "> The first thing you notice is the light.\n\n"
+           "## Scene 2 — The idea (~20s)\n\n"
+           "> Then it all comes together in one simple picture.\n\n"
+           "### Word-count check\n~30 words.\n")
+    _write(d / "art-direction.json", {
+        "concept": "a test world",
+        "theme": {"name": "planned-theme", "primary": "#123456"},
+        "captions": {"style": "static"},
+        "productionLayers": {"music": "built-in", "voice": "en-US-Andrew:DragonHDLatestNeural"},
+        "sceneTreatments": {"s1": "generated-image hero (a cold open)", "s2": "kinetic type on paper"},
+    })
+    _write(d / "assets" / "narration" / "s01.words.json",
+           {"text": "...", "duration": 9.6, "source": "azure-speech-wordboundary", "words": []})
+    _write(d / "assets" / "narration" / "s02.words.json",
+           {"text": "...", "duration": 19.2, "source": "azure-speech-wordboundary", "words": []})
+    return d
+
+
+def test_planned_storyboard_before_scf(tmp_path):
+    """The living board must surface script/scene-plan/narration BEFORE the SCF."""
+    s = load_board_state(_planned_fixture(tmp_path))
+    assert s["has_scf"] is False
+    sb = s["storyboard"]
+    assert sb is not None and sb.get("planned") is True
+    assert len(sb["scenes"]) == 2
+    s1, s2 = sb["scenes"]
+    # script narration surfaced (this is what fills the screenplay panel)
+    assert s1["narration_text"].startswith("The first thing you notice")
+    assert s2["technique"] == "kinetic type on paper"
+    assert s1["treatment_class"] == "generated"   # generated-image hero
+    assert s2["treatment_class"] == "hand"
+    # measured narration seconds from the sidecars (+0.5s buffer in the shot)
+    assert s1["narration_seconds"] == 9.6
+    assert s1["duration"] == pytest.approx(10.1)
+    # theme/captions/music come from art-direction so the board is tinted early
+    assert sb["theme"]["name"] == "planned-theme"
+    assert sb["captions"]["style"] == "static"
+    assert sb["music"] is not None
+    # stage rail: script + scene_plan done, compose still pending (no SCF)
+    rail = {st["name"]: st["status"] for st in s["stages"]}
+    assert rail["script"] == "completed"
+    assert rail["scene_plan"] == "completed"
+    assert rail["compose"] == "pending"

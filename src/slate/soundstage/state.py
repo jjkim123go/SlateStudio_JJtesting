@@ -633,6 +633,165 @@ def _fmt_dur(sec: Any) -> str:
 
 
 # --------------------------------------------------------------------------
+# progressive (pre-SCF) derivation — script.md / art-direction.json / assets
+# --------------------------------------------------------------------------
+# The board must be a LIVING storyboard: it surfaces artifacts AS the pipeline
+# writes them, not only once composition.scf.json lands near the end. When there
+# is no SCF yet, derive a "planned" storyboard from script.md (narration),
+# art-direction.json (per-scene technique + theme + captions) and the narration
+# `.words.json` sidecars (measured seconds). Same payload shape as the SCF
+# storyboard, so the UI renders it 1:1 and simply enriches later.
+
+_SCRIPT_SCENE_RE = re.compile(r"^##\s*Scene\s*(\d+)\s*[\u2014\-:]\s*(.+?)\s*$", re.I)
+_DUR_HINT_RE = re.compile(r"\(~?\s*([\d.]+)\s*s\)\s*$")
+
+
+def _read_text(path: Path) -> Optional[str]:
+    try:
+        return path.read_text(encoding="utf-8")
+    except OSError:
+        return None
+
+
+def _parse_script_scenes(project_dir: Path) -> list[dict]:
+    """Parse script.md '## Scene N — Title (~Xs)' headings + '>' narration blocks."""
+    text = _read_text(project_dir / "script.md")
+    if not text:
+        return []
+    scenes: list[dict] = []
+    cur: Optional[dict] = None
+    for raw in text.splitlines():
+        stripped = raw.strip()
+        m = _SCRIPT_SCENE_RE.match(stripped)
+        if m:
+            if cur:
+                scenes.append(cur)
+            title = m.group(2).strip()
+            dh = _DUR_HINT_RE.search(title)
+            dur_hint = float(dh.group(1)) if dh else None
+            title = _DUR_HINT_RE.sub("", title).strip()
+            cur = {"index": int(m.group(1)), "title": title, "_narr": [], "dur_hint": dur_hint}
+        elif cur is not None and stripped.startswith(">"):
+            cur["_narr"].append(stripped.lstrip(">").strip())
+    if cur:
+        scenes.append(cur)
+    for sc in scenes:
+        sc["narration_text"] = " ".join(x for x in sc.pop("_narr") if x).strip()
+    return scenes
+
+
+def _sidecar_duration(project_dir: Path, index: int) -> Optional[float]:
+    """Measured narration seconds from a `.words.json` sidecar, if present."""
+    nd = project_dir / "assets" / "narration"
+    for name in (f"s{index:02d}", f"s{index}", f"scene-{index}", f"scene{index}"):
+        data = _read_json(nd / f"{name}.words.json")
+        if data and isinstance(data.get("duration"), (int, float)):
+            return float(data["duration"])
+    return None
+
+
+def _short_technique(s: str) -> str:
+    head = re.split(r"[+(\[\u2014]", s or "", 1)[0].strip()
+    return head or "custom"
+
+
+def _classify_planned(tech_str: str) -> tuple[str, str, Optional[str]]:
+    t = (tech_str or "").lower()
+    label = _short_technique(tech_str)
+    if any(k in t for k in ("chrome", "terminal", "excel", "vscode", "teams",
+                            "outlook", "browser", "screen demo", "azure portal", "github")):
+        return "chrome", label, None
+    if any(k in t for k in ("generated-image", "generated image", "gen-image",
+                            "image hero", "sora", "photo bed", "imagebackdrop")):
+        return "generated", label, None
+    return "hand", label, None
+
+
+def _build_planned_storyboard(project_dir: Path, decisions: list[dict],
+                              ledger: list[dict], events: list[dict]) -> Optional[dict]:
+    """Storyboard derived from script.md + art-direction.json BEFORE the SCF exists."""
+    script_scenes = _parse_script_scenes(project_dir)
+    ad = _read_json(project_dir / "art-direction.json") or {}
+    treatments = ad.get("sceneTreatments") or {}
+    if not script_scenes and not treatments:
+        return None
+
+    theme = ad.get("theme") or {}
+    caps = ad.get("captions") or {}
+    layers = ad.get("productionLayers") or {}
+
+    generating: dict[str, dict] = {}
+    for ev in events:
+        sid = ev.get("scene_id")
+        if not sid or ev.get("depth"):
+            continue
+        if ev.get("event") == "start":
+            generating[str(sid)] = ev
+        elif ev.get("event") in ("finish", "error"):
+            generating.pop(str(sid), None)
+
+    by_idx = {sc["index"]: sc for sc in script_scenes}
+    tkeys = []
+    for k in treatments:
+        mm = re.match(r"s0*(\d+)$", str(k))
+        if mm:
+            tkeys.append(int(mm.group(1)))
+    n = max([*by_idx.keys(), *tkeys, 0])
+
+    scenes = []
+    cursor = 0.0
+    for i in range(1, n + 1):
+        sc = by_idx.get(i, {})
+        sid = f"s{i}"
+        tech_str = treatments.get(f"s{i}") or treatments.get(f"s{i:02d}") or ""
+        cls, tech, comp = _classify_planned(tech_str)
+        nsec = _sidecar_duration(project_dir, i)
+        dur = (nsec + 0.5) if nsec else float(sc.get("dur_hint") or 0.0)
+        keyframe = None
+        if cls == "generated":
+            hero = project_dir / "assets" / "images" / f"s{i:02d}-hero.png"
+            if hero.exists():
+                keyframe = {"path": _rel(project_dir, hero), "kind": "image",
+                            "source": "asset", "exists": True}
+        scenes.append({
+            "id": sid,
+            "index": i,
+            "title": sc.get("title") or _scene_title(sid),
+            "duration": round(dur, 2),
+            "start": round(cursor, 2),
+            "narration_text": sc.get("narration_text", ""),
+            "narration_seconds": round(nsec, 2) if nsec else None,
+            "narration_overflow": False,
+            "narration_tight": False,
+            "transition": None,
+            "treatment_class": cls,
+            "technique": tech,
+            "component": comp,
+            "hero": "hero" in tech_str.lower(),
+            "keyframe": keyframe,
+            "generating": sid in generating,
+            "status": "planned",
+        })
+        cursor += dur
+    if not scenes:
+        return None
+    variety = _variety(scenes) if treatments else {
+        "flag": False, "verdict": "planned",
+        "note": "Scene techniques appear once the art direction is set.",
+        "histogram": {}, "techniques": {}, "dominant_share": 0, "chrome_run": 0,
+    }
+    return {
+        "scenes": scenes,
+        "total_duration_seconds": round(cursor, 2),
+        "theme": theme,
+        "captions": ({"style": caps.get("style")} if caps else None),
+        "music": ({"src": "(built-in library)"} if layers.get("music") else None),
+        "variety": variety,
+        "planned": True,
+    }
+
+
+# --------------------------------------------------------------------------
 # public API
 # --------------------------------------------------------------------------
 
@@ -652,7 +811,8 @@ def load_board_state(project_dir: Path) -> dict[str, Any]:
         title = meta.get("title") or marker.get("name") or slug.replace("-", " ").title()
         stages = _build_stage_rail(project_dir, decisions, scf, review)
         _, active_gate = _checkpoints(decisions)
-        storyboard = _build_storyboard(project_dir, scf, decisions, ledger, events)
+        storyboard = _build_storyboard(project_dir, scf, decisions, ledger, events) \
+            or _build_planned_storyboard(project_dir, decisions, ledger, events)
         cost = _build_cost(ledger, marker)
 
         last = _last_activity(project_dir)
@@ -704,7 +864,7 @@ def summarize_project(project_dir: Path) -> dict[str, Any]:
     meta = (scf or {}).get("metadata") or {}
     _, active_gate = _checkpoints(decisions)
     stages = _build_stage_rail(project_dir, decisions, scf, review)
-    scenes = (scf or {}).get("scenes") or []
+    scenes = (scf or {}).get("scenes") or _parse_script_scenes(project_dir)
     last = _last_activity(project_dir)
     now = time.time()
     poster = None
