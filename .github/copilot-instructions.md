@@ -232,12 +232,14 @@ The full operating model is in [`skills/meta/production-loop.md`](../skills/meta
 Read it once at session start (or any time you're producing a video).
 
 In one paragraph: understand what the user wants → run a concrete
-availability scan → present a brief and get approval → write the script
-and get approval → **commit an art direction (`art-direction.json`) and give
-each scene a distinct technique** → plan scenes (mix director skills as needed)
-and get approval → generate assets within budget → compose SCF → render →
-self-review (incl. the design-critic variety gate) → deliver. Pause at every
-checkpoint listed in
+availability scan → **research the topic from authoritative online sources
+whenever it touches real facts, current events, named products, versions,
+statistics, or any claim the audience could check** → present a brief and get
+approval → write the script and get approval → **commit an art direction
+(`art-direction.json`) and give each scene a distinct technique** → plan scenes
+(mix director skills as needed) and get approval → generate assets within
+budget → compose SCF → render → self-review (incl. the design-critic variety
+gate) → deliver. Pause at every checkpoint listed in
 [`skills/meta/checkpoint-protocol.md`](../skills/meta/checkpoint-protocol.md).
 Persist every decision and cost into the project's append-only
 `ledger.jsonl` and `decisions.jsonl` (see
@@ -248,6 +250,23 @@ FIRST, before writing `brief.md`. The brief's "Capability scan" section
 must report ACTUAL preflight results — which models responded to a live
 probe — not aspirational config from `models.yaml`. A model listed in
 `models.yaml` that fails preflight is reported as `✗ (not callable)`.
+
+**Research before the brief (applies to EVERY Slate video, not just the
+explainer series):** If the topic touches the real world in any way — a named
+technology, product, company, spec, version, date, statistic, benchmark,
+research finding, or anything the audience could fact-check — you MUST do an
+online research pass BEFORE writing the brief and script. Model training data is
+stale and lossy; writing a current topic from memory produces wrong dates,
+outdated versions, and invented numbers that destroy credibility. Load
+[`skills/meta/topic-research.md`](../skills/meta/topic-research.md), reason your
+way to authoritative primary sources (official docs, vendor engineering blogs,
+primary papers, standards bodies), fetch them (`fetch_webpage` / `web_fetch`),
+cross-check every load-bearing fact against ≥2 independent sources, and capture
+them in `projects/<slug>/research.md`. The brief's "Research grounding" section
+(verified facts + source URLs) is a required CK-REVIEW artifact for any factual
+topic. Only skip for pure opinion / timeless first-principles pieces, or a video
+built entirely from user-supplied content. **Never draft factual narration from
+training memory.**
 
 **Slug confirmation:** The brief proposes a project slug
 (`projects/<slug>/`). The user approves the slug as part of the brief

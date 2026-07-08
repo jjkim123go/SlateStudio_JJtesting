@@ -9,7 +9,10 @@
 >
 > 1. Before calling tool `X`, read every skill listed in `X.agent_skills`.
 > 2. When producing a video, read [`meta/production-loop.md`](meta/production-loop.md)
->    plus the relevant `directors/*` skill(s). Mix directors freely.
+>    plus the relevant `directors/*` skill(s). Mix directors freely. For any
+>    factual / current topic, also read [`meta/topic-research.md`](meta/topic-research.md)
+>    and do the research pass BEFORE the brief (production-loop Rule 2b) — applies
+>    to every archetype, not just explainers.
 > 3. When a script line / scene / brand asset trigger-matches a row
 >    below, load that skill before authoring or routing.
 > 4. When you create a project (`projects/<slug>/`), open the living

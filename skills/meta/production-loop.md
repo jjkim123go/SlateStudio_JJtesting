@@ -20,9 +20,9 @@ This skill defines that loop. It is short on purpose. The deeper how-to lives in
 ## The loop
 
 ```
-INTENT → BRIEF → ART-DIRECTION → DECIDE → CHECKPOINT → ACT → LOG → REVIEW → LOG → DELIVER
-                  ▲                                          │
-                  └──────────────── adjust on feedback ──────┘
+INTENT → RESEARCH → BRIEF → ART-DIRECTION → DECIDE → CHECKPOINT → ACT → LOG → REVIEW → LOG → DELIVER
+                             ▲                                          │
+                             └──────────────── adjust on feedback ──────┘
 ```
 
 These rules govern the loop. Follow them every project.
@@ -72,6 +72,32 @@ The session intake / discovery contract lives in
 If the scan exposes a missing Azure model deployment, load
 [`skills/meta/azure-foundry-setup.md`](azure-foundry-setup.md) JIT.
 
+### Rule 2b — Research factual topics before the brief and script
+
+This applies to **every** Slate video, not just the explainer series. If the
+topic touches the real world in any way — a named technology, product, company,
+spec, standard, version, date, statistic, benchmark, research finding, or any
+claim the audience could fact-check — do an **online research pass BEFORE the
+brief and script**. Model memory is stale and lossy; a current topic written
+from recall ships wrong dates, outdated versions, and invented numbers, and a
+technical audience will spot it instantly.
+
+Load [`skills/meta/topic-research.md`](topic-research.md) and follow it:
+decompose the topic into its load-bearing claims, reason your way to
+authoritative primary sources (official docs, vendor engineering blogs, primary
+papers, standards bodies — there is no query-based web-search tool, so name the
+sources yourself and fetch them with `fetch_webpage` / `web_fetch`, then follow
+their links), cross-check every load-bearing fact against ≥2 independent
+sources, and capture verified facts + source URLs in
+`projects/<slug>/research.md`. Bind the script to `research.md` — every factual
+line must trace to a source.
+
+The brief's **"Research grounding"** section (verified facts + source list) is a
+required artifact at the brief CK-REVIEW for any factual topic, so the user can
+sanity-check the facts before any script or spend. Only skip for pure opinion /
+timeless first-principles pieces, or a video built entirely from user-supplied
+content. **Never draft factual narration from training memory.**
+
 ### Rule 3 — Compose director skills; don't pick "a pipeline"
 
 Director skills under [`skills/directors/`](../directors/) are advisors, not
@@ -106,9 +132,10 @@ hand-stitch toolbox). Two rules make or break the result:
   hero of every scene — the lesson of the token-tape pilot, where one beautiful
   component in all ten scenes still read as a template.
 
-For factual / current topics, also load
-[`skills/meta/topic-research.md`](topic-research.md) before scripting so claims
-are grounded, not hallucinated. Gate the finished scenes with
+For factual / current topics, the research pass from **Rule 2b** must already be
+done and captured in `research.md` before you script or plan scenes — art
+direction dresses verified facts, it does not excuse skipping the research. Gate
+the finished scenes with
 [`skills/creative/design-critic.md`](../creative/design-critic.md) (Rule 6).
 
 ### Rule 4 — Checkpoint before any irreversible or expensive step

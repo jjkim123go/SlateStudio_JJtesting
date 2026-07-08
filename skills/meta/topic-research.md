@@ -1,17 +1,21 @@
 # Topic Research — ground the script in verified sources
 
 > **Meta — operating model. Load at INGEST → BRIEF, before writing the
-> script**, whenever the topic is factual rather than pure opinion.
-> Pairs with the production loop (research is part of ingest) and
-> `directors/*` (which assume a research-grounded brief).
+> brief and script**, whenever the topic is factual rather than pure opinion.
+> Enforced by [`production-loop.md`](production-loop.md) **Rule 2b** for every
+> video archetype (not just the explainer series); `directors/*` assume a
+> research-grounded brief.
 
-## When this fires (almost every explainer)
+## When this fires (almost every video — not just explainers)
 
-Do a research pass BEFORE the script if the topic involves any of: a current or
-fast-moving subject ("…in 2026", "latest", "how X works *now*"), named products /
-specs / standards / companies, versions or release dates, statistics or
-benchmarks, research findings, or anything the audience could fact-check. If in
-doubt, research. Only skip for pure opinion / timeless first-principles pieces.
+Do a research pass BEFORE the brief and script for **any Slate video** —
+explainer, walkthrough, teaser, recap, product showcase, exec briefing, launch
+reveal, any archetype — if the topic involves any of: a current or fast-moving
+subject ("…in 2026", "latest", "how X works *now*"), named products / specs /
+standards / companies, versions or release dates, statistics or benchmarks,
+research findings, or anything the audience could fact-check. If in doubt,
+research. Only skip for pure opinion / timeless first-principles pieces, or a
+video built entirely from user-supplied content.
 
 **Why:** model training data is stale and lossy. Writing a current topic from
 memory produces wrong dates, outdated versions, invented numbers, and missed
