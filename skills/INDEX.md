@@ -12,6 +12,10 @@
 >    plus the relevant `directors/*` skill(s). Mix directors freely.
 > 3. When a script line / scene / brand asset trigger-matches a row
 >    below, load that skill before authoring or routing.
+> 4. When you create a project (`projects/<slug>/`), open the living
+>    storyboard so the user can watch — read
+>    [`meta/living-storyboard`](meta/living-storyboard.md)
+>    (`python -m slate.soundstage open <slug>`; idempotent + non-fatal).
 >
 > **Layer key:** Meta = cross-cutting policy & operating model ·
 > Directors = mixable shape advisors · L2 = Slate-specific contracts ·

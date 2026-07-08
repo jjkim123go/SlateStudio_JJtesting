@@ -16,6 +16,15 @@ project:
   Architectural patterns (tool contracts, pipeline manifests, capability
   registries, delivery-promise classification) were reimagined for
   enterprise use — no source code was reused.
+- **Soundstage (living storyboard):** Slate's `slate.soundstage` board is a
+  clean-room reimagining of **Backlot**, the living storyboard shipped in
+  OpenMontage (PR #273, https://github.com/calesthio/OpenMontage/pull/273).
+  The *concept* — a read-only, disk-derived production board that observes the
+  files the pipeline already writes — is shared. Slate reimplements it
+  independently against its own append-only state contract (`decisions.jsonl`
+  / `ledger.jsonl` + SCF) and extends it (variety meter, narration-timeline,
+  design-critic overlay, provenance trail, governance panel). No OpenMontage
+  source code was used. See `docs/design/LIVING_STORYBOARD.md`.
 
 ### HyperFrames
 - **Repository:** https://github.com/HeyGen-Official/hyperframes

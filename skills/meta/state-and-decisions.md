@@ -18,10 +18,19 @@ projects/<slug>/
   brief.md              ← human-editable; set at intake, rarely mutated
   decisions.jsonl       ← APPEND-ONLY structured decisions + checkpoints
   ledger.jsonl          ← APPEND-ONLY paid calls (the audit trail of $)
+  events.jsonl          ← (optional) live tool events → Soundstage shimmer
+  composition.scf.json  ← the generated SCF (root; the Soundstage board reads this)
   assets/               ← generated images, narration, music
-  scf/                  ← every render keeps its SCF JSON (reproducibility)
   renders/              ← MP4s; latest = final.mp4, prior = final.v1.mp4 etc.
 ```
+
+> SCF location: the current convention (and what the Soundstage board reads
+> first) is `composition.scf.json` at the project root. Older runs kept it under
+> `scf/`; the board tolerates both. Keep split renders under
+> `renders/composition-split-scenes/`.
+
+At project creation, open the board — `python -m slate.soundstage open <slug>`
+(idempotent, non-fatal; see [`living-storyboard.md`](living-storyboard.md)).
 
 `<slug>` is `kebab-case` derived from the user's intent (e.g. `onboarding-q1`,
 `launch-teaser-skylark`). Pick it during intake; confirm with the user

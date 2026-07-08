@@ -71,4 +71,5 @@ test_output/
 # Internal session logs (not committed)
 .internal/
 .playwright-mcp/
+.soundstage/
 
