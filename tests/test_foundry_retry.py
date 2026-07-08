@@ -58,7 +58,7 @@ def test_tts_retries_429_then_succeeds(tmp_path: Path, monkeypatch):
 
     monkeypatch.setattr(tts_gen.urllib.request, "urlopen", fake_urlopen)
     with mock.patch("time.sleep") as sleep:
-        result = tts_gen.generate_tts("Hello", str(tmp_path / "out.wav"), allow_fallback=False)
+        result = tts_gen.generate_tts("Hello", str(tmp_path / "out.wav"), allow_fallback=False, engine="gpt-4o-mini-tts")
 
     assert result["method"] == "azure-openai-tts"
     sleep.assert_called_once_with(1)
@@ -73,7 +73,7 @@ def test_tts_permanent_error_fails_without_fallback(tmp_path: Path, monkeypatch)
         raise _http_error(401, b"unauthorized")
 
     monkeypatch.setattr(tts_gen.urllib.request, "urlopen", fake_urlopen)
-    result = tts_gen.generate_tts("Hello", str(tmp_path / "out.wav"), allow_fallback=False)
+    result = tts_gen.generate_tts("Hello", str(tmp_path / "out.wav"), allow_fallback=False, engine="gpt-4o-mini-tts")
 
     assert result["success"] is False
     assert "HTTP 401" in result["error"]

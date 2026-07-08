@@ -104,7 +104,7 @@ Your AI assistant doesn't just help — it **directs**. Slate gives the agent cr
 ### 🖼️ Powerful Image Generation
 **gpt-image-2** handles all AI image generation — photorealistic faces, environments, creative art, text-in-image, and 4K output. One model that excels at everything.
 
-Plus **Sora-2** for AI-generated video clips and **gpt-4o-mini-tts** for studio-quality narration in 6 distinct voices.
+Plus **Sora-2** for AI-generated video clips and **Azure AI Speech** for studio-quality narration — the full neural-HD voice catalog (700+ voices across 150+ locales, with real word-level caption timing). **gpt-4o-mini-tts** is the built-in fallback.
 
 ### 📊 Component-First Visuals — No Static Fallbacks
 Flow diagrams, data charts, metrics cards, step-by-step guides, comparison tables — all rendered as **animated HyperFrames+GSAP components** with glassmorphic styling and motion. If a component doesn't exist for your content type, Slate creates one on the fly via a sub-agent. No static PNGs in your videos.

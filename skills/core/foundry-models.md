@@ -8,7 +8,8 @@
 | Model | Tool | Capability | Pricing Source |
 |-------|------|-----------|---------------|
 | `gpt-image-2` | `image_gen.py` | Image generation (all content types) | `config/models.yaml` |
-| `gpt-4o-mini-tts` | `tts_gen.py` | Text-to-speech (6 voices) | `config/models.yaml` |
+| `azure-speech` (**default**) | `azure_speech_tts.py` / `tts_gen.py` | Text-to-speech — full live catalog (700+ voices, 150+ locales, DragonHD/Omni), styles, real word-timings | `config/models.yaml` |
+| `gpt-4o-mini-tts` (fallback) | `tts_gen.py` | Text-to-speech fallback (6 voices) | `config/models.yaml` |
 | `Sora 2` | `video_gen.py` | Video generation | `config/models.yaml` |
 
 > **Pricing is externalized** — costs live in `config/models.yaml`, loaded by `scripts/lib/model_registry.py`.
@@ -43,9 +44,18 @@ When generating multiple images for the same video:
 
 ---
 
-## Text-to-Speech — `gpt-4o-mini-tts`
+## Text-to-Speech — Azure AI Speech (default) · gpt-4o-mini-tts (fallback)
 
-### Voices
+**Azure AI Speech is the default narration engine** (the `azure_speech_tts` tool
+and the `generate_tts` router). It exposes the FULL live catalog — 700+ neural
+voices across 150+ locales (DragonHD / Dragon HD Omni), speaking styles, and
+**real word-level timings** for captions. Pick any voice by name (e.g.
+`en-US-Andrew:DragonHDLatestNeural`); use `action=list_voices` to browse/filter
+by locale / accent / gender / HD tier / style. Override the default voice with
+`SLATE_TTS_VOICE`, the engine with `SLATE_TTS_ENGINE`. `gpt-4o-mini-tts` is the
+6-voice **fallback** below.
+
+### gpt-4o-mini-tts voices (fallback)
 
 | Voice ID | Character | Best For |
 |----------|-----------|----------|

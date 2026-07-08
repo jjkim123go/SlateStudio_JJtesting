@@ -165,6 +165,7 @@ class FoundryTTS(BaseTool):
                 voice,
                 instructions,
                 allow_fallback=fallback_allowed,
+                engine="gpt-4o-mini-tts",
             )
         except Exception as e:
             return ToolResult(

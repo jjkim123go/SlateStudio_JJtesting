@@ -495,7 +495,7 @@ exercised end-to-end without spending API budget.
 |------|---------------------------|------------------------------|
 | Image generation | `graphics/foundry_image_gen.py` | `image_gen.py` (gpt-image-2, retry + explicit fallback tracking) |
 | Structured visuals | `graphics/structured_image.py` | `structured_image.py` (Pillow-rendered code/table/diagram/chart/UI) |
-| Text-to-speech | `audio/foundry_tts.py` | `tts_gen.py` (gpt-4o-mini-tts via Azure) |
+| Text-to-speech | `audio/azure_speech_tts.py` (default) · `audio/foundry_tts.py` (fallback) | `azure_speech_tts.py` (Azure AI Speech, full catalog) + `tts_gen.py` engine router |
 | AI video | `video/foundry_video_gen.py` | `video_gen.py` (Sora-2 via OpenAI SDK, auto-strips audio) |
 | Transcription | `audio/foundry_transcribe.py` | `live_subtitles.py` (gpt-4o-transcribe) |
 | Video composition | `video/hyperframes_render.py` | `video_compose.py` (FFmpeg post-processing) |
@@ -1001,7 +1001,8 @@ hosted on a single Azure AI Foundry resource.
 | Deployment | Model | Provider | Use case | Cost |
 |-----------|-------|----------|----------|------|
 | `gpt-image-2` | gpt-image-2 | OpenAI (Azure) | All image generation (faces, scenes, creative, text-in-image) | ~$0.04 / image |
-| `gpt-4o-mini-tts` | gpt-4o-mini-tts | OpenAI (Azure) | Text-to-speech narration (6 voices) | ~$0.001 / sec |
+| `azure-speech` (default) | Azure AI Speech DragonHD/Omni | Azure Speech | Narration — full catalog (700+ voices, 150+ locales), real word-timings | ~$16 / 1M chars |
+| `gpt-4o-mini-tts` (fallback) | gpt-4o-mini-tts | OpenAI (Azure) | Text-to-speech narration fallback (6 voices) | ~$0.001 / sec |
 | `gpt-4o-transcribe` | gpt-4o-transcribe | OpenAI (Azure) | Speech-to-text with word-level timestamps | ~$0.006 / min |
 | `sora` | Sora-2 | OpenAI SDK (Azure) | AI video clip generation | ~$0.20 / sec |
 
@@ -1369,7 +1370,7 @@ Key responsibilities:
 | File | Purpose |
 |------|---------|
 | `image_gen.py` | gpt-image-2 image generation with Pillow fallback |
-| `tts_gen.py` | Azure gpt-4o-mini-tts |
+| `tts_gen.py` (router) · `azure_speech_tts.py` | Azure AI Speech (default) + gpt-4o-mini-tts (fallback) |
 | `video_gen.py` | Sora-2 via OpenAI SDK (auto-strips audio from AI clips) |
 | `live_subtitles.py` | gpt-4o-transcribe with word-level timestamps |
 | `subtitle_burner.py` | SRT/VTT burn-in via FFmpeg |

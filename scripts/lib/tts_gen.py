@@ -6,6 +6,8 @@ implementation is Azure-exclusive, supporting gpt-4o-mini-tts via Azure OpenAI.
 """
 
 import json
+import os
+import re
 import struct
 import subprocess
 import time
@@ -48,6 +50,48 @@ VOICES = {
 }
 
 DEFAULT_VOICE = "narrator-female"  # nova — warm, clear, works across video types
+
+# ── Engine selection ────────────────────────────────────────────────
+# Azure AI Speech (neural HD, full voice catalog, real word-level timings) is
+# the DEFAULT narration engine; gpt-4o-mini-tts is the fallback. Override the
+# engine with SLATE_TTS_ENGINE or config/models.yaml `tts_default_engine`, and
+# the default Azure voice with SLATE_TTS_VOICE.
+_AZURE_ENGINE_ALIASES = {"azure-speech", "azure", "speech", "dragonhd", "azure-tts"}
+_DEFAULT_AZURE_VOICE = "en-US-Ava:DragonHDLatestNeural"
+_ENGINE_CACHE: dict[str, str] = {}
+
+
+def _default_tts_engine() -> str:
+    """Resolve the default TTS engine: env → models.yaml → azure-speech."""
+    env = os.environ.get("SLATE_TTS_ENGINE")
+    if env:
+        return env.strip().lower()
+    if "engine" in _ENGINE_CACHE:
+        return _ENGINE_CACHE["engine"]
+    engine = "azure-speech"
+    try:
+        import yaml  # type: ignore
+        models_yaml = Path(__file__).resolve().parents[2] / "config" / "models.yaml"
+        data = yaml.safe_load(models_yaml.read_text(encoding="utf-8")) or {}
+        engine = str(data.get("tts_default_engine", engine) or engine).strip().lower()
+    except Exception:
+        pass
+    _ENGINE_CACHE["engine"] = engine
+    return engine
+
+
+def _default_azure_voice() -> str:
+    return os.environ.get("SLATE_TTS_VOICE") or _DEFAULT_AZURE_VOICE
+
+
+def _looks_like_azure_voice(voice: str | None) -> bool:
+    """True if `voice` is an Azure Speech voice name, not a legacy preset/OpenAI id."""
+    if not voice:
+        return False
+    if ":" in voice:  # e.g. en-US-Ava:DragonHDLatestNeural
+        return True
+    return bool(re.match(r"^[a-z]{2,3}-[A-Za-z]{2,}-", voice))  # e.g. en-US-AriaNeural
+
 
 # ── Video-type-based voice selection ─────────────────────────────────────────
 # Maps video type → list of preferred voice presets (cycled round-robin across
@@ -167,14 +211,101 @@ def _write_word_sidecar(audio_path: str, text: str, duration_sec: float) -> None
     Path(sidecar_path).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
+def _write_word_sidecar_words(
+    audio_path: str, text: str, duration_sec: float, words: list, source: str
+) -> None:
+    """Write a `.words.json` sidecar from already-known word timings.
+
+    Used by the Azure Speech path, whose word-boundary events give *real*
+    per-word timing (no transcription/estimation). Estimates only if no words
+    were captured.
+    """
+    sidecar_path = str(Path(audio_path).with_suffix(".words.json"))
+    if not words:
+        words = estimate_word_timestamps(text, duration_sec)
+        source = "estimate"
+    payload = {
+        "text": text,
+        "duration": round(float(duration_sec or 0), 3),
+        "source": source,
+        "words": words,
+    }
+    Path(sidecar_path).write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def generate_tts(
+    text: str,
+    output_path: str,
+    voice: str | None = None,
+    instructions: str = "",
+    allow_fallback: bool = False,
+    engine: str | None = None,
+    style: str | None = None,
+    temperature: float | None = None,
+) -> dict:
+    """Generate narration TTS, routing to the configured engine.
+
+    **Azure AI Speech is the default** (neural HD, full voice catalog, real
+    word-level timings); **gpt-4o-mini-tts is the fallback**. Pass
+    ``engine="gpt-4o-mini-tts"`` to force the legacy path. ``voice`` may be any
+    Azure Speech voice name (e.g. ``"en-US-Andrew:DragonHDLatestNeural"``) or a
+    legacy preset / OpenAI id.
+    """
+    eng = (engine or _default_tts_engine()).lower()
+    if eng in _AZURE_ENGINE_ALIASES:
+        _az_synth = None
+        _az_import_err: Exception | None = None
+        try:
+            from azure_speech_tts import synthesize as _az_synth  # scripts/lib on path
+        except Exception:
+            try:
+                from scripts.lib.azure_speech_tts import synthesize as _az_synth
+            except Exception as e:  # pragma: no cover - import guard
+                _az_import_err = e
+        if _az_synth is not None:
+            try:
+                az_voice = voice if _looks_like_azure_voice(voice) else _default_azure_voice()
+                res = _az_synth(text, output_path, voice=az_voice, style=style, temperature=temperature)
+                dur = float(res.get("duration_seconds", 0.0) or 0.0)
+                _write_word_sidecar_words(
+                    output_path, text, dur, res.get("words") or [],
+                    source=res.get("words_source", "azure-speech"),
+                )
+                size_kb = round(Path(output_path).stat().st_size / 1024) if Path(output_path).exists() else 0
+                return {
+                    "path": res.get("audio_path", output_path),
+                    "duration": round(dur, 2),
+                    "voice": az_voice,
+                    "method": "azure-speech",
+                    "engine": "azure-speech",
+                    "text_length": len(text),
+                    "word_count": len(text.split()),
+                    "size_kb": size_kb,
+                    "words_source": res.get("words_source", "azure-speech"),
+                    "cost": round(len(text) * 0.000016, 6),
+                }
+            except Exception as e:
+                print(f"  ⚠️  Azure Speech failed ({type(e).__name__}: {e}); "
+                      f"falling back to gpt-4o-mini-tts")
+        else:
+            print(f"  ⚠️  Azure Speech backend unavailable ({_az_import_err}); "
+                  f"falling back to gpt-4o-mini-tts")
+        # fall through to the OpenAI fallback engine
+
+    ov = voice if (voice and not _looks_like_azure_voice(voice)) else DEFAULT_VOICE
+    return _generate_tts_openai(text, output_path, ov, instructions, allow_fallback)
+
+
+def _generate_tts_openai(
     text: str,
     output_path: str,
     voice: str = DEFAULT_VOICE,
     instructions: str = "",
     allow_fallback: bool = False,
 ) -> dict:
-    """Generate TTS audio using Azure OpenAI gpt-4o-mini-tts.
+    """Generate TTS audio using Azure OpenAI gpt-4o-mini-tts (fallback engine).
+
+    Formerly the top-level ``generate_tts``; now the gpt-4o-mini-tts backend
 
     Args:
         text: Text to synthesize

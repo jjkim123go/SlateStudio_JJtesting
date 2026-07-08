@@ -300,7 +300,7 @@ python -m slate.preflight --summary
 ```
 
 This prints:
-- the count of registered tools (currently 17)
+- the count of registered tools (currently 20)
 - each tool's tier, runtime, and one-line capability
 - any modules that failed to import (so you know what's missing/broken)
 
@@ -315,7 +315,8 @@ the registry.
 | Tool | What | Cost |
 |------|------|------|
 | `foundry_image_gen` | Generate images via gpt-image-2 (4K, faces, scenes, creative, text-in-image) | ~$0.04/image |
-| `foundry_tts` | Text-to-speech narration via gpt-4o-mini-tts | ~$0.001/sec |
+| `azure_speech_tts` | **DEFAULT** narration — Azure AI Speech neural HD (full live catalog: 700+ voices / 150+ locales, DragonHD/Omni), styles, real word-level timings | ~$16/1M chars |
+| `foundry_tts` | Narration **fallback** — gpt-4o-mini-tts (6 voices) | ~$0.001/sec |
 | `foundry_video_gen` | Generate video clips via Sora-2 (4/8/12s, 720p max) | ~$0.20/sec |
 | `foundry_transcribe` | Speech → text with word-level timestamps (gpt-4o-transcribe). Also available via `scripts/lib/live_subtitles.py` for the live-subtitle pipeline. | ~$0.006/min |
 
@@ -546,7 +547,8 @@ Run `python -m slate.preflight` to verify the current configuration.
 | Deployment | Model | API | Use |
 |-----------|-------|-----|-----|
 | `gpt-image-2` | gpt-image-2 | OpenAI Image | All image generation — 4K, faces, scenes, creative, text-in-image |
-| `gpt-4o-mini-tts` | gpt-4o-mini-tts | OpenAI Audio | Text-to-speech (voices: coral, echo, shimmer, onyx, nova, fable) |
+| `azure-speech` (**default TTS**) | Azure AI Speech (DragonHD/Omni neural HD) | Speech SDK/REST | Narration — full live voice catalog (700+ voices, 150+ locales), styles, real word-level timings. No model deployment needed (part of the AI Services resource). |
+| `gpt-4o-mini-tts` (fallback) | gpt-4o-mini-tts | OpenAI Audio | Text-to-speech fallback (voices: coral, echo, shimmer, onyx, nova, fable) |
 | `sora` | sora-2 | OpenAI SDK | AI video generation (4/8/12s, up to 720p) |
 | `gpt-4o-transcribe` | gpt-4o-transcribe | OpenAI Audio | Speech-to-text with word-level timestamps (subtitles) |
 
@@ -599,7 +601,7 @@ Use this when planning scenes — it determines which model generates each asset
 | UI mockups | ScreenDemoFrame (component chrome) | Wraps static or structured content |
 | No matching component exists | Create new component via sub-agent | Load component-authoring + design-system + gsap-patterns skills |
 | Non-video static exports only | structured_image (Pillow) | Thumbnails, social cards, OG images — never for video scenes |
-| Voice narration (any scene) | gpt-4o-mini-tts | 6 voices: coral, echo, shimmer, onyx, nova, fable |
+| Voice narration (any scene) | **Azure AI Speech** (default, `azure_speech_tts`) · gpt-4o-mini-tts fallback | Any catalog voice — 700+ / 150+ locales (e.g. `en-US-Andrew:DragonHDLatestNeural`); `action=list_voices` to browse. Fallback: 6 voices |
 | Speech-to-text / subtitles | gpt-4o-transcribe | Word-level timestamps, 100 RPM |
 | AI-generated video clips (motion) | sora (Sora-2) | 4/8/12s clips, 720p max |
 
@@ -610,7 +612,8 @@ The `image_gen.py` routing engine uses gpt-image-2 for all AI image generation.
 - `gpt-image-2` size: Presets `1024x1024`, `1024x1536`, `1536x1024` (model supports arbitrary multiples of 16 up to 4K)
 - `gpt-image-2` API version: `2025-04-01-preview`
 - `gpt-image-2` deployment name: `gpt-image-2`
-- `gpt-4o-mini-tts` voices: coral, echo, shimmer, onyx, nova, fable
+- `gpt-4o-mini-tts` voices: coral, echo, shimmer, onyx, nova, fable (now the **fallback** engine)
+- **Azure AI Speech (default narration):** auth = `az account get-access-token --resource https://cognitiveservices.azure.com` passed as `aad#<resourceId>#<token>`; voice catalog via `<region>.tts.speech.microsoft.com/cognitiveservices/voices/list`; the `azure-cognitiveservices-speech` SDK yields real word-boundary timings; default voice `en-US-Ava:DragonHDLatestNeural` (override `SLATE_TTS_VOICE`), engine override `SLATE_TTS_ENGINE`
 - `sora` (Sora-2): Durations MUST be exactly 4, 8, or 12 seconds — other values → 400 error
 - `sora` (Sora-2): Max resolution 720p in preview — no 1080p support yet
 - `sora` (Sora-2): Uses OpenAI Python SDK ONLY — raw REST API calls fail with model validation errors

@@ -26,6 +26,26 @@ tts_models:
       onyx: { style: "deep, engaging, versatile" }
       nova: { style: "measured, clear, narration-quality" }
       fable: { style: "relaxed, storytelling, informative" }
+  # ── Azure AI Speech (DEFAULT narration engine) ─────────────────────────
+  # Neural HD voices via Azure AI Speech (Cognitive Services). The full catalog
+  # (700+ voices across 150+ locales, incl. DragonHD / Dragon HD Omni) is
+  # discovered LIVE from the service — NOT a fixed list. Provides real word-level
+  # timings for captions. Preferred over gpt-4o-mini-tts everywhere, incl.
+  # first-run setup. No model deployment needed (part of the AI Services resource).
+  azure-speech:
+    provider: azure-speech
+    service: cognitiveservices-speech
+    endpoint_kind: "{region}.tts.speech.microsoft.com"
+    unit: character
+    cost_per_1m_chars: 16.0        # approx, neural HD (varies by tier/region)
+    default_voice: en-US-Ava:DragonHDLatestNeural
+    catalog: dynamic              # via /cognitiveservices/voices/list
+    features: [full_catalog, word_boundaries, styles, multilingual, hd]
+    fallback: gpt-4o-mini-tts
+
+# Default narration engine for tts_gen.generate_tts() when no engine is passed.
+# Override with env SLATE_TTS_ENGINE. gpt-4o-mini-tts is the fallback.
+tts_default_engine: azure-speech
 
 video_models:
   sora-2:

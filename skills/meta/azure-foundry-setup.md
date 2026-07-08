@@ -115,8 +115,12 @@ az cognitiveservices account create \
 | **AI video clips** (motion) | `sora` + `gpt-4o-mini-tts` + `gpt-4o-transcribe` | AI-generated video + narration + subtitles |
 | **Full capability** | All models + Video Indexer | Covers every scene type + deep review |
 
-- **Minimum viable:** `gpt-image-2` + `gpt-4o-mini-tts` + `gpt-4o-transcribe`
-- **Recommended:** `gpt-image-2` + `gpt-4o-mini-tts` + `gpt-4o-transcribe`
+- **Narration defaults to Azure AI Speech** (neural HD, 700+ voices, real
+  word-timings) — **no model deployment needed** (it's part of the AI Services
+  resource; just verify reachability via a voices/list call). `gpt-4o-mini-tts`
+  is an optional 6-voice fallback deployment.
+- **Minimum viable:** `gpt-image-2` + Azure AI Speech (built-in) + `gpt-4o-transcribe`
+- **Recommended:** `gpt-image-2` + Azure AI Speech (built-in) + `gpt-4o-transcribe` (+ optional `gpt-4o-mini-tts` fallback)
 - **Full setup:** All models + Video Indexer
 
 > **Video Indexer** is a separate ARM resource (`Microsoft.VideoIndexer/accounts`),
@@ -137,8 +141,10 @@ To create professional explainer videos, I need to deploy:
 1. gpt-image-2    → Image generation (all content types)
    Cost: ~$0.04/image | Deployment: Free (pay-per-use)
 
-2. gpt-4o-mini-tts → Voice narration (6 voice options)
-   Cost: ~$0.001/second | Deployment: Free (pay-per-use)
+2. Azure AI Speech → Voice narration (DEFAULT — 700+ neural HD voices,
+   real word-level timings). No deployment needed (built into the AI Services
+   resource). gpt-4o-mini-tts is an optional 6-voice fallback.
+   Cost: ~$16/1M chars | Deployment: none (pay-per-use)
 
 3. gpt-4o-transcribe → Speech-to-text with word-level timestamps (subtitles)
    Cost: ~$0.006/minute | Deployment: Free (pay-per-use)
@@ -178,7 +184,7 @@ curl -X PUT \
 | Deployment Name | Model Name | Model Version | SKU |
 |----------------|------------|---------------|-----|
 | `gpt-image-2` | gpt-image-2 | (latest) | GlobalStandard |
-| `gpt-4o-mini-tts` | gpt-4o-mini-tts | (latest) | GlobalStandard |
+| `gpt-4o-mini-tts` *(optional fallback)* | gpt-4o-mini-tts | (latest) | GlobalStandard |
 | `gpt-4o-transcribe` | gpt-4o-transcribe | 2025-03-20 | GlobalStandard |
 | `sora` | sora | (latest) | GlobalStandard |
 
