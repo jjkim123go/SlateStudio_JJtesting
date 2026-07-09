@@ -1,10 +1,12 @@
-"""Soundstage server — a read-only local board over ``projects/``.
+"""Soundstage server — a near read-only local board over ``projects/``.
 
 Stdlib-only by default (``http.server``) so ``pip install slate`` stays lean.
 A background watcher polls project mtimes and pushes change notifications to
-browsers over SSE; the browser refetches board state. The server NEVER writes
-to a project directory and NEVER executes project code — it reads JSON / MD /
-media only.
+browsers over SSE; the browser refetches board state. The server NEVER executes
+project code and reads JSON / MD / media only. The ONE write it makes is an
+explicit, human-initiated gate action (Approve / Request changes) that APPENDS a
+``checkpoint_resolved`` decision to ``decisions.jsonl`` — append-only, never
+modifying or deleting existing state.
 
 If ``watchfiles`` is installed it is used for instant change detection instead
 of the mtime poll (optional turbo, never required).
@@ -23,8 +25,26 @@ from pathlib import Path
 from urllib.parse import unquote, urlparse
 
 from . import DEFAULT_PORT
+from . import state as _state
 from .paths import CACHE_DIR, PROJECTS_DIR
-from .state import list_projects, load_board_state, summarize_project
+from .state import list_projects, load_board_state, summarize_project  # noqa: F401
+
+# Dev convenience: when True, hot-reload the state module before each state read
+# so edits to state.py take effect without restarting the server (`--reload`).
+RELOAD = False
+
+
+def _maybe_reload() -> None:
+    if RELOAD:
+        try:
+            import importlib
+            importlib.reload(_state)
+        except Exception:
+            pass
+
+
+def _now_iso() -> str:
+    return time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
 UI_DIR = Path(__file__).resolve().parent / "ui"
 _SLUG_OK = __import__("re").compile(r"^[a-z0-9][a-z0-9._-]*$")
@@ -244,11 +264,13 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/health":
                 return self._json({"ok": True, "app": "soundstage"})
             if path == "/api/projects":
-                return self._json(list_projects())
+                _maybe_reload()
+                return self._json(_state.list_projects())
             if path.startswith("/api/project/") and path.endswith("/state"):
                 slug = path[len("/api/project/"):-len("/state")]
                 d = _project_dir(slug)
-                return self._json(load_board_state(d) if d else {"error": "not found"},
+                _maybe_reload()
+                return self._json(_state.load_board_state(d) if d else {"error": "not found"},
                                   200 if d else 404)
             if path.startswith("/api/project/") and path.endswith("/events"):
                 slug = path[len("/api/project/"):-len("/events")]
@@ -267,6 +289,65 @@ class Handler(BaseHTTPRequestHandler):
                 self._json({"error": str(exc)}, 500)
             except Exception:
                 pass
+
+    # ---- the one write: human gate actions (Approve / Request changes) ----
+    _VERDICTS = {"approved", "changes_requested", "rejected"}
+
+    def do_POST(self):
+        path = unquote(urlparse(self.path).path)
+        try:
+            if path.startswith("/api/project/") and path.endswith("/gate"):
+                slug = path[len("/api/project/"):-len("/gate")]
+                d = _project_dir(slug)
+                if d is None:
+                    return self._json({"error": "not found"}, 404)
+                return self._gate_action(d, slug)
+            return self._send(404, b"not found", "text/plain")
+        except (BrokenPipeError, ConnectionResetError):
+            pass
+        except Exception as exc:
+            try:
+                self._json({"error": str(exc)}, 500)
+            except Exception:
+                pass
+
+    def _read_body(self) -> dict:
+        try:
+            n = int(self.headers.get("Content-Length") or 0)
+            raw = self.rfile.read(n) if n > 0 else b""
+            obj = json.loads(raw.decode("utf-8")) if raw else {}
+            return obj if isinstance(obj, dict) else {}
+        except Exception:
+            return {}
+
+    def _gate_action(self, project_dir: Path, slug: str):
+        """Append a human gate decision (Approve / Request changes) so the agent
+        sees it on its next read. This is the ONLY write Soundstage makes —
+        append-only, human-initiated, localhost-only."""
+        body = self._read_body()
+        verdict = str(body.get("verdict") or "").strip().lower()
+        if verdict not in self._VERDICTS:
+            return self._json({"error": "invalid verdict"}, 400)
+        cid = str(body.get("checkpoint_id") or "").strip() or None
+        note = str(body.get("note") or "").strip()
+        if not cid:                          # resolve whatever gate is open now
+            gate = (_state.load_board_state(project_dir).get("active_gate") or {})
+            cid = gate.get("checkpoint_id")
+        entry = {
+            "ts": _now_iso(),
+            "type": "checkpoint_resolved",
+            "checkpoint_id": cid,
+            "verdict": verdict,
+            "note": note or f"{verdict.replace('_', ' ')} via Soundstage",
+            "source": "soundstage",
+        }
+        try:                                 # APPEND-ONLY — never rewrites state
+            with open(project_dir / "decisions.jsonl", "a", encoding="utf-8") as f:
+                f.write(json.dumps(entry) + "\n")
+        except OSError as exc:
+            return self._json({"error": str(exc)}, 500)
+        HUB.publish(slug)
+        return self._json({"ok": True, "resolved": cid, "verdict": verdict})
 
     def _serve_media(self, tail: str, *, thumb: bool):
         parts = tail.split("/", 1)
@@ -327,7 +408,9 @@ class Handler(BaseHTTPRequestHandler):
 # --------------------------------------------------------------------------
 
 def serve(port: int = DEFAULT_PORT, *, open_browser_slug: str | None = None,
-          surface: str = "auto") -> None:
+          surface: str = "auto", reload: bool = False) -> None:
+    global RELOAD
+    RELOAD = reload
     # optional watchfiles turbo
     try:
         import watchfiles  # noqa: F401

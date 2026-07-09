@@ -222,21 +222,37 @@ def _narration_sidecar_seconds(project_dir: Path, narr_path: Any) -> Optional[fl
     return None
 
 
+def _narration_sidecar_text(project_dir: Path, narr_path: Any) -> str:
+    """Exact spoken text from a narration clip's `.words.json` sidecar — the most
+    authoritative per-clip source (survives script.md edits)."""
+    if not narr_path:
+        return ""
+    p = Path(str(narr_path))
+    data = _read_json(project_dir / p.parent / (p.stem + ".words.json"))
+    return str((data or {}).get("text") or "").strip()
+
+
 def _build_cost(ledger: list[dict], marker: dict) -> dict:
     budget = float(marker.get("budget_usd") or 0) or None
     by_tool: dict[str, float] = {}
     spent = 0.0
+    series: list[dict] = []
     for e in ledger:
         c = e.get("cost_usd")
         if isinstance(c, (int, float)):
             spent += float(c)
             tool = str(e.get("tool", "unknown"))
             by_tool[tool] = round(by_tool.get(tool, 0.0) + float(c), 4)
+            if float(c) > 0:
+                series.append({"ts": e.get("ts"), "cost": round(float(c), 4),
+                               "cumulative": round(spent, 4),
+                               "label": str(e.get("type") or tool)})
     return {
         "spent_usd": round(spent, 4),
         "budget_usd": budget,
         "by_tool": dict(sorted(by_tool.items(), key=lambda kv: -kv[1])),
         "calls": len([e for e in ledger if isinstance(e.get("cost_usd"), (int, float))]),
+        "series": series[-60:],
         "warn_usd": round(budget * BUDGET_WARN, 2) if budget else None,
         "pause_usd": round(budget * BUDGET_PAUSE, 2) if budget else None,
         "pct": round(spent / budget, 4) if budget else None,
@@ -526,13 +542,17 @@ def _build_storyboard(project_dir: Path, scf: Optional[dict],
         dur = float(sc.get("duration") or 0)
         treatment = treatments.get(sid, "")
         cls, tech, comp = _classify(sc, treatment)
-        narr_text = sc.get("narrationText") or script_by_index.get(i + 1) or ""
         narr_path = sc.get("narration")
+        narr_text = sc.get("narrationText") \
+            or _narration_sidecar_text(project_dir, narr_path) \
+            or script_by_index.get(i + 1) or ""
         nsec = narr_secs.get(Path(str(narr_path)).name) if narr_path else None
         if nsec is None:
             nsec = _narration_sidecar_seconds(project_dir, narr_path)
         if nsec is None:
             nsec = _sidecar_duration(project_dir, i + 1)
+        narr_audio = str(narr_path).replace("\\", "/") \
+            if (narr_path and (project_dir / narr_path).exists()) else None
         overflow = bool(nsec and dur and nsec > dur + 0.05)
         tight = bool(nsec and dur and not overflow and nsec > dur - 0.8)
         hero = bool(sc.get("hero_moment")) or "payoff" in sid or "hero" in sid
@@ -543,6 +563,7 @@ def _build_storyboard(project_dir: Path, scf: Optional[dict],
             "duration": round(dur, 2),
             "start": round(cursor, 2),
             "narration_text": narr_text,
+            "narration_audio": narr_audio,
             "narration_seconds": round(nsec, 2) if nsec else None,
             "narration_overflow": overflow,
             "narration_tight": tight,
@@ -813,6 +834,8 @@ def _build_planned_storyboard(project_dir: Path, decisions: list[dict],
             "duration": round(dur, 2),
             "start": round(cursor, 2),
             "narration_text": sc.get("narration_text", ""),
+            "narration_audio": (f"assets/narration/s{i:02d}.wav"
+                                if (project_dir / "assets" / "narration" / f"s{i:02d}.wav").exists() else None),
             "narration_seconds": round(nsec, 2) if nsec else None,
             "narration_overflow": False,
             "narration_tight": False,

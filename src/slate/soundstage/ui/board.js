@@ -90,8 +90,11 @@ function renderBanner(s) {
     return el("div", { class: "banner await rise" },
       el("span", { class: "glyph" }, "◈"),
       el("span", {}, el("b", {}, `Awaiting you — ${g.checkpoint_type || "gate"}. `),
-        `Review “${g.scope || "the artifact"}” in chat, then approve to continue.`),
+        `Review “${g.scope || "the artifact"}”, then approve to continue.`),
       g.shown ? el("a", { href: mediaURL(slug, g.shown), target: "_blank" }, g.shown) : null,
+      STATIC ? null : el("div", { class: "gate-actions" },
+        el("button", { class: "gbtn approve", onclick: () => gateAction("approved") }, "✓ Approve"),
+        el("button", { class: "gbtn changes", onclick: () => gateAction("changes_requested") }, "⟲ Request changes")),
     );
   }
   if (s.delivered || s.rendered) {
@@ -350,6 +353,25 @@ function renderTrail(s) {
     body);
 }
 
+function costSparkline(series, budget) {
+  if (!series || series.length < 2) return null;
+  const W = 260, H = 44, pad = 4, n = series.length;
+  const maxY = Math.max(budget || 0, ...series.map((p) => p.cumulative)) || 1;
+  const X = (i) => (pad + (i / (n - 1)) * (W - 2 * pad)).toFixed(1);
+  const Y = (v) => (H - pad - (v / maxY) * (H - 2 * pad)).toFixed(1);
+  const pts = series.map((p, i) => `${X(i)},${Y(p.cumulative)}`).join(" ");
+  const wrap = el("div", { class: "spark-wrap" });
+  wrap.innerHTML =
+    `<svg viewBox="0 0 ${W} ${H}" class="spark" preserveAspectRatio="none">`
+    + `<polygon class="sparkarea" points="${X(0)},${H - pad} ${pts} ${X(n - 1)},${H - pad}"/>`
+    + `<polyline class="sparkline" points="${pts}"/>`
+    + `<circle class="sparkdot" cx="${X(n - 1)}" cy="${Y(series[n - 1].cumulative)}" r="2.6"/></svg>`;
+  return el("div", { class: "burn-spark" },
+    el("div", { class: "spark-head" }, el("span", {}, "spend over time"),
+      el("span", { class: "tk" }, `${series.length} charge${series.length === 1 ? "" : "s"}`)),
+    wrap);
+}
+
 function renderCost(s) {
   const c = s.cost || {};
   if (c.spent_usd == null) return null;
@@ -366,6 +388,8 @@ function renderCost(s) {
   body.append(el("div", { class: "total" },
     el("span", { style: "color:var(--text-2)" }, "spent"),
     el("span", { style: "color:var(--text);font-weight:600" }, `${fmtMoney(c.spent_usd)} / ${fmtMoney(c.budget_usd)}`)));
+  const spark = costSparkline(c.series, c.budget_usd);
+  if (spark) body.append(spark);
   if (c.budget_usd) {
     body.append(el("div", { class: "budget" },
       el("i", { style: `width:${Math.min(100, (c.pct || 0) * 100)}%` }),
@@ -413,6 +437,7 @@ function openScene(sc) {
     sc.narration_seconds ? el("span", { class: "chip" }, `narration ${sc.narration_seconds}s`) : null,
     sc.narration_overflow ? el("span", { class: "chip", style: "color:var(--danger)" }, "⚠ narration overflow") : null));
   if (sc.narration_text) mb.append(el("p", { style: "margin-top:14px;color:var(--text-2);font-style:italic;font-size:15px;line-height:1.6" }, `“${sc.narration_text}”`));
+  if (sc.narration_audio) mb.append(el("audio", { class: "sc-audio", controls: "", preload: "none", src: mediaURL(slug, sc.narration_audio) }));
   showModal(`S${sc.index} · ${sc.title}`, mb);
 }
 
@@ -427,6 +452,23 @@ function showModal(title, bodyEl, paper) {
 function closeModal() { modal.classList.remove("open"); modal.innerHTML = ""; }
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeModal(); });
 modal.addEventListener("click", (e) => { if (e.target === modal) closeModal(); });
+
+// ---------------------------------------------------------------- gate action (the one write)
+async function gateAction(verdict) {
+  if (STATIC || !state || !state.active_gate) return;
+  let note = "";
+  if (verdict === "changes_requested") {
+    note = window.prompt("What should change? (optional — the agent will see this)") || "";
+  }
+  try {
+    const r = await fetch(`/api/project/${encodeURIComponent(slug)}/gate`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ verdict, note, checkpoint_id: state.active_gate.checkpoint_id }),
+    });
+    if (!r.ok) throw new Error("gate " + r.status);
+    await refresh();
+  } catch (e) { console.error("gate action failed", e); }
+}
 
 // ---------------------------------------------------------------- assembly
 function render() {

@@ -37,15 +37,19 @@ def main(argv: list[str] | None = None) -> int:
     p_open.add_argument("--port", type=int, default=DEFAULT_PORT)
     p_open.add_argument("--surface", choices=["auto", "vscode", "browser", "both"],
                         default="auto")
+    p_open.add_argument("--reload", action="store_true",
+                        help="dev: hot-reload state.py on each request (no restart)")
 
     p_serve = sub.add_parser("serve", help="run the server (no browser)")
     p_serve.add_argument("--port", type=int, default=DEFAULT_PORT)
+    p_serve.add_argument("--reload", action="store_true",
+                         help="dev: hot-reload state.py on each request (no restart)")
 
     args = parser.parse_args(argv)
     cmd = args.cmd or "open"
 
     if cmd == "serve":
-        serve(args.port)
+        serve(args.port, reload=args.reload)
         return 0
 
     # open
@@ -57,7 +61,8 @@ def main(argv: list[str] | None = None) -> int:
         _open_surface(url, args.surface)
         return 0
     # not running → start it and open once ready
-    serve(port, open_browser_slug=slug if slug is not None else "", surface=args.surface)
+    serve(port, open_browser_slug=slug if slug is not None else "",
+          surface=args.surface, reload=args.reload)
     return 0
 
 

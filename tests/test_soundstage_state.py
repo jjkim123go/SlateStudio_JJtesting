@@ -120,6 +120,89 @@ def test_narration_falls_back_to_script_md(tmp_path):
     assert scenes[0]["narration_seconds"] == 5.9   # from the sidecar, not the ledger
 
 
+def test_scene_narration_audio_and_cost_series(tmp_path):
+    """Scenes expose a playable narration_audio path (#4) and cost carries a
+    cumulative spend-over-time series (#5)."""
+    d = tmp_path / "media"
+    _write(d / "project.json", {"name": "M", "slug": "media", "budget_usd": 10.0})
+    _write(d / "composition.scf.json", {"metadata": {"title": "M"},
+        "scenes": [{"id": "s1", "duration": 5.0, "narration": "assets/narration/s01.wav"}]})
+    (d / "assets" / "narration").mkdir(parents=True)
+    (d / "assets" / "narration" / "s01.wav").write_bytes(b"\x00")
+    with open(d / "ledger.jsonl", "w", encoding="utf-8") as f:
+        f.write(json.dumps({"ts": "t1", "tool": "azure_speech_tts", "cost_usd": 0.06}) + "\n")
+        f.write(json.dumps({"ts": "t2", "tool": "foundry_image_gen", "cost_usd": 0.04}) + "\n")
+    s = load_board_state(d)
+    assert s["storyboard"]["scenes"][0]["narration_audio"] == "assets/narration/s01.wav"
+    assert [round(p["cumulative"], 2) for p in s["cost"]["series"]] == [0.06, 0.10]
+
+
+def test_gate_action_endpoint(tmp_path, monkeypatch):
+    """POST /api/project/<slug>/gate appends a checkpoint_resolved (the one write
+    Soundstage makes) and flips the board from awaiting -> resolved (#3)."""
+    import http.client
+    import threading
+    from http.server import ThreadingHTTPServer
+
+    monkeypatch.setattr(server, "PROJECTS_DIR", tmp_path)
+    d = tmp_path / "gated"
+    _write(d / "project.json", {"name": "Gated", "slug": "gated"})
+    _write(d / "composition.scf.json", {"metadata": {"title": "Gated"},
+                                        "scenes": [{"id": "s1", "duration": 5.0}]})
+    _write(d / "decisions.jsonl", json.dumps(
+        {"type": "checkpoint", "checkpoint_id": "ck_x",
+         "checkpoint_type": "CK-REVIEW", "scope": "script"}) + "\n")
+    assert load_board_state(d)["awaiting_human"] is True
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
+    port = httpd.server_address[1]
+    t = threading.Thread(target=httpd.serve_forever, daemon=True)
+    t.start()
+    try:
+        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("POST", "/api/project/gated/gate",
+                     body=json.dumps({"verdict": "approved"}),
+                     headers={"Content-Type": "application/json"})
+        resp = conn.getresponse()
+        payload = json.loads(resp.read())
+        conn.close()
+    finally:
+        httpd.shutdown()
+        t.join(timeout=5)
+
+    assert resp.status == 200 and payload["ok"] is True and payload["resolved"] == "ck_x"
+    after = load_board_state(d)
+    assert after["awaiting_human"] is False and after["active_gate"] is None
+    last = json.loads((d / "decisions.jsonl").read_text(encoding="utf-8").strip().splitlines()[-1])
+    assert last["type"] == "checkpoint_resolved" and last["source"] == "soundstage"
+
+
+def test_gate_action_rejects_bad_verdict(tmp_path, monkeypatch):
+    import http.client
+    import threading
+    from http.server import ThreadingHTTPServer
+
+    monkeypatch.setattr(server, "PROJECTS_DIR", tmp_path)
+    d = tmp_path / "g2"
+    _write(d / "project.json", {"name": "G2", "slug": "g2"})
+    httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
+    port = httpd.server_address[1]
+    t = threading.Thread(target=httpd.serve_forever, daemon=True)
+    t.start()
+    try:
+        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=5)
+        conn.request("POST", "/api/project/g2/gate", body=json.dumps({"verdict": "haxx"}),
+                     headers={"Content-Type": "application/json"})
+        resp = conn.getresponse()
+        resp.read()
+        conn.close()
+    finally:
+        httpd.shutdown()
+        t.join(timeout=5)
+    assert resp.status == 400
+    assert not (d / "decisions.jsonl").exists()      # nothing written on a bad verdict
+
+
 def test_never_raises_on_garbage(tmp_path):
     assert load_board_state(tmp_path / "does-not-exist")["has_scf"] is False
     d = tmp_path / "broken"
