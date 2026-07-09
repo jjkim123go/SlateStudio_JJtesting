@@ -209,6 +209,19 @@ def _narration_seconds(ledger: list[dict]) -> dict[str, float]:
     return out
 
 
+def _narration_sidecar_seconds(project_dir: Path, narr_path: Any) -> Optional[float]:
+    """Measured seconds from a narration clip's `.words.json` sidecar
+    (assets/narration/s01.wav -> assets/narration/s01.words.json)."""
+    if not narr_path:
+        return None
+    p = Path(str(narr_path))
+    sidecar = project_dir / p.parent / (p.stem + ".words.json")
+    data = _read_json(sidecar)
+    if data and isinstance(data.get("duration"), (int, float)):
+        return float(data["duration"])
+    return None
+
+
 def _build_cost(ledger: list[dict], marker: dict) -> dict:
     budget = float(marker.get("budget_usd") or 0) or None
     by_tool: dict[str, float] = {}
@@ -242,8 +255,37 @@ def _scope_stage(scope: str) -> Optional[str]:
     return None
 
 
+# Checkpoint types that are AUTOMATED validation passes, not human approval
+# gates — they must never surface as "awaiting you".
+_AUTOMATED_CHECKPOINTS = {"validate", "auto", "lint", "self-review", "self_review", "ci"}
+
+# Decision types that mean the video shipped — a delivered project is DONE, never
+# "awaiting you" (supports both the two-phase and single-line logging styles).
+_DELIVERED_TYPES = {"delivered", "revision_delivered", "published"}
+
+
+def _is_delivered(decisions: list[dict]) -> bool:
+    return any(d.get("type") in _DELIVERED_TYPES for d in decisions)
+
+
+def _is_human_gate(checkpoint_type: Optional[str]) -> bool:
+    """Only human approval gates block the board; automated validation does not."""
+    return str(checkpoint_type or "").strip().lower() not in _AUTOMATED_CHECKPOINTS
+
+
+def _checkpoint_resolved(d: dict, resolved: dict[str, dict]) -> tuple[bool, Optional[str]]:
+    """Resolved if a matching checkpoint_resolved exists OR the checkpoint line
+    itself carries an inline verdict (single-line logging style)."""
+    res = resolved.get(d.get("checkpoint_id"))
+    if res:
+        return True, res.get("verdict") or d.get("verdict")
+    if d.get("verdict"):
+        return True, d.get("verdict")
+    return False, None
+
+
 def _checkpoints(decisions: list[dict]) -> tuple[dict[str, dict], Optional[dict]]:
-    """Return (stage -> latest checkpoint info, active unresolved gate or None)."""
+    """Return (stage -> latest checkpoint info, active unresolved HUMAN gate or None)."""
     resolved: dict[str, dict] = {}
     for d in decisions:
         if d.get("type") == "checkpoint_resolved" and d.get("checkpoint_id"):
@@ -254,23 +296,25 @@ def _checkpoints(decisions: list[dict]) -> tuple[dict[str, dict], Optional[dict]
         if d.get("type") != "checkpoint":
             continue
         stage = _scope_stage(d.get("scope", ""))
-        cid = d.get("checkpoint_id")
-        res = resolved.get(cid)
+        is_res, verdict = _checkpoint_resolved(d, resolved)
+        res = resolved.get(d.get("checkpoint_id"))
         info = {
-            "checkpoint_id": cid,
+            "checkpoint_id": d.get("checkpoint_id"),
             "checkpoint_type": d.get("checkpoint_type"),
             "scope": d.get("scope"),
             "shown": d.get("shown"),
             "ts": d.get("ts"),
-            "resolved": bool(res),
-            "verdict": (res or {}).get("verdict"),
-            "note": (res or {}).get("note"),
+            "resolved": is_res,
+            "verdict": verdict,
+            "note": (res or {}).get("note") or d.get("note"),
             "stage": stage,
         }
         if stage:
             by_stage[stage] = info          # last checkpoint per stage wins
-        if not res:
-            active = info                   # last unresolved wins
+        # Only an UNRESOLVED, human approval gate blocks the board (a 'validate'
+        # pass or an inline-resolved review never shows as "awaiting you").
+        if not is_res and _is_human_gate(d.get("checkpoint_type")):
+            active = info                   # last unresolved human gate wins
     return by_stage, active
 
 
@@ -285,9 +329,9 @@ def _scene_treatments(decisions: list[dict]) -> dict[str, str]:
 def _build_stage_rail(project_dir: Path, decisions: list[dict],
                       scf: Optional[dict], review: Optional[dict]) -> list[dict]:
     cps, _ = _checkpoints(decisions)
-    delivered = any(d.get("type") == "delivered" for d in decisions)
+    delivered = _is_delivered(decisions)
     renders_dir = project_dir / "renders"
-    rendered = any(d.get("type") == "render_complete" for d in decisions) or \
+    rendered = any(d.get("type") in ("render_complete", "render") for d in decisions) or \
         (renders_dir.is_dir() and any(renders_dir.glob("*.mp4")))
 
     present = {
@@ -307,7 +351,7 @@ def _build_stage_rail(project_dir: Path, decisions: list[dict],
     for name in CANONICAL_STAGES:
         cp = cps.get(name)
         gated = name in GATED_STAGES or bool(cp)
-        if cp and not cp["resolved"]:
+        if cp and not cp["resolved"] and not delivered:
             status = "awaiting_human"
         elif present.get(name):
             status = "completed"
@@ -363,12 +407,13 @@ def _decision_trail(decisions: list[dict], limit: int = 40) -> list[dict]:
         elif t == "candidate_selection":
             entry.update(kind="critique", title=f"selected {d.get('scope','')}",
                          why=d.get("rationale"))
-        elif t == "render_complete":
+        elif t in ("render_complete", "render"):
             entry.update(kind="render",
-                         title=f"render · {_fmt_dur(d.get('duration_sec'))} · "
-                               f"{d.get('scenes','?')} scenes")
-        elif t == "delivered":
-            entry.update(kind="render", title="delivered")
+                         title=f"render · {_fmt_dur(d.get('duration_sec'))}"
+                               + (f" · {d.get('scenes')} scenes" if d.get('scenes') else ""),
+                         why=_shortval(d.get("note")))
+        elif t in ("delivered", "revision_delivered", "published"):
+            entry.update(kind="render", title="delivered ✓", why=_shortval(d.get("note")))
         elif t in ("brief_finalized", "brief_updated"):
             entry.update(kind="treatment", title=t.replace("_", " "),
                          why=d.get("change"))
@@ -455,6 +500,12 @@ def _build_storyboard(project_dir: Path, scf: Optional[dict],
     narr_secs = _narration_seconds(ledger)
     splits = _split_scene_maps(project_dir)
 
+    # The SCF references narration audio by PATH, not inline text. The authored
+    # narration lives in script.md — fall back to it so the whole script and the
+    # per-scene narration survive AFTER the SCF/render exists (not only before).
+    script_by_index = {sc["index"]: sc.get("narration_text", "")
+                       for sc in _parse_script_scenes(project_dir)}
+
     # live "generating" from events (scene has an unfinished start)
     generating: dict[str, dict] = {}
     for ev in events:
@@ -475,11 +526,13 @@ def _build_storyboard(project_dir: Path, scf: Optional[dict],
         dur = float(sc.get("duration") or 0)
         treatment = treatments.get(sid, "")
         cls, tech, comp = _classify(sc, treatment)
-        narr_text = sc.get("narrationText") or ""
+        narr_text = sc.get("narrationText") or script_by_index.get(i + 1) or ""
         narr_path = sc.get("narration")
-        nsec = None
-        if narr_path:
-            nsec = narr_secs.get(Path(str(narr_path)).name)
+        nsec = narr_secs.get(Path(str(narr_path)).name) if narr_path else None
+        if nsec is None:
+            nsec = _narration_sidecar_seconds(project_dir, narr_path)
+        if nsec is None:
+            nsec = _sidecar_duration(project_dir, i + 1)
         overflow = bool(nsec and dur and nsec > dur + 0.05)
         tight = bool(nsec and dur and not overflow and nsec > dur - 0.8)
         hero = bool(sc.get("hero_moment")) or "payoff" in sid or "hero" in sid
@@ -817,7 +870,9 @@ def load_board_state(project_dir: Path) -> dict[str, Any]:
 
         last = _last_activity(project_dir)
         now = time.time()
-        delivered = any(d.get("type") == "delivered" for d in decisions)
+        delivered = _is_delivered(decisions)
+        if delivered:
+            active_gate = None            # a delivered project is never "awaiting you"
         rendered = bool((storyboard or {}).get("scenes")) and \
             any(s["status"] == "completed" for s in stages if s["name"] == "compose")
 
@@ -863,6 +918,9 @@ def summarize_project(project_dir: Path) -> dict[str, Any]:
     review = _read_json(project_dir / "review_report.json")
     meta = (scf or {}).get("metadata") or {}
     _, active_gate = _checkpoints(decisions)
+    delivered = _is_delivered(decisions)
+    if delivered:
+        active_gate = None
     stages = _build_stage_rail(project_dir, decisions, scf, review)
     scenes = (scf or {}).get("scenes") or _parse_script_scenes(project_dir)
     last = _last_activity(project_dir)
@@ -882,7 +940,7 @@ def summarize_project(project_dir: Path) -> dict[str, Any]:
         "spent_usd": _build_cost(ledger, marker)["spent_usd"],
         "budget_usd": marker.get("budget_usd"),
         "awaiting_human": bool(active_gate),
-        "delivered": any(d.get("type") == "delivered" for d in decisions),
+        "delivered": delivered,
         "accent": theme.get("primary") or theme.get("accent"),
         "accent2": theme.get("accent"),
         "stage_states": [{"name": s["name"], "status": s["status"]} for s in stages],

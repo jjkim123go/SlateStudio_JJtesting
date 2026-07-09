@@ -165,6 +165,16 @@ function sceneCard(sc, i) {
     sc.narration_seconds ? el("span", { class: "schip" }, `${sc.narration_seconds}s narration`) : null,
   ].filter(Boolean);
 
+  const narrBlock = sc.narration_text
+    ? el("div", { class: "sc-narr" },
+        el("div", { class: "sub" }, sc.narration_text),
+        el("button", {
+          class: "sc-expand", title: "Read the full narration for this scene",
+          onclick: (e) => { e.stopPropagation(); openScene(sc); },
+        }, "⤢ expand"))
+    : el("div", { class: "sub muted" },
+        sc.hero ? "Hero beat — music breath (no narration)." : "— no narration —");
+
   return el("div", { class: `scard${sc.generating ? " gen" : ""}`, style: `animation-delay:${i * 45}ms`,
       onclick: () => openScene(sc) },
     frame,
@@ -172,7 +182,7 @@ function sceneCard(sc, i) {
       el("span", { class: "title" }, sc.title),
       el("span", { class: `tbadge ${CLS[sc.treatment_class] || "hand"}` }, sc.technique || sc.treatment_class)),
     chips.length ? el("div", { class: "chips-row" }, ...chips) : null,
-    el("div", { class: "sub" }, sc.narration_text || (sc.hero ? "Hero beat — no narration (music breath)." : "")),
+    narrBlock,
   );
 }
 

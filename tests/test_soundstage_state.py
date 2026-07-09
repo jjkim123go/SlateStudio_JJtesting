@@ -65,6 +65,61 @@ def test_load_board_state_full(tmp_path):
     assert "variety" in sb and "histogram" in sb["variety"]
 
 
+def test_delivered_project_is_not_awaiting(tmp_path):
+    """Inline-verdict checkpoints + a revision_delivered decision must resolve the
+    gate: a shipped video is DELIVERED, never 'awaiting you'."""
+    d = tmp_path / "shipped"
+    _write(d / "project.json", {"name": "Shipped", "slug": "shipped", "budget_usd": 10.0})
+    _write(d / "composition.scf.json", {
+        "metadata": {"title": "Shipped", "theme": {"name": "t"}},
+        "scenes": [{"id": "s1", "duration": 5.0, "narration": "assets/narration/s01.wav"}],
+    })
+    with open(d / "decisions.jsonl", "w", encoding="utf-8") as f:
+        # single-line checkpoints carrying inline verdicts (no checkpoint_resolved):
+        # a 'validate' pass is automated, and the review carries verdict inline.
+        f.write(json.dumps({"type": "checkpoint", "checkpoint_id": "ck_compose",
+                            "checkpoint_type": "validate", "scope": "compose"}) + "\n")
+        f.write(json.dumps({"type": "checkpoint", "checkpoint_id": "ck_review",
+                            "checkpoint_type": "CK-REVIEW", "scope": "review",
+                            "verdict": "PASS"}) + "\n")
+        f.write(json.dumps({"type": "revision_delivered", "version": "v3",
+                            "note": "shipped"}) + "\n")
+    (d / "renders").mkdir(parents=True)
+    (d / "renders" / "composition.mp4").write_bytes(b"\x00")
+    s = load_board_state(d)
+    assert s["delivered"] is True
+    assert s["awaiting_human"] is False
+    assert s["active_gate"] is None
+    publish = next(st for st in s["stages"] if st["name"] == "publish")
+    assert publish["status"] == "completed"
+    summ = summarize_project(d)
+    assert summ["awaiting_human"] is False and summ["delivered"] is True
+
+
+def test_narration_falls_back_to_script_md(tmp_path):
+    """After the SCF exists, per-scene narration + the whole script must come from
+    script.md when the SCF references audio by path (no inline narrationText)."""
+    d = tmp_path / "scripted"
+    _write(d / "project.json", {"name": "Scripted", "slug": "scripted"})
+    _write(d / "composition.scf.json", {
+        "metadata": {"title": "Scripted", "theme": {"name": "t"}},
+        "scenes": [
+            {"id": "s1", "duration": 6.0, "narration": "assets/narration/s01.wav"},
+            {"id": "s2", "duration": 6.0, "narration": "assets/narration/s02.wav"},
+        ],
+    })
+    _write(d / "script.md",
+           "# Script\n\n## Scene 1 \u2014 Hook (~6s)\n\n> The opening line.\n\n"
+           "## Scene 2 \u2014 Point (~6s)\n\n> The second line.\n")
+    _write(d / "assets" / "narration" / "s01.words.json",
+           {"duration": 5.9, "text": "The opening line.", "words": []})
+    s = load_board_state(d)
+    scenes = s["storyboard"]["scenes"]
+    assert scenes[0]["narration_text"] == "The opening line."
+    assert scenes[1]["narration_text"] == "The second line."
+    assert scenes[0]["narration_seconds"] == 5.9   # from the sidecar, not the ledger
+
+
 def test_never_raises_on_garbage(tmp_path):
     assert load_board_state(tmp_path / "does-not-exist")["has_scf"] is False
     d = tmp_path / "broken"
