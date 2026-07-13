@@ -362,9 +362,9 @@ design — a board watching one project can't be flooded by another's burst).
 
 The same server powers an in-editor view, so the board lives next to the chat:
 
-- **Zero-extension path (v1 default):** `python -m slate.soundstage open <slug>`
-  detects VS Code (`TERM_PROGRAM=vscode` / `VSCODE_*` env) and opens the board
-  URL in VS Code's built-in **Simple Browser** editor tab
+- **Zero-extension path (v1 default):** `python -m slate.soundstage open <slug> --surface browser`
+  opens the board URL in the external browser. Use `--surface vscode` to open
+  VS Code's built-in **Simple Browser** editor tab
   (`code --command simpleBrowser.show <url>` / the `simpleBrowser.show`
   command), falling back to the system browser otherwise. An
   `--surface {auto,vscode,browser,both}` flag forces the choice. No extension

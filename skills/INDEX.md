@@ -18,7 +18,7 @@
 > 4. When you create a project (`projects/<slug>/`), open the living
 >    storyboard so the user can watch — read
 >    [`meta/living-storyboard`](meta/living-storyboard.md)
->    (`python -m slate.soundstage open <slug>`; idempotent + non-fatal).
+>    (`python -m slate.soundstage open <slug> --surface browser`; idempotent + non-fatal).
 >
 > **Layer key:** Meta = cross-cutting policy & operating model ·
 > Directors = mixable shape advisors · L2 = Slate-specific contracts ·

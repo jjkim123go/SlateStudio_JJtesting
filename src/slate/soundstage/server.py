@@ -112,11 +112,20 @@ def _project_signature() -> dict[str, float]:
             continue
         latest = 0.0
         for name in ("decisions.jsonl", "ledger.jsonl", "events.jsonl",
-                     "composition.scf.json", "review_report.json", "project.json"):
+                     "composition.scf.json", "review_report.json", "project.json",
+                     "brief.md", "research.md", "script.md", "scene-plan.md",
+                     "art-direction.json"):
             try:
                 latest = max(latest, (d / name).stat().st_mtime)
             except OSError:
                 pass
+        narration_dir = d / "assets" / "narration"
+        if narration_dir.is_dir():
+            for sidecar in narration_dir.glob("*.words.json"):
+                try:
+                    latest = max(latest, sidecar.stat().st_mtime)
+                except OSError:
+                    pass
         sig[d.name] = latest
     return sig
 
@@ -452,18 +461,19 @@ def _start_watchfiles() -> None:
 
 def _open_surface(url: str, surface: str) -> None:
     """Open the board in the browser and/or inside VS Code (Simple Browser)."""
-    import os
-    in_vscode = surface == "vscode" or (
-        surface in ("auto", "both") and os.environ.get("TERM_PROGRAM") == "vscode"
-    )
-    want_browser = surface in ("browser", "both") or (surface == "auto" and not in_vscode)
+    # The external browser is the reliable default.  The old `auto` behavior
+    # silently preferred VS Code whenever TERM_PROGRAM=vscode; `code --command`
+    # can return successfully without opening/focusing a Simple Browser tab,
+    # leaving the user with no visible board.  Keep VS Code as an explicit
+    # opt-in surface and make `both` genuinely open both surfaces.
+    in_vscode = surface in ("vscode", "both")
+    want_browser = surface in ("auto", "browser", "both")
     if in_vscode:
         code = shutil.which("code") or shutil.which("code-insiders")
         if code:
             try:
                 subprocess.Popen([code, "--command", "simpleBrowser.show", url],
                                  stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                return
             except Exception:
                 want_browser = True
         else:
@@ -471,6 +481,6 @@ def _open_surface(url: str, surface: str) -> None:
     if want_browser:
         try:
             import webbrowser
-            webbrowser.open(url)
+            webbrowser.open_new_tab(url)
         except Exception:
             pass

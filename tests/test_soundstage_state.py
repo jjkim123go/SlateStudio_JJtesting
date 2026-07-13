@@ -6,6 +6,8 @@ must never read outside a project directory (path-traversal fence).
 """
 
 import json
+import sys
+import types
 from pathlib import Path
 
 import pytest
@@ -297,3 +299,85 @@ def test_planned_storyboard_before_scf(tmp_path):
     assert rail["script"] == "completed"
     assert rail["scene_plan"] == "completed"
     assert rail["compose"] == "pending"
+
+
+def test_planned_storyboard_parses_canonical_script_template(tmp_path):
+    """Canonical scripts use plain narration + a duration footer, not the
+    legacy blockquote + duration-in-heading shape."""
+    d = tmp_path / "canonical-script"
+    _write(d / "project.json", {"name": "Canonical", "slug": "canonical-script"})
+    _write(d / "script.md", """---
+voice: coral
+target_duration_sec: 25
+total_word_count: 12
+---
+
+## Scene 1: The first beat
+
+Plain narration must appear in the living storyboard.
+
+[VISUAL: A useful visual direction that is not narration]
+
+*Duration: 11s · Words: 8 · WPS: 0.7*
+
+---
+
+## Scene 2: The second beat
+
+The second narration appears too.
+
+[COMPONENT: VSCodeScene]
+
+*Duration: 14s · Words: 5 · WPS: 0.4*
+""")
+    _write(d / "art-direction.json", {
+        "sceneTreatments": {
+            "s01": "kinetic typography on warm paper",
+            "s02": "VSCodeScene Copilot walkthrough",
+            "s03": "AzurePortalScene resource group",
+            "s04": "WindowsScene specialist setup",
+        },
+        "captions": {"style": "static"},
+        "productionLayers": {"music": "built-in"},
+    })
+
+    state = load_board_state(d)
+    storyboard = state["storyboard"]
+    assert storyboard["planned"] is True
+    assert storyboard["total_duration_seconds"] == 25.0
+    assert storyboard["scenes"][0]["duration"] == 11.0
+    assert storyboard["scenes"][0]["narration_text"] == (
+        "Plain narration must appear in the living storyboard."
+    )
+    assert storyboard["scenes"][1]["narration_text"] == "The second narration appears too."
+    assert storyboard["scenes"][1]["treatment_class"] == "chrome"
+    assert storyboard["scenes"][2]["treatment_class"] == "chrome"
+    assert storyboard["scenes"][3]["treatment_class"] == "chrome"
+    assert "VISUAL" not in storyboard["scenes"][0]["narration_text"]
+
+
+def test_open_surface_browser_and_both(tmp_path, monkeypatch):
+    """The default browser surface must visibly launch even inside VS Code,
+    and `both` must not return after only attempting the Simple Browser."""
+    opened: list[str] = []
+    processes: list[list[str]] = []
+    fake_webbrowser = types.SimpleNamespace(
+        open_new_tab=lambda url: opened.append(url) or True,
+    )
+    monkeypatch.setitem(sys.modules, "webbrowser", fake_webbrowser)
+    monkeypatch.setattr(server.shutil, "which", lambda _name: "code")
+    monkeypatch.setattr(
+        server.subprocess,
+        "Popen",
+        lambda args, **_kwargs: processes.append(args) or object(),
+    )
+    url = "http://127.0.0.1:4770/p/demo"
+
+    server._open_surface(url, "browser")
+    assert opened == [url]
+    assert processes == []
+
+    opened.clear()
+    server._open_surface(url, "both")
+    assert processes == [["code", "--command", "simpleBrowser.show", url]]
+    assert opened == [url]

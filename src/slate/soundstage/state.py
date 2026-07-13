@@ -718,6 +718,7 @@ def _fmt_dur(sec: Any) -> str:
 
 _SCRIPT_SCENE_RE = re.compile(r"^##\s*Scene\s*(\d+)\s*[\u2014\-:]\s*(.+?)\s*$", re.I)
 _DUR_HINT_RE = re.compile(r"\(~?\s*([\d.]+)\s*s\)\s*$")
+_SCRIPT_FOOTER_RE = re.compile(r"^\*Duration:\s*([\d.]+)s\b", re.I)
 
 
 def _read_text(path: Path) -> Optional[str]:
@@ -728,7 +729,14 @@ def _read_text(path: Path) -> Optional[str]:
 
 
 def _parse_script_scenes(project_dir: Path) -> list[dict]:
-    """Parse script.md '## Scene N — Title (~Xs)' headings + '>' narration blocks."""
+    """Parse legacy and canonical ``script.md`` scene blocks.
+
+    Legacy scripts put ``(~10s)`` in the heading and narration in ``>``
+    blockquotes.  The canonical script template uses plain narration paragraphs
+    followed by ``[VISUAL: ...]`` tags and a ``*Duration: 10s ...*`` footer.
+    Soundstage must understand both so the planned storyboard is useful before
+    narration assets or an SCF exist.
+    """
     text = _read_text(project_dir / "script.md")
     if not text:
         return []
@@ -744,13 +752,26 @@ def _parse_script_scenes(project_dir: Path) -> list[dict]:
             dh = _DUR_HINT_RE.search(title)
             dur_hint = float(dh.group(1)) if dh else None
             title = _DUR_HINT_RE.sub("", title).strip()
-            cur = {"index": int(m.group(1)), "title": title, "_narr": [], "dur_hint": dur_hint}
-        elif cur is not None and stripped.startswith(">"):
-            cur["_narr"].append(stripped.lstrip(">").strip())
+            cur = {
+                "index": int(m.group(1)), "title": title, "_narr": [],
+                "dur_hint": dur_hint, "_collect_narr": True,
+            }
+        elif cur is not None:
+            footer = _SCRIPT_FOOTER_RE.match(stripped)
+            if footer:
+                cur["dur_hint"] = float(footer.group(1))
+                cur["_collect_narr"] = False
+            elif stripped.startswith("[") or stripped.startswith("<!--"):
+                cur["_collect_narr"] = False
+            elif stripped.startswith(">"):
+                cur["_narr"].append(stripped.lstrip(">").strip())
+            elif cur.get("_collect_narr") and stripped and stripped != "---":
+                cur["_narr"].append(stripped)
     if cur:
         scenes.append(cur)
     for sc in scenes:
         sc["narration_text"] = " ".join(x for x in sc.pop("_narr") if x).strip()
+        sc.pop("_collect_narr", None)
     return scenes
 
 
@@ -773,7 +794,8 @@ def _classify_planned(tech_str: str) -> tuple[str, str, Optional[str]]:
     t = (tech_str or "").lower()
     label = _short_technique(tech_str)
     if any(k in t for k in ("chrome", "terminal", "excel", "vscode", "teams",
-                            "outlook", "browser", "screen demo", "azure portal", "github")):
+                            "outlook", "browser", "screen demo", "azure portal",
+                            "azureportal", "github", "windows scene", "windowsscene")):
         return "chrome", label, None
     if any(k in t for k in ("generated-image", "generated image", "gen-image",
                             "image hero", "sora", "photo bed", "imagebackdrop")):

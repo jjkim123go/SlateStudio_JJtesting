@@ -499,7 +499,7 @@ the user *watch* the production happen (stage rail, script, storyboard + narrati
 timeline, gates, cost, Final Cut player):
 
 ```powershell
-python -m slate.soundstage open <slug>
+python -m slate.soundstage open <slug> --surface browser
 ```
 
 Idempotent and non-fatal — it starts the board server if needed and opens the

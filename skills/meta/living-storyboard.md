@@ -23,15 +23,15 @@ Slate's append-only state contract. See `docs/design/LIVING_STORYBOARD.md`.
 Right after you write `project.json` (and before the first stage runs), run:
 
 ```powershell
-python -m slate.soundstage open <slug>
+python -m slate.soundstage open <slug> --surface browser
 ```
 
 That is it. The command is **idempotent and self-contained**: it starts the
 board server if it isn't already running, then opens the project's board in the
-browser — or, inside VS Code, in a Simple Browser editor tab. Surfaces:
+external browser. VS Code's Simple Browser remains an explicit surface. Surfaces:
 
 ```powershell
-python -m slate.soundstage open <slug>                    # auto (VS Code tab if in VS Code, else browser)
+python -m slate.soundstage open <slug> --surface browser  # external browser (default and most reliable)
 python -m slate.soundstage open <slug> --surface both     # browser AND VS Code tab
 python -m slate.soundstage open                            # the library (all projects)
 ```

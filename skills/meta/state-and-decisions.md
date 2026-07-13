@@ -29,7 +29,7 @@ projects/<slug>/
 > `scf/`; the board tolerates both. Keep split renders under
 > `renders/composition-split-scenes/`.
 
-At project creation, open the board — `python -m slate.soundstage open <slug>`
+At project creation, open the board — `python -m slate.soundstage open <slug> --surface browser`
 (idempotent, non-fatal; see [`living-storyboard.md`](living-storyboard.md)).
 
 `<slug>` is `kebab-case` derived from the user's intent (e.g. `onboarding-q1`,

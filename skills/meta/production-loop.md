@@ -33,7 +33,7 @@ The instant you create `projects/<slug>/` and write `project.json` (before any
 stage runs), open **Soundstage** so the user can watch the production happen:
 
 ```powershell
-python -m slate.soundstage open <slug>
+python -m slate.soundstage open <slug> --surface browser
 ```
 
 Idempotent and non-fatal — it starts the board server if needed and opens the

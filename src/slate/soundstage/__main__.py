@@ -1,6 +1,6 @@
 """``python -m slate.soundstage`` — open or serve the living storyboard.
 
-    python -m slate.soundstage open <slug>     # start (if needed) + open the board
+    python -m slate.soundstage open <slug>     # start (if needed) + open in browser
     python -m slate.soundstage open             # open the library
     python -m slate.soundstage serve            # just run the server
 
@@ -36,7 +36,8 @@ def main(argv: list[str] | None = None) -> int:
     p_open.add_argument("slug", nargs="?", default=None)
     p_open.add_argument("--port", type=int, default=DEFAULT_PORT)
     p_open.add_argument("--surface", choices=["auto", "vscode", "browser", "both"],
-                        default="auto")
+                        default="browser",
+                        help="where to open the board (default: external browser)")
     p_open.add_argument("--reload", action="store_true",
                         help="dev: hot-reload state.py on each request (no restart)")
 
