@@ -4,7 +4,7 @@
 
 > One detailed prompt. Professional video. No timeline editors, no render farms, no video team.
 
-Slate is an agentic video production engine built for the **GitHub Copilot ecosystem**. It runs inside any Copilot-enabled environment — VS Code with GitHub Copilot Chat, Copilot CLI, or JetBrains with Copilot — where the assistant can access the filesystem, run terminal commands, and interact with Azure via `az`. Describe what you need in plain English — Slate scripts it, generates every asset, composes the visuals, adds narration, enforces your brand, reviews its own work, and delivers a polished MP4.
+Slate is an agentic video production engine inspired by [OpenMontage](https://github.com/calesthio/OpenMontage), the GitHub project with 38,000+ stars used by more than 100,000 people across the world, and built for the **GitHub Copilot ecosystem**. It runs inside any Copilot-enabled environment — VS Code with GitHub Copilot Chat, Copilot CLI, or JetBrains with Copilot — where the assistant can access the filesystem, run terminal commands, and interact with Azure via `az`. Describe what you need in plain English — Slate scripts it, generates every asset, composes the visuals, adds narration, enforces your brand, reviews its own work, and delivers a polished MP4.
 
 ---
 
