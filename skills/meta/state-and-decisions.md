@@ -1,5 +1,10 @@
 # State and Decisions — the project folder
 
+> **Lineage:** Durable production artifacts and resumable agent workflows carry
+> architectural lineage from OpenMontage (AGPL-3.0). Slate extends them with
+> append-only `decisions.jsonl`, `ledger.jsonl`, events, and SCF. See
+> [`docs/OPENMONTAGE_LINEAGE.md`](../../docs/OPENMONTAGE_LINEAGE.md).
+
 > **Trigger:** load this skill the first time you open or create a project in
 > a session. Stay loaded for the duration.
 

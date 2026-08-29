@@ -50,6 +50,29 @@ links** they cite to reach primary sources.
    to a source. Put a short "Research grounding" + source list in the brief
    (see the rag-/prompting-/ard-explainer briefs for the shape).
 
+### Series corroboration contract
+
+For a factual episode in an ongoing learning or explainer series, add an
+**"Ecosystem and standards corroboration"** section to `research.md` and reserve
+a concise source-backed beat in the script or end matter.
+
+- Compare the concept with at least two major vendors, standards bodies, or
+   independent primary research sources. Prefer three or more when the market is
+   fragmented.
+- Use each source's own product or standards language. Do not flatten distinct
+   features into false equivalence.
+- State whether the evidence shows a formal standard, a common architecture
+   pattern, convergent product behavior, or only one vendor's terminology.
+- Map names to underlying primitives so the audience learns what transfers:
+   trigger, goal, tools, evidence, evaluation, feedback, state, permissions,
+   stopping, and human review.
+- Include limitations, preview status, or scope boundaries that materially
+   change the comparison.
+
+If no relevant vendor implementation or formal standard exists, say so and use
+primary research plus independent implementations instead. The purpose is
+corroboration, not a logo parade.
+
 ## Anti-hallucination rules
 
 - For a current topic, **never** state a version, date, benchmark, or specific

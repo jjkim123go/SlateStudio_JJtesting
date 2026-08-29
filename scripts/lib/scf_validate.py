@@ -638,7 +638,7 @@ SEMANTIC_VISUAL_RULES = [
     },
     {
         "issue": "collaboration_visual_missing",
-        "keywords": ("teams", "outlook", "microsoft 365", "m365"),
+        "keywords": ("microsoft teams", "teams app", "teams chat", "teams channel", "outlook", "microsoft 365", "m365"),
         "required": ("teamsscene", "outlookscene", "excelscene", "splitScreen", "splitscreen", "loopscene"),
         "detail": "Teams/Outlook/M365 narration needs the matching synthetic app surfaces, preferably sequenced together.",
     },
@@ -661,10 +661,7 @@ def validate_narration_visual_support(scf: dict) -> list[dict]:
         surface = _scene_surface_text(scene)
         for rule in SEMANTIC_VISUAL_RULES:
             if not any(
-                f" {keyword} " in f" {narration} "
-                or narration.startswith(f"{keyword} ")
-                or narration.endswith(f" {keyword}")
-                or narration == keyword
+                re.search(rf"(?<!\w){re.escape(keyword)}(?!\w)", narration)
                 for keyword in rule["keywords"]
             ):
                 continue

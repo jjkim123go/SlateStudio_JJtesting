@@ -3,9 +3,9 @@
 BaseTool wrapper that delegates to scripts/lib/tts_gen.py (the production
 implementation). Calls gpt-4o-mini-tts on Azure OpenAI.
 
-Design note: The TTS tool contract (voice presets, output format, cost tracking)
-follows clean-room patterns inspired by OpenMontage's TTS tools (AGPL-3.0).
-Slate targets Azure-native voice models exclusively.
+Lineage: Voice presets, output contracts, and cost tracking carry
+implementation lineage from OpenMontage's TTS tools (AGPL-3.0). Slate targets
+Azure-native voice providers. See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

@@ -75,6 +75,13 @@ Optional fields:
 
 ## Scene blocks
 
+Before writing narration, load
+[`skills/creative/narration-writing.md`](../creative/narration-writing.md). This
+file defines parseable structure and timing; the narration skill defines audience
+fit, one accumulating example, jargon grounding, natural speech, and the four
+mandatory edit passes. A script that matches this template but fails that quality
+contract is not ready for paid TTS or rendering.
+
 Each scene starts with a level-2 heading:
 
 ```markdown
@@ -102,6 +109,8 @@ to 142. That's faster than the blink of an eye.
   paragraph is what gets spoken — write for the ear.
 - No markdown formatting inside narration (no bold, italics, links). The
   TTS engine ignores them but they add noise.
+- Complete the utility, coherence, grounding, and ear/anti-template passes from
+  `creative/narration-writing.md` before CK-REVIEW.
 
 #### 2. Visual direction tag
 

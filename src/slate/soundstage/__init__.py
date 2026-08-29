@@ -13,10 +13,10 @@ Design contract (see docs/design/LIVING_STORYBOARD.md):
 - The agent's only duty: ``python -m slate.soundstage open <slug>`` at project
   creation. If it fails, production continues — the board is an observer.
 
-Inspired by Backlot, the living storyboard for OpenMontage
-(github.com/calesthio/OpenMontage#273, AGPL-3.0, same author). Independently
-reimplemented against Slate's append-only state contract. No source shared.
-See NOTICE.md.
+Lineage: Soundstage carries direct conceptual and implementation lineage from
+Backlot, the living storyboard for OpenMontage (PR #273, AGPL-3.0, same author).
+Slate extends it for SCF and append-only project records. See
+docs/OPENMONTAGE_LINEAGE.md and NOTICE.md.
 """
 
 __version__ = "0.1.0"

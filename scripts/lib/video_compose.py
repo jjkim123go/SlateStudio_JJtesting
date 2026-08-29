@@ -1,9 +1,9 @@
 """Slate video composition using FFmpeg — combines images + audio → MP4.
 
-Design note: FFmpeg is used here as a composition utility, consistent with
-OpenMontage's approach (AGPL-3.0) of treating FFmpeg as the workhorse for
-audio mixing, transcoding, and concatenation while a higher-level renderer
-(HyperFrames in Slate) handles visual composition and animation.
+Lineage: FFmpeg-centered audio mixing, transcoding, and concatenation carry
+implementation lineage from OpenMontage's media assembly approach (AGPL-3.0).
+Slate adds HyperFrames for visual composition and animation. See
+docs/OPENMONTAGE_LINEAGE.md.
 """
 
 import json

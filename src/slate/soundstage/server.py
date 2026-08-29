@@ -10,6 +10,10 @@ modifying or deleting existing state.
 
 If ``watchfiles`` is installed it is used for instant change detection instead
 of the mtime poll (optional turbo, never required).
+
+Lineage: The local read-only server, filesystem watcher, and live board update
+model carry direct lineage from OpenMontage Backlot (PR #273, AGPL-3.0). See
+docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations
@@ -461,6 +465,7 @@ def _start_watchfiles() -> None:
 
 def _open_surface(url: str, surface: str) -> None:
     """Open the board in the browser and/or inside VS Code (Simple Browser)."""
+    import os
     # The external browser is the reliable default.  The old `auto` behavior
     # silently preferred VS Code whenever TERM_PROGRAM=vscode; `code --command`
     # can return successfully without opening/focusing a Simple Browser tab,

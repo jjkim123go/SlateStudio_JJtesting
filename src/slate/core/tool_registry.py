@@ -7,10 +7,10 @@ For contributors adding a new tool, see ``docs/TOOL_ONBOARDING.md`` —
 it has the copy-paste skeleton, the field guide, and the preflight
 verification step.
 
-Architecture note: The auto-discovery via pkgutil + capability manifest pattern
-draws inspiration from OpenMontage's tool registry (AGPL-3.0). Slate's registry
-is a clean-room implementation focused on Azure-only providers and enterprise
-capability groupings (compliance tiers, data residency classification).
+Lineage: Auto-discovery and capability-manifest behavior carry implementation
+lineage from OpenMontage's tool registry (AGPL-3.0). Slate extends the registry
+with Azure providers and enterprise capability metadata. See
+docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

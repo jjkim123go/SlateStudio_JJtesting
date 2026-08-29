@@ -3,6 +3,7 @@
   "$id": "https://slate.microsoft.com/schemas/scf/v1.0",
   "title": "Slate Composition Format (SCF)",
   "description": "JSON schema for Slate video compositions. The agent generates SCF documents; the HyperFrames renderer (via the SCF\u2192HTML compiler) consumes them.",
+  "$comment": "Lineage: declarative production carries architectural lineage from OpenMontage (AGPL-3.0); SCF is a Slate extension. See docs/OPENMONTAGE_LINEAGE.md.",
   "type": "object",
   "required": ["version", "pipeline", "outputProfile", "scenes"],
   "properties": {
@@ -246,6 +247,11 @@
           "type": "number",
           "minimum": 0,
           "description": "Offset in seconds from scene start before narration audio begins"
+        },
+        "captionEndSec": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Optional scene-relative time when generated captions stop because exact on-screen text takes over"
         },
         "transition": {
           "$ref": "#/$defs/Transition",

@@ -1,0 +1,1 @@
+{"type":"object","properties":{"resourceType":{"type":"string"},"resourceName":{"type":"string"},"breadcrumbHtml":{"type":"string"},"stepsHtml":{"type":"string"},"visualBeats":{"type":"array"}},"required":["resourceType","resourceName","breadcrumbHtml","stepsHtml"],"additionalProperties":true}

@@ -37,6 +37,7 @@ _ENV_MAP = {
     "resource_group": "SLATE_AZURE_RESOURCE_GROUP",
     "subscription_id": "SLATE_AZURE_SUBSCRIPTION_ID",
     "location": "SLATE_AZURE_LOCATION",
+    "video_deployment": "SLATE_AZURE_VIDEO_DEPLOYMENT",
     "vi_account_id": "SLATE_AZURE_VI_ACCOUNT_ID",
     "vi_account_name": "SLATE_AZURE_VI_ACCOUNT_NAME",
 }
@@ -78,6 +79,7 @@ class AzureConfig:
     resource_group: str = ""
     subscription_id: str = ""
     location: str = ""
+    video_deployment: str = "sora"
     vi_account_id: str = ""
     vi_account_name: str = ""
     _loaded: bool = field(default=False, repr=False)
@@ -100,6 +102,7 @@ class AzureConfig:
             resource_group=ai.get("resource_group", "") or "",
             subscription_id=ai.get("subscription_id", "") or "",
             location=ai.get("location", "") or "",
+            video_deployment=ai.get("video_deployment", "sora") or "sora",
             # VI inherits from ai_services if its own fields are blank
             vi_account_id=vi.get("account_id", "") or "",
             vi_account_name=vi.get("account_name", "") or "",

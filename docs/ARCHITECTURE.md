@@ -22,13 +22,14 @@ the tool system, the SCF composition format, the HyperFrames component
 library, the governance/audit model, and the end-to-end data flow from a
 prompt to a finished, brand-compliant MP4.
 
-> **Lineage.** Slate's design patterns (tool contracts, declarative
-> composition, capability registries, delivery-promise classification) are clean-room
-> reimaginings of concepts pioneered in **OpenMontage** (AGPL-3.0), an
-> open-source project by the same author. Slate is an independent, proprietary
-> codebase built for Azure AI Foundry and enterprise compliance — no source
-> code is shared. Rendering is performed by **HyperFrames** (Apache-2.0). See
-> [`NOTICE.md`](../NOTICE.md) for full attribution.
+> **Lineage.** Slate carries architectural and implementation lineage from
+> **OpenMontage** (AGPL-3.0), an open-source project by the same author. The
+> relationship includes tool contracts, declarative production, capability and
+> model routing, media assembly, budget controls, and agent-directed workflow.
+> Slate extends that foundation for Azure AI Foundry, SCF, HyperFrames, and
+> enterprise governance. Rendering is performed by **HyperFrames**
+> (Apache-2.0). See [`OPENMONTAGE_LINEAGE.md`](OPENMONTAGE_LINEAGE.md) and
+> [`NOTICE.md`](../NOTICE.md).
 
 ---
 

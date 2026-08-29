@@ -90,7 +90,7 @@ def test_repair_scf_for_profile_adds_default_captions():
     repaired, repairs = repair_scf_for_profile(scf, profile="guided")
 
     assert repairs[0]["issue"] == "captions_auto_added"
-    assert repaired["captions"]["style"] == "word-highlight"
+    assert repaired["captions"]["style"] == "static"
     assert repaired["captions"]["maxWordsPerLine"] == 5
     assert "captions" not in scf
 
@@ -156,6 +156,39 @@ def test_narration_visual_support_accepts_architecture_component():
     }
 
     assert validate_narration_visual_support(scf) == []
+
+
+def test_narration_visual_support_does_not_treat_ordinary_teams_as_microsoft_teams():
+    scf = {
+        "scenes": [
+            {
+                "id": "publisher",
+                "duration": 4,
+                "narration": "Authorized teams attach ownership metadata to each report.",
+                "component": "OmartPublisherContract",
+            }
+        ]
+    }
+
+    assert validate_narration_visual_support(scf) == []
+
+
+def test_narration_visual_support_requires_surface_for_microsoft_teams():
+    scf = {
+        "scenes": [
+            {
+                "id": "collaboration",
+                "duration": 4,
+                "narration": "The update arrives in Microsoft Teams.",
+                "layers": [{"type": "image", "src": "generic-art.png"}],
+            }
+        ]
+    }
+
+    issues = validate_narration_visual_support(scf)
+
+    assert issues
+    assert issues[0]["issue"] == "collaboration_visual_missing"
 
 
 def test_narration_text_quality_blocks_dot_dot_artifacts():

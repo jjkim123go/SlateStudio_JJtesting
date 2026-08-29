@@ -8,7 +8,8 @@ for captions. Voices are discovered from the service â€” not a hardcoded list â€
 so agents/users can pick any voice by language, accent, gender, HD tier, or
 style. Use ``action="list_voices"`` to browse/filter the catalog.
 
-Design note: clean-room Azure-native implementation; no third-party TTS code.
+This Azure-native voice provider is a Slate extension to the model-routing
+lineage documented in docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

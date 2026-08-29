@@ -11,14 +11,15 @@
 > **Surfaces:** both a standalone **browser board** *and* an in-editor **VS Code
 > view** ship together — one read-only server, two front-ends.
 >
-> **Lineage / attribution.** Soundstage is a clean-room reimagining of
+> **Lineage / attribution.** Soundstage carries direct lineage from
 > **Backlot**, the living storyboard shipped in OpenMontage
 > ([calesthio/OpenMontage#273](https://github.com/calesthio/OpenMontage/pull/273),
-> AGPL-3.0, by the same author). We independently reimplement the *concept and
-> process* — a read-only, disk-derived production board — against Slate's own
+> AGPL-3.0, by the same author). Slate reimplements and extends the *concept and
+> process* — a read-only, disk-derived production board — for Slate's
 > state contract (append-only `decisions.jsonl` / `ledger.jsonl` + SCF), and
-> extend it. No OpenMontage source is copied. Credit belongs in `NOTICE.md`,
-> the board footer, and this doc. See [§14](#14-attribution).
+> extends it. Credit belongs in `NOTICE.md`, the board footer, this document,
+> and [`docs/OPENMONTAGE_LINEAGE.md`](../OPENMONTAGE_LINEAGE.md). See
+> [§14](#14-attribution).
 
 ---
 
@@ -525,11 +526,11 @@ outbound fetches, localhost bind).
 
 ## 14. Attribution
 
-Soundstage is inspired by **Backlot**, the living storyboard for OpenMontage
+Soundstage carries direct lineage from **Backlot**, the living storyboard for OpenMontage
 ([calesthio/OpenMontage#273](https://github.com/calesthio/OpenMontage/pull/273),
-AGPL-3.0, by the same author). Slate independently reimplements the concept and
-process against its own append-only state contract and extends it (variety
+AGPL-3.0, by the same author). Slate reimplements the concept and process for
+its own append-only state contract and extends it (variety
 meter, design-critic overlay, narration-timing safety, provenance trail,
-governance panel). No OpenMontage source code is used. This attribution must
-appear in `NOTICE.md`, the board UI footer, and the package docstring.
+governance panel). This attribution must appear in `NOTICE.md`, the board UI
+footer, the package docstring, and `docs/OPENMONTAGE_LINEAGE.md`.
 ```

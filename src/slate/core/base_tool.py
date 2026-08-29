@@ -3,11 +3,10 @@
 Every tool in the tools/ directory must inherit from BaseTool and implement execute().
 The ToolRegistry auto-discovers all BaseTool subclasses.
 
-Architecture note: The tool-contract pattern (ToolTier, ToolRuntime, ResourceProfile,
-support_envelope, fallback_tools) is a clean-room design inspired by OpenMontage's
-ToolContract architecture (AGPL-3.0, https://github.com/calesthio/OpenMontage).
-Slate's implementation is original, adapted for Azure-first enterprise requirements
-including compliance_level, data_residency, and audit_fields.
+Lineage: The tool-contract pattern (ToolTier, ToolRuntime, ResourceProfile,
+support_envelope, fallback_tools) carries implementation lineage from
+OpenMontage's ToolContract architecture (AGPL-3.0). Slate extends the contract
+for Azure and enterprise requirements. See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

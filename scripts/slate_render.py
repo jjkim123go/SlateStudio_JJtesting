@@ -17,10 +17,10 @@ The scenario JSON should contain:
         bullet_points: (optional) list of bullet points
         duration: (optional) override duration — auto-calculated from narration if omitted
 
-Design note: The stage-based orchestration pattern (ingest → script → scene_plan →
-assets → compose → review) is a clean-room design inspired by OpenMontage's pipeline
-architecture (AGPL-3.0). Slate's renderer is purpose-built for Azure AI Foundry
-models and enterprise brand compliance.
+Lineage: The ingest → script → scene plan → assets → compose → review workflow
+carries architectural and implementation lineage from OpenMontage's production
+pipeline (AGPL-3.0). Slate extends it for Azure AI Foundry, SCF, HyperFrames,
+and enterprise brand governance. See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 import json

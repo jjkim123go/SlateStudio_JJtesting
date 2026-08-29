@@ -1,0 +1,1 @@
+{"type":"object","properties":{"url":{"type":"string"},"pageTitle":{"type":"string"},"tabListHtml":{"type":"string"},"pageContentHtml":{"type":"string"},"visualBeats":{"type":"array"}},"required":["url","pageTitle","pageContentHtml"],"additionalProperties":true}

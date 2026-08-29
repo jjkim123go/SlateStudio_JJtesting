@@ -13,6 +13,7 @@
 #   SLATE_AZURE_RESOURCE_GROUP  — Resource group name
 #   SLATE_AZURE_SUBSCRIPTION_ID — Azure subscription ID
 #   SLATE_AZURE_LOCATION        — Azure region (e.g., eastus2)
+#   SLATE_AZURE_VIDEO_DEPLOYMENT — Sora deployment name (default: sora)
 # ──────────────────────────────────────────────────────────────────────
 
 ai_services:
@@ -21,6 +22,7 @@ ai_services:
   resource_group: ""
   subscription_id: ""
   location: ""
+  video_deployment: "sora"
 
 video_indexer:
   account_id: ""

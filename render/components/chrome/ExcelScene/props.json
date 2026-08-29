@@ -1,0 +1,1 @@
+{"type":"object","properties":{"workbookName":{"type":"string"},"nameBox":{"type":"string"},"formulaText":{"type":"string"},"ribbonContentHtml":{"type":"string"},"cellsHtml":{"type":"string"},"sheetTabsHtml":{"type":"string"},"statusHtml":{"type":"string"},"visualBeats":{"type":"array"}},"required":["cellsHtml","sheetTabsHtml"],"additionalProperties":true}

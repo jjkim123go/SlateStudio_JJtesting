@@ -16,6 +16,10 @@
  * Slate components (BrandIntro, BrandOutro, TitleCard, LowerThird,
  * AnimatedCaption) are rendered by templating their per-component HTML
  * fragments from ../components/<Name>/*.
+ *
+ * Lineage: declarative production and media-assembly boundaries carry
+ * architectural lineage from OpenMontage (AGPL-3.0). SCF-to-HyperFrames
+ * compilation is a Slate extension. See docs/OPENMONTAGE_LINEAGE.md.
  */
 
 import { copyFileSync, existsSync, mkdirSync, readFileSync, readdirSync, statSync } from 'fs';
@@ -857,7 +861,9 @@ function renderSceneCaptions(scene, sceneCtx, captionsConfig) {
   ].join(';');
   const indexedWordsHtml = indexedRows.map((row, rowIndex) => (
     `<div class="slate-caption-row slate-caption-row-${rowIndex}" style="${rowStyle}">${row.map((w) => (
-      `<span class="slate-caption-word slate-caption-word-${w.__idx}" data-start="${w.start}" data-end="${w.end}">${escapeHtml(w.word)}</span>`
+      `<span class="slate-caption-word slate-caption-word-${w.__idx}" ` +
+      `${/^[,.;:!?%)}\]]+$/.test(w.word) ? 'style="margin-left:-17px" ' : ''}` +
+      `data-start="${w.start}" data-end="${w.end}">${escapeHtml(w.word)}</span>`
     )).join(' ')}</div>`
   )).join('');
 
@@ -1820,7 +1826,6 @@ function renderScene(scene, ctx) {
   }
 
   const captions = renderSceneCaptions(scene, sceneCtx, ctx.captionConfig);
-  if (captions.html) inner += `\n${captions.html}`;
   if (captions.js) js = [js, captions.js].filter(Boolean).join('\n');
 
   // Narration audio
@@ -1849,7 +1854,10 @@ function renderScene(scene, ctx) {
     data-width="${ctx.width}"
     data-height="${ctx.height}"
     style="position:absolute;inset:0;overflow:hidden;opacity:0">
-    ${inner}
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      ${inner}
+    </div>
+    ${captions.html}
   </div>
   ${narrationAudio}`;
 
@@ -1944,6 +1952,14 @@ function buildSceneVisibilityJs(renderedScenes) {
       lines.push(`master.set('.scene-${scene.sceneId}', { opacity: 1 }, ${start});`);
     }
     lines.push(`master.set('.scene-${scene.sceneId}', { opacity: 0 }, ${end});`);
+    if (scene.props?.ambientMotion) {
+      const content = `.scene-${scene.sceneId} > .slate-scene-content`;
+      const isChrome = /(?:scene|frame)$/i.test(String(scene.props?.componentName || ''));
+      const scale = isChrome ? 1.006 : 1.014;
+      const x = isChrome ? -3 : -8;
+      const y = isChrome ? 2 : 5;
+      lines.push(`master.fromTo('${content}', { scale: 1, x: 0, y: 0 }, { scale: ${scale}, x: ${x}, y: ${y}, duration: ${scene.duration}, ease: 'none' }, ${start});`);
+    }
   }
   for (const scene of renderedScenes.filter((item) => item.kind === 'transition')) {
     lines.push(`master.set('.scene-${scene.sceneId}', { opacity: 0 }, 0);`);

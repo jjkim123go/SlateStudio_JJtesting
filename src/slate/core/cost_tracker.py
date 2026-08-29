@@ -3,10 +3,10 @@
 Tracks per-tool costs, running totals, budget limits. Writes a JSON cost log
 that feeds into the audit trail and chargeback system.
 
-Architecture note: Budget governance (per-action tracking, approval thresholds)
-is a clean-room design inspired by OpenMontage's budget config (observe/warn/cap
-modes, AGPL-3.0). Slate extends this with enterprise chargeback, JSONL audit logs,
-and integration with Azure cost management APIs.
+Lineage: Per-action cost tracking and observe/warn/cap budget modes carry
+implementation lineage from OpenMontage's budget configuration (AGPL-3.0).
+Slate extends them with JSONL audit data and enterprise chargeback fields. See
+docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

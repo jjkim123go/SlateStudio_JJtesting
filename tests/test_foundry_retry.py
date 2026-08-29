@@ -93,12 +93,14 @@ def test_video_retries_429_then_succeeds(tmp_path: Path, monkeypatch):
     client.videos.download_content.return_value = content
     monkeypatch.setattr(video_gen, "_get_client", lambda: client)
     monkeypatch.setattr(video_gen, "_strip_audio_track", lambda path: False)
+    monkeypatch.setattr(video_gen, "_video_deployment", lambda: "sora-current")
 
     with mock.patch("time.sleep") as sleep:
         result = video_gen.generate_video_clip("shot", str(tmp_path / "out.mp4"), allow_fallback=False)
 
     assert result["method"] == "sora-2"
     assert client.videos.create_and_poll.call_count == 2
+    assert client.videos.create_and_poll.call_args.kwargs["model"] == "sora-current"
     sleep.assert_called()
 
 

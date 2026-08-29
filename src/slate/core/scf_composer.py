@@ -4,6 +4,10 @@ This module bridges the gap between the agent's creative decisions (scenario JSO
 and the HyperFrames renderer (SCF JSON). It applies brand packages, validates
 against the SCF schema, and generates complete composition documents.
 
+Lineage: The declarative production boundary carries architectural lineage from
+OpenMontage. SCF and its HyperFrames mapping are Slate extensions. See
+docs/OPENMONTAGE_LINEAGE.md.
+
 Usage:
     from slate.core.scf_composer import SCFComposer
 

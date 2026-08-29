@@ -1,5 +1,12 @@
 # Slate Skills — INDEX
 
+> **OpenMontage lineage:** Slate's agent-directed production, tool-routing,
+> declarative composition, media-assembly, and budget-control skills carry
+> architectural and implementation lineage from OpenMontage (AGPL-3.0), by the
+> same author. Slate extends them for Azure AI Foundry, SCF, HyperFrames, and
+> enterprise governance. See [`docs/OPENMONTAGE_LINEAGE.md`](../docs/OPENMONTAGE_LINEAGE.md)
+> and [`NOTICE.md`](../NOTICE.md).
+
 > Thin directory of every skill. The agent reads THIS file once per
 > session for awareness, then loads individual skill files JIT — only
 > when the trigger fires (a tool is about to be invoked, a director

@@ -1,5 +1,10 @@
 # Checkpoint Protocol
 
+> **Lineage:** Human stage gates and agent-directed production checkpoints
+> carry architectural lineage from OpenMontage (AGPL-3.0). Slate formalizes
+> them as append-only, parseable review records. See
+> [`docs/OPENMONTAGE_LINEAGE.md`](../../docs/OPENMONTAGE_LINEAGE.md).
+
 > **Trigger:** every time you pause for user approval. Mandatory format.
 > **Why:** without explicit, parseable checkpoints, the agentic model becomes
 > chaotic — the user can't tell if you're asking permission, reporting status,
@@ -52,6 +57,41 @@ with a metaphor (apartment keys); the alternative is a literal screen
 walkthrough.
 
 Approve / Edit (tell me what) / Try the screen-walkthrough alternative?
+```
+
+#### Script comprehension gate
+
+For narrated scripts, CK-REVIEW must also include:
+
+- **Spine:** the one situation, person, decision, or artifact carried through
+  the script, including its before and after state
+- **Term ladder:** unfamiliar terms in first-use order and the concrete context
+  that appears before each one
+- **Ear check:** confirmation that the author read the script aloud and revised
+  awkward or overly written lines
+
+Ask the user or a representative reviewer to paraphrase the core idea and name
+where they first felt lost. Do not substitute an LLM self-score, detector score,
+readability number, or word blacklist for this check.
+
+A script cannot advance to paid TTS or rendering when the primary viewer cannot
+paraphrase the idea, scenes are largely reorderable facts, the central example
+changes without explanation, required jargon appears before grounding, or the
+read-aloud pass exposes persistent unnatural phrasing. Revise the script and
+repeat CK-REVIEW.
+
+```
+🟢 CK-REVIEW — script comprehension
+
+Saved to: projects/onboarding-q1/script.md
+Spine: one access request, from denial through policy check to approval
+Term ladder: role → policy → conditional access; each follows a visible decision
+Ear check: complete; two formal transitions and one repeated slogan removed
+
+In your own words, what changed for the requester, and where did the explanation
+first become hard to follow?
+
+Approve / Edit (tell me where) / Try a more familiar example?
 ```
 
 ### CK-CHOICE — "I see N viable paths. Pick one."

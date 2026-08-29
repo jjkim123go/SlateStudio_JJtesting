@@ -53,6 +53,30 @@ narration to fill time.
 
 ---
 
+## Narrative spine — walk one example, don't list the topic
+
+The five beats are structure, not continuity. Choose one recognizable person,
+decision, situation, or artifact and let it accumulate change from hook to
+close. Each scene should inherit a question, action, or consequence from the
+previous scene. If most scenes still make sense after random reordering, the
+script is probably an encyclopedia of facts rather than an explanation.
+
+For mixed audiences, use the least specialized shared situation as the primary
+example. Introduce code, APIs, builds, or model internals later as supporting
+proof, not as the only entrance into the idea. Show the concrete situation
+before naming unfamiliar jargon, then use the term consistently.
+
+Write the spine as three states before scripting:
+
+1. **Before:** what is hard, incomplete, or repeatedly manual?
+2. **During:** what changes as the concept is applied?
+3. **After:** what can the person now see, decide, or do?
+
+Load [`creative/narration-writing.md`](../creative/narration-writing.md) for the
+full planning, drafting, and editing contract.
+
+---
+
 ## Visual choice rules
 
 These are the explainer-specific applications of P5 (Deep Artifact
@@ -93,6 +117,12 @@ Understanding) and the structured-visual rule from
 - **Don't narrate what's on screen.** If a structured visual already shows
   the comparison, the narration should explain *why it matters*, not read
   it aloud.
+- **Write for the least familiar primary viewer.** Use a concrete shared
+  situation before a technical name, then explain the mechanism with active
+  actors and verbs.
+- **Edit in separate passes.** Utility, coherence, grounding, and read-aloud
+  quality are mandatory before script approval. Do not ask an LLM to judge its
+  own draft with one holistic "is this good?" prompt.
 
 ---
 
@@ -103,6 +133,12 @@ Before CK-DELIVER, verify:
 - [ ] **Hook lands in 4 seconds.** A bored viewer scrolls.
 - [ ] **One core idea, not three.** If the brief had three ideas, you
       negotiated down to one or split into multiple videos.
+- [ ] **One accumulating example.** The same recognizable situation or artifact
+  changes from problem to result; scenes cannot be freely reordered.
+- [ ] **Jargon is earned.** The least familiar primary viewer sees or hears the
+  concrete situation before its technical name.
+- [ ] **Passes the ear test.** Read aloud, the narration sounds like one person
+  explaining causality rather than a sequence of slogans or slide headings.
 - [ ] **Every scene's visual answers the narration's question** (not just
       decorates it).
 - [ ] **Every spoken noun has visual support** in the same beat; no generic art
