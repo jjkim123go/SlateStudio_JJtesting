@@ -3,10 +3,10 @@
 BaseTool wrapper that delegates to scripts/lib/video_gen.py (the production
 implementation). Calls Sora-2 on Azure AI Foundry via the OpenAI Python SDK.
 
-Design note: The video generation tool abstraction (duration snapping, resolution
-profiles, fallback handling) is a clean-room design inspired by OpenMontage's
-video generation tools (AGPL-3.0). Slate's implementation targets Azure AI Foundry
-with Sora-2 as the primary video generation model.
+Lineage: Duration snapping, resolution profiles, and fallback handling carry
+implementation lineage from OpenMontage's video generation tools (AGPL-3.0).
+Slate targets Azure AI Foundry and Sora-2. See
+docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

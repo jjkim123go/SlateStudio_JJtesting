@@ -3,9 +3,10 @@
 Pipeline: SCF JSON → SCF→HTML compiler (render/lib/scf-to-html.mjs) →
 @hyperframes/producer (headless Chrome capture + FFmpeg encode + audio mix) → MP4.
 
-Design note: The separation of composition format (SCF JSON) from rendering
-engine is a clean-room design inspired by OpenMontage (AGPL-3.0). Slate uses
-HyperFrames (Apache-2.0, © HeyGen Inc.) as its primary renderer.
+Lineage: The separation of declarative composition from rendering carries
+architectural lineage from OpenMontage (AGPL-3.0). SCF and the HyperFrames
+integration are Slate extensions. HyperFrames is separately licensed under
+Apache-2.0. See docs/OPENMONTAGE_LINEAGE.md and NOTICE.md.
 """
 
 from __future__ import annotations

@@ -4,9 +4,9 @@ All AI image generation uses gpt-image-2 via Azure AI Foundry.
 Structured content (code, tables, UI mockups, diagrams, charts) is rendered
 locally via Pillow for deterministic, zero-cost output.
 
-Design note: The structured-vs-AI routing pattern is inspired by OpenMontage's
-image_selector (AGPL-3.0). Slate's implementation is a clean-room design using
-Azure-native models tuned for enterprise visual styles.
+Lineage: Structured-versus-generated routing carries implementation lineage
+from OpenMontage's image_selector (AGPL-3.0). Slate uses Azure-native models and
+enterprise visual contracts. See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 import base64

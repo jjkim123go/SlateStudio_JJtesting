@@ -6,6 +6,17 @@
 
 Slate is an agentic video production engine inspired by [OpenMontage](https://github.com/calesthio/OpenMontage), the GitHub project with 38,000+ stars used by more than 100,000 people across the world, and built for the **GitHub Copilot ecosystem**. It runs inside any Copilot-enabled environment — VS Code with GitHub Copilot Chat, Copilot CLI, or JetBrains with Copilot — where the assistant can access the filesystem, run terminal commands, and interact with Azure via `az`. Describe what you need in plain English — Slate scripts it, generates every asset, composes the visuals, adds narration, enforces your brand, reviews its own work, and delivers a polished MP4.
 
+## Lineage
+
+Slate carries substantial architectural and implementation lineage from
+[OpenMontage](https://github.com/calesthio/OpenMontage) (AGPL-3.0), created by
+the same author. Tool contracts, capability and model routing, declarative
+production, media assembly, budget controls, and the agent-directed workflow
+all reflect that lineage. Slate extends those foundations with Azure AI
+Foundry integration, SCF, HyperFrames rendering, append-only project records,
+and enterprise governance. See [the subsystem map](docs/OPENMONTAGE_LINEAGE.md)
+and [NOTICE.md](NOTICE.md).
+
 ---
 
 ## 🎥 What Can Slate Make?
@@ -87,12 +98,12 @@ python -m slate.soundstage open            # the library (all productions)
 
 Soundstage is read-only by design: agents and tools write the source of truth to
 disk; the board renders that truth. Design doc:
-[docs/design/LIVING_STORYBOARD.md](docs/design/LIVING_STORYBOARD.md). It is a
-clean-room reimagining of **Backlot**, the living storyboard from
+[docs/design/LIVING_STORYBOARD.md](docs/design/LIVING_STORYBOARD.md). It carries
+direct lineage from **Backlot**, the living storyboard from
 [OpenMontage](https://github.com/calesthio/OpenMontage/pull/273) (same author) —
-reimplemented against Slate's append-only state contract and extended (SCF-native
+reimplemented for Slate's append-only state contract and extended (SCF-native
 storyboard, narration timeline, variety meter, provenance trail). See
-[NOTICE.md](NOTICE.md).
+[the lineage map](docs/OPENMONTAGE_LINEAGE.md) and [NOTICE.md](NOTICE.md).
 
 ---
 
@@ -282,19 +293,20 @@ See [docs/TOOL_LICENSING_INFO.md](docs/TOOL_LICENSING_INFO.md) for the full lice
 | [docs/COMPONENT_CATALOG.md](docs/COMPONENT_CATALOG.md) | Quick-reference catalog — what each component does and when to use it |
 | [docs/TOOL_ONBOARDING.md](docs/TOOL_ONBOARDING.md) | Guide to creating new BaseTool implementations |
 | [docs/TOOL_LICENSING_INFO.md](docs/TOOL_LICENSING_INFO.md) | Third-party dependency licensing analysis |
+| [docs/OPENMONTAGE_LINEAGE.md](docs/OPENMONTAGE_LINEAGE.md) | Subsystem-level OpenMontage lineage and attribution map |
 | [NOTICE.md](NOTICE.md) | Attribution for HyperFrames, OpenMontage, and GSAP |
 | [skills/INDEX.md](skills/INDEX.md) | Skill directory — the agent's knowledge base |
 
 ---
 
-## Inspiration & Attribution
+## Lineage & Attribution
 
-Slate's architecture draws conceptual inspiration from
+Slate carries architectural and implementation lineage from
 [OpenMontage](https://github.com/calesthio/OpenMontage) (AGPL-3.0), an
 open-source agentic video production framework by the same author.
-Architectural patterns were reimagined from scratch for Azure-native
-enterprise requirements. **No OpenMontage source code is present in Slate.**
-See [NOTICE.md](NOTICE.md) for the full attribution notice.
+Slate extends that lineage for Azure-native enterprise requirements. See
+[docs/OPENMONTAGE_LINEAGE.md](docs/OPENMONTAGE_LINEAGE.md) and
+[NOTICE.md](NOTICE.md) for the detailed attribution record.
 
 ---
 

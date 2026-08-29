@@ -9,10 +9,9 @@ Requires:
 Auth: DefaultAzureCredential → https://ai.azure.com/.default
 Endpoint: https://{resource}.openai.azure.com/openai/v1/
 
-Design note: The video generation tool contract (provider abstraction, fallback
-handling, duration snapping) follows patterns established in OpenMontage's
-video_selector (AGPL-3.0). Slate's implementation is Azure-exclusive, using
-Sora-2 via the OpenAI SDK with Azure identity federation.
+Lineage: Provider abstraction, fallback handling, and duration snapping carry
+implementation lineage from OpenMontage's video_selector (AGPL-3.0). Slate uses
+Sora-2 through Azure identity federation. See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 import re
@@ -44,7 +43,9 @@ def _azure_resource():
 
 def _azure_base_url():
     return f"https://{_azure_resource()}.openai.azure.com/openai/v1/"
-VIDEO_DEPLOYMENT = "sora"  # deployment name (model: sora-2)
+
+def _video_deployment():
+    return _az_cfg.video_deployment or "sora"
 
 # Sora-2 supports: 480x480, 480x720, 720x480, 720x1280, 1280x720
 RESOLUTIONS = {
@@ -274,7 +275,7 @@ def generate_video_clip(
         def create_and_poll():
             return _run_with_timeout(
                 lambda: client.videos.create_and_poll(
-                    model=VIDEO_DEPLOYMENT,
+                    model=_video_deployment(),
                     prompt=prompt,
                     size=size,
                     seconds=duration_sec,

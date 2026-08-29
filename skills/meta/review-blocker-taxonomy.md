@@ -56,6 +56,16 @@ The Reviewer must issue a blocker when any of the following is true:
 
 - materially incorrect claim
 - missing core message such that the video no longer serves its purpose
+- narrated explainer whose primary audience cannot paraphrase the core idea
+- fact-list structure with no causal through-line or accumulating example when
+	the brief promises understanding or instruction
+- central example, actor, or artifact changes without an explicit handoff,
+	breaking the viewer's mental model
+- necessary technical terms appear before the script supplies concrete context
+	for the least familiar primary viewer
+- persistent unnatural spoken phrasing after the mandatory read-aloud pass,
+	including repeated slogan cadence or formulaic dramatic framing that obscures
+	the mechanism
 - narration claim not supported by a visible same-beat visual: architecture
 	without a node/arrow architecture or flow diagram, metrics without a metric
 	dashboard/chart, book/page narration without a book/page treatment, or
@@ -79,7 +89,8 @@ Default to `warning` when the problem is noticeable but not delivery-blocking:
 
 Route blocker ownership by root cause:
 
-- `script`: factual errors, tone mismatch, missing story beats
+- `script`: factual errors, tone mismatch, missing story beats, broken narrative
+	spine, jargon-before-grounding, or failed spoken-language comprehension
 - `assets`: prompt drift, poor source imagery, brand asset mismatch
 - `compose`: black frames, frozen sections, bad timing, missing captions, bad mix, transition failure
 - `human`: moderation, legal, policy waiver, unclear governance edge case

@@ -501,7 +501,7 @@ function render() {
   app.append(el("footer", {},
     el("span", {}, "Soundstage — Slate's living storyboard"),
     el("span", {}, "· read-only observer"),
-    el("span", {}, "· inspired by ", el("a", { href: "https://github.com/calesthio/OpenMontage/pull/273", target: "_blank" }, "OpenMontage Backlot")),
+    el("span", {}, "· lineage: ", el("a", { href: "https://github.com/calesthio/OpenMontage/pull/273", target: "_blank" }, "OpenMontage Backlot")),
     el("span", { class: "spacer" }),
     el("span", {}, slug)));
 }

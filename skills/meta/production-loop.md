@@ -1,5 +1,10 @@
 # Production Loop — the agentic playbook
 
+> **Lineage:** The agent-directed production loop carries architectural and
+> implementation lineage from OpenMontage (AGPL-3.0). Slate extends it with
+> append-only decisions, explicit checkpoints, Azure cost controls, SCF, and
+> independent review. See [`docs/OPENMONTAGE_LINEAGE.md`](../../docs/OPENMONTAGE_LINEAGE.md).
+
 > **Replaces:** the deleted "Pipeline Stages 1–7" funnel and `pipeline_defs/`.
 > **Trigger:** load this skill at session start once the user signals intent
 > to make a video. Stay loaded for the duration of the project.

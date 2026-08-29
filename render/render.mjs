@@ -6,6 +6,11 @@
  *                                   [--workers <n>] [--use-gpu true|false]
  *                                   [--safe-webgl] [--scene <id>] [--split-scenes]
  *                                   [--dry-run] [--preview]
+ *
+ * Lineage: the agent-directed render/assembly workflow carries architectural
+ * and implementation lineage from OpenMontage (AGPL-3.0). Slate extends it
+ * with SCF, HyperFrames, governance gates, and split-scene review artifacts.
+ * See docs/OPENMONTAGE_LINEAGE.md.
  */
 
 import { execSync, spawnSync } from 'child_process';
@@ -208,6 +213,29 @@ function shellQuoteForFfmpegConcat(filePath) {
   return String(filePath).replace(/\\/g, '/').replace(/'/g, "'\\''");
 }
 
+function isReusableSceneRender(filePath, scene) {
+  if (!existsSync(filePath)) return false;
+  try {
+    const probe = spawnSync(
+      'ffprobe',
+      ['-v', 'error', '-show_entries', 'format=duration:stream=codec_type', '-of', 'json', filePath],
+      { encoding: 'utf-8' },
+    );
+    if (probe.status !== 0) return false;
+    const data = JSON.parse(probe.stdout || '{}');
+    const duration = Number(data?.format?.duration);
+    const streamTypes = new Set((data?.streams || []).map((stream) => stream.codec_type));
+    const expectedDuration = Number(scene?.duration || 0);
+    const expectsAudio = Boolean(scene?.narration);
+    return Number.isFinite(duration)
+      && Math.abs(duration - expectedDuration) <= 0.2
+      && streamTypes.has('video')
+      && (!expectsAudio || streamTypes.has('audio'));
+  } catch {
+    return false;
+  }
+}
+
 function renderSplitScenes({ scf, scfPath, scfBase, outputMp4, quality, workers, useGpu, webglBackend, safeWebgl, debugRender, dryRun }) {
   const scenes = scf.scenes || [];
   if (scenes.length === 0) {
@@ -247,6 +275,11 @@ function renderSplitScenes({ scf, scfPath, scfBase, outputMp4, quality, workers,
     }
     writeFileSync(sceneScfPath, JSON.stringify(sceneScf, null, 2), 'utf-8');
     rendered.push(sceneOutput);
+
+    if (!dryRun && isReusableSceneRender(sceneOutput, scene)) {
+      console.log(`[Slate] Split render scene ${i + 1}/${scenes.length}: ${scene.id} (reusing validated output)`);
+      continue;
+    }
 
     const childArgs = [
       fileURLToPath(import.meta.url),

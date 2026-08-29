@@ -13,8 +13,9 @@ Cut player. It derives everything from the files you already write to
 `composition.scf.json`, `review_report.json`, `assets/`, `renders/`). You never
 update the UI; the board reads the truth off disk.
 
-Inspired by OpenMontage's Backlot (PR #273, same author) — reimplemented against
-Slate's append-only state contract. See `docs/design/LIVING_STORYBOARD.md`.
+Soundstage carries direct lineage from OpenMontage's Backlot (PR #273,
+AGPL-3.0, same author) and extends it for Slate's append-only state and SCF.
+See `docs/design/LIVING_STORYBOARD.md` and `docs/OPENMONTAGE_LINEAGE.md`.
 
 ---
 

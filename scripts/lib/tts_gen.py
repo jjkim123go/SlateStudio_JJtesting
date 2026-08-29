@@ -1,8 +1,8 @@
 """Slate TTS generation using Azure OpenAI gpt-4o-mini-tts.
 
-Design note: The TTS voice preset abstraction (mapping semantic names to provider
-voice IDs) follows patterns from OpenMontage's tts_selector (AGPL-3.0). Slate's
-implementation is Azure-exclusive, supporting gpt-4o-mini-tts via Azure OpenAI.
+Lineage: Semantic voice presets and provider routing carry implementation
+lineage from OpenMontage's tts_selector (AGPL-3.0). Slate uses Azure Speech and
+Azure OpenAI providers. See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 import json

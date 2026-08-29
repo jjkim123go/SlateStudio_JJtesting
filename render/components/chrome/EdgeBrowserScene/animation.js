@@ -12,6 +12,11 @@
     { opacity: 1, y: 0, scale: 1, duration: 0.5, ease: 'power3.out' },
     SCENE_START + 0.1);
 
+  master.from(prefix + ' .edge-page-body > *',
+    { autoAlpha: 0, y: 18 },
+    { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out', stagger: 0.12 },
+    SCENE_START + 0.75);
+
   // If multiple tabs, clicking one activates it (CSS class swap)
   tabs.forEach(function(tab) {
     tab.addEventListener('click', function() {

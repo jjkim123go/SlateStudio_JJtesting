@@ -15,6 +15,11 @@ function of what the pipeline already writes:
     review_report.json     -> quality scores
     events.jsonl           -> live "generating" activity (optional)
     renders/ , assets/     -> keyframes, poster, media
+
+Lineage: Disk-derived board state and artifact-to-storyboard mapping carry
+direct lineage from OpenMontage Backlot (PR #273, AGPL-3.0). Slate extends the
+state model with SCF, append-only decisions, cost, narration, and governance.
+See docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

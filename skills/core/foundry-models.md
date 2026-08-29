@@ -1,5 +1,10 @@
 # Azure AI Foundry Models
 
+> **Lineage:** Model selection and provider-routing patterns carry
+> implementation lineage from OpenMontage's media selectors (AGPL-3.0). Slate
+> maps those patterns to Azure AI Foundry. See
+> [`docs/OPENMONTAGE_LINEAGE.md`](../../docs/OPENMONTAGE_LINEAGE.md).
+
 > Core skill — reference this when generating images, speech, or video via Foundry.
 > For deep model-specific details, see Layer 3 skills in `skills/models/`.
 

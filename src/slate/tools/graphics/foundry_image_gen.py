@@ -4,10 +4,10 @@ BaseTool wrapper that delegates to scripts/lib/image_gen.py (the production
 implementation). Calls gpt-image-2 on Azure AI Foundry; falls back to Pillow
 slides if no token / API failure (handled inside the real implementation).
 
-Design note: The BaseTool subclass pattern (name, tier, capability, provider,
-support_envelope) is a clean-room design inspired by OpenMontage's tool contract
-(AGPL-3.0). Slate's tool implementations are Azure-native with enterprise fields
-(compliance_level, data_residency).
+Lineage: The BaseTool subclass and support-envelope patterns carry
+implementation lineage from OpenMontage's tool contract (AGPL-3.0). Slate
+extends them with Azure providers and enterprise metadata. See
+docs/OPENMONTAGE_LINEAGE.md.
 """
 
 from __future__ import annotations

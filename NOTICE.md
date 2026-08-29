@@ -1,30 +1,32 @@
-# NOTICE — Third-Party Inspiration & Attribution
+# NOTICE — Lineage, Dependencies, and Attribution
 
-Slate is an independent, proprietary Microsoft project. No code has been
-forked, copied, or derived from any open-source repository.
+Slate is a proprietary Microsoft project with documented architectural and
+implementation lineage from open-source work, including OpenMontage. This
+notice records that relationship alongside Slate's runtime dependencies.
 
 ## Architectural Inspiration
 
-Slate's design draws conceptual inspiration from the following open-source
-project:
+Slate's design and implementation experience draw from the following
+open-source project:
 
 ### OpenMontage
 - **Repository:** https://github.com/calesthio/OpenMontage
 - **License:** GNU Affero General Public License v3.0 (AGPL-3.0)
 - **Author:** the original author
 - **Relationship:** Slate's author is also the creator of OpenMontage.
-  Architectural patterns (tool contracts, pipeline manifests, capability
-  registries, delivery-promise classification) were reimagined for
-  enterprise use — no source code was reused.
+  Tool contracts, capability registries, model/tool routing, declarative
+  production, media assembly, budget controls, and the agent-directed
+  production workflow carry OpenMontage lineage into Slate. Slate extends
+  those foundations for Azure AI Foundry and enterprise governance.
 - **Soundstage (living storyboard):** Slate's `slate.soundstage` board is a
-  clean-room reimagining of **Backlot**, the living storyboard shipped in
+  reimplementation and extension of **Backlot**, the living storyboard shipped in
   OpenMontage (PR #273, https://github.com/calesthio/OpenMontage/pull/273).
-  The *concept* — a read-only, disk-derived production board that observes the
-  files the pipeline already writes — is shared. Slate reimplements it
-  independently against its own append-only state contract (`decisions.jsonl`
+  The read-only, disk-derived production-board model is shared lineage. Slate
+  applies it to its append-only state contract (`decisions.jsonl`
   / `ledger.jsonl` + SCF) and extends it (variety meter, narration-timeline,
-  design-critic overlay, provenance trail, governance panel). No OpenMontage
-  source code was used. See `docs/design/LIVING_STORYBOARD.md`.
+  design-critic overlay, provenance trail, governance panel).
+- **Detailed map:** See `docs/OPENMONTAGE_LINEAGE.md` for the subsystem-level
+  relationship and the Slate files where attribution is carried.
 
 ### HyperFrames
 - **Repository:** https://github.com/HeyGen-Official/hyperframes
@@ -66,6 +68,7 @@ project:
 
 ---
 
-All Slate source code is original work. Where design patterns parallel those
-found in OpenMontage, this reflects shared authorship and common problem-solving
-in the agentic video production domain — not code derivation.
+Slate-specific implementations and extensions coexist with the documented
+OpenMontage lineage. Where a source-level audit identifies copied or adapted
+material, the corresponding file must preserve its applicable upstream notice
+and the lineage map must identify the upstream path and revision.

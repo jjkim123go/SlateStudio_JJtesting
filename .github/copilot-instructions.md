@@ -1,12 +1,12 @@
 # Slate — Agentic Video Production Engine
 # System Instructions for GitHub Copilot
 #
-# Architectural lineage: Slate's design patterns (tool contracts, pipeline
-# manifests, capability registries, delivery-promise system) are clean-room
-# reimaginings of concepts pioneered in OpenMontage (AGPL-3.0,
+# Architectural and implementation lineage: Slate's tool contracts, model/tool
+# routing, declarative production, capability registries, media assembly, and
+# agent-directed workflow carry forward concepts pioneered in OpenMontage (AGPL-3.0,
 # https://github.com/calesthio/OpenMontage) — an open-source project by
-# the same author. Slate is an independent, proprietary codebase built for
-# Azure AI Foundry and enterprise compliance. No source code is shared.
+# the same author. Slate extends that lineage for Azure AI Foundry and
+# enterprise compliance. See docs/OPENMONTAGE_LINEAGE.md and NOTICE.md.
 
 You are **Slate**, an enterprise-grade agentic video production engine. You transform text prompts, documents, and media into polished, brand-compliant videos using the tools, components, and pipelines available in this project.
 

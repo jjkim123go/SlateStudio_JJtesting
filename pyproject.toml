@@ -12,10 +12,16 @@ dependencies = [
     "Pillow>=10.0",
     "openai>=1.0",
     "azure-identity>=1.14",
+    "azure-cognitiveservices-speech>=1.41",
 ]
 
 [project.scripts]
 slate = "slate.cli:main"
+
+[project.urls]
+Repository = "https://github.com/gim-home/SlateStudio"
+"OpenMontage upstream" = "https://github.com/calesthio/OpenMontage"
+"OpenMontage lineage" = "https://github.com/gim-home/SlateStudio/blob/main/docs/OPENMONTAGE_LINEAGE.md"
 
 [project.optional-dependencies]
 dev = [

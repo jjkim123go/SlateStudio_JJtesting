@@ -88,6 +88,14 @@
     ease: 'power3.out'
   }, SCENE_START + 0.15);
 
+  master.from(root.querySelectorAll('.setup-card'), {
+    y: 24,
+    autoAlpha: 0,
+    duration: 0.4,
+    ease: 'power2.out',
+    stagger: 0.65
+  }, SCENE_START + 1.0);
+
   master.to(window$, {
     opacity: 0,
     duration: 0.5,
