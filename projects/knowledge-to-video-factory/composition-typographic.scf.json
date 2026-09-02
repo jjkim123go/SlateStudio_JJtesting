@@ -1,0 +1,124 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": { "width": 1920, "height": 1080, "fps": 30, "codec": "h264", "quality": "high", "deliveryProfile": "draft" },
+  "scenes": [
+    {
+      "id": "s1-hook",
+      "duration": 6.5,
+      "narration": "assets/narration-s1-hook.wav",
+      "narrationText": "What if every piece of trusted written knowledge could become a lesson people can see and understand?",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Typography-only hook. A single line of text resolves from a dense writing field into a clear lesson statement.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "TRUSTED WRITTEN KNOWLEDGE", "animation": "none", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 400, "fontSize": 34, "color": "#53627A", "textAlign": "center" }, "position": { "x": 960, "y": 300, "width": 1400, "height": 80, "anchor": "center" }, "zIndex": 2 },
+        { "type": "shape", "fill": "#0F6CBD", "animation": "scaleIn", "startTime": 1.4, "position": { "x": 260, "y": 390, "width": 1400, "height": 8, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "becomes a lesson", "animation": "fadeInUp", "startTime": 3.2, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 92, "color": "#172033", "textAlign": "center" }, "position": { "x": 960, "y": 540, "width": 1400, "height": 140, "anchor": "center" }, "zIndex": 3 },
+        { "type": "text", "content": "people can see and understand", "animation": "fadeInUp", "startTime": 4.7, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 48, "color": "#0F6CBD", "textAlign": "center" }, "position": { "x": 960, "y": 700, "width": 1400, "height": 90, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s2-factory",
+      "duration": 9.7,
+      "narration": "assets/narration-s2-factory.wav",
+      "narrationText": "The Knowledge-to-Video Factory turns Microsoft Learn content, technical documentation, and support articles into conceptual video experiences.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Three labeled source lanes converge into one output lane. No icons.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "KNOWLEDGE-TO-VIDEO FACTORY", "animation": "fadeInUp", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 64, "color": "#172033", "textAlign": "center" }, "position": { "x": 960, "y": 190, "width": 1700, "height": 100, "anchor": "center" }, "zIndex": 3 },
+        { "type": "shape", "fill": "#D7E2F0", "animation": "fadeIn", "startTime": 1.4, "position": { "x": 280, "y": 350, "width": 460, "height": 160, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "shape", "fill": "#D7E2F0", "animation": "fadeIn", "startTime": 2.3, "position": { "x": 280, "y": 560, "width": 460, "height": 160, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "shape", "fill": "#D7E2F0", "animation": "fadeIn", "startTime": 3.2, "position": { "x": 280, "y": 770, "width": 460, "height": 160, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "MICROSOFT LEARN CONTENT", "animation": "fadeInLeft", "startTime": 1.4, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 25, "color": "#172033", "textAlign": "center" }, "position": { "x": 510, "y": 430, "width": 420, "height": 70, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "TECHNICAL DOCUMENTATION", "animation": "fadeInLeft", "startTime": 2.3, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 25, "color": "#172033", "textAlign": "center" }, "position": { "x": 510, "y": 640, "width": 420, "height": 70, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "SUPPORT ARTICLES", "animation": "fadeInLeft", "startTime": 3.2, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 25, "color": "#172033", "textAlign": "center" }, "position": { "x": 510, "y": 850, "width": 420, "height": 70, "anchor": "center" }, "zIndex": 2 },
+        { "type": "shape", "fill": "#0F6CBD", "animation": "fadeInRight", "startTime": 4.4, "position": { "x": 1080, "y": 530, "width": 420, "height": 24, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "CONCEPTUAL VIDEO EXPERIENCES", "animation": "scaleIn", "startTime": 5.8, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 35, "color": "#0F6CBD", "textAlign": "center" }, "position": { "x": 1320, "y": 460, "width": 700, "height": 140, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s3-agents",
+      "duration": 9.0,
+      "narration": "assets/narration-s3-agents.wav",
+      "narrationText": "Specialized AI agents read the source, identify the teaching spine, and protect the claims that must stay accurate.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "A text document becomes a three-line reasoning trace; each line changes from pending to checked text.",
+      "layers": [
+        { "type": "shape", "fill": "#172033", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "AGENT WORKSPACE", "animation": "fadeIn", "startTime": 0, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 24, "color": "#9FB6D1", "textAlign": "left" }, "position": { "x": 160, "y": 150, "width": 600, "height": 50, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "01  READ THE SOURCE", "animation": "fadeInLeft", "startTime": 1.0, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 46, "color": "#FFFFFF", "textAlign": "left" }, "position": { "x": 300, "y": 360, "width": 900, "height": 80, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "02  FIND THE TEACHING SPINE", "animation": "fadeInLeft", "startTime": 3.0, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 46, "color": "#FFFFFF", "textAlign": "left" }, "position": { "x": 300, "y": 540, "width": 1100, "height": 80, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "03  PROTECT ACCURATE CLAIMS", "animation": "fadeInLeft", "startTime": 5.4, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 46, "color": "#FFFFFF", "textAlign": "left" }, "position": { "x": 300, "y": 720, "width": 1100, "height": 80, "anchor": "center" }, "zIndex": 2 },
+        { "type": "shape", "fill": "#00A4EF", "animation": "scaleIn", "startTime": 7.3, "position": { "x": 300, "y": 850, "width": 1120, "height": 8, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "SOURCE TRUTH PRESERVED", "animation": "scaleIn", "startTime": 7.6, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 44, "color": "#00A4EF", "textAlign": "left" }, "position": { "x": 300, "y": 930, "width": 1100, "height": 80, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s4-production",
+      "duration": 10.0,
+      "narration": "assets/narration-s4-production.wav",
+      "narrationText": "Then they work in sequence: shaping the script, mapping a visual storyboard, and preparing narration for each beat.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Three large typographic production stages assemble along a single rail.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "FROM IDEA TO BEAT", "animation": "fadeInUp", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 68, "color": "#172033", "textAlign": "center" }, "position": { "x": 960, "y": 170, "width": 1000, "height": 100, "anchor": "center" }, "zIndex": 3 },
+        { "type": "shape", "fill": "#0F6CBD", "animation": "fadeIn", "startTime": 1.0, "position": { "x": 210, "y": 540, "width": 1500, "height": 8, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "SCRIPT", "animation": "scaleIn", "startTime": 1.4, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 72, "color": "#0F6CBD", "textAlign": "center" }, "position": { "x": 380, "y": 450, "width": 380, "height": 100, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "STORYBOARD", "animation": "scaleIn", "startTime": 4.2, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 58, "color": "#00A4EF", "textAlign": "center" }, "position": { "x": 960, "y": 450, "width": 520, "height": 100, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "NARRATION", "animation": "scaleIn", "startTime": 6.9, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 62, "color": "#107C10", "textAlign": "center" }, "position": { "x": 1530, "y": 450, "width": 480, "height": 100, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "01", "animation": "fadeIn", "startTime": 1.4, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 28, "color": "#53627A", "textAlign": "center" }, "position": { "x": 380, "y": 650, "width": 160, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "text", "content": "02", "animation": "fadeIn", "startTime": 4.2, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 28, "color": "#53627A", "textAlign": "center" }, "position": { "x": 960, "y": 650, "width": 160, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "text", "content": "03", "animation": "fadeIn", "startTime": 6.9, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 28, "color": "#53627A", "textAlign": "center" }, "position": { "x": 1530, "y": 650, "width": 160, "height": 60, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s5-render",
+      "duration": 10.0,
+      "narration": "assets/narration-s5-render.wav",
+      "narrationText": "HyperFrames turns that plan into motion, while brand and instructional checks keep every scene clear, consistent, and trustworthy.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "A deterministic path moves through three quality words. The line is the visual engine.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "THE PLAN BECOMES MOTION", "animation": "fadeInUp", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 70, "color": "#172033", "textAlign": "center" }, "position": { "x": 960, "y": 180, "width": 1700, "height": 100, "anchor": "center" }, "zIndex": 3 },
+        { "type": "shape", "fill": "#00A4EF", "animation": "fadeIn", "startTime": 1.0, "position": { "x": 220, "y": 520, "width": 1480, "height": 10, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "CLEAR", "animation": "scaleIn", "startTime": 3.2, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 64, "color": "#0F6CBD", "textAlign": "center" }, "position": { "x": 420, "y": 420, "width": 360, "height": 100, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "CONSISTENT", "animation": "scaleIn", "startTime": 5.2, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 56, "color": "#00A4EF", "textAlign": "center" }, "position": { "x": 960, "y": 420, "width": 500, "height": 100, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "TRUSTWORTHY", "animation": "scaleIn", "startTime": 7.0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 52, "color": "#107C10", "textAlign": "center" }, "position": { "x": 1500, "y": 420, "width": 520, "height": 100, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "QUALITY IS PART OF THE PIPELINE", "animation": "fadeInUp", "startTime": 8.3, "style": { "fontFamily": "JetBrains Mono", "fontWeight": 700, "fontSize": 28, "color": "#53627A", "textAlign": "center" }, "position": { "x": 960, "y": 760, "width": 1300, "height": 70, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s6-outcome",
+      "duration": 12.3,
+      "narration": "assets/narration-s6-outcome.wav",
+      "narrationText": "The result is a repeatable path from written knowledge to visual learning, helping teams explain complex ideas faster, without losing rigor.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "A single line of text condenses into a repeatable loop, then expands into a quiet field of learning outcomes.",
+      "layers": [
+        { "type": "shape", "fill": "#172033", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "WRITTEN KNOWLEDGE", "animation": "fadeInLeft", "startTime": 0.5, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 48, "color": "#FFFFFF", "textAlign": "center" }, "position": { "x": 450, "y": 360, "width": 600, "height": 80, "anchor": "center" }, "zIndex": 2 },
+        { "type": "shape", "fill": "#00A4EF", "animation": "fadeIn", "startTime": 2.0, "position": { "x": 800, "y": 390, "width": 320, "height": 10, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "VISUAL LEARNING", "animation": "fadeInRight", "startTime": 3.2, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 54, "color": "#00A4EF", "textAlign": "center" }, "position": { "x": 1480, "y": 360, "width": 650, "height": 90, "anchor": "center" }, "zIndex": 2 },
+        { "type": "shape", "fill": "#2C3E58", "animation": "fadeInUp", "startTime": 5.0, "position": { "x": 260, "y": 620, "width": 1400, "height": 3, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "text", "content": "EXPLAIN COMPLEX IDEAS FASTER", "animation": "fadeInUp", "startTime": 6.5, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 52, "color": "#FFFFFF", "textAlign": "center" }, "position": { "x": 960, "y": 720, "width": 1500, "height": 90, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "WITHOUT LOSING RIGOR", "animation": "typewriter", "startTime": 9.4, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 48, "color": "#FFB900", "textAlign": "center" }, "position": { "x": 960, "y": 850, "width": 1300, "height": 80, "anchor": "center" }, "zIndex": 3 },
+        { "type": "text", "content": "Visual learning. Faster. Still rigorous.", "animation": "scaleIn", "startTime": 11.0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 42, "color": "#FFFFFF", "textAlign": "center" }, "position": { "x": 960, "y": 960, "width": 1500, "height": 70, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s7-endcard",
+      "duration": 2.5,
+      "notes": "Silent text-only end card retained as the approved close placeholder. Replace with the exact approved media if supplied.",
+      "layers": [
+        { "type": "shape", "fill": "#0F6CBD", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "caption", "content": "Microsoft 365 Copilot", "animation": "scaleIn", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 800, "fontSize": 72, "color": "#FFFFFF", "textAlign": "center" }, "position": { "x": 960, "y": 540, "width": 1600, "height": 120, "anchor": "center" }, "zIndex": 2 }
+      ]
+    }
+  ],
+  "captions": { "style": "static", "position": "bottom", "fontSize": 28, "color": "#FFFFFF", "lineBackgroundColor": "rgba(3,10,22,0.78)", "panel": false },
+  "metadata": { "slug": "knowledge-to-video-factory", "variant": "typography-and-diagrams-no-icons", "narration_engine": "windows_tts (local, free, offline)", "total_cost_usd": 0.0 }
+}
