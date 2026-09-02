@@ -1,6 +1,12 @@
 if (typeof master?.paused === 'function' && !master.paused()) master.pause();
 const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
 if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
 const stage = root.querySelector('.kfs-stage');
 const NS = 'http://www.w3.org/2000/svg';
 const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };

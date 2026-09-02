@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Slate Composition</title>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomBounce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomWiggle.min.js"></script>
+
+<style>
+:root { color-scheme: dark; --brand-primary:#275C5F;--brand-accent:#B45309;--brand-bg:#F3F0E8;--brand-text:#1F2933;--slate-bg:#F3F0E8;--slate-surface:#FFFCF4;--slate-elevated-surface:#E7E1D3;--slate-text:#1F2933;--slate-muted-text:#59636E;--slate-border:#D2C8B8;--slate-success:#3DDC97;--slate-warning:#F7C948;--slate-danger:#FF6B6B;--slate-caption-highlight:#275C5F; }
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; width:1920px; height:1080px; background:var(--slate-bg,#120A1F); color:var(--slate-text,#F8F4EC); overflow:hidden; font-family:Inter,Inter,-apple-system,BlinkMacSystemFont,sans-serif; }
+.scene { opacity: 0; }
+
+</style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="animated-explainer"
+  data-start="0"
+  data-duration="60"
+  data-width="1920"
+  data-height="1080"
+  style="position:relative;width:1920px;height:1080px;background:var(--slate-bg,#120A1F);overflow:hidden">
+<div class="scene scene-signal"
+    data-composition-id="signal"
+    data-start="0"
+    data-duration="6.5"
+    data-track-index="1"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-signal .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-signal .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-signal .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-signal .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-signal .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-signal .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-signal .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-signal .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-signal .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-signal .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-signal .g-svg path,.scene-signal .g-svg line,.scene-signal .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-signal .g-svg .warm{stroke:#ffb84d}.scene-signal .g-svg .good{stroke:#83e27e}.scene-signal .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-signal .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-signal .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-signal .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-signal .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-signal .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-signal .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-signal .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-signal .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-signal .g-kicker,.scene-signal .g-sub,.scene-signal .g-tag,.scene-signal .g-footer{display:none}
+.scene-signal .g-node span{display:none}
+.scene-signal .g-header{left:120px;top:96px;right:120px}
+.scene-signal .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-signal .g-stage{top:250px;bottom:70px}
+.scene-signal .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-signal .g-node span{color:#53627a}
+.scene-signal .g-word{font-size:48px}
+.scene-signal .g-mono{color:#53627a}
+.scene-signal .g-footer{color:#53627a}
+.scene-signal .g-svg path,.scene-signal .g-svg line,.scene-signal .g-svg circle{stroke:#0f6cbd}
+.scene-signal .g-root{background:#f7f9fc;color:#172033}
+.scene-signal .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-signal .g-kicker{color:#0f6cbd}
+.scene-signal .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-signal .g-sub{color:#53627a;font-size:25px}
+.scene-signal .g-tag{color:#0f6cbd}
+.scene-signal .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-signal .g-node span{color:#53627a}
+.scene-signal .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-signal .g-mono,.scene-signal .g-footer{color:#53627a}
+.scene-signal .g-svg path,.scene-signal .g-svg line,.scene-signal .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">THE QUESTION</div><div class="g-title">What if knowledge could move?</div><div class="g-sub">From trusted writing to a lesson people can see and understand.</div><div class="g-tag">01 / 06</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>SOURCE -&gt; LESSON</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="signal-narration"
+        data-composition-id="signal-narration"
+        data-start="0"
+        data-duration="6.5"
+        data-media-start="0"
+        data-track-index="1"
+        src="assets/audio/narration-s1-hook.wav"
+      ></audio>
+<div class="scene scene-funnel"
+    data-composition-id="funnel"
+    data-start="6.5"
+    data-duration="9.7"
+    data-track-index="2"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-funnel .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-funnel .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-funnel .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-funnel .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-funnel .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-funnel .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-funnel .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-funnel .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-funnel .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-funnel .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-funnel .g-svg path,.scene-funnel .g-svg line,.scene-funnel .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-funnel .g-svg .warm{stroke:#ffb84d}.scene-funnel .g-svg .good{stroke:#83e27e}.scene-funnel .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-funnel .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-funnel .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-funnel .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-funnel .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-funnel .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-funnel .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-funnel .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-funnel .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-funnel .g-kicker,.scene-funnel .g-sub,.scene-funnel .g-tag,.scene-funnel .g-footer{display:none}
+.scene-funnel .g-node span{display:none}
+.scene-funnel .g-header{left:120px;top:96px;right:120px}
+.scene-funnel .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-funnel .g-stage{top:250px;bottom:70px}
+.scene-funnel .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-funnel .g-node span{color:#53627a}
+.scene-funnel .g-word{font-size:48px}
+.scene-funnel .g-mono{color:#53627a}
+.scene-funnel .g-footer{color:#53627a}
+.scene-funnel .g-svg path,.scene-funnel .g-svg line,.scene-funnel .g-svg circle{stroke:#0f6cbd}
+.scene-funnel .g-root{background:#f7f9fc;color:#172033}
+.scene-funnel .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-funnel .g-kicker{color:#0f6cbd}
+.scene-funnel .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-funnel .g-sub{color:#53627a;font-size:25px}
+.scene-funnel .g-tag{color:#0f6cbd}
+.scene-funnel .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-funnel .g-node span{color:#53627a}
+.scene-funnel .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-funnel .g-mono,.scene-funnel .g-footer{color:#53627a}
+.scene-funnel .g-svg path,.scene-funnel .g-svg line,.scene-funnel .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">THE FACTORY</div><div class="g-title">Many sources. One clear output.</div><div class="g-sub">Three kinds of knowledge enter. One conceptual lesson leaves.</div><div class="g-tag">02 / 06</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>INPUTS -&gt; OUTPUT</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="funnel-narration"
+        data-composition-id="funnel-narration"
+        data-start="6.5"
+        data-duration="9.7"
+        data-media-start="0"
+        data-track-index="2"
+        src="assets/audio/narration-s2-factory.wav"
+      ></audio>
+<div class="scene scene-agents"
+    data-composition-id="agents"
+    data-start="16.2"
+    data-duration="9"
+    data-track-index="3"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-agents .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-agents .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-agents .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-agents .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-agents .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-agents .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-agents .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-agents .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-agents .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-agents .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-agents .g-svg path,.scene-agents .g-svg line,.scene-agents .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-agents .g-svg .warm{stroke:#ffb84d}.scene-agents .g-svg .good{stroke:#83e27e}.scene-agents .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-agents .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-agents .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-agents .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-agents .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-agents .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-agents .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-agents .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-agents .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-agents .g-kicker,.scene-agents .g-sub,.scene-agents .g-tag,.scene-agents .g-footer{display:none}
+.scene-agents .g-node span{display:none}
+.scene-agents .g-header{left:120px;top:96px;right:120px}
+.scene-agents .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-agents .g-stage{top:250px;bottom:70px}
+.scene-agents .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-agents .g-node span{color:#53627a}
+.scene-agents .g-word{font-size:48px}
+.scene-agents .g-mono{color:#53627a}
+.scene-agents .g-footer{color:#53627a}
+.scene-agents .g-svg path,.scene-agents .g-svg line,.scene-agents .g-svg circle{stroke:#0f6cbd}
+.scene-agents .g-root{background:#f7f9fc;color:#172033}
+.scene-agents .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-agents .g-kicker{color:#0f6cbd}
+.scene-agents .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-agents .g-sub{color:#53627a;font-size:25px}
+.scene-agents .g-tag{color:#0f6cbd}
+.scene-agents .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-agents .g-node span{color:#53627a}
+.scene-agents .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-agents .g-mono,.scene-agents .g-footer{color:#53627a}
+.scene-agents .g-svg path,.scene-agents .g-svg line,.scene-agents .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">THE AGENTS</div><div class="g-title">Structure without losing truth.</div><div class="g-sub">Specialists read, organize, and protect what the source actually says.</div><div class="g-tag">03 / 06</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>READ -&gt; STRUCTURE -&gt; VERIFY</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="agents-narration"
+        data-composition-id="agents-narration"
+        data-start="16.2"
+        data-duration="9"
+        data-media-start="0"
+        data-track-index="3"
+        src="assets/audio/narration-s3-agents.wav"
+      ></audio>
+<div class="scene scene-timeline"
+    data-composition-id="timeline"
+    data-start="25.2"
+    data-duration="10"
+    data-track-index="4"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-timeline .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-timeline .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-timeline .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-timeline .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-timeline .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-timeline .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-timeline .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-timeline .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-timeline .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-timeline .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-timeline .g-svg path,.scene-timeline .g-svg line,.scene-timeline .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-timeline .g-svg .warm{stroke:#ffb84d}.scene-timeline .g-svg .good{stroke:#83e27e}.scene-timeline .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-timeline .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-timeline .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-timeline .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-timeline .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-timeline .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-timeline .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-timeline .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-timeline .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-timeline .g-kicker,.scene-timeline .g-sub,.scene-timeline .g-tag,.scene-timeline .g-footer{display:none}
+.scene-timeline .g-node span{display:none}
+.scene-timeline .g-header{left:120px;top:96px;right:120px}
+.scene-timeline .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-timeline .g-stage{top:250px;bottom:70px}
+.scene-timeline .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-timeline .g-node span{color:#53627a}
+.scene-timeline .g-word{font-size:48px}
+.scene-timeline .g-mono{color:#53627a}
+.scene-timeline .g-footer{color:#53627a}
+.scene-timeline .g-svg path,.scene-timeline .g-svg line,.scene-timeline .g-svg circle{stroke:#0f6cbd}
+.scene-timeline .g-root{background:#f7f9fc;color:#172033}
+.scene-timeline .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-timeline .g-kicker{color:#0f6cbd}
+.scene-timeline .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-timeline .g-sub{color:#53627a;font-size:25px}
+.scene-timeline .g-tag{color:#0f6cbd}
+.scene-timeline .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-timeline .g-node span{color:#53627a}
+.scene-timeline .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-timeline .g-mono,.scene-timeline .g-footer{color:#53627a}
+.scene-timeline .g-svg path,.scene-timeline .g-svg line,.scene-timeline .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">THE BUILD</div><div class="g-title">The learning plan takes shape.</div><div class="g-sub">Script. Storyboard. Narration. Three artifacts, one coordinated beat.</div><div class="g-tag">04 / 06</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>PLAN THE EXPERIENCE</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="timeline-narration"
+        data-composition-id="timeline-narration"
+        data-start="25.2"
+        data-duration="10"
+        data-media-start="0"
+        data-track-index="4"
+        src="assets/audio/narration-s4-production.wav"
+      ></audio>
+<div class="scene scene-quality"
+    data-composition-id="quality"
+    data-start="35.2"
+    data-duration="10"
+    data-track-index="5"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-quality .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-quality .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-quality .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-quality .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-quality .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-quality .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-quality .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-quality .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-quality .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-quality .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-quality .g-svg path,.scene-quality .g-svg line,.scene-quality .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-quality .g-svg .warm{stroke:#ffb84d}.scene-quality .g-svg .good{stroke:#83e27e}.scene-quality .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-quality .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-quality .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-quality .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-quality .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-quality .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-quality .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-quality .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-quality .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-quality .g-kicker,.scene-quality .g-sub,.scene-quality .g-tag,.scene-quality .g-footer{display:none}
+.scene-quality .g-node span{display:none}
+.scene-quality .g-header{left:120px;top:96px;right:120px}
+.scene-quality .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-quality .g-stage{top:250px;bottom:70px}
+.scene-quality .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-quality .g-node span{color:#53627a}
+.scene-quality .g-word{font-size:48px}
+.scene-quality .g-mono{color:#53627a}
+.scene-quality .g-footer{color:#53627a}
+.scene-quality .g-svg path,.scene-quality .g-svg line,.scene-quality .g-svg circle{stroke:#0f6cbd}
+.scene-quality .g-root{background:#f7f9fc;color:#172033}
+.scene-quality .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-quality .g-kicker{color:#0f6cbd}
+.scene-quality .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-quality .g-sub{color:#53627a;font-size:25px}
+.scene-quality .g-tag{color:#0f6cbd}
+.scene-quality .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-quality .g-node span{color:#53627a}
+.scene-quality .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-quality .g-mono,.scene-quality .g-footer{color:#53627a}
+.scene-quality .g-svg path,.scene-quality .g-svg line,.scene-quality .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">THE CHECK</div><div class="g-title">Motion is the easy part. Rigor is the feature.</div><div class="g-sub">Every scene earns clarity, consistency, and trust before it ships.</div><div class="g-tag">05 / 06</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>QUALITY BUILT IN</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="quality-narration"
+        data-composition-id="quality-narration"
+        data-start="35.2"
+        data-duration="10"
+        data-media-start="0"
+        data-track-index="5"
+        src="assets/audio/narration-s5-render.wav"
+      ></audio>
+<div class="scene scene-outcome"
+    data-composition-id="outcome"
+    data-start="45.2"
+    data-duration="14.8"
+    data-track-index="6"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-outcome .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-outcome .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-outcome .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-outcome .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-outcome .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-outcome .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-outcome .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-outcome .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-outcome .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-outcome .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-outcome .g-svg path,.scene-outcome .g-svg line,.scene-outcome .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-outcome .g-svg .warm{stroke:#ffb84d}.scene-outcome .g-svg .good{stroke:#83e27e}.scene-outcome .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-outcome .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-outcome .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-outcome .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-outcome .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-outcome .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-outcome .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-outcome .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-outcome .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-outcome .g-kicker,.scene-outcome .g-sub,.scene-outcome .g-tag,.scene-outcome .g-footer{display:none}
+.scene-outcome .g-node span{display:none}
+.scene-outcome .g-header{left:120px;top:96px;right:120px}
+.scene-outcome .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-outcome .g-stage{top:250px;bottom:70px}
+.scene-outcome .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-outcome .g-node span{color:#53627a}
+.scene-outcome .g-word{font-size:48px}
+.scene-outcome .g-mono{color:#53627a}
+.scene-outcome .g-footer{color:#53627a}
+.scene-outcome .g-svg path,.scene-outcome .g-svg line,.scene-outcome .g-svg circle{stroke:#0f6cbd}
+.scene-outcome .g-root{background:#f7f9fc;color:#172033}
+.scene-outcome .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-outcome .g-kicker{color:#0f6cbd}
+.scene-outcome .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-outcome .g-sub{color:#53627a;font-size:25px}
+.scene-outcome .g-tag{color:#0f6cbd}
+.scene-outcome .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-outcome .g-node span{color:#53627a}
+.scene-outcome .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-outcome .g-mono,.scene-outcome .g-footer{color:#53627a}
+.scene-outcome .g-svg path,.scene-outcome .g-svg line,.scene-outcome .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">THE OUTCOME</div><div class="g-title">A repeatable path to visual learning.</div><div class="g-sub">Explain complex ideas faster, without losing rigor.</div><div class="g-tag">06 / 06</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>KNOWLEDGE -&gt; LEARNING</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="outcome-narration"
+        data-composition-id="outcome-narration"
+        data-start="45.2"
+        data-duration="14.8"
+        data-media-start="0"
+        data-track-index="6"
+        src="assets/audio/narration-s6-outcome.wav"
+      ></audio>
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+window.__slateFontsReady = !document.fonts;
+if (document.fonts) {
+  document.fonts.ready.then(function(){ window.__slateFontsReady = true; document.documentElement.setAttribute('data-fonts-ready', 'true'); });
+}
+// Register the now-free GSAP plugins (loaded from CDN above). GSAP went fully
+// free in v3.13; these were previously Club-only. Defensive registration: only
+// register plugins that actually loaded, so a CDN hiccup degrades gracefully.
+[window.Flip, window.SplitText, window.DrawSVGPlugin, window.MorphSVGPlugin, window.MotionPathPlugin, window.Physics2DPlugin, window.CustomEase, window.CustomBounce, window.CustomWiggle].forEach(function(p){ if (p) { try { gsap.registerPlugin(p); } catch (e) {} } });
+const master = gsap.timeline({ paused: true });
+
+// Per-scene visibility — only the active scene is shown at any time
+master.set('.scene-signal', { opacity: 0 }, 0);
+master.set('.scene-signal', { opacity: 1 }, 0);
+master.set('.scene-signal', { opacity: 0 }, 6.5);
+master.set('.scene-funnel', { opacity: 0 }, 0);
+master.fromTo('.scene-funnel', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 6);
+master.set('.scene-funnel', { opacity: 0 }, 16.2);
+master.set('.scene-agents', { opacity: 0 }, 0);
+master.fromTo('.scene-agents', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 15.7);
+master.set('.scene-agents', { opacity: 0 }, 25.2);
+master.set('.scene-timeline', { opacity: 0 }, 0);
+master.fromTo('.scene-timeline', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 24.7);
+master.set('.scene-timeline', { opacity: 0 }, 35.2);
+master.set('.scene-quality', { opacity: 0 }, 0);
+master.fromTo('.scene-quality', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 34.7);
+master.set('.scene-quality', { opacity: 0 }, 45.2);
+master.set('.scene-outcome', { opacity: 0 }, 0);
+master.fromTo('.scene-outcome', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 44.7);
+master.set('.scene-outcome', { opacity: 0 }, 60);
+master.to('.scene-signal', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 6);
+master.to('.scene-funnel', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 15.7);
+master.to('.scene-agents', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 24.7);
+master.to('.scene-timeline', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 34.7);
+master.to('.scene-quality', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 44.7);
+
+// Per-layer visibility — layers with startTime/endTime are revealed/hidden
+// at composition-time. CSS-id selectors are escaped for GSAP (it accepts
+// '#id' selectors directly). Initial opacity is also set inline on the
+// element so the very first seeked frame does not flash content that
+// should still be hidden.
+
+
+window.__timelines["animated-explainer"] = master;
+
+
+// signal
+(function(){
+const SCENE_ID="signal";
+const SCENE_START=0;
+const SCENE_DURATION=6.5;
+const SCENE_PROPS={"variant":"signal","kicker":"THE QUESTION","title":"What if knowledge could move?","subtitle":"From trusted writing to a lesson people can see and understand.","tag":"01 / 06","footer":"SOURCE -> LESSON"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .g-root');
+if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
+const stage = root.querySelector('.g-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.className = 'g-svg'; svg.setAttribute('viewBox', '0 0 1680 630'); stage.appendChild(svg);
+const add = (name, attrs={}) => { const el=document.createElementNS(NS,name); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v))); svg.appendChild(el); return el; };
+const path = d => add('path',{d,fill:'none',stroke:'#56d6ff','stroke-width':5,'stroke-linecap':'round'});
+const line = (x1,y1,x2,y2,cls='') => add('line',{x1,y1,x2,y2,class:cls});
+const circle = (cx,cy,r,cls='') => add('circle',{cx,cy,r,class:cls});
+const node = (x,y,w,h,title,sub,cls='') => { const el=document.createElement('div'); el.className='g-node '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<strong>'+title+'</strong><span>'+sub+'</span>'; stage.appendChild(el); return el; };
+const word = (x,y,value,cls='g-word') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='signal'){ const a=word(70,130,'KNOWLEDGE'); const b=word(920,320,'LEARNING'); const n=node(90,300,330,150,'SOURCE','trusted writing'); const o=node(1220,300,350,150,'LESSON','visible understanding',''); path('M 420 375 C 660 180, 920 180, 1220 375'); circle(670,250,16); circle(900,225,11); items.push(a,b,n,o); }
+if(v==='funnel'){ const a=node(40,45,350,125,'MICROSOFT LEARN','content'); const b=node(40,240,350,125,'TECHNICAL DOCS','structure'); const c=node(40,435,350,125,'SUPPORT ARTICLES','answers'); const hub=node(665,250,350,175,'ONE FACTORY','specialized agents'); const out=node(1300,250,330,175,'VIDEO','conceptual lesson'); path('M 390 130 C 500 130, 540 300, 665 300 M 390 325 L 665 335 M 390 520 C 500 520, 540 380, 665 380 M 1015 335 L 1300 335'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const d=node(40,170,390,210,'SOURCE','article.md'); const o=document.createElement('div'); o.className='g-orb'; o.style.left='670px'; o.style.top='70px'; o.style.width='420px'; o.style.height='420px'; stage.appendChild(o); const core=document.createElement('div'); core.className='g-core'; core.style.left='815px'; core.style.top='215px'; core.style.width='130px'; core.style.height='130px'; core.textContent='AI'; stage.appendChild(core); [['READ',700,35],['SHAPE',1030,195],['CHECK',700,475]].forEach(([t,x,y])=>{ const w=word(x,y,t,'g-word g-mono'); items.push(w); }); path('M 430 275 C 540 275, 620 240, 815 280'); [0,1,2].forEach(i=>{const angle=i*2.1; const x=880+Math.cos(angle)*210; const y=280+Math.sin(angle)*210; circle(x,y,18,'warm');}); items.push(d,core,o); }
+if(v==='timeline'){ const base=line(80,330,1600,330); const steps=[['SCRIPT',220,'#56d6ff'],['STORYBOARD',700,'#ffb84d'],['NARRATION',1200,'#83e27e']]; steps.forEach(([label,x,color],i)=>{ const n=node(x,150,260,180,label,'artifact '+String(i+1).padStart(2,'0')); n.style.borderColor=color; items.push(n); line(x+130,330,x+130,430); }); }
+if(v==='quality'){ const title=word(40,60,'QUALITY IS PART OF THE PIPELINE'); const labels=[['MOTION',220,'#56d6ff'],['BRAND',650,'#ffb84d'],['TEACHING',1050,'#83e27e'],['TRUST',1400,'#56d6ff']]; const points=[]; labels.forEach(([label,x,color],i)=>{ const n=node(x,220,220,150,label,'verified'); n.style.borderColor=color; items.push(n); points.push([x+110,220]); }); for(let i=0;i<points.length-1;i++) path('M '+points[i][0]+' '+(points[i][1]+75)+' C '+(points[i][0]+110)+' '+(points[i][1]-60)+', '+(points[i+1][0]-110)+' '+(points[i+1][1]+210)+', '+points[i+1][0]+' '+(points[i+1][1]+75)); const read=word(580,500,'clear  /  consistent  /  trustworthy','g-word g-mono'); items.push(title,read); }
+if(v==='outcome'){ const a=node(70,160,420,190,'WRITTEN','knowledge'); const b=node(1190,160,420,190,'VISUAL','learning'); path('M 490 255 C 740 40, 980 40, 1190 255'); circle(770,120,18); circle(1000,140,12); const t=word(380,470,'EXPLAIN COMPLEX IDEAS FASTER'); const s=word(525,555,'WITHOUT LOSING RIGOR','g-word g-mono'); items.push(a,b,t,s); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(22px) scale(.97)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.16,.9)); });
+const paths=[...svg.querySelectorAll('path')]; paths.forEach((p,i)=>{ const len=p.getTotalLength(); p.style.strokeDasharray=len; p.style.strokeDashoffset=len; master.to(p,{strokeDashoffset:0,duration:1.15,ease:'power2.out'},SCENE_START+0.6+i*.12); });
+
+})();
+// funnel
+(function(){
+const SCENE_ID="funnel";
+const SCENE_START=6.5;
+const SCENE_DURATION=9.7;
+const SCENE_PROPS={"variant":"funnel","kicker":"THE FACTORY","title":"Many sources. One clear output.","subtitle":"Three kinds of knowledge enter. One conceptual lesson leaves.","tag":"02 / 06","footer":"INPUTS -> OUTPUT"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .g-root');
+if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
+const stage = root.querySelector('.g-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.className = 'g-svg'; svg.setAttribute('viewBox', '0 0 1680 630'); stage.appendChild(svg);
+const add = (name, attrs={}) => { const el=document.createElementNS(NS,name); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v))); svg.appendChild(el); return el; };
+const path = d => add('path',{d,fill:'none',stroke:'#56d6ff','stroke-width':5,'stroke-linecap':'round'});
+const line = (x1,y1,x2,y2,cls='') => add('line',{x1,y1,x2,y2,class:cls});
+const circle = (cx,cy,r,cls='') => add('circle',{cx,cy,r,class:cls});
+const node = (x,y,w,h,title,sub,cls='') => { const el=document.createElement('div'); el.className='g-node '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<strong>'+title+'</strong><span>'+sub+'</span>'; stage.appendChild(el); return el; };
+const word = (x,y,value,cls='g-word') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='signal'){ const a=word(70,130,'KNOWLEDGE'); const b=word(920,320,'LEARNING'); const n=node(90,300,330,150,'SOURCE','trusted writing'); const o=node(1220,300,350,150,'LESSON','visible understanding',''); path('M 420 375 C 660 180, 920 180, 1220 375'); circle(670,250,16); circle(900,225,11); items.push(a,b,n,o); }
+if(v==='funnel'){ const a=node(40,45,350,125,'MICROSOFT LEARN','content'); const b=node(40,240,350,125,'TECHNICAL DOCS','structure'); const c=node(40,435,350,125,'SUPPORT ARTICLES','answers'); const hub=node(665,250,350,175,'ONE FACTORY','specialized agents'); const out=node(1300,250,330,175,'VIDEO','conceptual lesson'); path('M 390 130 C 500 130, 540 300, 665 300 M 390 325 L 665 335 M 390 520 C 500 520, 540 380, 665 380 M 1015 335 L 1300 335'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const d=node(40,170,390,210,'SOURCE','article.md'); const o=document.createElement('div'); o.className='g-orb'; o.style.left='670px'; o.style.top='70px'; o.style.width='420px'; o.style.height='420px'; stage.appendChild(o); const core=document.createElement('div'); core.className='g-core'; core.style.left='815px'; core.style.top='215px'; core.style.width='130px'; core.style.height='130px'; core.textContent='AI'; stage.appendChild(core); [['READ',700,35],['SHAPE',1030,195],['CHECK',700,475]].forEach(([t,x,y])=>{ const w=word(x,y,t,'g-word g-mono'); items.push(w); }); path('M 430 275 C 540 275, 620 240, 815 280'); [0,1,2].forEach(i=>{const angle=i*2.1; const x=880+Math.cos(angle)*210; const y=280+Math.sin(angle)*210; circle(x,y,18,'warm');}); items.push(d,core,o); }
+if(v==='timeline'){ const base=line(80,330,1600,330); const steps=[['SCRIPT',220,'#56d6ff'],['STORYBOARD',700,'#ffb84d'],['NARRATION',1200,'#83e27e']]; steps.forEach(([label,x,color],i)=>{ const n=node(x,150,260,180,label,'artifact '+String(i+1).padStart(2,'0')); n.style.borderColor=color; items.push(n); line(x+130,330,x+130,430); }); }
+if(v==='quality'){ const title=word(40,60,'QUALITY IS PART OF THE PIPELINE'); const labels=[['MOTION',220,'#56d6ff'],['BRAND',650,'#ffb84d'],['TEACHING',1050,'#83e27e'],['TRUST',1400,'#56d6ff']]; const points=[]; labels.forEach(([label,x,color],i)=>{ const n=node(x,220,220,150,label,'verified'); n.style.borderColor=color; items.push(n); points.push([x+110,220]); }); for(let i=0;i<points.length-1;i++) path('M '+points[i][0]+' '+(points[i][1]+75)+' C '+(points[i][0]+110)+' '+(points[i][1]-60)+', '+(points[i+1][0]-110)+' '+(points[i+1][1]+210)+', '+points[i+1][0]+' '+(points[i+1][1]+75)); const read=word(580,500,'clear  /  consistent  /  trustworthy','g-word g-mono'); items.push(title,read); }
+if(v==='outcome'){ const a=node(70,160,420,190,'WRITTEN','knowledge'); const b=node(1190,160,420,190,'VISUAL','learning'); path('M 490 255 C 740 40, 980 40, 1190 255'); circle(770,120,18); circle(1000,140,12); const t=word(380,470,'EXPLAIN COMPLEX IDEAS FASTER'); const s=word(525,555,'WITHOUT LOSING RIGOR','g-word g-mono'); items.push(a,b,t,s); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(22px) scale(.97)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.16,.9)); });
+const paths=[...svg.querySelectorAll('path')]; paths.forEach((p,i)=>{ const len=p.getTotalLength(); p.style.strokeDasharray=len; p.style.strokeDashoffset=len; master.to(p,{strokeDashoffset:0,duration:1.15,ease:'power2.out'},SCENE_START+0.6+i*.12); });
+
+})();
+// agents
+(function(){
+const SCENE_ID="agents";
+const SCENE_START=16.2;
+const SCENE_DURATION=9;
+const SCENE_PROPS={"variant":"agents","theme":"","kicker":"THE AGENTS","title":"Structure without losing truth.","subtitle":"Specialists read, organize, and protect what the source actually says.","tag":"03 / 06","footer":"READ -> STRUCTURE -> VERIFY"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .g-root');
+if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
+const stage = root.querySelector('.g-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.className = 'g-svg'; svg.setAttribute('viewBox', '0 0 1680 630'); stage.appendChild(svg);
+const add = (name, attrs={}) => { const el=document.createElementNS(NS,name); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v))); svg.appendChild(el); return el; };
+const path = d => add('path',{d,fill:'none',stroke:'#56d6ff','stroke-width':5,'stroke-linecap':'round'});
+const line = (x1,y1,x2,y2,cls='') => add('line',{x1,y1,x2,y2,class:cls});
+const circle = (cx,cy,r,cls='') => add('circle',{cx,cy,r,class:cls});
+const node = (x,y,w,h,title,sub,cls='') => { const el=document.createElement('div'); el.className='g-node '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<strong>'+title+'</strong><span>'+sub+'</span>'; stage.appendChild(el); return el; };
+const word = (x,y,value,cls='g-word') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='signal'){ const a=word(70,130,'KNOWLEDGE'); const b=word(920,320,'LEARNING'); const n=node(90,300,330,150,'SOURCE','trusted writing'); const o=node(1220,300,350,150,'LESSON','visible understanding',''); path('M 420 375 C 660 180, 920 180, 1220 375'); circle(670,250,16); circle(900,225,11); items.push(a,b,n,o); }
+if(v==='funnel'){ const a=node(40,45,350,125,'MICROSOFT LEARN','content'); const b=node(40,240,350,125,'TECHNICAL DOCS','structure'); const c=node(40,435,350,125,'SUPPORT ARTICLES','answers'); const hub=node(665,250,350,175,'ONE FACTORY','specialized agents'); const out=node(1300,250,330,175,'VIDEO','conceptual lesson'); path('M 390 130 C 500 130, 540 300, 665 300 M 390 325 L 665 335 M 390 520 C 500 520, 540 380, 665 380 M 1015 335 L 1300 335'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const d=node(40,170,390,210,'SOURCE','article.md'); const o=document.createElement('div'); o.className='g-orb'; o.style.left='670px'; o.style.top='70px'; o.style.width='420px'; o.style.height='420px'; stage.appendChild(o); const core=document.createElement('div'); core.className='g-core'; core.style.left='815px'; core.style.top='215px'; core.style.width='130px'; core.style.height='130px'; core.textContent='AI'; stage.appendChild(core); [['READ',700,35],['SHAPE',1030,195],['CHECK',700,475]].forEach(([t,x,y])=>{ const w=word(x,y,t,'g-word g-mono'); items.push(w); }); path('M 430 275 C 540 275, 620 240, 815 280'); [0,1,2].forEach(i=>{const angle=i*2.1; const x=880+Math.cos(angle)*210; const y=280+Math.sin(angle)*210; circle(x,y,18,'warm');}); items.push(d,core,o); }
+if(v==='timeline'){ const base=line(80,330,1600,330); const steps=[['SCRIPT',220,'#56d6ff'],['STORYBOARD',700,'#ffb84d'],['NARRATION',1200,'#83e27e']]; steps.forEach(([label,x,color],i)=>{ const n=node(x,150,260,180,label,'artifact '+String(i+1).padStart(2,'0')); n.style.borderColor=color; items.push(n); line(x+130,330,x+130,430); }); }
+if(v==='quality'){ const title=word(40,60,'QUALITY IS PART OF THE PIPELINE'); const labels=[['MOTION',220,'#56d6ff'],['BRAND',650,'#ffb84d'],['TEACHING',1050,'#83e27e'],['TRUST',1400,'#56d6ff']]; const points=[]; labels.forEach(([label,x,color],i)=>{ const n=node(x,220,220,150,label,'verified'); n.style.borderColor=color; items.push(n); points.push([x+110,220]); }); for(let i=0;i<points.length-1;i++) path('M '+points[i][0]+' '+(points[i][1]+75)+' C '+(points[i][0]+110)+' '+(points[i][1]-60)+', '+(points[i+1][0]-110)+' '+(points[i+1][1]+210)+', '+points[i+1][0]+' '+(points[i+1][1]+75)); const read=word(580,500,'clear  /  consistent  /  trustworthy','g-word g-mono'); items.push(title,read); }
+if(v==='outcome'){ const a=node(70,160,420,190,'WRITTEN','knowledge'); const b=node(1190,160,420,190,'VISUAL','learning'); path('M 490 255 C 740 40, 980 40, 1190 255'); circle(770,120,18); circle(1000,140,12); const t=word(380,470,'EXPLAIN COMPLEX IDEAS FASTER'); const s=word(525,555,'WITHOUT LOSING RIGOR','g-word g-mono'); items.push(a,b,t,s); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(22px) scale(.97)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.16,.9)); });
+const paths=[...svg.querySelectorAll('path')]; paths.forEach((p,i)=>{ const len=p.getTotalLength(); p.style.strokeDasharray=len; p.style.strokeDashoffset=len; master.to(p,{strokeDashoffset:0,duration:1.15,ease:'power2.out'},SCENE_START+0.6+i*.12); });
+
+})();
+// timeline
+(function(){
+const SCENE_ID="timeline";
+const SCENE_START=25.2;
+const SCENE_DURATION=10;
+const SCENE_PROPS={"variant":"timeline","kicker":"THE BUILD","title":"The learning plan takes shape.","subtitle":"Script. Storyboard. Narration. Three artifacts, one coordinated beat.","tag":"04 / 06","footer":"PLAN THE EXPERIENCE"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .g-root');
+if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
+const stage = root.querySelector('.g-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.className = 'g-svg'; svg.setAttribute('viewBox', '0 0 1680 630'); stage.appendChild(svg);
+const add = (name, attrs={}) => { const el=document.createElementNS(NS,name); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v))); svg.appendChild(el); return el; };
+const path = d => add('path',{d,fill:'none',stroke:'#56d6ff','stroke-width':5,'stroke-linecap':'round'});
+const line = (x1,y1,x2,y2,cls='') => add('line',{x1,y1,x2,y2,class:cls});
+const circle = (cx,cy,r,cls='') => add('circle',{cx,cy,r,class:cls});
+const node = (x,y,w,h,title,sub,cls='') => { const el=document.createElement('div'); el.className='g-node '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<strong>'+title+'</strong><span>'+sub+'</span>'; stage.appendChild(el); return el; };
+const word = (x,y,value,cls='g-word') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='signal'){ const a=word(70,130,'KNOWLEDGE'); const b=word(920,320,'LEARNING'); const n=node(90,300,330,150,'SOURCE','trusted writing'); const o=node(1220,300,350,150,'LESSON','visible understanding',''); path('M 420 375 C 660 180, 920 180, 1220 375'); circle(670,250,16); circle(900,225,11); items.push(a,b,n,o); }
+if(v==='funnel'){ const a=node(40,45,350,125,'MICROSOFT LEARN','content'); const b=node(40,240,350,125,'TECHNICAL DOCS','structure'); const c=node(40,435,350,125,'SUPPORT ARTICLES','answers'); const hub=node(665,250,350,175,'ONE FACTORY','specialized agents'); const out=node(1300,250,330,175,'VIDEO','conceptual lesson'); path('M 390 130 C 500 130, 540 300, 665 300 M 390 325 L 665 335 M 390 520 C 500 520, 540 380, 665 380 M 1015 335 L 1300 335'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const d=node(40,170,390,210,'SOURCE','article.md'); const o=document.createElement('div'); o.className='g-orb'; o.style.left='670px'; o.style.top='70px'; o.style.width='420px'; o.style.height='420px'; stage.appendChild(o); const core=document.createElement('div'); core.className='g-core'; core.style.left='815px'; core.style.top='215px'; core.style.width='130px'; core.style.height='130px'; core.textContent='AI'; stage.appendChild(core); [['READ',700,35],['SHAPE',1030,195],['CHECK',700,475]].forEach(([t,x,y])=>{ const w=word(x,y,t,'g-word g-mono'); items.push(w); }); path('M 430 275 C 540 275, 620 240, 815 280'); [0,1,2].forEach(i=>{const angle=i*2.1; const x=880+Math.cos(angle)*210; const y=280+Math.sin(angle)*210; circle(x,y,18,'warm');}); items.push(d,core,o); }
+if(v==='timeline'){ const base=line(80,330,1600,330); const steps=[['SCRIPT',220,'#56d6ff'],['STORYBOARD',700,'#ffb84d'],['NARRATION',1200,'#83e27e']]; steps.forEach(([label,x,color],i)=>{ const n=node(x,150,260,180,label,'artifact '+String(i+1).padStart(2,'0')); n.style.borderColor=color; items.push(n); line(x+130,330,x+130,430); }); }
+if(v==='quality'){ const title=word(40,60,'QUALITY IS PART OF THE PIPELINE'); const labels=[['MOTION',220,'#56d6ff'],['BRAND',650,'#ffb84d'],['TEACHING',1050,'#83e27e'],['TRUST',1400,'#56d6ff']]; const points=[]; labels.forEach(([label,x,color],i)=>{ const n=node(x,220,220,150,label,'verified'); n.style.borderColor=color; items.push(n); points.push([x+110,220]); }); for(let i=0;i<points.length-1;i++) path('M '+points[i][0]+' '+(points[i][1]+75)+' C '+(points[i][0]+110)+' '+(points[i][1]-60)+', '+(points[i+1][0]-110)+' '+(points[i+1][1]+210)+', '+points[i+1][0]+' '+(points[i+1][1]+75)); const read=word(580,500,'clear  /  consistent  /  trustworthy','g-word g-mono'); items.push(title,read); }
+if(v==='outcome'){ const a=node(70,160,420,190,'WRITTEN','knowledge'); const b=node(1190,160,420,190,'VISUAL','learning'); path('M 490 255 C 740 40, 980 40, 1190 255'); circle(770,120,18); circle(1000,140,12); const t=word(380,470,'EXPLAIN COMPLEX IDEAS FASTER'); const s=word(525,555,'WITHOUT LOSING RIGOR','g-word g-mono'); items.push(a,b,t,s); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(22px) scale(.97)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.16,.9)); });
+const paths=[...svg.querySelectorAll('path')]; paths.forEach((p,i)=>{ const len=p.getTotalLength(); p.style.strokeDasharray=len; p.style.strokeDashoffset=len; master.to(p,{strokeDashoffset:0,duration:1.15,ease:'power2.out'},SCENE_START+0.6+i*.12); });
+
+})();
+// quality
+(function(){
+const SCENE_ID="quality";
+const SCENE_START=35.2;
+const SCENE_DURATION=10;
+const SCENE_PROPS={"variant":"quality","kicker":"THE CHECK","title":"Motion is the easy part. Rigor is the feature.","subtitle":"Every scene earns clarity, consistency, and trust before it ships.","tag":"05 / 06","footer":"QUALITY BUILT IN"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .g-root');
+if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
+const stage = root.querySelector('.g-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.className = 'g-svg'; svg.setAttribute('viewBox', '0 0 1680 630'); stage.appendChild(svg);
+const add = (name, attrs={}) => { const el=document.createElementNS(NS,name); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v))); svg.appendChild(el); return el; };
+const path = d => add('path',{d,fill:'none',stroke:'#56d6ff','stroke-width':5,'stroke-linecap':'round'});
+const line = (x1,y1,x2,y2,cls='') => add('line',{x1,y1,x2,y2,class:cls});
+const circle = (cx,cy,r,cls='') => add('circle',{cx,cy,r,class:cls});
+const node = (x,y,w,h,title,sub,cls='') => { const el=document.createElement('div'); el.className='g-node '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<strong>'+title+'</strong><span>'+sub+'</span>'; stage.appendChild(el); return el; };
+const word = (x,y,value,cls='g-word') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='signal'){ const a=word(70,130,'KNOWLEDGE'); const b=word(920,320,'LEARNING'); const n=node(90,300,330,150,'SOURCE','trusted writing'); const o=node(1220,300,350,150,'LESSON','visible understanding',''); path('M 420 375 C 660 180, 920 180, 1220 375'); circle(670,250,16); circle(900,225,11); items.push(a,b,n,o); }
+if(v==='funnel'){ const a=node(40,45,350,125,'MICROSOFT LEARN','content'); const b=node(40,240,350,125,'TECHNICAL DOCS','structure'); const c=node(40,435,350,125,'SUPPORT ARTICLES','answers'); const hub=node(665,250,350,175,'ONE FACTORY','specialized agents'); const out=node(1300,250,330,175,'VIDEO','conceptual lesson'); path('M 390 130 C 500 130, 540 300, 665 300 M 390 325 L 665 335 M 390 520 C 500 520, 540 380, 665 380 M 1015 335 L 1300 335'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const d=node(40,170,390,210,'SOURCE','article.md'); const o=document.createElement('div'); o.className='g-orb'; o.style.left='670px'; o.style.top='70px'; o.style.width='420px'; o.style.height='420px'; stage.appendChild(o); const core=document.createElement('div'); core.className='g-core'; core.style.left='815px'; core.style.top='215px'; core.style.width='130px'; core.style.height='130px'; core.textContent='AI'; stage.appendChild(core); [['READ',700,35],['SHAPE',1030,195],['CHECK',700,475]].forEach(([t,x,y])=>{ const w=word(x,y,t,'g-word g-mono'); items.push(w); }); path('M 430 275 C 540 275, 620 240, 815 280'); [0,1,2].forEach(i=>{const angle=i*2.1; const x=880+Math.cos(angle)*210; const y=280+Math.sin(angle)*210; circle(x,y,18,'warm');}); items.push(d,core,o); }
+if(v==='timeline'){ const base=line(80,330,1600,330); const steps=[['SCRIPT',220,'#56d6ff'],['STORYBOARD',700,'#ffb84d'],['NARRATION',1200,'#83e27e']]; steps.forEach(([label,x,color],i)=>{ const n=node(x,150,260,180,label,'artifact '+String(i+1).padStart(2,'0')); n.style.borderColor=color; items.push(n); line(x+130,330,x+130,430); }); }
+if(v==='quality'){ const title=word(40,60,'QUALITY IS PART OF THE PIPELINE'); const labels=[['MOTION',220,'#56d6ff'],['BRAND',650,'#ffb84d'],['TEACHING',1050,'#83e27e'],['TRUST',1400,'#56d6ff']]; const points=[]; labels.forEach(([label,x,color],i)=>{ const n=node(x,220,220,150,label,'verified'); n.style.borderColor=color; items.push(n); points.push([x+110,220]); }); for(let i=0;i<points.length-1;i++) path('M '+points[i][0]+' '+(points[i][1]+75)+' C '+(points[i][0]+110)+' '+(points[i][1]-60)+', '+(points[i+1][0]-110)+' '+(points[i+1][1]+210)+', '+points[i+1][0]+' '+(points[i+1][1]+75)); const read=word(580,500,'clear  /  consistent  /  trustworthy','g-word g-mono'); items.push(title,read); }
+if(v==='outcome'){ const a=node(70,160,420,190,'WRITTEN','knowledge'); const b=node(1190,160,420,190,'VISUAL','learning'); path('M 490 255 C 740 40, 980 40, 1190 255'); circle(770,120,18); circle(1000,140,12); const t=word(380,470,'EXPLAIN COMPLEX IDEAS FASTER'); const s=word(525,555,'WITHOUT LOSING RIGOR','g-word g-mono'); items.push(a,b,t,s); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(22px) scale(.97)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.16,.9)); });
+const paths=[...svg.querySelectorAll('path')]; paths.forEach((p,i)=>{ const len=p.getTotalLength(); p.style.strokeDasharray=len; p.style.strokeDashoffset=len; master.to(p,{strokeDashoffset:0,duration:1.15,ease:'power2.out'},SCENE_START+0.6+i*.12); });
+
+})();
+// outcome
+(function(){
+const SCENE_ID="outcome";
+const SCENE_START=45.2;
+const SCENE_DURATION=14.8;
+const SCENE_PROPS={"variant":"outcome","kicker":"THE OUTCOME","title":"A repeatable path to visual learning.","subtitle":"Explain complex ideas faster, without losing rigor.","tag":"06 / 06","footer":"KNOWLEDGE -> LEARNING"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .g-root');
+if (!root) return;
+if (window.innerWidth < 1920 || window.innerHeight < 1080) {
+	const previewScale = Math.min(window.innerWidth / 1920, window.innerHeight / 1080);
+	document.body.style.transformOrigin = 'top left';
+	document.body.style.transform = `scale(${previewScale})`;
+	document.body.style.overflow = 'hidden';
+}
+const stage = root.querySelector('.g-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const svg = document.createElementNS(NS, 'svg'); svg.className = 'g-svg'; svg.setAttribute('viewBox', '0 0 1680 630'); stage.appendChild(svg);
+const add = (name, attrs={}) => { const el=document.createElementNS(NS,name); Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,String(v))); svg.appendChild(el); return el; };
+const path = d => add('path',{d,fill:'none',stroke:'#56d6ff','stroke-width':5,'stroke-linecap':'round'});
+const line = (x1,y1,x2,y2,cls='') => add('line',{x1,y1,x2,y2,class:cls});
+const circle = (cx,cy,r,cls='') => add('circle',{cx,cy,r,class:cls});
+const node = (x,y,w,h,title,sub,cls='') => { const el=document.createElement('div'); el.className='g-node '+cls; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<strong>'+title+'</strong><span>'+sub+'</span>'; stage.appendChild(el); return el; };
+const word = (x,y,value,cls='g-word') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='signal'){ const a=word(70,130,'KNOWLEDGE'); const b=word(920,320,'LEARNING'); const n=node(90,300,330,150,'SOURCE','trusted writing'); const o=node(1220,300,350,150,'LESSON','visible understanding',''); path('M 420 375 C 660 180, 920 180, 1220 375'); circle(670,250,16); circle(900,225,11); items.push(a,b,n,o); }
+if(v==='funnel'){ const a=node(40,45,350,125,'MICROSOFT LEARN','content'); const b=node(40,240,350,125,'TECHNICAL DOCS','structure'); const c=node(40,435,350,125,'SUPPORT ARTICLES','answers'); const hub=node(665,250,350,175,'ONE FACTORY','specialized agents'); const out=node(1300,250,330,175,'VIDEO','conceptual lesson'); path('M 390 130 C 500 130, 540 300, 665 300 M 390 325 L 665 335 M 390 520 C 500 520, 540 380, 665 380 M 1015 335 L 1300 335'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const d=node(40,170,390,210,'SOURCE','article.md'); const o=document.createElement('div'); o.className='g-orb'; o.style.left='670px'; o.style.top='70px'; o.style.width='420px'; o.style.height='420px'; stage.appendChild(o); const core=document.createElement('div'); core.className='g-core'; core.style.left='815px'; core.style.top='215px'; core.style.width='130px'; core.style.height='130px'; core.textContent='AI'; stage.appendChild(core); [['READ',700,35],['SHAPE',1030,195],['CHECK',700,475]].forEach(([t,x,y])=>{ const w=word(x,y,t,'g-word g-mono'); items.push(w); }); path('M 430 275 C 540 275, 620 240, 815 280'); [0,1,2].forEach(i=>{const angle=i*2.1; const x=880+Math.cos(angle)*210; const y=280+Math.sin(angle)*210; circle(x,y,18,'warm');}); items.push(d,core,o); }
+if(v==='timeline'){ const base=line(80,330,1600,330); const steps=[['SCRIPT',220,'#56d6ff'],['STORYBOARD',700,'#ffb84d'],['NARRATION',1200,'#83e27e']]; steps.forEach(([label,x,color],i)=>{ const n=node(x,150,260,180,label,'artifact '+String(i+1).padStart(2,'0')); n.style.borderColor=color; items.push(n); line(x+130,330,x+130,430); }); }
+if(v==='quality'){ const title=word(40,60,'QUALITY IS PART OF THE PIPELINE'); const labels=[['MOTION',220,'#56d6ff'],['BRAND',650,'#ffb84d'],['TEACHING',1050,'#83e27e'],['TRUST',1400,'#56d6ff']]; const points=[]; labels.forEach(([label,x,color],i)=>{ const n=node(x,220,220,150,label,'verified'); n.style.borderColor=color; items.push(n); points.push([x+110,220]); }); for(let i=0;i<points.length-1;i++) path('M '+points[i][0]+' '+(points[i][1]+75)+' C '+(points[i][0]+110)+' '+(points[i][1]-60)+', '+(points[i+1][0]-110)+' '+(points[i+1][1]+210)+', '+points[i+1][0]+' '+(points[i+1][1]+75)); const read=word(580,500,'clear  /  consistent  /  trustworthy','g-word g-mono'); items.push(title,read); }
+if(v==='outcome'){ const a=node(70,160,420,190,'WRITTEN','knowledge'); const b=node(1190,160,420,190,'VISUAL','learning'); path('M 490 255 C 740 40, 980 40, 1190 255'); circle(770,120,18); circle(1000,140,12); const t=word(380,470,'EXPLAIN COMPLEX IDEAS FASTER'); const s=word(525,555,'WITHOUT LOSING RIGOR','g-word g-mono'); items.push(a,b,t,s); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(22px) scale(.97)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.16,.9)); });
+const paths=[...svg.querySelectorAll('path')]; paths.forEach((p,i)=>{ const len=p.getTotalLength(); p.style.strokeDasharray=len; p.style.strokeDashoffset=len; master.to(p,{strokeDashoffset:0,duration:1.15,ease:'power2.out'},SCENE_START+0.6+i*.12); });
+
+})();
+
+</script>
+</script>
+<script>
+  const previewTimeline = window.__timelines && window.__timelines['animated-explainer'];
+  if (previewTimeline) {
+    previewTimeline.seek(0.001);
+    if (new URLSearchParams(window.location.search).get('play') === '1') {
+      previewTimeline.eventCallback('onComplete', () => previewTimeline.restart());
+      previewTimeline.play();
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<style>
+.scene-{{sceneId}} .g-root{position:absolute;inset:0;overflow:hidden;background:#f7f9fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-{{sceneId}} .g-grid{position:absolute;inset:-12%;opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px);background-size:72px 72px;transform:rotate(-5deg)}
+.scene-{{sceneId}} .g-noise{position:absolute;inset:0;opacity:.08;background-image:radial-gradient(rgba(255,255,255,.7) .6px,transparent .7px);background-size:5px 5px}
+.scene-{{sceneId}} .g-header{position:absolute;left:120px;top:92px;right:120px;z-index:3}.scene-{{sceneId}} .g-kicker{font:700 20px/1 JetBrains Mono,monospace;letter-spacing:.16em;color:#56d6ff}.scene-{{sceneId}} .g-title{margin-top:16px;max-width:1020px;font-size:76px;line-height:.93;font-weight:900;letter-spacing:-.04em}.scene-{{sceneId}} .g-sub{margin-top:22px;max-width:880px;color:#9eb3c8;font-size:27px;line-height:1.2}.scene-{{sceneId}} .g-tag{position:absolute;right:0;top:0;color:#ffb84d;font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.1em}
+.scene-{{sceneId}} .g-stage{position:absolute;left:120px;right:120px;top:340px;bottom:110px;z-index:2}.scene-{{sceneId}} .g-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}.scene-{{sceneId}} .g-svg path,.scene-{{sceneId}} .g-svg line,.scene-{{sceneId}} .g-svg circle{fill:none;stroke:#56d6ff;stroke-width:5;stroke-linecap:round}.scene-{{sceneId}} .g-svg .warm{stroke:#ffb84d}.scene-{{sceneId}} .g-svg .good{stroke:#83e27e}.scene-{{sceneId}} .g-svg .dim{stroke:#31506a;stroke-width:2}.scene-{{sceneId}} .g-node{position:absolute;border:2px solid #31506a;background:#10253b;box-shadow:0 16px 42px rgba(0,0,0,.28);padding:24px 28px}.scene-{{sceneId}} .g-node strong{display:block;font-size:31px;line-height:1.05}.scene-{{sceneId}} .g-node span{display:block;margin-top:12px;color:#9eb3c8;font:700 18px/1.2 JetBrains Mono,monospace;letter-spacing:.06em}.scene-{{sceneId}} .g-orb{position:absolute;border:5px solid #56d6ff;border-radius:50%;box-shadow:0 0 50px rgba(86,214,255,.28),inset 0 0 40px rgba(86,214,255,.1)}.scene-{{sceneId}} .g-core{position:absolute;display:grid;place-items:center;border-radius:50%;background:#56d6ff;color:#07111f;font-weight:900;box-shadow:0 0 80px rgba(86,214,255,.55)}.scene-{{sceneId}} .g-word{position:absolute;font:900 54px/1 Montserrat,sans-serif;letter-spacing:.03em}.scene-{{sceneId}} .g-mono{font:700 20px/1.25 JetBrains Mono,monospace;letter-spacing:.08em;color:#9eb3c8}.scene-{{sceneId}} .g-footer{position:absolute;bottom:28px;left:120px;right:120px;z-index:4;display:flex;justify-content:space-between;color:#648198;font:700 17px/1 JetBrains Mono,monospace;letter-spacing:.08em}
+</style>
+<style>
+.scene-{{sceneId}} .g-kicker,.scene-{{sceneId}} .g-sub,.scene-{{sceneId}} .g-tag,.scene-{{sceneId}} .g-footer{display:none}
+.scene-{{sceneId}} .g-node span{display:none}
+.scene-{{sceneId}} .g-header{left:120px;top:96px;right:120px}
+.scene-{{sceneId}} .g-title{max-width:1500px;font-size:68px;line-height:1.02;letter-spacing:-.025em}
+.scene-{{sceneId}} .g-stage{top:250px;bottom:70px}
+.scene-{{sceneId}} .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-{{sceneId}} .g-node span{color:#53627a}
+.scene-{{sceneId}} .g-word{font-size:48px}
+.scene-{{sceneId}} .g-mono{color:#53627a}
+.scene-{{sceneId}} .g-footer{color:#53627a}
+.scene-{{sceneId}} .g-svg path,.scene-{{sceneId}} .g-svg line,.scene-{{sceneId}} .g-svg circle{stroke:#0f6cbd}
+.scene-{{sceneId}} .g-root{background:#f7f9fc;color:#172033}
+.scene-{{sceneId}} .g-grid{opacity:.42;background-image:linear-gradient(rgba(15,108,189,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.12) 1px,transparent 1px)}
+.scene-{{sceneId}} .g-kicker{color:#0f6cbd}
+.scene-{{sceneId}} .g-title{font-size:64px;line-height:.98;letter-spacing:-.025em}
+.scene-{{sceneId}} .g-sub{color:#53627a;font-size:25px}
+.scene-{{sceneId}} .g-tag{color:#0f6cbd}
+.scene-{{sceneId}} .g-node{border-color:#b7d5ee;background:#fff;box-shadow:0 18px 44px rgba(23,32,51,.14)}
+.scene-{{sceneId}} .g-node span{color:#53627a}
+.scene-{{sceneId}} .g-orb{border-color:#0f6cbd;box-shadow:0 0 50px rgba(15,108,189,.18),inset 0 0 40px rgba(15,108,189,.08)}
+.scene-{{sceneId}} .g-mono,.scene-{{sceneId}} .g-footer{color:#53627a}
+.scene-{{sceneId}} .g-svg path,.scene-{{sceneId}} .g-svg line,.scene-{{sceneId}} .g-svg circle{stroke:#0f6cbd}
+</style>
+<div class="g-root">
+  <div class="g-grid"></div><div class="g-noise"></div>
+  <div class="g-header"><div class="g-kicker">{{kicker}}</div><div class="g-title">{{title}}</div><div class="g-sub">{{subtitle}}</div><div class="g-tag">{{tag}}</div></div>
+  <div class="g-stage"></div>
+  <div class="g-footer"><span>SLATE / GRAPHIC SYSTEMS</span><span>{{footer}}</span></div>
+</div>

@@ -1,0 +1,10 @@
+{
+  "concept": "A knowledge signal travels through a luminous editorial machine and emerges as a clear lesson.",
+  "palette": {"background":"#07111F","surface":"#10253B","ink":"#F4F8FC","muted":"#9EB3C8","accent":"#56D6FF","secondary":"#FFB84D","success":"#83E27E","warning":"#F16D7A"},
+  "material": "dark technical paper with crisp vector ink, thin light paths, and restrained luminous color",
+  "motionSignature": "Signal-trace: lines draw first, objects follow the line, and the visual settles only after the idea arrives. One motivated transformation per scene.",
+  "composition": "Large graphic subjects fill the frame. Type is sparse, anchored to an edge, and never competes with the diagram. Each scene uses a distinct silhouette.",
+  "signatureMotif": "A cyan signal line that changes form from scene to scene: waveform, path, orbit, timeline, and arc.",
+  "sceneTreatments": {"s1":"signal-field","s2":"funnel-diagram","s3":"agent-orbit","s4":"timeline-build","s5":"quality-waveform","s6":"before-after-transform"},
+  "referenceDirection": ["technical broadcast graphics", "editorial systems diagrams"]
+}
