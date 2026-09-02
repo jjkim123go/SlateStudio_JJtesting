@@ -1,0 +1,33 @@
+<style>
+.scene-{{sceneId}} .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-{{sceneId}} .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-{{sceneId}} .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-{{sceneId}} .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-{{sceneId}} .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-{{sceneId}} .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-{{sceneId}} .dark .kfs-kicker{color:#57c7ff}
+.scene-{{sceneId}} .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-{{sceneId}} .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-{{sceneId}} .dark .kfs-sub{color:#a9bad1}
+.scene-{{sceneId}} .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-{{sceneId}} .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-{{sceneId}} .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-{{sceneId}} .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-{{sceneId}} .dark .kfs-card-label{color:#a9bad1}
+.scene-{{sceneId}} .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-{{sceneId}} .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-{{sceneId}} .dark .kfs-card-note{color:#a9bad1}
+.scene-{{sceneId}} .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-{{sceneId}} .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-{{sceneId}} .kfs-line.green{background:#107c10}.scene-{{sceneId}} .kfs-line.gold{background:#ffb900}
+.scene-{{sceneId}} .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-{{sceneId}} .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-{{sceneId}} .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-{{sceneId}} .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-{{sceneId}} .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-{{sceneId}} .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-{{sceneId}} .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-{{sceneId}} .dark .kfs-footer{color:#a9bad1}
+.scene-{{sceneId}} .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-{{sceneId}} .kfs-svg path,.scene-{{sceneId}} .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-{{sceneId}} .dark .kfs-svg path,.scene-{{sceneId}} .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root {{theme}}" data-variant="{{variant}}">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">{{kicker}}</div><div class="kfs-title">{{title}}</div><div class="kfs-sub">{{subtitle}}</div></div><div class="kfs-pill">{{tag}}</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>{{footer}}</span></div>
+</div>

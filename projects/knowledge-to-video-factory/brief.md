@@ -6,7 +6,7 @@ A concept explainer, built for a hackathon audience, that shows an end-to-end
 "Knowledge-to-Video Factory": specialized AI agents transform Microsoft Learn
 content, technical documentation, and support articles into conceptual
 learning videos. Audience is hackathon judges and technical/product
-stakeholders. Runtime target is 60 seconds total, played on a presentation
+stakeholders. Runtime target is 57.5 seconds total, played on a presentation
 screen (16:9, 1920x1080). Outcome: comprehension of the pipeline's value and
 credibility, not a sales pitch.
 
@@ -43,8 +43,8 @@ A six-scene narrated concept explainer, hand-stitched from primitives per
 `skills/creative/scene-primitives.md`, using the supplied Fluent iconography
 as the visual subject throughout rather than generated imagery. No product
 chrome scenes are needed (no real software UI is shown), so nothing routes to
-the reusable chrome component catalog. A seventh, silent 2.5-second scene
-holds the approved Microsoft 365 Copilot end card. Full art direction is
+the reusable chrome component catalog. The video ends on its narrated outcome
+scene with no separate Copilot ending card. Full art direction is
 committed in `art-direction.json` before scene planning (see companion file).
 
 ## Constraints
@@ -53,7 +53,7 @@ committed in `art-direction.json` before scene planning (see companion file).
 - Brand: none — no brand package applies to this hackathon project
 - Audience: hackathon judges and technical/product stakeholders
 - Tone: confident, instructional, technically credible — not promotional
-- Runtime: 60 seconds exactly (57.5s narrated + 2.5s silent end card)
+- Runtime: 57.5 seconds of narration-driven content
 - No music
 - Captions: static style, on by default for a narrated video
 - Visual system: Fluent iconography only; no AI-generated imagery

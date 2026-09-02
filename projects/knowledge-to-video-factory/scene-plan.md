@@ -1,6 +1,6 @@
 # Scene Plan — Knowledge-to-Video Factory
 
-Full runtime: 60.0s exactly (57.5s narrated + 2.5s silent end card). No music.
+Full runtime: 57.5s of narration-driven content. No music and no ending card.
 Captions: static style, on. Aspect: 1920x1080. Art direction: see `art-direction.json`.
 
 Per Rule 3b: every scene below is hand-stitched from primitives (Fluent PNG
@@ -74,12 +74,3 @@ No scene repeats the previous scene's dominant technique.
 - **Narration:** Line 6 (13.5s).
 - **Caption:** on.
 
-## s7-endcard — 2.5s
-
-- **Technique:** still title lockup, single reveal, held.
-- **Primary visual:** Text-only "Microsoft 365 Copilot" lockup on the brand
-  accent color; no logo mark is fabricated (no verified brand asset was
-  available locally), single restrained reveal, then a static hold for the
-  remainder.
-- **Narration:** none (silent).
-- **Caption:** off (no narration to caption).

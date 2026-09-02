@@ -1,0 +1,22 @@
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);

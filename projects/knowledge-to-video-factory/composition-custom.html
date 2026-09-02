@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Slate Composition</title>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomBounce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomWiggle.min.js"></script>
+
+<style>
+:root { color-scheme: dark; --brand-primary:#275C5F;--brand-accent:#B45309;--brand-bg:#F3F0E8;--brand-text:#1F2933;--slate-bg:#F3F0E8;--slate-surface:#FFFCF4;--slate-elevated-surface:#E7E1D3;--slate-text:#1F2933;--slate-muted-text:#59636E;--slate-border:#D2C8B8;--slate-success:#3DDC97;--slate-warning:#F7C948;--slate-danger:#FF6B6B;--slate-caption-highlight:#275C5F; }
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; width:1920px; height:1080px; background:var(--slate-bg,#120A1F); color:var(--slate-text,#F8F4EC); overflow:hidden; font-family:Inter,Inter,-apple-system,BlinkMacSystemFont,sans-serif; }
+.scene { opacity: 0; }
+
+</style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="animated-explainer"
+  data-start="0"
+  data-duration="57.5"
+  data-width="1920"
+  data-height="1080"
+  style="position:relative;width:1920px;height:1080px;background:var(--slate-bg,#120A1F);overflow:hidden">
+<div class="scene scene-s1-hook"
+    data-composition-id="s1-hook"
+    data-start="0"
+    data-duration="6.5"
+    data-track-index="1"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-s1-hook .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-s1-hook .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-s1-hook .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-s1-hook .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-s1-hook .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-s1-hook .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-s1-hook .dark .kfs-kicker{color:#57c7ff}
+.scene-s1-hook .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-s1-hook .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-s1-hook .dark .kfs-sub{color:#a9bad1}
+.scene-s1-hook .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-s1-hook .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-s1-hook .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-s1-hook .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-s1-hook .dark .kfs-card-label{color:#a9bad1}
+.scene-s1-hook .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-s1-hook .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-s1-hook .dark .kfs-card-note{color:#a9bad1}
+.scene-s1-hook .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-s1-hook .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-s1-hook .kfs-line.green{background:#107c10}.scene-s1-hook .kfs-line.gold{background:#ffb900}
+.scene-s1-hook .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-s1-hook .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-s1-hook .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-s1-hook .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-s1-hook .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-s1-hook .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-s1-hook .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-s1-hook .dark .kfs-footer{color:#a9bad1}
+.scene-s1-hook .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-s1-hook .kfs-svg path,.scene-s1-hook .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-s1-hook .dark .kfs-svg path,.scene-s1-hook .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root " data-variant="hook">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">THE QUESTION</div><div class="kfs-title">What if knowledge could move?</div><div class="kfs-sub">From trusted writing to a lesson people can see and understand.</div></div><div class="kfs-pill">01 / 07</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>SOURCE -&gt; LESSON</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="s1-hook-narration"
+        data-composition-id="s1-hook-narration"
+        data-start="0"
+        data-duration="6.5"
+        data-media-start="0"
+        data-track-index="1"
+        src="assets/narration-s1-hook.wav"
+      ></audio>
+<div class="scene scene-s2-factory"
+    data-composition-id="s2-factory"
+    data-start="6.5"
+    data-duration="9.7"
+    data-track-index="2"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-s2-factory .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-s2-factory .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-s2-factory .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-s2-factory .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-s2-factory .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-s2-factory .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-s2-factory .dark .kfs-kicker{color:#57c7ff}
+.scene-s2-factory .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-s2-factory .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-s2-factory .dark .kfs-sub{color:#a9bad1}
+.scene-s2-factory .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-s2-factory .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-s2-factory .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-s2-factory .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-s2-factory .dark .kfs-card-label{color:#a9bad1}
+.scene-s2-factory .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-s2-factory .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-s2-factory .dark .kfs-card-note{color:#a9bad1}
+.scene-s2-factory .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-s2-factory .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-s2-factory .kfs-line.green{background:#107c10}.scene-s2-factory .kfs-line.gold{background:#ffb900}
+.scene-s2-factory .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-s2-factory .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-s2-factory .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-s2-factory .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-s2-factory .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-s2-factory .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-s2-factory .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-s2-factory .dark .kfs-footer{color:#a9bad1}
+.scene-s2-factory .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-s2-factory .kfs-svg path,.scene-s2-factory .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-s2-factory .dark .kfs-svg path,.scene-s2-factory .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root " data-variant="factory">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">THE FACTORY</div><div class="kfs-title">Many sources. One clear output.</div><div class="kfs-sub">Learn content, technical docs, and support articles become conceptual video.</div></div><div class="kfs-pill">02 / 06</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>INPUTS -&gt; OUTPUT</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="s2-factory-narration"
+        data-composition-id="s2-factory-narration"
+        data-start="6.5"
+        data-duration="9.7"
+        data-media-start="0"
+        data-track-index="2"
+        src="assets/narration-s2-factory.wav"
+      ></audio>
+<div class="scene scene-s3-agents"
+    data-composition-id="s3-agents"
+    data-start="16.2"
+    data-duration="9"
+    data-track-index="3"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-s3-agents .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-s3-agents .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-s3-agents .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-s3-agents .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-s3-agents .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-s3-agents .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-s3-agents .dark .kfs-kicker{color:#57c7ff}
+.scene-s3-agents .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-s3-agents .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-s3-agents .dark .kfs-sub{color:#a9bad1}
+.scene-s3-agents .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-s3-agents .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-s3-agents .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-s3-agents .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-s3-agents .dark .kfs-card-label{color:#a9bad1}
+.scene-s3-agents .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-s3-agents .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-s3-agents .dark .kfs-card-note{color:#a9bad1}
+.scene-s3-agents .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-s3-agents .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-s3-agents .kfs-line.green{background:#107c10}.scene-s3-agents .kfs-line.gold{background:#ffb900}
+.scene-s3-agents .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-s3-agents .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-s3-agents .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-s3-agents .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-s3-agents .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-s3-agents .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-s3-agents .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-s3-agents .dark .kfs-footer{color:#a9bad1}
+.scene-s3-agents .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-s3-agents .kfs-svg path,.scene-s3-agents .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-s3-agents .dark .kfs-svg path,.scene-s3-agents .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root " data-variant="agents">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">THE AGENTS</div><div class="kfs-title">Structure without losing truth.</div><div class="kfs-sub">Specialists read, organize, and protect what the source actually says.</div></div><div class="kfs-pill">03 / 06</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>READ -&gt; STRUCTURE -&gt; VERIFY</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="s3-agents-narration"
+        data-composition-id="s3-agents-narration"
+        data-start="16.2"
+        data-duration="9"
+        data-media-start="0"
+        data-track-index="3"
+        src="assets/narration-s3-agents.wav"
+      ></audio>
+<div class="scene scene-s4-production"
+    data-composition-id="s4-production"
+    data-start="25.2"
+    data-duration="10"
+    data-track-index="4"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-s4-production .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-s4-production .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-s4-production .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-s4-production .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-s4-production .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-s4-production .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-s4-production .dark .kfs-kicker{color:#57c7ff}
+.scene-s4-production .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-s4-production .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-s4-production .dark .kfs-sub{color:#a9bad1}
+.scene-s4-production .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-s4-production .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-s4-production .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-s4-production .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-s4-production .dark .kfs-card-label{color:#a9bad1}
+.scene-s4-production .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-s4-production .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-s4-production .dark .kfs-card-note{color:#a9bad1}
+.scene-s4-production .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-s4-production .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-s4-production .kfs-line.green{background:#107c10}.scene-s4-production .kfs-line.gold{background:#ffb900}
+.scene-s4-production .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-s4-production .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-s4-production .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-s4-production .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-s4-production .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-s4-production .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-s4-production .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-s4-production .dark .kfs-footer{color:#a9bad1}
+.scene-s4-production .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-s4-production .kfs-svg path,.scene-s4-production .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-s4-production .dark .kfs-svg path,.scene-s4-production .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root " data-variant="production">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">THE BUILD</div><div class="kfs-title">The learning plan takes shape.</div><div class="kfs-sub">Script. Storyboard. Narration. Three artifacts, one coordinated beat.</div></div><div class="kfs-pill">04 / 07</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>PLAN THE EXPERIENCE</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="s4-production-narration"
+        data-composition-id="s4-production-narration"
+        data-start="25.2"
+        data-duration="10"
+        data-media-start="0"
+        data-track-index="4"
+        src="assets/narration-s4-production.wav"
+      ></audio>
+<div class="scene scene-s5-render"
+    data-composition-id="s5-render"
+    data-start="35.2"
+    data-duration="10"
+    data-track-index="5"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-s5-render .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-s5-render .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-s5-render .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-s5-render .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-s5-render .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-s5-render .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-s5-render .dark .kfs-kicker{color:#57c7ff}
+.scene-s5-render .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-s5-render .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-s5-render .dark .kfs-sub{color:#a9bad1}
+.scene-s5-render .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-s5-render .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-s5-render .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-s5-render .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-s5-render .dark .kfs-card-label{color:#a9bad1}
+.scene-s5-render .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-s5-render .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-s5-render .dark .kfs-card-note{color:#a9bad1}
+.scene-s5-render .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-s5-render .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-s5-render .kfs-line.green{background:#107c10}.scene-s5-render .kfs-line.gold{background:#ffb900}
+.scene-s5-render .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-s5-render .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-s5-render .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-s5-render .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-s5-render .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-s5-render .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-s5-render .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-s5-render .dark .kfs-footer{color:#a9bad1}
+.scene-s5-render .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-s5-render .kfs-svg path,.scene-s5-render .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-s5-render .dark .kfs-svg path,.scene-s5-render .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root " data-variant="render">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">THE CHECK</div><div class="kfs-title">Motion is the easy part. Rigor is the feature.</div><div class="kfs-sub">Every scene earns clarity, consistency, and trust before it ships.</div></div><div class="kfs-pill">05 / 06</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>QUALITY BUILT IN</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="s5-render-narration"
+        data-composition-id="s5-render-narration"
+        data-start="35.2"
+        data-duration="10"
+        data-media-start="0"
+        data-track-index="5"
+        src="assets/narration-s5-render.wav"
+      ></audio>
+<div class="scene scene-s6-outcome"
+    data-composition-id="s6-outcome"
+    data-start="45.2"
+    data-duration="12.3"
+    data-track-index="6"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <style>
+.scene-s6-outcome .kfs-root{position:absolute;inset:0;overflow:hidden;background:#f6f8fc;color:#172033;font-family:Montserrat,Arial,sans-serif}
+.scene-s6-outcome .kfs-root.dark{background:#101827;color:#f7f9fc}
+.scene-s6-outcome .kfs-grid{position:absolute;inset:0;opacity:.25;background-image:linear-gradient(rgba(15,108,189,.16) 1px,transparent 1px),linear-gradient(90deg,rgba(15,108,189,.16) 1px,transparent 1px);background-size:64px 64px;transform:rotate(-4deg) scale(1.15)}
+.scene-s6-outcome .kfs-glow{position:absolute;width:720px;height:720px;border-radius:50%;background:radial-gradient(circle,rgba(0,164,239,.22),transparent 68%);left:54%;top:22%;filter:blur(8px)}
+.scene-s6-outcome .kfs-header{position:absolute;left:112px;top:86px;right:112px;display:flex;align-items:flex-start;justify-content:space-between;z-index:3}
+.scene-s6-outcome .kfs-kicker{font:700 22px/1 JetBrains Mono,monospace;letter-spacing:.14em;color:#0f6cbd;text-transform:uppercase}
+.scene-s6-outcome .dark .kfs-kicker{color:#57c7ff}
+.scene-s6-outcome .kfs-title{margin:18px 0 0;font-size:76px;line-height:.94;font-weight:900;letter-spacing:-.04em;max-width:1120px}
+.scene-s6-outcome .kfs-sub{margin-top:20px;font-size:28px;line-height:1.18;color:#53627a;max-width:1000px}
+.scene-s6-outcome .dark .kfs-sub{color:#a9bad1}
+.scene-s6-outcome .kfs-stage{position:absolute;left:112px;right:112px;top:330px;bottom:100px;z-index:2}
+.scene-s6-outcome .kfs-card{position:absolute;border:2px solid rgba(15,108,189,.22);background:rgba(255,255,255,.92);box-shadow:0 24px 60px rgba(23,32,51,.14);border-radius:18px;padding:28px}
+.scene-s6-outcome .dark .kfs-card{background:#1d2a40;border-color:rgba(87,199,255,.28);box-shadow:0 24px 60px rgba(0,0,0,.28)}
+.scene-s6-outcome .kfs-card-label{font:700 21px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;text-transform:uppercase}
+.scene-s6-outcome .dark .kfs-card-label{color:#a9bad1}
+.scene-s6-outcome .kfs-card-value{margin-top:20px;font-size:42px;line-height:1;font-weight:900}
+.scene-s6-outcome .kfs-card-note{margin-top:14px;font-size:22px;color:#53627a}.scene-s6-outcome .dark .kfs-card-note{color:#a9bad1}
+.scene-s6-outcome .kfs-icon{position:absolute;object-fit:contain;filter:drop-shadow(0 12px 16px rgba(23,32,51,.18));z-index:4}
+.scene-s6-outcome .kfs-line{position:absolute;height:6px;background:#00a4ef;transform-origin:left center;border-radius:4px;z-index:1}
+.scene-s6-outcome .kfs-line.green{background:#107c10}.scene-s6-outcome .kfs-line.gold{background:#ffb900}
+.scene-s6-outcome .kfs-pill{display:inline-flex;padding:12px 18px;border-radius:999px;background:#e5f4ff;color:#0f6cbd;font:700 22px/1 JetBrains Mono,monospace}
+.scene-s6-outcome .dark .kfs-pill{background:#263d5d;color:#57c7ff}
+.scene-s6-outcome .kfs-list{position:absolute;left:760px;top:80px;width:760px}.scene-s6-outcome .kfs-row{height:94px;margin-bottom:20px;display:flex;align-items:center;gap:22px;border-bottom:2px solid rgba(15,108,189,.22);font:700 30px/1 JetBrains Mono,monospace}.scene-s6-outcome .kfs-dot{width:34px;height:34px;border-radius:50%;background:#d7e2f0;border:5px solid #0f6cbd}.scene-s6-outcome .kfs-dot.done{background:#107c10;border-color:#107c10;box-shadow:0 0 0 8px rgba(16,124,16,.16)}
+.scene-s6-outcome .kfs-footer{position:absolute;bottom:22px;left:112px;right:112px;display:flex;justify-content:space-between;font:700 18px/1 JetBrains Mono,monospace;letter-spacing:.08em;color:#53627a;z-index:3}.scene-s6-outcome .dark .kfs-footer{color:#a9bad1}
+.scene-s6-outcome .kfs-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:1}.scene-s6-outcome .kfs-svg path,.scene-s6-outcome .kfs-svg line{fill:none;stroke:#0f6cbd;stroke-width:5;stroke-linecap:round}.scene-s6-outcome .dark .kfs-svg path,.scene-s6-outcome .dark .kfs-svg line{stroke:#57c7ff}
+</style>
+<div class="kfs-root " data-variant="outcome">
+  <div class="kfs-grid"></div><div class="kfs-glow"></div>
+  <div class="kfs-header"><div><div class="kfs-kicker">THE OUTCOME</div><div class="kfs-title">A repeatable path to visual learning.</div><div class="kfs-sub">Explain complex ideas faster, without losing rigor.</div></div><div class="kfs-pill">06 / 06</div></div>
+  <div class="kfs-stage"></div>
+  <div class="kfs-footer"><span>SLATE / KNOWLEDGE-TO-VIDEO</span><span>KNOWLEDGE -&gt; LEARNING</span></div>
+</div>
+
+    </div>
+    
+  </div>
+  <audio
+        id="s6-outcome-narration"
+        data-composition-id="s6-outcome-narration"
+        data-start="45.2"
+        data-duration="12.3"
+        data-media-start="0"
+        data-track-index="6"
+        src="assets/narration-s6-outcome.wav"
+      ></audio>
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+window.__slateFontsReady = !document.fonts;
+if (document.fonts) {
+  document.fonts.ready.then(function(){ window.__slateFontsReady = true; document.documentElement.setAttribute('data-fonts-ready', 'true'); });
+}
+// Register the now-free GSAP plugins (loaded from CDN above). GSAP went fully
+// free in v3.13; these were previously Club-only. Defensive registration: only
+// register plugins that actually loaded, so a CDN hiccup degrades gracefully.
+[window.Flip, window.SplitText, window.DrawSVGPlugin, window.MorphSVGPlugin, window.MotionPathPlugin, window.Physics2DPlugin, window.CustomEase, window.CustomBounce, window.CustomWiggle].forEach(function(p){ if (p) { try { gsap.registerPlugin(p); } catch (e) {} } });
+const master = gsap.timeline({ paused: true });
+
+// Per-scene visibility — only the active scene is shown at any time
+master.set('.scene-s1-hook', { opacity: 0 }, 0);
+master.set('.scene-s1-hook', { opacity: 1 }, 0);
+master.set('.scene-s1-hook', { opacity: 0 }, 6.5);
+master.set('.scene-s2-factory', { opacity: 0 }, 0);
+master.fromTo('.scene-s2-factory', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 6);
+master.set('.scene-s2-factory', { opacity: 0 }, 16.2);
+master.set('.scene-s3-agents', { opacity: 0 }, 0);
+master.fromTo('.scene-s3-agents', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 15.7);
+master.set('.scene-s3-agents', { opacity: 0 }, 25.2);
+master.set('.scene-s4-production', { opacity: 0 }, 0);
+master.fromTo('.scene-s4-production', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 24.7);
+master.set('.scene-s4-production', { opacity: 0 }, 35.2);
+master.set('.scene-s5-render', { opacity: 0 }, 0);
+master.fromTo('.scene-s5-render', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 34.7);
+master.set('.scene-s5-render', { opacity: 0 }, 45.2);
+master.set('.scene-s6-outcome', { opacity: 0 }, 0);
+master.fromTo('.scene-s6-outcome', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 44.7);
+master.set('.scene-s6-outcome', { opacity: 0 }, 57.5);
+master.to('.scene-s1-hook', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 6);
+master.to('.scene-s2-factory', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 15.7);
+master.to('.scene-s3-agents', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 24.7);
+master.to('.scene-s4-production', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 34.7);
+master.to('.scene-s5-render', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 44.7);
+
+// Per-layer visibility — layers with startTime/endTime are revealed/hidden
+// at composition-time. CSS-id selectors are escaped for GSAP (it accepts
+// '#id' selectors directly). Initial opacity is also set inline on the
+// element so the very first seeked frame does not flash content that
+// should still be hidden.
+
+
+window.__timelines["animated-explainer"] = master;
+
+
+// s1-hook
+(function(){
+const SCENE_ID="s1-hook";
+const SCENE_START=0;
+const SCENE_DURATION=6.5;
+const SCENE_PROPS={"variant":"hook","theme":"","kicker":"THE QUESTION","title":"What if knowledge could move?","subtitle":"From trusted writing to a lesson people can see and understand.","tag":"01 / 07","footer":"SOURCE -> LESSON"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);
+
+})();
+// s2-factory
+(function(){
+const SCENE_ID="s2-factory";
+const SCENE_START=6.5;
+const SCENE_DURATION=9.7;
+const SCENE_PROPS={"variant":"factory","theme":"","kicker":"THE FACTORY","title":"Many sources. One clear output.","subtitle":"Learn content, technical docs, and support articles become conceptual video.","tag":"02 / 06","footer":"INPUTS -> OUTPUT"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);
+
+})();
+// s3-agents
+(function(){
+const SCENE_ID="s3-agents";
+const SCENE_START=16.2;
+const SCENE_DURATION=9;
+const SCENE_PROPS={"variant":"agents","theme":"","kicker":"THE AGENTS","title":"Structure without losing truth.","subtitle":"Specialists read, organize, and protect what the source actually says.","tag":"03 / 06","footer":"READ -> STRUCTURE -> VERIFY"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);
+
+})();
+// s4-production
+(function(){
+const SCENE_ID="s4-production";
+const SCENE_START=25.2;
+const SCENE_DURATION=10;
+const SCENE_PROPS={"variant":"production","theme":"","kicker":"THE BUILD","title":"The learning plan takes shape.","subtitle":"Script. Storyboard. Narration. Three artifacts, one coordinated beat.","tag":"04 / 07","footer":"PLAN THE EXPERIENCE"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);
+
+})();
+// s5-render
+(function(){
+const SCENE_ID="s5-render";
+const SCENE_START=35.2;
+const SCENE_DURATION=10;
+const SCENE_PROPS={"variant":"render","theme":"","kicker":"THE CHECK","title":"Motion is the easy part. Rigor is the feature.","subtitle":"Every scene earns clarity, consistency, and trust before it ships.","tag":"05 / 06","footer":"QUALITY BUILT IN"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);
+
+})();
+// s6-outcome
+(function(){
+const SCENE_ID="s6-outcome";
+const SCENE_START=45.2;
+const SCENE_DURATION=12.3;
+const SCENE_PROPS={"variant":"outcome","theme":"","kicker":"THE OUTCOME","title":"A repeatable path to visual learning.","subtitle":"Explain complex ideas faster, without losing rigor.","tag":"06 / 06","footer":"KNOWLEDGE -> LEARNING"};
+if (typeof master?.paused === 'function' && !master.paused()) master.pause();
+const root = document.querySelector('.scene-' + SCENE_ID + ' .kfs-root');
+if (!root) return;
+const stage = root.querySelector('.kfs-stage');
+const NS = 'http://www.w3.org/2000/svg';
+const icon = (name, x, y, size) => { const el=document.createElement('img'); el.className='kfs-icon'; el.src='assets/icons-cropped/'+name+'.png'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=size+'px'; el.style.height=size+'px'; stage.appendChild(el); return el; };
+const text = (value, x, y, cls='kfs-card-value') => { const el=document.createElement('div'); el.className=cls; el.textContent=value; el.style.position='absolute'; el.style.left=x+'px'; el.style.top=y+'px'; stage.appendChild(el); return el; };
+const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
+const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
+const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const items=[];
+const v=SCENE_PROPS.variant;
+if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
+if(v==='factory'){ const hub=card('ONE FACTORY','Knowledge to Video',650,170,450,220); const a=card('INPUT 01','Microsoft Learn',40,40,410,140); const b=card('INPUT 02','Technical docs',40,270,410,140); const c=card('INPUT 03','Support articles',40,500,410,140); const out=card('OUTPUT','Conceptual video',1240,270,400,200); path('M 450 110 L 650 245 M 450 340 L 650 280 M 450 570 L 650 315 M 1100 280 L 1240 370'); items.push(a,b,c,hub,out); }
+if(v==='agents'){ const doc=card('SOURCE','article.md',70,130,470,220); const list=document.createElement('div'); list.className='kfs-list'; ['Read the source','Find the teaching spine','Protect accurate claims'].forEach((label,i)=>{ const row=document.createElement('div'); row.className='kfs-row'; row.innerHTML='<span class="kfs-dot '+(i===2?'done':'')+'"></span><span>'+label+'</span>'; list.appendChild(row); items.push(row); }); stage.appendChild(list); const ag=icon('agents',260,410,150); path('M 540 240 C 650 240, 670 170, 760 170'); items.push(doc,ag); }
+if(v==='production'){ const a=card('01','SCRIPT',20,150,440,250); const b=card('02','STORYBOARD',620,150,440,250); const c=card('03','NARRATION',1220,150,440,250); line(460,275,160,''); line(1060,275,160,'green'); items.push(a,b,c); }
+if(v==='render'){ const title=text('QUALITY IS PART OF THE PIPELINE',320,70); const nodes=[['MOTION','sparkle-action',80],['BRAND','ribbon',500],['TEACHING','hat-graduation',920],['TRUST','shield-checkmark',1340]]; nodes.forEach(([label,img,x],i)=>{ const el=card(label,'verified',x,210,280,210); icon(img,x+95,450,90); items.push(el); if(i<nodes.length-1) line(x+280,310,140,i===2?'gold':''); }); }
+if(v==='outcome'){ const a=card('BEFORE','written knowledge',50,140,460,220); const b=card('AFTER','visual learning',1180,140,460,220); const p=path('M 510 250 C 760 40, 930 40, 1180 250'); const title=text('EXPLAIN COMPLEX IDEAS FASTER',450,460); const sub=text('WITHOUT LOSING RIGOR',570,555,'kfs-card-note'); items.push(a,b,title,sub); }
+if(v==='endcard'){ root.style.background='#0f6cbd'; root.querySelector('.kfs-grid').style.opacity='0'; root.querySelector('.kfs-glow').style.opacity='0'; text('MICROSOFT 365 COPILOT',460,240,'kfs-title'); text('Knowledge to video, made understandable.',500,360,'kfs-sub'); }
+items.forEach((el,i)=>{ el.style.opacity='0'; el.style.transform='translateY(28px) scale(.96)'; master.to(el,{opacity:1,y:0,scale:1,duration:.55,ease:'power3.out'},SCENE_START+Math.min(i*.18,.9)); });
+master.fromTo(root.querySelector('.kfs-grid'),{opacity:0},{opacity:.25,duration:.7,ease:'power2.out'},SCENE_START);
+
+})();
+
+</script>
+<script>
+  const previewTimeline = window.__timelines && window.__timelines['animated-explainer'];
+  if (previewTimeline) {
+    previewTimeline.seek(0.001);
+    if (new URLSearchParams(window.location.search).get('play') === '1') {
+      previewTimeline.eventCallback('onComplete', () => previewTimeline.restart());
+      previewTimeline.play();
+    }
+  }
+</script>
+</body>
+</html>
