@@ -1,0 +1,38 @@
+{
+  "s1-hook": {
+    "audio_path": "projects\\knowledge-to-video-factory\\assets\\narration-s1-hook.wav",
+    "duration_seconds": 5.363,
+    "voice": "Microsoft Zira Desktop",
+    "word_count": 16
+  },
+  "s2-factory": {
+    "audio_path": "projects\\knowledge-to-video-factory\\assets\\narration-s2-factory.wav",
+    "duration_seconds": 9.263,
+    "voice": "Microsoft Zira Desktop",
+    "word_count": 16
+  },
+  "s3-agents": {
+    "audio_path": "projects\\knowledge-to-video-factory\\assets\\narration-s3-agents.wav",
+    "duration_seconds": 8.043,
+    "voice": "Microsoft Zira Desktop",
+    "word_count": 18
+  },
+  "s4-production": {
+    "audio_path": "projects\\knowledge-to-video-factory\\assets\\narration-s4-production.wav",
+    "duration_seconds": 7.888,
+    "voice": "Microsoft Zira Desktop",
+    "word_count": 18
+  },
+  "s5-render": {
+    "audio_path": "projects\\knowledge-to-video-factory\\assets\\narration-s5-render.wav",
+    "duration_seconds": 9.103,
+    "voice": "Microsoft Zira Desktop",
+    "word_count": 18
+  },
+  "s6-outcome": {
+    "audio_path": "projects\\knowledge-to-video-factory\\assets\\narration-s6-outcome.wav",
+    "duration_seconds": 8.853,
+    "voice": "Microsoft Zira Desktop",
+    "word_count": 21
+  }
+}

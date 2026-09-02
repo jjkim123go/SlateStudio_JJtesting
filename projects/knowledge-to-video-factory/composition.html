@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Slate Composition</title>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomBounce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomWiggle.min.js"></script>
+
+<style>
+:root { color-scheme: dark; --brand-primary:#275C5F;--brand-accent:#B45309;--brand-bg:#F3F0E8;--brand-text:#1F2933;--slate-bg:#F3F0E8;--slate-surface:#FFFCF4;--slate-elevated-surface:#E7E1D3;--slate-text:#1F2933;--slate-muted-text:#59636E;--slate-border:#D2C8B8;--slate-success:#3DDC97;--slate-warning:#F7C948;--slate-danger:#FF6B6B;--slate-caption-highlight:#275C5F; }
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; width:1920px; height:1080px; background:var(--slate-bg,#120A1F); color:var(--slate-text,#F8F4EC); overflow:hidden; font-family:Inter,Inter,-apple-system,BlinkMacSystemFont,sans-serif; }
+.scene { opacity: 0; }
+
+</style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="animated-explainer"
+  data-start="0"
+  data-duration="53.8"
+  data-width="1920"
+  data-height="1080"
+  style="position:relative;width:1920px;height:1080px;background:var(--slate-bg,#120A1F);overflow:hidden">
+<div class="scene scene-s1-hook"
+    data-composition-id="s1-hook"
+    data-start="0"
+    data-duration="6"
+    data-track-index="1"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#F7F9FC;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<img class="layer layer-image" id="s1-hook-layer-1" data-layer-start="0" data-layer-end="4.6" src="assets/icons/Document Text.png" style="position:absolute;object-fit:cover;left:960px;top:460px;width:300px;height:300px;transform:translate(-50%,-50%);" />
+<img class="layer layer-image" id="s1-hook-layer-2" data-layer-start="1.6" data-layer-end="4.6" src="assets/icons/Book Open.png" style="position:absolute;object-fit:cover;left:650px;top:380px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s1-hook-layer-3" data-layer-start="1.6" data-layer-end="4.6" src="assets/icons/Chat Help.png" style="position:absolute;object-fit:cover;left:1270px;top:380px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s1-hook-layer-4" data-layer-start="4.6" src="assets/icons/Filmstrip Play.png" style="position:absolute;object-fit:cover;left:960px;top:460px;width:260px;height:260px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s1-hook-layer-5" data-layer-start="0.2" style="position:absolute;font-size:56px;font-weight:900;color:#172033;text-align:center;line-height:1.15;left:960px;top:900px;width:1500px;height:200px;transform:translate(-50%,-50%);z-index:4;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>What if every piece of trusted written knowledge could become a lesson people can see and understand?</div></div>
+    </div>
+    
+  </div>
+  <audio
+        id="s1-hook-narration"
+        data-composition-id="s1-hook-narration"
+        data-start="0"
+        data-duration="6"
+        data-media-start="0"
+        data-track-index="1"
+        src="assets/narration-s1-hook.wav"
+      ></audio>
+<div class="scene scene-s2-factory"
+    data-composition-id="s2-factory"
+    data-start="6"
+    data-duration="9.7"
+    data-track-index="2"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#F7F9FC;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<div class="layer layer-text" id="s2-factory-layer-1" data-layer-start="0" style="position:absolute;font-size:72px;font-weight:900;color:#0F6CBD;text-align:center;left:960px;top:470px;width:1600px;height:120px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;"><div>Knowledge-to-Video Factory</div></div>
+<div class="layer layer-shape" id="s2-factory-layer-2" data-layer-start="2" style="position:absolute;background:#0F6CBD;left:400px;top:630px;width:1120px;height:4px;opacity:0;"></div>
+<img class="layer layer-image" id="s2-factory-layer-3" data-layer-start="2.3" src="assets/icons/Book.png" style="position:absolute;object-fit:cover;left:500px;top:720px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s2-factory-layer-4" data-layer-start="3.5" src="assets/icons/Document Text.png" style="position:absolute;object-fit:cover;left:960px;top:760px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s2-factory-layer-5" data-layer-start="4.6" src="assets/icons/Chat Help.png" style="position:absolute;object-fit:cover;left:1420px;top:720px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s2-factory-layer-6" data-layer-start="6" src="assets/icons/Filmstrip Play.png" style="position:absolute;object-fit:cover;left:960px;top:260px;width:220px;height:220px;transform:translate(-50%,-50%);opacity:0;" />
+    </div>
+    
+  </div>
+  <audio
+        id="s2-factory-narration"
+        data-composition-id="s2-factory-narration"
+        data-start="6"
+        data-duration="9.7"
+        data-media-start="0"
+        data-track-index="2"
+        src="assets/narration-s2-factory.wav"
+      ></audio>
+<div class="scene scene-s3-agents"
+    data-composition-id="s3-agents"
+    data-start="15.7"
+    data-duration="8.5"
+    data-track-index="3"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#F7F9FC;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<img class="layer layer-image" id="s3-agents-layer-1" data-layer-start="0" src="assets/icons/Agents.png" style="position:absolute;object-fit:cover;left:460px;top:460px;width:260px;height:260px;transform:translate(-50%,-50%);" />
+<img class="layer layer-image" id="s3-agents-layer-2" data-layer-start="0.6" src="assets/icons/Document Search.png" style="position:absolute;object-fit:cover;left:780px;top:460px;width:220px;height:220px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s3-agents-layer-3" data-layer-start="2.4" style="position:absolute;font-size:34px;font-weight:700;color:#172033;text-align:left;left:1420px;top:350px;width:700px;height:90px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Extract the teaching spine</div></div>
+<div class="layer layer-text" id="s3-agents-layer-4" data-layer-start="4.6" style="position:absolute;font-size:34px;font-weight:700;color:#172033;text-align:left;left:1420px;top:540px;width:700px;height:90px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Preserve source accuracy</div></div>
+<img class="layer layer-image" id="s3-agents-layer-5" data-layer-start="5.2" src="assets/icons/Shield Checkmark.png" style="position:absolute;object-fit:cover;left:1720px;top:350px;width:140px;height:140px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s3-agents-layer-6" data-layer-start="6.6" src="assets/icons/Text Grammar Checkmark.png" style="position:absolute;object-fit:cover;left:1720px;top:540px;width:140px;height:140px;transform:translate(-50%,-50%);opacity:0;" />
+    </div>
+    
+  </div>
+  <audio
+        id="s3-agents-narration"
+        data-composition-id="s3-agents-narration"
+        data-start="15.7"
+        data-duration="8.5"
+        data-media-start="0"
+        data-track-index="3"
+        src="assets/narration-s3-agents.wav"
+      ></audio>
+<div class="scene scene-s4-production"
+    data-composition-id="s4-production"
+    data-start="24.2"
+    data-duration="8.3"
+    data-track-index="4"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#F7F9FC;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<div class="layer layer-shape" id="s4-production-layer-1" data-layer-start="0" style="position:absolute;background:#0F6CBD;left:200px;top:540px;width:1520px;height:6px;"></div>
+<img class="layer layer-image" id="s4-production-layer-2" data-layer-start="0.3" src="assets/icons/Script.png" style="position:absolute;object-fit:cover;left:350px;top:460px;width:180px;height:180px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s4-production-layer-3" data-layer-start="0.3" style="position:absolute;font-size:32px;font-weight:700;color:#172033;text-align:center;left:350px;top:620px;width:300px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Script</div></div>
+<img class="layer layer-image" id="s4-production-layer-4" data-layer-start="3" src="assets/icons/Slide Content.png" style="position:absolute;object-fit:cover;left:960px;top:460px;width:180px;height:180px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s4-production-layer-5" data-layer-start="3" style="position:absolute;font-size:32px;font-weight:700;color:#172033;text-align:center;left:960px;top:620px;width:300px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Storyboard</div></div>
+<img class="layer layer-image" id="s4-production-layer-6" data-layer-start="5.6" src="assets/icons/Mic Sparkle.png" style="position:absolute;object-fit:cover;left:1570px;top:460px;width:180px;height:180px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s4-production-layer-7" data-layer-start="5.6" style="position:absolute;font-size:32px;font-weight:700;color:#172033;text-align:center;left:1570px;top:620px;width:300px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Narration</div></div>
+    </div>
+    
+  </div>
+  <audio
+        id="s4-production-narration"
+        data-composition-id="s4-production-narration"
+        data-start="24.2"
+        data-duration="8.3"
+        data-media-start="0"
+        data-track-index="4"
+        src="assets/narration-s4-production.wav"
+      ></audio>
+<div class="scene scene-s5-render"
+    data-composition-id="s5-render"
+    data-start="32.5"
+    data-duration="9.5"
+    data-track-index="5"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#F7F9FC;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<img class="layer layer-image" id="s5-render-layer-1" data-layer-start="0" src="assets/icons/Sparkle Action.png" style="position:absolute;object-fit:cover;left:350px;top:460px;width:200px;height:200px;transform:translate(-50%,-50%);" />
+<div class="layer layer-text" id="s5-render-layer-2" data-layer-start="0" style="position:absolute;font-size:30px;font-weight:700;color:#172033;text-align:center;left:350px;top:630px;width:320px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;"><div>HyperFrames</div></div>
+<div class="layer layer-shape" id="s5-render-layer-3" data-layer-start="1.5" style="position:absolute;background:#00A4EF;left:450px;top:480px;width:1000px;height:4px;opacity:0;"></div>
+<img class="layer layer-image" id="s5-render-layer-4" data-layer-start="3.4" src="assets/icons/Ribbon.png" style="position:absolute;object-fit:cover;left:900px;top:460px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s5-render-layer-5" data-layer-start="3.4" style="position:absolute;font-size:30px;font-weight:700;color:#172033;text-align:center;left:900px;top:610px;width:260px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Brand</div></div>
+<img class="layer layer-image" id="s5-render-layer-6" data-layer-start="5.6" src="assets/icons/Hat Graduation.png" style="position:absolute;object-fit:cover;left:1250px;top:460px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s5-render-layer-7" data-layer-start="5.6" style="position:absolute;font-size:30px;font-weight:700;color:#172033;text-align:center;left:1250px;top:610px;width:300px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Instructional</div></div>
+<img class="layer layer-image" id="s5-render-layer-8" data-layer-start="7.4" src="assets/icons/Shield Checkmark.png" style="position:absolute;object-fit:cover;left:1560px;top:460px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s5-render-layer-9" data-layer-start="7.4" style="position:absolute;font-size:30px;font-weight:700;color:#172033;text-align:center;left:1560px;top:610px;width:300px;height:60px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Trustworthy</div></div>
+    </div>
+    
+  </div>
+  <audio
+        id="s5-render-narration"
+        data-composition-id="s5-render-narration"
+        data-start="32.5"
+        data-duration="9.5"
+        data-media-start="0"
+        data-track-index="5"
+        src="assets/narration-s5-render.wav"
+      ></audio>
+<div class="scene scene-s6-outcome"
+    data-composition-id="s6-outcome"
+    data-start="42"
+    data-duration="9.3"
+    data-track-index="6"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#F7F9FC;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<img class="layer layer-image" id="s6-outcome-layer-1" data-layer-start="0" data-layer-end="2" src="assets/icons/Document Text.png" style="position:absolute;object-fit:cover;left:960px;top:260px;width:160px;height:160px;transform:translate(-50%,-50%);" />
+<img class="layer layer-image" id="s6-outcome-layer-2" data-layer-start="2" src="assets/icons/Filmstrip Play.png" style="position:absolute;object-fit:cover;left:960px;top:260px;width:160px;height:160px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s6-outcome-layer-3" data-layer-start="0.4" style="position:absolute;font-size:48px;font-weight:900;color:#172033;text-align:center;left:960px;top:430px;width:1200px;height:90px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>A repeatable path</div></div>
+<img class="layer layer-image" id="s6-outcome-layer-4" data-layer-start="4.2" src="assets/icons/Video.png" style="position:absolute;object-fit:cover;left:560px;top:650px;width:120px;height:120px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s6-outcome-layer-5" data-layer-start="4.5" src="assets/icons/Video.png" style="position:absolute;object-fit:cover;left:780px;top:650px;width:120px;height:120px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s6-outcome-layer-6" data-layer-start="4.8" src="assets/icons/Video.png" style="position:absolute;object-fit:cover;left:1000px;top:650px;width:120px;height:120px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s6-outcome-layer-7" data-layer-start="5.1" src="assets/icons/Video.png" style="position:absolute;object-fit:cover;left:1220px;top:650px;width:120px;height:120px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s6-outcome-layer-8" data-layer-start="5.4" src="assets/icons/Video.png" style="position:absolute;object-fit:cover;left:1440px;top:650px;width:120px;height:120px;transform:translate(-50%,-50%);opacity:0;" />
+<img class="layer layer-image" id="s6-outcome-layer-9" data-layer-start="6" src="assets/icons/People Team.png" style="position:absolute;object-fit:cover;left:960px;top:830px;width:200px;height:200px;transform:translate(-50%,-50%);opacity:0;" />
+<div class="layer layer-text" id="s6-outcome-layer-10" data-layer-start="7" style="position:absolute;font-size:40px;font-weight:900;color:#0F6CBD;text-align:center;left:960px;top:990px;width:1500px;height:70px;transform:translate(-50%,-50%);z-index:3;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;opacity:0;"><div>Visual learning. Faster. Still rigorous.</div></div>
+    </div>
+    
+  </div>
+  <audio
+        id="s6-outcome-narration"
+        data-composition-id="s6-outcome-narration"
+        data-start="42"
+        data-duration="9.3"
+        data-media-start="0"
+        data-track-index="6"
+        src="assets/narration-s6-outcome.wav"
+      ></audio>
+<div class="scene scene-s7-endcard"
+    data-composition-id="s7-endcard"
+    data-start="51.3"
+    data-duration="2.5"
+    data-track-index="7"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="layer layer-shape"   style="position:absolute;background:#0F6CBD;left:0px;top:0px;width:1920px;height:1080px;"></div>
+<div class="layer layer-text" id="s7-endcard-layer-1" data-layer-start="0" style="position:absolute;font-size:72px;font-weight:800;color:#FFFFFF;text-align:center;left:960px;top:540px;width:1600px;height:120px;transform:translate(-50%,-50%);z-index:2;max-width:80%;text-shadow:0 2px 8px rgba(0,0,0,0.4);font-family:Montserrat,Inter,-apple-system,BlinkMacSystemFont,sans-serif;"><div>Microsoft 365 Copilot</div></div>
+    </div>
+    
+  </div>
+  
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+window.__slateFontsReady = !document.fonts;
+if (document.fonts) {
+  document.fonts.ready.then(function(){ window.__slateFontsReady = true; document.documentElement.setAttribute('data-fonts-ready', 'true'); });
+}
+// Register the now-free GSAP plugins (loaded from CDN above). GSAP went fully
+// free in v3.13; these were previously Club-only. Defensive registration: only
+// register plugins that actually loaded, so a CDN hiccup degrades gracefully.
+[window.Flip, window.SplitText, window.DrawSVGPlugin, window.MorphSVGPlugin, window.MotionPathPlugin, window.Physics2DPlugin, window.CustomEase, window.CustomBounce, window.CustomWiggle].forEach(function(p){ if (p) { try { gsap.registerPlugin(p); } catch (e) {} } });
+const master = gsap.timeline({ paused: true });
+
+// Per-scene visibility — only the active scene is shown at any time
+master.set('.scene-s1-hook', { opacity: 0 }, 0);
+master.set('.scene-s1-hook', { opacity: 1 }, 0);
+master.set('.scene-s1-hook', { opacity: 0 }, 6);
+master.set('.scene-s2-factory', { opacity: 0 }, 0);
+master.fromTo('.scene-s2-factory', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 5.5);
+master.set('.scene-s2-factory', { opacity: 0 }, 15.7);
+master.set('.scene-s3-agents', { opacity: 0 }, 0);
+master.fromTo('.scene-s3-agents', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 15.2);
+master.set('.scene-s3-agents', { opacity: 0 }, 24.2);
+master.set('.scene-s4-production', { opacity: 0 }, 0);
+master.fromTo('.scene-s4-production', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 23.7);
+master.set('.scene-s4-production', { opacity: 0 }, 32.5);
+master.set('.scene-s5-render', { opacity: 0 }, 0);
+master.fromTo('.scene-s5-render', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 32);
+master.set('.scene-s5-render', { opacity: 0 }, 42);
+master.set('.scene-s6-outcome', { opacity: 0 }, 0);
+master.fromTo('.scene-s6-outcome', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 41.5);
+master.set('.scene-s6-outcome', { opacity: 0 }, 51.3);
+master.set('.scene-s7-endcard', { opacity: 0 }, 0);
+master.fromTo('.scene-s7-endcard', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 50.8);
+master.set('.scene-s7-endcard', { opacity: 0 }, 53.8);
+master.to('.scene-s1-hook', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 5.5);
+master.to('.scene-s2-factory', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 15.2);
+master.to('.scene-s3-agents', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 23.7);
+master.to('.scene-s4-production', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 32);
+master.to('.scene-s5-render', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 41.5);
+master.to('.scene-s6-outcome', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 50.8);
+
+// Per-layer visibility — layers with startTime/endTime are revealed/hidden
+// at composition-time. CSS-id selectors are escaped for GSAP (it accepts
+// '#id' selectors directly). Initial opacity is also set inline on the
+// element so the very first seeked frame does not flash content that
+// should still be hidden.
+master.set('#s1-hook-layer-1', { opacity: 1 }, 0);
+master.set('#s1-hook-layer-1', { opacity: 0 }, 4.6);
+master.set('#s1-hook-layer-2', { opacity: 0 }, 0);
+master.set('#s1-hook-layer-2', { opacity: 1 }, 1.6);
+master.set('#s1-hook-layer-2', { opacity: 0 }, 4.6);
+master.set('#s1-hook-layer-3', { opacity: 0 }, 0);
+master.set('#s1-hook-layer-3', { opacity: 1 }, 1.6);
+master.set('#s1-hook-layer-3', { opacity: 0 }, 4.6);
+master.set('#s1-hook-layer-4', { opacity: 0 }, 0);
+master.set('#s1-hook-layer-4', { opacity: 1 }, 4.6);
+master.set('#s1-hook-layer-5', { opacity: 0 }, 0);
+master.set('#s1-hook-layer-5', { opacity: 1 }, 0.2);
+master.set('#s2-factory-layer-1', { opacity: 1 }, 6);
+master.set('#s2-factory-layer-2', { opacity: 0 }, 0);
+master.set('#s2-factory-layer-2', { opacity: 1 }, 8);
+master.set('#s2-factory-layer-3', { opacity: 0 }, 0);
+master.set('#s2-factory-layer-3', { opacity: 1 }, 8.3);
+master.set('#s2-factory-layer-4', { opacity: 0 }, 0);
+master.set('#s2-factory-layer-4', { opacity: 1 }, 9.5);
+master.set('#s2-factory-layer-5', { opacity: 0 }, 0);
+master.set('#s2-factory-layer-5', { opacity: 1 }, 10.6);
+master.set('#s2-factory-layer-6', { opacity: 0 }, 0);
+master.set('#s2-factory-layer-6', { opacity: 1 }, 12);
+master.set('#s3-agents-layer-1', { opacity: 1 }, 15.7);
+master.set('#s3-agents-layer-2', { opacity: 0 }, 0);
+master.set('#s3-agents-layer-2', { opacity: 1 }, 16.3);
+master.set('#s3-agents-layer-3', { opacity: 0 }, 0);
+master.set('#s3-agents-layer-3', { opacity: 1 }, 18.099999999999998);
+master.set('#s3-agents-layer-4', { opacity: 0 }, 0);
+master.set('#s3-agents-layer-4', { opacity: 1 }, 20.299999999999997);
+master.set('#s3-agents-layer-5', { opacity: 0 }, 0);
+master.set('#s3-agents-layer-5', { opacity: 1 }, 20.9);
+master.set('#s3-agents-layer-6', { opacity: 0 }, 0);
+master.set('#s3-agents-layer-6', { opacity: 1 }, 22.299999999999997);
+master.set('#s4-production-layer-1', { opacity: 1 }, 24.2);
+master.set('#s4-production-layer-2', { opacity: 0 }, 0);
+master.set('#s4-production-layer-2', { opacity: 1 }, 24.5);
+master.set('#s4-production-layer-3', { opacity: 0 }, 0);
+master.set('#s4-production-layer-3', { opacity: 1 }, 24.5);
+master.set('#s4-production-layer-4', { opacity: 0 }, 0);
+master.set('#s4-production-layer-4', { opacity: 1 }, 27.2);
+master.set('#s4-production-layer-5', { opacity: 0 }, 0);
+master.set('#s4-production-layer-5', { opacity: 1 }, 27.2);
+master.set('#s4-production-layer-6', { opacity: 0 }, 0);
+master.set('#s4-production-layer-6', { opacity: 1 }, 29.799999999999997);
+master.set('#s4-production-layer-7', { opacity: 0 }, 0);
+master.set('#s4-production-layer-7', { opacity: 1 }, 29.799999999999997);
+master.set('#s5-render-layer-1', { opacity: 1 }, 32.5);
+master.set('#s5-render-layer-2', { opacity: 1 }, 32.5);
+master.set('#s5-render-layer-3', { opacity: 0 }, 0);
+master.set('#s5-render-layer-3', { opacity: 1 }, 34);
+master.set('#s5-render-layer-4', { opacity: 0 }, 0);
+master.set('#s5-render-layer-4', { opacity: 1 }, 35.9);
+master.set('#s5-render-layer-5', { opacity: 0 }, 0);
+master.set('#s5-render-layer-5', { opacity: 1 }, 35.9);
+master.set('#s5-render-layer-6', { opacity: 0 }, 0);
+master.set('#s5-render-layer-6', { opacity: 1 }, 38.1);
+master.set('#s5-render-layer-7', { opacity: 0 }, 0);
+master.set('#s5-render-layer-7', { opacity: 1 }, 38.1);
+master.set('#s5-render-layer-8', { opacity: 0 }, 0);
+master.set('#s5-render-layer-8', { opacity: 1 }, 39.9);
+master.set('#s5-render-layer-9', { opacity: 0 }, 0);
+master.set('#s5-render-layer-9', { opacity: 1 }, 39.9);
+master.set('#s6-outcome-layer-1', { opacity: 1 }, 42);
+master.set('#s6-outcome-layer-1', { opacity: 0 }, 44);
+master.set('#s6-outcome-layer-2', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-2', { opacity: 1 }, 44);
+master.set('#s6-outcome-layer-3', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-3', { opacity: 1 }, 42.4);
+master.set('#s6-outcome-layer-4', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-4', { opacity: 1 }, 46.2);
+master.set('#s6-outcome-layer-5', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-5', { opacity: 1 }, 46.5);
+master.set('#s6-outcome-layer-6', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-6', { opacity: 1 }, 46.8);
+master.set('#s6-outcome-layer-7', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-7', { opacity: 1 }, 47.1);
+master.set('#s6-outcome-layer-8', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-8', { opacity: 1 }, 47.4);
+master.set('#s6-outcome-layer-9', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-9', { opacity: 1 }, 48);
+master.set('#s6-outcome-layer-10', { opacity: 0 }, 0);
+master.set('#s6-outcome-layer-10', { opacity: 1 }, 49);
+master.set('#s7-endcard-layer-1', { opacity: 1 }, 51.3);
+
+window.__timelines["animated-explainer"] = master;
+
+
+
+
+</script>
+</body>
+</html>

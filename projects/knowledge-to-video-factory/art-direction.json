@@ -1,0 +1,29 @@
+{
+  "concept": "A working schematic wall: documents, agents, and finished lessons exist as engineered symbols wired together by visible connector lines, like a systems diagram that has come alive.",
+  "palette": {
+    "bg": "#F7F9FC",
+    "surface": "#FFFFFF",
+    "ink": "#172033",
+    "muted": "#53627A",
+    "accent": "#0F6CBD",
+    "secondary": "#00A4EF",
+    "mesh": "linear 120deg #F7F9FC -> #EAF1FB -> #D7E6FA@10%"
+  },
+  "material": "engineered schematic — flat Fluent iconography on a clean cool-white ground, connected by hairline paths, never glassy or glowing",
+  "motionSignature": "Drafting-line: icons and connectors self-draw or spring into their wired position, then settle with a smooth long-tail ease; nothing floats or breathes independently; camera holds static or performs one motivated push per scene.",
+  "composition": "Full-width process rails and asymmetric constellations; type is heavy sentence-case Montserrat anchored to an edge; content stays in the top 83% for caption safety; at least 45% of each frame stays open.",
+  "signatureMotif": "A single hairline connector path that redraws once per scene to link the previous idea to the next; it is connective tissue, not the hero, and never repeats in two adjacent scenes as the dominant visual.",
+  "sceneTreatments": {
+    "s1-hook": "kinetic-type word build over an unfolding document icon (hand-stitched)",
+    "s2-factory": "constellation hub — three source icons wire into one central factory mark (hand-stitched)",
+    "s3-agents": "state-mutation checklist — agent icon inspects a document, checkmarks resolve in sequence (hand-stitched)",
+    "s4-production": "full-width process rail — three stage icons assemble left to right (hand-stitched)",
+    "s5-render": "traveling connector — a path draws through three quality-check icons (hand-stitched)",
+    "s6-outcome": "compress-then-expand field — pipeline loop shrinks, then a small field of lesson icons reaches team icons (hand-stitched)",
+    "s7-endcard": "still title lockup, single reveal, held (restrained close — no motif, no motion after reveal)"
+  },
+  "referenceDirection": [
+    "Engineer's blueprint annotation style",
+    "Microsoft Fluent design system precision"
+  ]
+}

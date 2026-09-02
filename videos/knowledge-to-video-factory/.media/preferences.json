@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "preferences": {
+    "destination": {
+      "value": "hackathon-presentation",
+      "confirmed_in": [
+        "knowledge-to-video-factory"
+      ],
+      "updated_at": "2026-09-01T19:33:22.754Z"
+    },
+    "aspect": {
+      "value": "1920x1080",
+      "confirmed_in": [
+        "knowledge-to-video-factory"
+      ],
+      "updated_at": "2026-09-01T19:33:22.845Z"
+    },
+    "language": {
+      "value": "en",
+      "confirmed_in": [
+        "knowledge-to-video-factory"
+      ],
+      "updated_at": "2026-09-01T19:33:22.931Z"
+    },
+    "flow": {
+      "value": "companion",
+      "confirmed_in": [
+        "knowledge-to-video-factory"
+      ],
+      "updated_at": "2026-09-01T19:33:23.021Z"
+    },
+    "storyboard": {
+      "value": "yes",
+      "confirmed_in": [
+        "knowledge-to-video-factory"
+      ],
+      "updated_at": "2026-09-01T19:33:23.110Z"
+    }
+  },
+  "sightings": {}
+}

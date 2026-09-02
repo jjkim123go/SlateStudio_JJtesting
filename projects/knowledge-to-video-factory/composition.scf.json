@@ -1,0 +1,145 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "h264",
+    "quality": "high",
+    "deliveryProfile": "draft"
+  },
+  "scenes": [
+    {
+      "id": "s1-hook",
+      "duration": 6.0,
+      "narration": "assets/narration-s1-hook.wav",
+      "narrationText": "What if every piece of trusted written knowledge could become a lesson people can see and understand?",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Hand-stitched kinetic-type hook. Document icon resolves into a video/lesson icon as the line lands.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "image", "src": "assets/icons/Document Text.png", "animation": "scaleIn", "startTime": 0, "endTime": 4.6, "position": { "x": 960, "y": 460, "width": 300, "height": 300, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Book Open.png", "animation": "fadeInLeft", "startTime": 1.6, "endTime": 4.6, "position": { "x": 650, "y": 380, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Chat Help.png", "animation": "fadeInRight", "startTime": 1.6, "endTime": 4.6, "position": { "x": 1270, "y": 380, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Filmstrip Play.png", "animation": "scaleIn", "startTime": 4.6, "position": { "x": 960, "y": 460, "width": 260, "height": 260, "anchor": "center" }, "zIndex": 3 },
+        { "type": "text", "content": "What if every piece of trusted written knowledge could become a lesson people can see and understand?", "animation": "typewriter", "startTime": 0.2, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 56, "color": "#172033", "textAlign": "center", "lineHeight": 1.15 }, "position": { "x": 960, "y": 900, "width": 1500, "height": 200, "anchor": "center" }, "zIndex": 4 }
+      ]
+    },
+    {
+      "id": "s2-factory",
+      "duration": 9.7,
+      "narration": "assets/narration-s2-factory.wav",
+      "narrationText": "The Knowledge-to-Video Factory turns Microsoft Learn content, technical documentation, and support articles into conceptual video experiences.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Constellation hub: three source icons wire into a central factory mark, resolving to a video icon.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "Knowledge-to-Video Factory", "animation": "scaleIn", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 72, "color": "#0F6CBD", "textAlign": "center" }, "position": { "x": 960, "y": 470, "width": 1600, "height": 120, "anchor": "center" }, "zIndex": 3 },
+        { "type": "shape", "fill": "#0F6CBD", "animation": "fadeIn", "startTime": 2.0, "position": { "x": 400, "y": 630, "width": 1120, "height": 4, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "image", "src": "assets/icons/Book.png", "animation": "fadeInUp", "startTime": 2.3, "position": { "x": 500, "y": 720, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Document Text.png", "animation": "fadeInUp", "startTime": 3.5, "position": { "x": 960, "y": 760, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Chat Help.png", "animation": "fadeInUp", "startTime": 4.6, "position": { "x": 1420, "y": 720, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Filmstrip Play.png", "animation": "scaleIn", "startTime": 6.0, "position": { "x": 960, "y": 260, "width": 220, "height": 220, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s3-agents",
+      "duration": 8.5,
+      "narration": "assets/narration-s3-agents.wav",
+      "narrationText": "Specialized AI agents read the source, identify the teaching spine, and protect the claims that must stay accurate.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "State-mutation checklist: agent inspects a document, checkmarks resolve as accuracy is named.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "image", "src": "assets/icons/Agents.png", "animation": "scaleIn", "startTime": 0, "position": { "x": 460, "y": 460, "width": 260, "height": 260, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Document Search.png", "animation": "fadeInRight", "startTime": 0.6, "position": { "x": 780, "y": 460, "width": 220, "height": 220, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Extract the teaching spine", "animation": "fadeInUp", "startTime": 2.4, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 34, "color": "#172033", "textAlign": "left" }, "position": { "x": 1420, "y": 350, "width": 700, "height": 90, "anchor": "center" }, "zIndex": 3 },
+        { "type": "text", "content": "Preserve source accuracy", "animation": "fadeInUp", "startTime": 4.6, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 34, "color": "#172033", "textAlign": "left" }, "position": { "x": 1420, "y": 540, "width": 700, "height": 90, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Shield Checkmark.png", "animation": "scaleIn", "startTime": 5.2, "position": { "x": 1720, "y": 350, "width": 140, "height": 140, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Text Grammar Checkmark.png", "animation": "scaleIn", "startTime": 6.6, "position": { "x": 1720, "y": 540, "width": 140, "height": 140, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s4-production",
+      "duration": 8.3,
+      "narration": "assets/narration-s4-production.wav",
+      "narrationText": "Then they work in sequence: shaping the script, mapping a visual storyboard, and preparing narration for each beat.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Full-width process rail: script, storyboard, narration icons assemble in order.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "shape", "fill": "#0F6CBD", "animation": "fadeIn", "startTime": 0, "position": { "x": 200, "y": 540, "width": 1520, "height": 6, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "image", "src": "assets/icons/Script.png", "animation": "scaleIn", "startTime": 0.3, "position": { "x": 350, "y": 460, "width": 180, "height": 180, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Script", "animation": "fadeIn", "startTime": 0.3, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 32, "color": "#172033", "textAlign": "center" }, "position": { "x": 350, "y": 620, "width": 300, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Slide Content.png", "animation": "scaleIn", "startTime": 3.0, "position": { "x": 960, "y": 460, "width": 180, "height": 180, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Storyboard", "animation": "fadeIn", "startTime": 3.0, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 32, "color": "#172033", "textAlign": "center" }, "position": { "x": 960, "y": 620, "width": 300, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Mic Sparkle.png", "animation": "scaleIn", "startTime": 5.6, "position": { "x": 1570, "y": 460, "width": 180, "height": 180, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Narration", "animation": "fadeIn", "startTime": 5.6, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 32, "color": "#172033", "textAlign": "center" }, "position": { "x": 1570, "y": 620, "width": 300, "height": 60, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s5-render",
+      "duration": 9.5,
+      "narration": "assets/narration-s5-render.wav",
+      "narrationText": "HyperFrames turns that plan into motion, while brand and instructional checks keep every scene clear, consistent, and trustworthy.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Traveling connector through three quality-check icons, timed to the three closing qualities.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "image", "src": "assets/icons/Sparkle Action.png", "animation": "scaleIn", "startTime": 0, "position": { "x": 350, "y": 460, "width": 200, "height": 200, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "HyperFrames", "animation": "fadeIn", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 30, "color": "#172033", "textAlign": "center" }, "position": { "x": 350, "y": 630, "width": 320, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "shape", "fill": "#00A4EF", "animation": "fadeIn", "startTime": 1.5, "position": { "x": 450, "y": 480, "width": 1000, "height": 4, "anchor": "top-left" }, "zIndex": 1 },
+        { "type": "image", "src": "assets/icons/Ribbon.png", "animation": "scaleIn", "startTime": 3.4, "position": { "x": 900, "y": 460, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Brand", "animation": "fadeIn", "startTime": 3.4, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 30, "color": "#172033", "textAlign": "center" }, "position": { "x": 900, "y": 610, "width": 260, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Hat Graduation.png", "animation": "scaleIn", "startTime": 5.6, "position": { "x": 1250, "y": 460, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Instructional", "animation": "fadeIn", "startTime": 5.6, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 30, "color": "#172033", "textAlign": "center" }, "position": { "x": 1250, "y": 610, "width": 300, "height": 60, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Shield Checkmark.png", "animation": "scaleIn", "startTime": 7.4, "position": { "x": 1560, "y": 460, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Trustworthy", "animation": "fadeIn", "startTime": 7.4, "style": { "fontFamily": "Montserrat", "fontWeight": 700, "fontSize": 30, "color": "#172033", "textAlign": "center" }, "position": { "x": 1560, "y": 610, "width": 300, "height": 60, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s6-outcome",
+      "duration": 9.3,
+      "narration": "assets/narration-s6-outcome.wav",
+      "narrationText": "The result is a repeatable path from written knowledge to visual learning, helping teams explain complex ideas faster, without losing rigor.",
+      "transition": { "type": "crossfade", "duration": 0.5 },
+      "notes": "Held read (deliberate stillness): pipeline compresses into a loop, expands into a lesson field reaching a team, then holds on the distilled line.",
+      "layers": [
+        { "type": "shape", "fill": "#F7F9FC", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "image", "src": "assets/icons/Document Text.png", "animation": "scaleIn", "startTime": 0, "endTime": 2.0, "position": { "x": 960, "y": 260, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Filmstrip Play.png", "animation": "fadeIn", "startTime": 2.0, "position": { "x": 960, "y": 260, "width": 160, "height": 160, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "A repeatable path", "animation": "fadeInUp", "startTime": 0.4, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 48, "color": "#172033", "textAlign": "center" }, "position": { "x": 960, "y": 430, "width": 1200, "height": 90, "anchor": "center" }, "zIndex": 3 },
+        { "type": "image", "src": "assets/icons/Video.png", "animation": "fadeInUp", "startTime": 4.2, "position": { "x": 560, "y": 650, "width": 120, "height": 120, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Video.png", "animation": "fadeInUp", "startTime": 4.5, "position": { "x": 780, "y": 650, "width": 120, "height": 120, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Video.png", "animation": "fadeInUp", "startTime": 4.8, "position": { "x": 1000, "y": 650, "width": 120, "height": 120, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Video.png", "animation": "fadeInUp", "startTime": 5.1, "position": { "x": 1220, "y": 650, "width": 120, "height": 120, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/Video.png", "animation": "fadeInUp", "startTime": 5.4, "position": { "x": 1440, "y": 650, "width": 120, "height": 120, "anchor": "center" }, "zIndex": 2 },
+        { "type": "image", "src": "assets/icons/People Team.png", "animation": "scaleIn", "startTime": 6.0, "position": { "x": 960, "y": 830, "width": 200, "height": 200, "anchor": "center" }, "zIndex": 2 },
+        { "type": "text", "content": "Visual learning. Faster. Still rigorous.", "animation": "typewriter", "startTime": 7.0, "style": { "fontFamily": "Montserrat", "fontWeight": 900, "fontSize": 40, "color": "#0F6CBD", "textAlign": "center" }, "position": { "x": 960, "y": 990, "width": 1500, "height": 70, "anchor": "center" }, "zIndex": 3 }
+      ]
+    },
+    {
+      "id": "s7-endcard",
+      "duration": 2.5,
+      "notes": "Silent, still Microsoft 365 Copilot close. No fabricated logo mark — text-only lockup since no verified brand asset was available locally.",
+      "layers": [
+        { "type": "shape", "fill": "#0F6CBD", "position": { "x": 0, "y": 0, "width": 1920, "height": 1080, "anchor": "top-left" }, "zIndex": 0 },
+        { "type": "text", "content": "Microsoft 365 Copilot", "animation": "scaleIn", "startTime": 0, "style": { "fontFamily": "Montserrat", "fontWeight": 800, "fontSize": 72, "color": "#FFFFFF", "textAlign": "center" }, "position": { "x": 960, "y": 540, "width": 1600, "height": 120, "anchor": "center" }, "zIndex": 2 }
+      ]
+    }
+  ],
+  "captions": {
+    "style": "static",
+    "position": "bottom",
+    "fontSize": 28,
+    "color": "#FFFFFF",
+    "lineBackgroundColor": "rgba(3,10,22,0.78)",
+    "panel": false
+  },
+  "metadata": {
+    "slug": "knowledge-to-video-factory",
+    "narration_engine": "windows_tts (local, free, offline fallback — no Azure resource configured)",
+    "total_cost_usd": 0.0
+  }
+}
