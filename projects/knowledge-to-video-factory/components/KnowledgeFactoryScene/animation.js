@@ -8,7 +8,7 @@ const text = (value, x, y, cls='kfs-card-value') => { const el=document.createEl
 const card = (label, value, x, y, w=350, h=170) => { const el=document.createElement('div'); el.className='kfs-card'; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; el.style.height=h+'px'; el.innerHTML='<div class="kfs-card-label">'+label+'</div><div class="kfs-card-value">'+value+'</div>'; stage.appendChild(el); return el; };
 const line = (x,y,w,kind='') => { const el=document.createElement('div'); el.className='kfs-line '+kind; el.style.left=x+'px'; el.style.top=y+'px'; el.style.width=w+'px'; stage.appendChild(el); return el; };
 const svg = document.createElementNS(NS,'svg'); svg.className='kfs-svg'; svg.setAttribute('viewBox','0 0 1696 650'); stage.appendChild(svg);
-const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); svg.appendChild(p); return p; };
+const path = (d) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',d); p.setAttribute('fill','none'); p.setAttribute('stroke',root.classList.contains('dark')?'#57c7ff':'#0f6cbd'); p.setAttribute('stroke-width','5'); p.setAttribute('stroke-linecap','round'); svg.appendChild(p); return p; };
 const items=[];
 const v=SCENE_PROPS.variant;
 if(v==='hook'){ const a=card('SOURCE','written knowledge',70,130,430,210); const b=card('OUTPUT','visual lesson',1080,130,500,210); const d=icon('document-text',210,415,120); const f=icon('filmstrip-play',1290,415,120); path('M 500 245 C 720 80, 900 80, 1080 245'); items.push(a,b,d,f); }
