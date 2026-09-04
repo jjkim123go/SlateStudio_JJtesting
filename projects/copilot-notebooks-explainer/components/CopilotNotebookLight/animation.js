@@ -19,7 +19,7 @@ if (__cnlRoot.classList.contains('cnl-mode-home')) {
     SCENE_START + 3.45 * __cnlScale);
   master.fromTo(__cnlScope + '.cnl-start-cursor',
     { autoAlpha: 1, x: 0, y: 0 },
-    { x: -955, y: -255, duration: 1.15, ease: 'power2.inOut' },
+    { x: -915, y: -221, duration: 1.15, ease: 'power2.inOut' },
     SCENE_START + 0.85 * __cnlScale);
   master.fromTo(__cnlScope + '.cnl-click-ring',
     { autoAlpha: 0, scale: 0.35 },
