@@ -1,0 +1,9 @@
+.cne-title-root { position:absolute; inset:0; overflow:hidden; background:#f7fbff; color:#171717; font-family:"Segoe UI Variable Display","Segoe UI",sans-serif; }
+.cne-title-root * { box-sizing:border-box; letter-spacing:0; }
+.cne-title-rule { position:absolute; inset:0 auto 0 0; width:22px; background:#0078d4; }
+.cne-title-lockup { position:absolute; left:220px; top:168px; z-index:2; width:1270px; }
+.cne-title-wordmark { display:block; width:248px; height:72px; object-fit:contain; object-position:left center; }
+.cne-title-copy { display:flex; align-items:center; gap:54px; margin-top:88px; }
+.cne-title-icon { width:178px; height:178px; flex:0 0 178px; image-rendering:auto; }
+.cne-title-lockup h1 { margin:0; max-width:930px; font-size:92px; font-weight:600; line-height:1.03; }
+.cne-title-lockup > p { margin:58px 0 0 232px; color:#4f4f4f; font-size:34px; font-weight:400; line-height:1.3; }
