@@ -1,1261 +1,263 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Slate — Agentic Video Production Engine</title>
-  <meta name="description" content="Enterprise-grade AI video production. From a prompt to a polished, brand-compliant MP4." />
-
-  <!-- Tailwind CSS (CDN) -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            slate_bg: '#0a0412',
-            slate_surface: '#120822',
-            slate_accent: '#a855f7',
-            slate_accent2: '#c084fc',
-            slate_gold: '#e879f9',
-            slate_text: '#e8dff0',
-            slate_muted: '#8b7fa0',
-            ms_blue: '#7c3aed',
-          },
-          fontFamily: {
-            display: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
-            body: ['"Segoe UI Variable"', '"Segoe UI"', 'system-ui', 'sans-serif'],
-            mono: ['"Cascadia Code"', '"Fira Code"', 'monospace'],
-          },
-        },
-      },
-    }
-  </script>
-
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
-  <!-- Custom CSS (inlined) -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Slate turns source material into governed, reviewable video production.">
+  <title>Slate — Agentic Video Production</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-/* ============================================
-   Slate Showcase — Custom Styles
-   ============================================ */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-::selection { background: rgba(168, 85, 247, 0.3); color: #e8dff0; }
-html { scroll-behavior: auto; }
-body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    :root {
+      --paper: #f2f2ef;
+      --ink: #11110f;
+      --blue: #1738ff;
+      --acid: #d7ff32;
+      --pink: #f1a4df;
+      --line: rgba(17, 17, 15, 0.22);
+      --gutter: 68px;
+    }
 
-.custom-cursor { position: fixed; top: 0; left: 0; width: 12px; height: 12px; border-radius: 50%; background: #a855f7; pointer-events: none; z-index: 9999; mix-blend-mode: difference; transform: translate(-50%, -50%); transition: width 0.3s ease, height 0.3s ease, background 0.3s ease; }
-.custom-cursor.is-active { width: 60px; height: 60px; background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.4); mix-blend-mode: normal; }
-.custom-cursor-follower { position: fixed; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(168,85,247,0.2); pointer-events: none; z-index: 9998; transform: translate(-50%, -50%); transition: width 0.5s ease, height 0.5s ease, border-color 0.3s ease; }
-.custom-cursor-follower.is-active { width: 80px; height: 80px; border-color: rgba(168,85,247,0.3); }
-@media (pointer: coarse) { .custom-cursor, .custom-cursor-follower { display: none !important; } }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Manrope", sans-serif; }
+    button, a { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    button { color: inherit; }
 
-#navbar { backdrop-filter: blur(0px); background: transparent; top: 36px; }
-#navbar.scrolled { backdrop-filter: blur(20px); background: rgba(10,4,18,0.8); border-bottom: 1px solid rgba(255,255,255,0.05); }
-.nav-link { position: relative; }
-.nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: #a855f7; transition: width 0.3s ease; }
-.nav-link:hover::after { width: 100%; }
+    .app-shell { min-height: 100vh; padding-left: var(--gutter); }
+    .side-rail {
+      position: fixed; inset: 0 auto 0 0; z-index: 20; width: var(--gutter);
+      display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+      padding: 18px 0; border-right: 1px solid var(--ink); background: var(--paper);
+    }
+    .rail-mark { font-size: 35px; font-weight: 800; line-height: 1; }
+    .rail-menu { width: 28px; height: 24px; display: grid; gap: 7px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .rail-menu span { height: 2px; background: var(--ink); transition: transform .25s ease; }
+    .rail-menu[aria-expanded="true"] span:first-child { transform: translateY(4px) rotate(45deg); }
+    .rail-menu[aria-expanded="true"] span:last-child { transform: translateY(-5px) rotate(-45deg); }
 
-.section-label, .section-title, .section-subtitle { opacity: 0; transform: translateY(30px); }
-.hero-badge, .hero-title, .hero-subtitle, .hero-ctas, .hero-stats { opacity: 0; transform: translateY(40px); }
-.hero-text-block { text-shadow: 0 4px 40px rgba(10,4,18,0.9), 0 0 80px rgba(10,4,18,0.5); }
+    .mobile-menu {
+      position: fixed; left: var(--gutter); top: 0; z-index: 18; width: min(360px, calc(100vw - var(--gutter))); height: 100vh;
+      display: flex; flex-direction: column; gap: 18px; padding: 96px 38px; background: var(--acid);
+      transform: translateX(-110%); transition: transform .35s cubic-bezier(.2,.8,.2,1); border-right: 1px solid var(--ink);
+    }
+    .mobile-menu.open { transform: translateX(0); }
+    .mobile-menu a { font-size: 30px; font-weight: 800; letter-spacing: -1px; }
 
-.hero-bg { background: #0a0412; overflow: hidden; }
-.hero-gradient { position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 65% 45%, rgba(120,30,180,0.35), transparent 70%), radial-gradient(ellipse 60% 50% at 75% 55%, rgba(168,85,247,0.2), transparent 60%), radial-gradient(ellipse 50% 40% at 55% 40%, rgba(232,121,249,0.15), transparent 50%), radial-gradient(ellipse 90% 70% at 50% 50%, rgba(88,28,135,0.2), transparent 80%); animation: heroGradientShift 8s ease-in-out infinite alternate; }
-@keyframes heroGradientShift { 0% { background: radial-gradient(ellipse 80% 60% at 65% 45%, rgba(120,30,180,0.35), transparent 70%), radial-gradient(ellipse 60% 50% at 75% 55%, rgba(168,85,247,0.2), transparent 60%), radial-gradient(ellipse 50% 40% at 55% 40%, rgba(232,121,249,0.15), transparent 50%), radial-gradient(ellipse 90% 70% at 50% 50%, rgba(88,28,135,0.2), transparent 80%); } 100% { background: radial-gradient(ellipse 70% 50% at 60% 50%, rgba(139,92,246,0.3), transparent 65%), radial-gradient(ellipse 65% 55% at 70% 40%, rgba(192,132,252,0.2), transparent 55%), radial-gradient(ellipse 55% 45% at 50% 55%, rgba(168,85,247,0.18), transparent 50%), radial-gradient(ellipse 85% 65% at 55% 45%, rgba(88,28,135,0.25), transparent 75%); } }
+    .hero {
+      position: relative; min-height: 700px; height: 80vh; max-height: 840px; overflow: hidden;
+      display: grid; grid-template-rows: 1fr auto; background: var(--blue); color: white;
+    }
+    .blueprint {
+      background-color: var(--blue);
+      background-image:
+        linear-gradient(rgba(255,255,255,.14) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.14) 1px, transparent 1px),
+        linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size: 30px 30px, 30px 30px, 6px 6px, 6px 6px;
+    }
+    .hero-word {
+      align-self: center; width: 100%; overflow: hidden; padding: 44px 3vw 0;
+      font-size: clamp(160px, 25.5vw, 400px); font-weight: 800; line-height: .73;
+      letter-spacing: clamp(-30px, -1.8vw, -12px); white-space: nowrap;
+    }
+    .hero-word .open-r { display: inline-block; color: transparent; -webkit-text-stroke: clamp(5px, .55vw, 10px) white; }
+    .hero-meta {
+      min-height: 104px; display: grid; grid-template-columns: 1.35fr 1fr .95fr;
+      gap: 40px; align-items: end; padding: 22px 42px 24px; border-top: 1px solid rgba(255,255,255,.55);
+    }
+    .meta-line { font-family: "DM Mono", monospace; font-size: 11px; line-height: 1.65; text-transform: uppercase; }
+    .meta-copy { max-width: 470px; font-size: 16px; line-height: 1.45; }
+    .meta-link { justify-self: end; padding-bottom: 4px; border-bottom: 1px solid white; font-size: 17px; font-weight: 700; }
 
-.hero-orb { position: absolute; border-radius: 50%; filter: blur(80px); will-change: transform; }
-.hero-orb-1 { width: 500px; height: 500px; top: 10%; right: 5%; background: rgba(168,85,247,0.3); animation: orbFloat1 10s ease-in-out infinite; }
-.hero-orb-2 { width: 350px; height: 350px; top: 30%; right: 20%; background: rgba(232,121,249,0.25); animation: orbFloat2 12s ease-in-out infinite; }
-.hero-orb-3 { width: 250px; height: 250px; bottom: 20%; right: 15%; background: rgba(139,92,246,0.35); animation: orbFloat3 9s ease-in-out infinite; }
-.hero-orb-4 { width: 180px; height: 180px; top: 50%; right: 35%; background: rgba(255,255,255,0.08); animation: orbFloat4 7s ease-in-out infinite; }
-.hero-orb-5 { width: 600px; height: 600px; top: 20%; right: -5%; background: rgba(88,28,135,0.2); animation: orbFloat5 15s ease-in-out infinite; }
-@keyframes orbFloat1 { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(-30px,20px) scale(1.05); } 66% { transform: translate(20px,-15px) scale(0.95); } }
-@keyframes orbFloat2 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(25px,-30px) scale(1.1); } }
-@keyframes orbFloat3 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-20px,25px) scale(1.08); } }
-@keyframes orbFloat4 { 0%, 100% { transform: translate(0,0) scale(1); opacity: 0.6; } 50% { transform: translate(15px,-10px) scale(1.2); opacity: 1; } }
-@keyframes orbFloat5 { 0%, 100% { transform: translate(0,0) scale(1); } 50% { transform: translate(-15px,10px) scale(1.03); } }
+    .statement { display: grid; grid-template-columns: 1fr 1fr; min-height: 720px; border-bottom: 1px solid var(--ink); }
+    .statement-copy { display: flex; flex-direction: column; justify-content: space-between; padding: 58px 56px 42px; border-right: 1px solid var(--ink); }
+    .statement-copy h1 { max-width: 650px; margin: 0; font-size: clamp(54px, 6.2vw, 104px); line-height: .94; letter-spacing: -5px; }
+    .statement-copy h1 span { color: var(--blue); }
+    .caption-row { display: flex; justify-content: space-between; gap: 24px; font-family: "DM Mono", monospace; font-size: 10px; text-transform: uppercase; }
+    .statement-visual { position: relative; overflow: hidden; background: var(--pink); }
+    .letterform { position: absolute; inset: 4% -13% -12% 5%; border: clamp(18px, 2.1vw, 34px) solid var(--ink); border-radius: 7%; transform: rotate(-18deg); }
+    .letterform::before { content: ""; position: absolute; width: 38%; height: 76%; left: 20%; top: 12%; border: inherit; border-radius: 8%; }
+    .letterform::after { content: ""; position: absolute; width: 30%; height: 32%; right: 8%; bottom: 4%; background: var(--blue); border-radius: 50%; }
 
-.hero-rays { position: absolute; top: 50%; right: 25%; width: 800px; height: 800px; transform: translate(50%,-50%); background: conic-gradient(from 0deg, transparent 0deg, rgba(168,85,247,0.06) 10deg, transparent 20deg, transparent 30deg, rgba(192,132,252,0.04) 40deg, transparent 50deg, transparent 60deg, rgba(232,121,249,0.05) 70deg, transparent 80deg, transparent 90deg, rgba(168,85,247,0.06) 100deg, transparent 110deg, transparent 120deg, rgba(139,92,246,0.04) 130deg, transparent 140deg, transparent 150deg, rgba(192,132,252,0.05) 160deg, transparent 170deg, transparent 180deg, rgba(168,85,247,0.06) 190deg, transparent 200deg, transparent 210deg, rgba(232,121,249,0.04) 220deg, transparent 230deg, transparent 240deg, rgba(139,92,246,0.05) 250deg, transparent 260deg, transparent 270deg, rgba(168,85,247,0.06) 280deg, transparent 290deg, transparent 300deg, rgba(192,132,252,0.04) 310deg, transparent 320deg, transparent 330deg, rgba(232,121,249,0.05) 340deg, transparent 350deg, transparent 360deg); animation: raysRotate 30s linear infinite; opacity: 0.8; }
-@keyframes raysRotate { 0% { transform: translate(50%,-50%) rotate(0deg); } 100% { transform: translate(50%,-50%) rotate(360deg); } }
+    .reach { display: grid; grid-template-columns: 1fr 1fr 1fr; min-height: 720px; border-bottom: 1px solid var(--ink); }
+    .reach-panel { padding: 48px 38px; border-right: 1px solid var(--ink); }
+    .reach-panel:last-child { border-right: 0; }
+    .reach-copy { display: flex; flex-direction: column; justify-content: space-between; background: var(--acid); }
+    .reach-copy h2 { margin: 0; font-size: clamp(72px, 8vw, 128px); line-height: .83; letter-spacing: -7px; }
+    .reach-copy p { max-width: 380px; margin: 0; font-size: 18px; line-height: 1.55; }
+    .reach-panel h3 { margin: 0 0 38px; font-size: 23px; }
+    .step-list { list-style: none; margin: 0; padding: 0; }
+    .step-list li { display: grid; grid-template-columns: 48px 1fr; gap: 16px; padding: 23px 0; border-top: 1px solid var(--line); }
+    .step-list li:last-child { border-bottom: 1px solid var(--line); }
+    .step-num { font-family: "DM Mono", monospace; font-size: 12px; }
+    .step-list strong { display: block; margin-bottom: 7px; font-size: 19px; }
+    .step-list p { margin: 0; color: #555; font-size: 14px; line-height: 1.5; }
 
-.hero-particle { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: rgba(192,132,252,0.8); box-shadow: 0 0 6px 2px rgba(168,85,247,0.4); will-change: transform; }
-.p1 { top:15%; right:10%; animation: particleFloat 8s ease-in-out infinite; }
-.p2 { top:25%; right:30%; width:3px; height:3px; animation: particleFloat 10s ease-in-out infinite; animation-delay:-2s; }
-.p3 { top:45%; right:8%; width:5px; height:5px; background:rgba(232,121,249,0.7); animation: particleFloat 7s ease-in-out infinite; animation-delay:-1s; }
-.p4 { top:60%; right:25%; width:3px; height:3px; animation: particleFloat 12s ease-in-out infinite; animation-delay:-4s; }
-.p5 { top:35%; right:40%; width:2px; height:2px; animation: particleFloat 9s ease-in-out infinite; animation-delay:-3s; }
-.p6 { top:70%; right:15%; width:4px; height:4px; background:rgba(255,255,255,0.5); animation: particleFloat 11s ease-in-out infinite; animation-delay:-5s; }
-.p7 { top:20%; right:45%; width:3px; height:3px; animation: particleFloat 8s ease-in-out infinite; animation-delay:-6s; }
-.p8 { top:55%; right:35%; width:5px; height:5px; background:rgba(139,92,246,0.6); animation: particleFloat 10s ease-in-out infinite; animation-delay:-2s; }
-.p9 { top:80%; right:30%; width:2px; height:2px; animation: particleFloat 13s ease-in-out infinite; animation-delay:-7s; }
-.p10 { top:10%; right:20%; width:3px; height:3px; background:rgba(232,121,249,0.5); animation: particleFloat 9s ease-in-out infinite; animation-delay:-1s; }
-.p11 { top:40%; right:5%; width:4px; height:4px; animation: particleFloat 8s ease-in-out infinite; animation-delay:-4s; }
-.p12 { top:65%; right:45%; width:2px; height:2px; background:rgba(255,255,255,0.4); animation: particleFloat 14s ease-in-out infinite; animation-delay:-8s; }
-@keyframes particleFloat { 0%,100% { transform:translate(0,0); opacity:0.3; } 25% { transform:translate(-15px,-20px); opacity:0.9; } 50% { transform:translate(10px,-35px); opacity:0.5; } 75% { transform:translate(-8px,-10px); opacity:1; } }
+    .showcase { min-height: 680px; display: grid; grid-template-columns: .8fr 1.2fr; border-bottom: 1px solid var(--ink); }
+    .showcase-copy { padding: 56px; background: var(--ink); color: white; }
+    .eyebrow { display: block; margin-bottom: 80px; font-family: "DM Mono", monospace; font-size: 11px; text-transform: uppercase; }
+    .showcase-copy h2 { margin: 0; font-size: clamp(58px, 7vw, 108px); line-height: .9; letter-spacing: -6px; }
+    .showcase-copy p { max-width: 460px; margin: 40px 0 0; color: #c4c4bd; font-size: 17px; line-height: 1.6; }
+    .showcase-stage { position: relative; display: grid; place-items: center; overflow: hidden; }
+    .showcase-stage::before { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent 0 119px, rgba(17,17,15,.1) 119px 120px); }
+    .timeline { position: relative; z-index: 2; width: min(720px, 82%); overflow: hidden; border: 1px solid var(--ink); background: var(--paper); }
+    .timeline-head { display: flex; align-items: center; justify-content: space-between; padding: 17px 20px; border-bottom: 1px solid var(--ink); font-family: "DM Mono", monospace; font-size: 12px; }
+    .timeline-screen { aspect-ratio: 16/9; display: grid; place-items: center; padding: 40px; background: var(--blue); color: white; }
+    .timeline-screen strong { max-width: 520px; text-align: center; font-size: clamp(36px, 4vw, 66px); line-height: .92; letter-spacing: -3px; }
+    .timeline-track { display: grid; grid-template-columns: 1.2fr .8fr 1.1fr .7fr; height: 70px; padding: 10px; gap: 7px; }
+    .clip { border: 1px solid var(--ink); background: var(--pink); }
+    .clip:nth-child(2) { background: var(--acid); }.clip:nth-child(3) { background: #fff; }.clip:nth-child(4) { background: var(--blue); }
 
-.hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(168,85,247,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.03) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 60% 50% at 65% 50%, black 20%, transparent 70%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at 65% 50%, black 20%, transparent 70%); }
+    footer { display: grid; grid-template-columns: 1fr auto; gap: 30px; align-items: end; padding: 55px; }
+    .footer-mark { font-size: clamp(90px, 15vw, 220px); font-weight: 800; line-height: .7; letter-spacing: -10px; }
+    .footer-links { display: flex; gap: 24px; font-family: "DM Mono", monospace; font-size: 11px; text-transform: uppercase; }
 
-.bg-glow-container { overflow: hidden; }
-.bg-glow-orb { position: absolute; border-radius: 50%; filter: blur(120px); will-change: transform; opacity: 0.12; }
-.bg-orb-1 { width:500px; height:500px; top:30%; left:10%; background:rgba(168,85,247,1); animation: bgOrb1 20s ease-in-out infinite; }
-.bg-orb-2 { width:400px; height:400px; top:60%; right:10%; background:rgba(139,92,246,1); animation: bgOrb2 25s ease-in-out infinite; }
-.bg-orb-3 { width:350px; height:350px; top:80%; left:40%; background:rgba(232,121,249,1); animation: bgOrb3 18s ease-in-out infinite; }
-@keyframes bgOrb1 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(100px,-80px); } }
-@keyframes bgOrb2 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(-80px,60px); } }
-@keyframes bgOrb3 { 0%,100% { transform:translate(0,0); } 50% { transform:translate(60px,-40px); } }
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
-.pipeline-container { overflow: hidden; width: 100%; }
-.pipeline-card { opacity: 0; transform: translateY(30px); }
-.pipeline-connector { opacity: 0; }
-.principle-card { opacity: 0; transform: translateY(20px); }
-.usecase-carousel { overflow: hidden; }
-.usecase-card { opacity: 0; transform: translateY(20px); }
-.video-container { opacity: 0; transform: scale(0.95); }
-.component-card { opacity: 0; transform: translateY(20px); }
-.arch-layer { opacity: 0; transform: translateX(-30px); }
-.cta-title { opacity: 0; transform: translateY(40px); }
+    @media (max-width: 900px) {
+      :root { --gutter: 54px; }
+      .hero { min-height: 640px; height: 85vh; }
+      .hero-word { font-size: 22vw; letter-spacing: -1.4vw; }
+      .hero-meta { grid-template-columns: 1fr; align-items: start; gap: 12px; }
+      .meta-link { justify-self: start; }
+      .statement, .showcase { grid-template-columns: 1fr; }
+      .statement-copy { min-height: 620px; border-right: 0; border-bottom: 1px solid var(--ink); }
+      .statement-visual { min-height: 520px; }
+      .reach { grid-template-columns: 1fr; }
+      .reach-panel { min-height: auto; border-right: 0; border-bottom: 1px solid var(--ink); }
+      .reach-copy { min-height: 560px; }
+      .showcase-stage { min-height: 560px; }
+    }
 
-.btn-glow { position: relative; overflow: hidden; }
-.btn-glow::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; border-radius: 50%; background: rgba(168,85,247,0.2); transform: translate(-50%,-50%); transition: width 0.6s ease, height 0.6s ease; }
-.btn-glow:hover::before { width: 300px; height: 300px; }
-
-.aurora-bg { background: radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168,85,247,0.15), transparent), radial-gradient(ellipse 60% 50% at 80% 60%, rgba(192,132,252,0.1), transparent), radial-gradient(ellipse 50% 40% at 50% 80%, rgba(232,121,249,0.08), transparent); animation: aurora-shift 12s ease-in-out infinite alternate; }
-@keyframes aurora-shift { 0% { background: radial-gradient(ellipse 80% 50% at 20% 40%, rgba(168,85,247,0.15), transparent), radial-gradient(ellipse 60% 50% at 80% 60%, rgba(192,132,252,0.1), transparent), radial-gradient(ellipse 50% 40% at 50% 80%, rgba(232,121,249,0.08), transparent); } 50% { background: radial-gradient(ellipse 70% 60% at 30% 50%, rgba(192,132,252,0.15), transparent), radial-gradient(ellipse 80% 40% at 70% 40%, rgba(168,85,247,0.12), transparent), radial-gradient(ellipse 60% 50% at 40% 70%, rgba(232,121,249,0.06), transparent); } 100% { background: radial-gradient(ellipse 60% 50% at 60% 30%, rgba(139,92,246,0.12), transparent), radial-gradient(ellipse 70% 60% at 20% 70%, rgba(192,132,252,0.1), transparent), radial-gradient(ellipse 80% 40% at 80% 50%, rgba(168,85,247,0.15), transparent); } }
-
-.typing-cursor { display: inline-block; animation: blink 1s step-end infinite; }
-@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
-
-.glass { background: rgba(10,10,26,0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); }
-.gradient-text { background: linear-gradient(135deg, #a855f7, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9990; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E"); background-repeat: repeat; background-size: 256px 256px; }
-
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a0412; }
-::-webkit-scrollbar-thumb { background: rgba(168,85,247,0.3); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: rgba(168,85,247,0.5); }
-
-#mobile-menu-btn.active span:first-child { transform: rotate(45deg) translate(3px,3px); }
-#mobile-menu-btn.active span:last-child { transform: rotate(-45deg) translate(3px,-3px); }
-
-@media (max-width: 768px) { .hero-title { font-size: 2.75rem !important; line-height: 1 !important; } .pipeline-track { padding-left: 5vw; padding-right: 5vw; } .pipeline-card { width: 280px !important; height: 380px !important; } .usecase-card { width: 320px !important; } }
-
-#arch-canvas { display: none; }
-section::after { content: ''; position: absolute; bottom: 0; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, rgba(168,85,247,0.15), rgba(192,132,252,0.15), transparent); pointer-events: none; }
-#hero::after, #cta::after, footer::after { display: none; }
-.pipeline-card:hover .absolute.inset-0 { box-shadow: 0 0 60px -10px rgba(168,85,247,0.1); }
-.principle-card::before { content: ''; position: absolute; inset: 0; border-radius: inherit; opacity: 0; transition: opacity 0.5s; background: radial-gradient(circle at var(--glow-x,50%) var(--glow-y,50%), rgba(168,85,247,0.08), transparent 60%); pointer-events: none; }
-.principle-card:hover::before { opacity: 1; }
-.video-container::before { content: ''; position: absolute; inset: -2px; border-radius: 1rem; background: linear-gradient(135deg, rgba(168,85,247,0.3), transparent 40%, transparent 60%, rgba(192,132,252,0.3)); z-index: -1; opacity: 0; transition: opacity 0.5s; }
-.video-container:hover::before { opacity: 1; }
+    @media (max-width: 560px) {
+      :root { --gutter: 44px; }
+      .side-rail { padding: 14px 0; }
+      .rail-mark { font-size: 29px; }
+      .rail-menu { width: 24px; }
+      .mobile-menu { padding: 78px 24px 32px; }
+      .mobile-menu a { font-size: 24px; }
+      .hero { min-height: 600px; }
+      .hero-word { padding: 80px 2vw 0; font-size: 21vw; letter-spacing: -1vw; }
+      .hero-meta { padding: 20px; }
+      .statement-copy, .reach-panel, .showcase-copy, footer { padding: 34px 24px; }
+      .statement-copy h1 { font-size: 48px; letter-spacing: -3px; }
+      .caption-row { flex-direction: column; }
+      .statement-visual { min-height: 390px; }
+      .reach-copy h2 { font-size: 72px; letter-spacing: -5px; }
+      .showcase-copy h2 { font-size: 58px; letter-spacing: -4px; }
+      .showcase-stage { min-height: 430px; }
+      .timeline-screen { padding: 24px; }
+      .timeline-head { align-items: flex-start; gap: 8px; font-size: 9px; }
+      footer { grid-template-columns: 1fr; }
+      .footer-mark { letter-spacing: -6px; }
+      .footer-links { flex-wrap: wrap; }
+    }
   </style>
 </head>
-<body class="bg-slate_bg text-slate_text font-body overflow-x-hidden">
+<body>
+  <aside class="side-rail" aria-label="Site controls">
+    <a class="rail-mark" href="#top" aria-label="Slate home">S</a>
+    <button class="rail-menu" type="button" aria-expanded="false" aria-controls="site-menu" aria-label="Open navigation"><span></span><span></span></button>
+  </aside>
 
-  <!-- ==================== PERSISTENT CSS BACKGROUND ==================== -->
-  <div id="bg-glow" class="fixed inset-0 z-0 pointer-events-none bg-glow-container">
-    <div class="bg-glow-orb bg-orb-1"></div>
-    <div class="bg-glow-orb bg-orb-2"></div>
-    <div class="bg-glow-orb bg-orb-3"></div>
-  </div>
-
-  <!-- ==================== PREVIEW BANNER ==================== -->
-  <div class="fixed top-0 left-0 w-full z-[100] bg-amber-500/10 border-b border-amber-500/20 backdrop-blur-md">
-    <div class="max-w-7xl mx-auto px-6 py-2.5 flex items-center justify-center gap-3">
-      <span class="flex-shrink-0 px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 uppercase tracking-wider">Early Preview</span>
-      <span class="text-xs text-amber-200/80">Microsoft Internal Only — consult Legal before using Slate-produced videos in external customer demos.</span>
-    </div>
-  </div>
-
-  <!-- ==================== CUSTOM CURSOR ==================== -->
-  <div id="cursor" class="custom-cursor"></div>
-  <div id="cursor-follower" class="custom-cursor-follower"></div>
-
-  <!-- ==================== NAVBAR ==================== -->
-  <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <a href="#" class="flex items-center gap-3 group" data-magnetic>
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white text-lg group-hover:shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-shadow duration-300">S</div>
-        <span class="font-display font-semibold text-xl tracking-tight">Slate</span>
-      </a>
-      <div class="hidden md:flex items-center gap-8">
-        <a href="#pipeline" class="nav-link text-sm text-slate_muted hover:text-slate_text transition-colors" data-magnetic>Production Loop</a>
-        <a href="#principles" class="nav-link text-sm text-slate_muted hover:text-slate_text transition-colors" data-magnetic>Principles</a>
-        <a href="#use-cases" class="nav-link text-sm text-slate_muted hover:text-slate_text transition-colors" data-magnetic>Use Cases</a>
-        <a href="#demo" class="nav-link text-sm text-slate_muted hover:text-slate_text transition-colors" data-magnetic>Demo</a>
-        <a href="#components" class="nav-link text-sm text-slate_muted hover:text-slate_text transition-colors" data-magnetic>Components</a>
-        <a href="#architecture" class="nav-link text-sm text-slate_muted hover:text-slate_text transition-colors" data-magnetic>Architecture</a>
-        <a href="#cta" class="btn-glow text-sm px-5 py-2.5 rounded-full bg-slate_accent/10 border border-slate_accent/30 text-slate_accent hover:bg-slate_accent/20 transition-all" data-magnetic>Get Started</a>
-      </div>
-      <!-- Mobile menu button -->
-      <button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5">
-        <span class="w-6 h-0.5 bg-slate_text transition-all"></span>
-        <span class="w-6 h-0.5 bg-slate_text transition-all"></span>
-      </button>
-    </div>
+  <nav class="mobile-menu" id="site-menu" aria-label="Primary navigation">
+    <a href="#approach">Approach</a>
+    <a href="#loop">Production loop</a>
+    <a href="#system">System</a>
+    <a href="#contact">Get started</a>
   </nav>
 
-  <!-- ==================== SECTION 1: HERO ==================== -->
-  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden">
+  <main class="app-shell" id="top">
+    <section class="hero blueprint" aria-labelledby="hero-title">
+      <div class="hero-word" id="hero-title" aria-label="Slate">SL<span class="open-r">A</span>TE</div>
+      <div class="hero-meta">
+        <p class="meta-line">Agentic video production<br>Structured creativity / governed output</p>
+        <p class="meta-copy">Source material becomes a clear story, a precise scene plan, and a finished video ready for review.</p>
+        <a class="meta-link" href="#loop">Explore the production loop ↘</a>
+      </div>
+    </section>
 
-    <!-- ====== CSS-ONLY ANIMATED BACKGROUND ====== -->
-    <div class="hero-bg absolute inset-0" style="z-index: 0;">
-      <div class="hero-gradient"></div>
-      <div class="hero-orb hero-orb-1"></div>
-      <div class="hero-orb hero-orb-2"></div>
-      <div class="hero-orb hero-orb-3"></div>
-      <div class="hero-orb hero-orb-4"></div>
-      <div class="hero-orb hero-orb-5"></div>
-      <div class="hero-rays"></div>
-      <div class="hero-particle p1"></div>
-      <div class="hero-particle p2"></div>
-      <div class="hero-particle p3"></div>
-      <div class="hero-particle p4"></div>
-      <div class="hero-particle p5"></div>
-      <div class="hero-particle p6"></div>
-      <div class="hero-particle p7"></div>
-      <div class="hero-particle p8"></div>
-      <div class="hero-particle p9"></div>
-      <div class="hero-particle p10"></div>
-      <div class="hero-particle p11"></div>
-      <div class="hero-particle p12"></div>
-      <div class="hero-grid"></div>
-    </div>
+    <section class="statement" id="approach">
+      <div class="statement-copy">
+        <h1 class="reveal">The work is video.<br><span>The interface is intent.</span></h1>
+        <div class="caption-row reveal"><span>Slate / Production system</span><span>01 — Direction before generation</span></div>
+      </div>
+      <div class="statement-visual blueprint" aria-hidden="true"><div class="letterform"></div></div>
+    </section>
 
-    <!-- Text-protecting gradient -->
-    <div class="absolute inset-0 pointer-events-none" style="z-index: 2; background: linear-gradient(105deg, rgba(10,4,18,0.92) 0%, rgba(10,4,18,0.75) 35%, rgba(10,4,18,0.25) 60%, transparent 80%);"></div>
-    <div class="absolute inset-0 pointer-events-none" style="z-index: 2; background: linear-gradient(to bottom, rgba(10,4,18,0.3) 0%, transparent 20%, transparent 80%, rgba(10,4,18,0.95) 100%);"></div>
+    <section class="reach" id="loop">
+      <div class="reach-panel reach-copy">
+        <h2 class="reveal">WITHIN<br>REACH.</h2>
+        <p class="reveal">A disciplined production loop keeps every creative decision visible: what the story says, how each scene works, what it costs, and when a human should approve it.</p>
+      </div>
+      <div class="reach-panel">
+        <h3 class="reveal">Shape the story</h3>
+        <ol class="step-list">
+          <li class="reveal"><span class="step-num">01</span><div><strong>Ingest</strong><p>Read prompts, decks, documents, and media as production material.</p></div></li>
+          <li class="reveal"><span class="step-num">02</span><div><strong>Research</strong><p>Ground factual claims in current, authoritative sources.</p></div></li>
+          <li class="reveal"><span class="step-num">03</span><div><strong>Script</strong><p>Build a concise narrative with a deliberate pace and point of view.</p></div></li>
+          <li class="reveal"><span class="step-num">04</span><div><strong>Direct</strong><p>Assign a visual technique and attention sequence to every scene.</p></div></li>
+        </ol>
+      </div>
+      <div class="reach-panel">
+        <h3 class="reveal">Make it real</h3>
+        <ol class="step-list">
+          <li class="reveal"><span class="step-num">05</span><div><strong>Generate</strong><p>Create narration, imagery, motion, and product demonstrations.</p></div></li>
+          <li class="reveal"><span class="step-num">06</span><div><strong>Compose</strong><p>Assemble scenes, timing, captions, audio, and transitions in SCF.</p></div></li>
+          <li class="reveal"><span class="step-num">07</span><div><strong>Review</strong><p>Check brand, pacing, accuracy, accessibility, and rendering quality.</p></div></li>
+          <li class="reveal"><span class="step-num">08</span><div><strong>Publish</strong><p>Deliver a reviewable MP4 with traceable decisions and costs.</p></div></li>
+        </ol>
+      </div>
+    </section>
 
-    <!-- Content — left-aligned -->
-    <div class="relative max-w-7xl mx-auto px-6 md:px-12 lg:px-20 w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center" style="z-index: 10;">
-
-      <!-- Left: Text block -->
-      <div class="hero-text-block">
-        <!-- Overline badge -->
-        <div class="hero-badge inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate_surface/80 border border-slate_accent/20 mb-8 backdrop-blur-sm">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-xs font-mono text-slate_muted tracking-wider uppercase">Powered by Azure AI Foundry</span>
-        </div>
-
-        <!-- Main headline -->
-        <h1 class="hero-title font-display text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-[0.95] tracking-tight mb-6">
-          <span class="block text-white">Enterprise</span>
-          <span class="block text-white">Video</span>
-          <span class="block text-white">Production.</span>
-          <span class="block mt-2 bg-gradient-to-r from-purple-400 via-fuchsia-400 to-pink-400 bg-clip-text text-transparent">Zero Editors.</span>
-        </h1>
-
-        <!-- Subtitle -->
-        <p class="hero-subtitle text-lg md:text-xl text-slate_muted max-w-lg mb-10 leading-relaxed">
-          From a single prompt to a polished, brand-compliant MP4.
-          Slate is an agentic video production engine that thinks visually
-          and delivers at enterprise scale.
-        </p>
-
-        <!-- CTAs -->
-        <div class="hero-ctas flex flex-col sm:flex-row items-start gap-4">
-          <a href="#demo" class="group relative px-8 py-4 rounded-full bg-slate_accent text-white font-display font-semibold text-base overflow-hidden transition-all hover:shadow-[0_0_50px_rgba(99,102,241,0.5)]" data-magnetic>
-            <span class="relative z-10">See It In Action</span>
-            <div class="absolute inset-0 bg-gradient-to-r from-slate_accent2 to-slate_accent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-          </a>
-          <a href="#pipeline" class="px-8 py-4 rounded-full border border-white/15 text-slate_text font-display font-medium text-base hover:bg-white/5 hover:border-white/30 transition-all backdrop-blur-sm" data-magnetic>
-            Explore the Loop
-            <span class="ml-2">→</span>
-          </a>
-        </div>
-
-        <!-- Stats bar -->
-        <div class="hero-stats grid grid-cols-3 gap-8 max-w-md mt-16 pt-8 border-t border-white/10">
-          <div>
-            <div class="font-display text-3xl font-bold text-white counter" data-target="79">0</div>
-            <div class="text-xs text-slate_muted mt-1">Components</div>
-          </div>
-          <div>
-            <div class="font-display text-3xl font-bold text-white counter" data-target="17">0</div>
-            <div class="text-xs text-slate_muted mt-1">Live Tools</div>
-          </div>
-          <div>
-            <div class="font-display text-3xl font-bold text-white counter" data-target="8">0</div>
-            <div class="text-xs text-slate_muted mt-1">Review Checks</div>
-          </div>
+    <section class="showcase" id="system">
+      <div class="showcase-copy">
+        <span class="eyebrow reveal">Built for accountable production</span>
+        <h2 class="reveal">ONE FORMAT.<br>MANY SCENES.</h2>
+        <p class="reveal">Slate Composition Format turns creative direction into deterministic, reviewable output. Product chrome stays authentic. Explanatory scenes stay visually distinct.</p>
+      </div>
+      <div class="showcase-stage blueprint">
+        <div class="timeline reveal" role="img" aria-label="A stylized Slate video composition timeline">
+          <div class="timeline-head"><span>composition.scf.json</span><span>00:90 / 24 FPS</span></div>
+          <div class="timeline-screen"><strong>From source material to finished story.</strong></div>
+          <div class="timeline-track"><span class="clip"></span><span class="clip"></span><span class="clip"></span><span class="clip"></span></div>
         </div>
       </div>
+    </section>
 
-      <!-- Right: 3D canvas takes this space visually (canvas is absolute, this is just a spacer) -->
-      <div class="hidden lg:block"></div>
-    </div>
-    </div>
+    <footer id="contact">
+      <div class="footer-mark">SLATE</div>
+      <div class="footer-links"><a href="#top">Top</a><a href="#loop">Loop</a><a href="https://github.com/jjkim123go/SlateStudio_JJtesting">GitHub</a></div>
+    </footer>
+  </main>
 
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 animate-bounce">
-      <span class="text-xs text-slate_muted font-mono tracking-widest uppercase">Scroll</span>
-      <svg class="w-5 h-5 text-slate_muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 2: PRODUCTION LOOP ==================== -->
-  <section id="pipeline" class="relative py-32 overflow-hidden z-10">
-    <!-- Section glow accent -->
-    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-slate_accent/5 blur-[120px] pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-6">
-      <!-- Section header -->
-      <div class="text-center mb-20">
-        <span class="section-label inline-block text-xs font-mono text-slate_accent tracking-[0.3em] uppercase mb-4">The Process</span>
-        <h2 class="section-title font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-          From Prompt to MP4
-        </h2>
-        <p class="section-subtitle text-slate_muted text-lg max-w-2xl mx-auto">
-          An agentic, stage-gated production loop with creative direction,
-          concrete preflight, and human approval before expensive work.
-        </p>
-      </div>
-    </div>
-
-    <!-- Horizontal scroll container -->
-    <div id="pipeline-track" class="pipeline-container">
-      <div class="pipeline-track flex items-center gap-8 px-[10vw]">
-
-        <!-- Stage 1: Ingest -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">01</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">USER APPROVAL</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Ingest</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Analyze inputs — prompts, decks, docs, media files. Extract structure, identify content, build the creative brief.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">PPTX · DOCX · XLSX · PDF · Media</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- SVG connector -->
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-emerald-400/50 to-blue-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-blue-400"></div>
-        </div>
-
-        <!-- Stage 2: Research -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-blue-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">02</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">AUTO</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Research</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Gather context, verify facts, analyze source material. Build the knowledge base that drives the script.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">Web fetch · Document analysis</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-blue-400/50 to-violet-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-violet-400"></div>
-        </div>
-
-        <!-- Stage 3: Script -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-violet-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">03</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">USER APPROVAL</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Script</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Write narration with timing, pacing, and tone. Scene-by-scene structure with duration targets and voice direction.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">Narration · Timing · Voice</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-violet-400/50 to-purple-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-purple-400"></div>
-        </div>
-
-        <!-- Stage 4: Scene Plan -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-purple-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">04</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">USER APPROVAL</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Scene Plan</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Map visuals to script. Choose components, decide image vs video vs structured visuals for each scene.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">Layout · Components · Routing</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-purple-400/50 to-pink-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-pink-400"></div>
-        </div>
-
-        <!-- Stage 5: Assets -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">05</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">AUTO</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(236,72,153,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Assets</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Generate images (gpt-image-2), narration (gpt-4o-mini-tts), AI video clips (Sora-2), and structured visuals — all cost-tracked.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">~$0.04/img · ~$0.20/s video</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-pink-400/50 to-orange-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-orange-400"></div>
-        </div>
-
-        <!-- Stage 6: Compose -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">06</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-violet-500/10 text-violet-400 border border-violet-500/20">SELF-REVIEW</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(249,115,22,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Compose</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Generate SCF JSON composition. Validate against schema. Compile to HyperFrames HTML and render to MP4.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">SCF → HTML → Chrome → MP4</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-orange-400/50 to-cyan-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-cyan-400"></div>
-        </div>
-
-        <!-- Stage 7: Review -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">07</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-amber-500/10 text-amber-400 border border-amber-500/20">USER APPROVAL</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Review</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Reviewer sub-agent scores 8 dimensions and blocks missing captions, long static holds, unsupported visuals, and timing failures.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">8 dimensions · blocker gates</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="pipeline-connector flex-shrink-0 w-16 h-[2px] bg-gradient-to-r from-cyan-400/50 to-emerald-400/50 relative">
-          <div class="absolute right-0 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-emerald-400"></div>
-        </div>
-
-        <!-- Stage 8: Publish -->
-        <div class="pipeline-card group flex-shrink-0 w-80 h-[420px] relative">
-          <div class="absolute inset-0 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 group-hover:border-slate_accent/30 transition-all duration-500 overflow-hidden">
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div class="p-8 h-full flex flex-col">
-              <div class="flex items-center justify-between mb-6">
-                <span class="text-xs font-mono text-slate_muted tracking-wider">08</span>
-                <span class="px-2 py-1 rounded-md text-[10px] font-mono bg-blue-500/10 text-blue-400 border border-blue-500/20">USER CHOICE</span>
-              </div>
-              <div class="w-14 h-14 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mb-6 group-hover:shadow-[0_0_20px_rgba(16,185,129,0.2)] transition-shadow">
-                <svg class="w-7 h-7 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-              </div>
-              <h3 class="font-display text-xl font-semibold mb-3">Publish</h3>
-              <p class="text-sm text-slate_muted leading-relaxed flex-grow">Deliver the final MP4 with full audit trail. Choose delivery profile: internal, external, executive, or regulated.</p>
-              <div class="mt-4 pt-4 border-t border-white/5">
-                <span class="text-xs text-slate_muted font-mono">MP4 · Audit · Cost log</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 3: PRINCIPLES ==================== -->
-  <section id="principles" class="relative py-32 z-10">
-    <!-- Ambient glow -->
-    <div class="absolute top-1/2 right-0 w-[500px] h-[500px] rounded-full bg-slate_accent2/5 blur-[100px] pointer-events-none -translate-y-1/2"></div>
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-20">
-        <span class="section-label inline-block text-xs font-mono text-slate_accent tracking-[0.3em] uppercase mb-4">Foundation</span>
-        <h2 class="section-title font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-          The Twelve Principles
-        </h2>
-        <p class="section-subtitle text-slate_muted text-lg max-w-2xl mx-auto">
-          Operating contract for every interaction. Not guidelines — rules.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate_accent/10 flex items-center justify-center text-sm font-mono font-bold text-slate_accent">P1</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Agent-as-Director</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">The AI is the creative director. Shot composition, pacing, narrative flow — not just tool execution.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate_accent/10 flex items-center justify-center text-sm font-mono font-bold text-slate_accent">P2</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Capability Manifest</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Always check the tool registry before claiming something is impossible. Never guess — verify.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate_accent/10 flex items-center justify-center text-sm font-mono font-bold text-slate_accent">P3</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Deterministic Workflow</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">The production loop is deterministic. The agent's creative direction lives in the script, scene plan, assets, and review decisions.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate_accent2/10 flex items-center justify-center text-sm font-mono font-bold text-slate_accent2">P4</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">SCF-First Composition</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Generate SCF JSON, compile to HTML via HyperFrames, render to MP4. Declarative over imperative.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate_accent2/10 flex items-center justify-center text-sm font-mono font-bold text-slate_accent2">P5</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Deep Artifact Understanding</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Every input file is analyzed thoroughly — dimensions, colors, text, duration, codecs — before any decisions.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-slate_accent2/10 flex items-center justify-center text-sm font-mono font-bold text-slate_accent2">P6</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Review via Sub-Agent</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Independent reviewer sub-agent scores 8 dimensions and blocks narration/visual mismatch, missing captions, and static slideshow drift.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-sm font-mono font-bold text-amber-400">P7</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Human-in-the-Loop</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Checkpoints at ingest, script, scene plan, and compose. Nothing ships without explicit human approval.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-sm font-mono font-bold text-amber-400">P8</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Tool Creation Escape</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">If a needed capability doesn't exist, create a new tool following the BaseTool contract. Never give up.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-sm font-mono font-bold text-emerald-400">P9</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Single-Responsibility</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Each tool does one thing well. Compose small tools into workflows — never build monoliths.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-sm font-mono font-bold text-emerald-400">P10</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Externalized State</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">All state lives on the filesystem. Cost logs, production traces, assets — never only in memory.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-sm font-mono font-bold text-emerald-400">P11</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Progressive Disclosure</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Start with defaults: 1080p, 30fps, no brand package. Add complexity only when the user asks for it.</p>
-        </div>
-
-        <div class="principle-card group relative rounded-2xl p-6 bg-slate_surface/50 border border-white/5 hover:border-slate_accent/30 backdrop-blur-sm transition-all duration-500 cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(99,102,241,0.15)]">
-          <div class="flex items-start gap-4 mb-4">
-            <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center text-sm font-mono font-bold text-pink-400">P12</span>
-            <h3 class="font-display font-semibold text-base leading-tight pt-1">Fail Forward</h3>
-          </div>
-          <p class="text-sm text-slate_muted leading-relaxed">Never silently drop content. Report failures, explain alternatives, and try a different path. Full transparency.</p>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 4: USE CASES ==================== -->
-  <section id="use-cases" class="relative py-32 overflow-hidden z-10">
-    <!-- Ambient glow -->
-    <div class="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-purple-500/5 blur-[100px] pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-20">
-        <span class="section-label inline-block text-xs font-mono text-slate_accent tracking-[0.3em] uppercase mb-4">Who It's For</span>
-        <h2 class="section-title font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-          Every Role. One Engine.
-        </h2>
-        <p class="section-subtitle text-slate_muted text-lg max-w-2xl mx-auto">
-          From PMs to executives, CSAMs to trainers — Slate compresses multi-week
-          video projects into a single conversation.
-        </p>
-      </div>
-    </div>
-
-    <!-- Carousel -->
-    <div class="usecase-carousel relative">
-      <div class="usecase-track flex gap-6 px-[10vw] pb-8 cursor-grab active:cursor-grabbing">
-
-        <!-- PM Card -->
-        <div class="usecase-card flex-shrink-0 w-96 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 overflow-hidden group hover:border-slate_accent/20 transition-all duration-500">
-          <div class="h-2 bg-gradient-to-r from-violet-500 to-purple-500"></div>
-          <div class="p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-violet-500/10 flex items-center justify-center">
-                <svg class="w-6 h-6 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display font-semibold text-lg">Product Managers</h3>
-                <span class="text-xs text-slate_muted">Sprint demos · Roadmap videos · Feature reveals</span>
-              </div>
-            </div>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">60-slide decks nobody reads</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">3-week producer lead time</span>
-              </div>
-            </div>
-            <div class="rounded-xl bg-slate_bg/80 border border-white/5 p-4 font-mono text-xs text-slate_muted leading-relaxed">
-              <span class="text-emerald-400">→</span> "Here's our Sprint 14 review deck — turn the top 5 demos into a 90-second video with Teams and Azure Portal walkthroughs. Use the Contoso brand package."
-            </div>
-          </div>
-        </div>
-
-        <!-- CSAM Card -->
-        <div class="usecase-card flex-shrink-0 w-96 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 overflow-hidden group hover:border-slate_accent/20 transition-all duration-500">
-          <div class="h-2 bg-gradient-to-r from-cyan-500 to-blue-500"></div>
-          <div class="p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-                <svg class="w-6 h-6 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display font-semibold text-lg">Customer Success</h3>
-                <span class="text-xs text-slate_muted">QBRs · Adoption playbooks · Health checks</span>
-              </div>
-            </div>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">1-2 days per custom video</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">Only top 5 accounts get video</span>
-              </div>
-            </div>
-            <div class="rounded-xl bg-slate_bg/80 border border-white/5 p-4 font-mono text-xs text-slate_muted leading-relaxed">
-              <span class="text-emerald-400">→</span> "Take Fabrikam's QBR PowerPoint and their Azure Advisor export — build a 3-minute adoption video showing their Copilot usage growth. Co-brand it with their logo."
-            </div>
-          </div>
-        </div>
-
-        <!-- Sales Card -->
-        <div class="usecase-card flex-shrink-0 w-96 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 overflow-hidden group hover:border-slate_accent/20 transition-all duration-500">
-          <div class="h-2 bg-gradient-to-r from-emerald-500 to-teal-500"></div>
-          <div class="p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                <svg class="w-6 h-6 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display font-semibold text-lg">Sales Engineering</h3>
-                <span class="text-xs text-slate_muted">Tech demos · Pitch videos · Battle cards</span>
-              </div>
-            </div>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">4-day fire drill for CIO video</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">Content drifts out of date instantly</span>
-              </div>
-            </div>
-            <div class="rounded-xl bg-slate_bg/80 border border-white/5 p-4 font-mono text-xs text-slate_muted leading-relaxed">
-              <span class="text-emerald-400">→</span> "Use these 4 screenshots of the Fabric lakehouse UI and this architecture diagram — build a 2-minute product demo for a retail CIO. No screen recording needed."
-            </div>
-          </div>
-        </div>
-
-        <!-- Executive Card -->
-        <div class="usecase-card flex-shrink-0 w-96 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 overflow-hidden group hover:border-slate_accent/20 transition-all duration-500">
-          <div class="h-2 bg-gradient-to-r from-amber-500 to-orange-500"></div>
-          <div class="p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-amber-500/10 flex items-center justify-center">
-                <svg class="w-6 h-6 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display font-semibold text-lg">Executive Comms</h3>
-                <span class="text-xs text-slate_muted">Board readouts · Crisis response · Briefings</span>
-              </div>
-            </div>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">5 tailored versions = 5× the work</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">Last-minute changes require recutting</span>
-              </div>
-            </div>
-            <div class="rounded-xl bg-slate_bg/80 border border-white/5 p-4 font-mono text-xs text-slate_muted leading-relaxed">
-              <span class="text-emerald-400">→</span> "Here's the keynote recording from our EVP — trim it to the Azure AI segment, add lower thirds, re-cut with brand intro/outro, and produce 5 versions: board, investors, customers, staff, and social."
-            </div>
-          </div>
-        </div>
-
-        <!-- Training Card -->
-        <div class="usecase-card flex-shrink-0 w-96 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 overflow-hidden group hover:border-slate_accent/20 transition-all duration-500">
-          <div class="h-2 bg-gradient-to-r from-pink-500 to-rose-500"></div>
-          <div class="p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-pink-500/10 flex items-center justify-center">
-                <svg class="w-6 h-6 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display font-semibold text-lg">Learning & Training</h3>
-                <span class="text-xs text-slate_muted">Microlearning · Cert prep · Compliance</span>
-              </div>
-            </div>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">3-month production cycle per module</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">One screen change = re-record everything</span>
-              </div>
-            </div>
-            <div class="rounded-xl bg-slate_bg/80 border border-white/5 p-4 font-mono text-xs text-slate_muted leading-relaxed">
-              <span class="text-emerald-400">→</span> "Convert this Conditional Access MS Learn page into a 3-minute training module — show the actual Entra admin center UI, add quiz checkpoints, and localize narration to Japanese."
-            </div>
-          </div>
-        </div>
-
-        <!-- Security Card -->
-        <div class="usecase-card flex-shrink-0 w-96 rounded-2xl bg-gradient-to-b from-slate_surface to-slate_bg border border-white/5 overflow-hidden group hover:border-slate_accent/20 transition-all duration-500">
-          <div class="h-2 bg-gradient-to-r from-red-500 to-orange-500"></div>
-          <div class="p-8">
-            <div class="flex items-center gap-4 mb-6">
-              <div class="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center">
-                <svg class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-              </div>
-              <div>
-                <h3 class="font-display font-semibold text-lg">Security & Compliance</h3>
-                <span class="text-xs text-slate_muted">Threat briefs · Audit findings · Policy explainers</span>
-              </div>
-            </div>
-            <div class="space-y-3 mb-6">
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">Dense PDFs nobody reads in time</span>
-              </div>
-              <div class="flex items-center gap-2 text-sm text-slate_muted">
-                <span class="text-red-400 line-through">Compliance training is most-skipped</span>
-              </div>
-            </div>
-            <div class="rounded-xl bg-slate_bg/80 border border-white/5 p-4 font-mono text-xs text-slate_muted leading-relaxed">
-              <span class="text-emerald-400">→</span> "Take this CVE advisory PDF and the incident timeline from our SIEM — produce a 90-second threat briefing with MITRE ATT&CK mapping. Flag it as regulated delivery."
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 5: VIDEO DEMO ==================== -->
-  <section id="demo" class="relative py-32 z-10">
-    <!-- Cinematic glow behind video -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full bg-slate_accent/8 blur-[150px] pointer-events-none"></div>
-    <div class="max-w-5xl mx-auto px-6">
-      <div class="text-center mb-16">
-        <span class="section-label inline-block text-xs font-mono text-slate_accent tracking-[0.3em] uppercase mb-4">In Action</span>
-        <h2 class="section-title font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-          See It In Action
-        </h2>
-        <p class="section-subtitle text-slate_muted text-lg max-w-2xl mx-auto">
-          See what Slate can do — from ingesting docs, images, and footage to
-          delivering polished, brand-compliant video at enterprise scale.
-        </p>
-      </div>
-
-      <!-- Video player container -->
-      <div class="video-container relative rounded-2xl overflow-hidden border border-white/10 bg-slate_surface/50 backdrop-blur-sm">
-        <!-- Aspect ratio wrapper -->
-        <div class="relative w-full" style="padding-bottom: 56.25%;">
-
-          <!-- Placeholder state (shown when no video) -->
-          <div id="video-placeholder" class="absolute inset-0 flex flex-col items-center justify-center">
-            <!-- Animated background grid -->
-            <div class="absolute inset-0 opacity-10">
-              <div class="absolute inset-0" style="background-image: linear-gradient(rgba(99,102,241,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,0.3) 1px, transparent 1px); background-size: 40px 40px;"></div>
-            </div>
-
-            <!-- Pulsing play icon -->
-            <div class="relative mb-8">
-              <div class="absolute inset-0 w-24 h-24 rounded-full bg-slate_accent/20 animate-ping"></div>
-              <div class="relative w-24 h-24 rounded-full bg-slate_accent/10 border-2 border-slate_accent/30 flex items-center justify-center backdrop-blur-sm">
-                <svg class="w-10 h-10 text-slate_accent ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-              </div>
-            </div>
-
-            <h3 class="font-display text-xl font-semibold mb-2">Coming Soon</h3>
-            <p class="text-sm text-slate_muted max-w-md text-center">
-              A full showcase of Slate's capabilities — from prompt to MP4,
-              brand compliance, synthetic demos, footage editing, and multi-format delivery.
-            </p>
-
-            <!-- Fake timeline -->
-            <div class="mt-8 w-full max-w-lg px-8">
-              <div class="h-1 rounded-full bg-white/5 overflow-hidden">
-                <div class="h-full w-1/3 rounded-full bg-gradient-to-r from-slate_accent to-slate_accent2 animate-pulse"></div>
-              </div>
-              <div class="flex justify-between mt-2 text-xs text-slate_muted font-mono">
-                <span>0:00</span>
-                <span>5:00</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Actual video element (hidden until src is set) -->
-          <video id="demo-video" class="absolute inset-0 w-full h-full object-cover hidden"
-                 controls
-                 preload="metadata"
-                 data-src="">
-            <!-- Set data-src to your Azure Blob Storage CDN URL when ready -->
-          </video>
-        </div>
-
-        <!-- Glow border effect -->
-        <div class="absolute -inset-px rounded-2xl bg-gradient-to-r from-slate_accent/20 via-transparent to-slate_accent2/20 pointer-events-none"></div>
-      </div>
-
-      <!-- Video metadata (shown when video is loaded) -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-4 text-center">
-          <div class="text-xs text-slate_muted font-mono mb-1">Duration</div>
-          <div class="font-display font-semibold">~5 min</div>
-        </div>
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-4 text-center">
-          <div class="text-xs text-slate_muted font-mono mb-1">Resolution</div>
-          <div class="font-display font-semibold">1080p</div>
-        </div>
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-4 text-center">
-          <div class="text-xs text-slate_muted font-mono mb-1">Cost</div>
-          <div class="font-display font-semibold text-emerald-400">&lt; $2</div>
-        </div>
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-4 text-center">
-          <div class="text-xs text-slate_muted font-mono mb-1">Time</div>
-          <div class="font-display font-semibold">~5 min</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 6: COMPONENT LIBRARY ==================== -->
-  <section id="components" class="relative py-32 z-10">
-    <div class="absolute top-0 left-1/4 w-[500px] h-[500px] rounded-full bg-emerald-500/3 blur-[120px] pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-20">
-        <span class="section-label inline-block text-xs font-mono text-slate_accent tracking-[0.3em] uppercase mb-4">Building Blocks</span>
-        <h2 class="section-title font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-          79 Components. Infinite Compositions.
-        </h2>
-        <p class="section-subtitle text-slate_muted text-lg max-w-2xl mx-auto">
-          Pre-built HyperFrames components for every scene type - from brand intros
-          to moving product demos, metric dashboards, cinematic transitions, and animated captions.
-        </p>
-      </div>
-
-      <!-- Component grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-
-        <div class="component-card group rounded-2xl bg-slate_surface/30 border border-white/5 hover:border-slate_accent/20 p-6 transition-all duration-500 hover:-translate-y-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-slate_accent/20 to-slate_accent2/20 flex items-center justify-center">
-              <svg class="w-5 h-5 text-slate_accent" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-display font-semibold">BrandIntro</h3>
-              <span class="text-xs text-slate_muted">Motion Graphics</span>
-            </div>
-          </div>
-          <p class="text-sm text-slate_muted">Animated logo reveal with company name and tagline. Enforces brand-package colors and placement rules.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">logoSrc</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">companyName</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">tagline</span>
-          </div>
-        </div>
-
-        <div class="component-card group rounded-2xl bg-slate_surface/30 border border-white/5 hover:border-slate_accent/20 p-6 transition-all duration-500 hover:-translate-y-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 flex items-center justify-center">
-              <svg class="w-5 h-5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-display font-semibold">TerminalCast</h3>
-              <span class="text-xs text-slate_muted">Code & CLI</span>
-            </div>
-          </div>
-          <p class="text-sm text-slate_muted">Shell session renderer with themes: PowerShell, Bash, CloudShell. Typed output with cursor animation.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">shellTheme</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">stepsHtml</span>
-          </div>
-        </div>
-
-        <div class="component-card group rounded-2xl bg-slate_surface/30 border border-white/5 hover:border-slate_accent/20 p-6 transition-all duration-500 hover:-translate-y-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-blue-500/20 to-violet-500/20 flex items-center justify-center">
-              <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-            </div>
-            <div>
-              <h3 class="font-display font-semibold">VSCodeScene</h3>
-              <span class="text-xs text-slate_muted">IDE Mockup</span>
-            </div>
-          </div>
-          <p class="text-sm text-slate_muted">Pixel-perfect VS Code mockup with file tree, editor pane, and syntax-highlighted code with typing animation.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">language</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">code</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">fileName</span>
-          </div>
-        </div>
-
-        <div class="component-card group rounded-2xl bg-slate_surface/30 border border-white/5 hover:border-slate_accent/20 p-6 transition-all duration-500 hover:-translate-y-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-500/20 to-orange-500/20 flex items-center justify-center">
-              <svg class="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-display font-semibold">ScreenDemoFrame</h3>
-              <span class="text-xs text-slate_muted">Product Demo</span>
-            </div>
-          </div>
-          <p class="text-sm text-slate_muted">Browser chrome wrapper for synthetic UI states and product demos. Use sequenced states instead of static screenshot holds.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">screenshotSrc</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">browserTitle</span>
-          </div>
-        </div>
-
-        <div class="component-card group rounded-2xl bg-slate_surface/30 border border-white/5 hover:border-slate_accent/20 p-6 transition-all duration-500 hover:-translate-y-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-pink-500/20 to-rose-500/20 flex items-center justify-center">
-              <svg class="w-5 h-5 text-pink-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-display font-semibold">AnimatedCaption</h3>
-              <span class="text-xs text-slate_muted">Subtitles</span>
-            </div>
-          </div>
-          <p class="text-sm text-slate_muted">Word-highlight, sentence, and karaoke caption styles. Required for narrated videos unless explicitly opted out.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">style</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">words</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-white/5 text-slate_muted font-mono">position</span>
-          </div>
-        </div>
-
-        <div class="component-card group rounded-2xl bg-slate_surface/30 border border-white/5 hover:border-slate_accent/20 p-6 transition-all duration-500 hover:-translate-y-1">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center">
-              <svg class="w-5 h-5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
-            </div>
-            <div>
-              <h3 class="font-display font-semibold">+ 73 More</h3>
-              <span class="text-xs text-slate_muted">Full Library</span>
-            </div>
-          </div>
-          <p class="text-sm text-slate_muted">Azure Portal, Teams, Outlook, Excel, VS Code, GitHub, PageTurn, MetricStack, BookPageMetrics, ComponentOverlay, and rich transition primitives.</p>
-          <div class="mt-4 flex flex-wrap gap-2">
-            <span class="text-[10px] px-2 py-1 rounded bg-slate_accent/10 text-slate_accent font-mono">TitleCard</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-slate_accent/10 text-slate_accent font-mono">LowerThird</span>
-            <span class="text-[10px] px-2 py-1 rounded bg-slate_accent/10 text-slate_accent font-mono">BrandOutro</span>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 7: ARCHITECTURE ==================== -->
-  <section id="architecture" class="relative py-32 overflow-hidden z-10">
-    <div class="absolute bottom-0 right-1/4 w-[600px] h-[600px] rounded-full bg-pink-500/4 blur-[130px] pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="text-center mb-20">
-        <span class="section-label inline-block text-xs font-mono text-slate_accent tracking-[0.3em] uppercase mb-4">Under the Hood</span>
-        <h2 class="section-title font-display text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-          Layered Architecture
-        </h2>
-        <p class="section-subtitle text-slate_muted text-lg max-w-2xl mx-auto">
-          From user prompt to rendered MP4 — six layers, each with a single responsibility.
-        </p>
-      </div>
-
-      <!-- 3D Architecture canvas -->
-      <div class="relative">
-        <canvas id="arch-canvas" class="w-full rounded-2xl border border-white/5" style="height: 600px;"></canvas>
-
-        <!-- Fallback (visible if WebGL fails) -->
-        <div id="arch-fallback" class="hidden">
-          <div class="space-y-4">
-            <!-- Layer cards -->
-            <div class="arch-layer group rounded-xl border border-white/10 bg-gradient-to-r from-slate_surface to-transparent p-6 hover:border-slate_accent/30 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full bg-amber-400"></div>
-                <h3 class="font-display font-semibold text-lg">User / CI Trigger</h3>
-                <span class="ml-auto text-xs font-mono text-slate_muted">Prompts · Documents · Media</span>
-              </div>
-            </div>
-            <div class="arch-layer group rounded-xl border border-white/10 bg-gradient-to-r from-slate_surface to-transparent p-6 hover:border-slate_accent/30 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full bg-slate_accent"></div>
-                <h3 class="font-display font-semibold text-lg">Director Agent</h3>
-                <span class="ml-auto text-xs font-mono text-slate_muted">Creative judgment · Orchestration · Skills</span>
-              </div>
-            </div>
-            <div class="arch-layer group rounded-xl border border-white/10 bg-gradient-to-r from-slate_surface to-transparent p-6 hover:border-slate_accent/30 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full bg-emerald-400"></div>
-                <h3 class="font-display font-semibold text-lg">Tool Layer</h3>
-                <span class="ml-auto text-xs font-mono text-slate_muted">17 live tools · BaseTool contract · Preflight registry</span>
-              </div>
-            </div>
-            <div class="arch-layer group rounded-xl border border-white/10 bg-gradient-to-r from-slate_surface to-transparent p-6 hover:border-slate_accent/30 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full bg-cyan-400"></div>
-                <h3 class="font-display font-semibold text-lg">SCF Composer</h3>
-                <span class="ml-auto text-xs font-mono text-slate_muted">JSON schema · Captions · Beat density · Brand enforcement</span>
-              </div>
-            </div>
-            <div class="arch-layer group rounded-xl border border-white/10 bg-gradient-to-r from-slate_surface to-transparent p-6 hover:border-slate_accent/30 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full bg-pink-400"></div>
-                <h3 class="font-display font-semibold text-lg">HyperFrames Renderer</h3>
-                <span class="ml-auto text-xs font-mono text-slate_muted">HTML → Chrome → Frames → FFmpeg → MP4</span>
-              </div>
-            </div>
-            <div class="arch-layer group rounded-xl border border-white/10 bg-gradient-to-r from-slate_surface to-transparent p-6 hover:border-slate_accent/30 transition-all cursor-pointer">
-              <div class="flex items-center gap-4">
-                <div class="w-3 h-3 rounded-full bg-violet-400"></div>
-                <h3 class="font-display font-semibold text-lg">Reviewer Sub-Agent</h3>
-                <span class="ml-auto text-xs font-mono text-slate_muted">8-dimension rubric · Narration/visual blocker gates</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Model cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-5 text-center hover:border-slate_accent/20 transition-all">
-          <div class="text-2xl mb-2">🖼️</div>
-          <div class="font-display font-semibold text-sm">gpt-image-2</div>
-          <div class="text-xs text-slate_muted mt-1">4K images · ~$0.04</div>
-        </div>
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-5 text-center hover:border-slate_accent/20 transition-all">
-          <div class="text-2xl mb-2">🎙️</div>
-          <div class="font-display font-semibold text-sm">gpt-4o-mini-tts</div>
-          <div class="text-xs text-slate_muted mt-1">6 voices · ~$0.001/s</div>
-        </div>
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-5 text-center hover:border-slate_accent/20 transition-all">
-          <div class="text-2xl mb-2">🎬</div>
-          <div class="font-display font-semibold text-sm">Sora-2</div>
-          <div class="text-xs text-slate_muted mt-1">AI video · ~$0.20/s</div>
-        </div>
-        <div class="rounded-xl bg-slate_surface/30 border border-white/5 p-5 text-center hover:border-slate_accent/20 transition-all">
-          <div class="text-2xl mb-2">📝</div>
-          <div class="font-display font-semibold text-sm">gpt-4o-transcribe</div>
-          <div class="text-xs text-slate_muted mt-1">Word timestamps · ~$0.006/m</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== SECTION 8: FOOTER CTA ==================== -->
-  <section id="cta" class="relative py-32 overflow-hidden z-10">
-    <!-- Aurora background -->
-    <div class="aurora-bg absolute inset-0 opacity-30"></div>
-
-    <div class="relative z-10 max-w-4xl mx-auto px-6 text-center">
-      <h2 class="cta-title font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-8 leading-tight">
-        Start Directing.
-      </h2>
-      <p class="text-xl text-slate_muted mb-12 max-w-2xl mx-auto leading-relaxed">
-        Open your coding assistant. Describe the video. Slate handles the rest — script,
-        visuals, narration, captions, brand compliance, and delivery.
-      </p>
-
-      <!-- Feature badges -->
-      <div class="flex flex-wrap items-center justify-center gap-3 mb-12">
-        <span class="px-4 py-2 rounded-full bg-slate_surface/50 border border-white/10 text-sm font-mono backdrop-blur-sm">Azure AI Foundry</span>
-        <span class="px-4 py-2 rounded-full bg-slate_surface/50 border border-white/10 text-sm font-mono backdrop-blur-sm">Brand Compliant</span>
-        <span class="px-4 py-2 rounded-full bg-slate_surface/50 border border-white/10 text-sm font-mono backdrop-blur-sm">Full Audit Trail</span>
-        <span class="px-4 py-2 rounded-full bg-slate_surface/50 border border-white/10 text-sm font-mono backdrop-blur-sm">$100 Default Budget</span>
-        <span class="px-4 py-2 rounded-full bg-slate_surface/50 border border-white/10 text-sm font-mono backdrop-blur-sm">79 Components</span>
-        <span class="px-4 py-2 rounded-full bg-slate_surface/50 border border-white/10 text-sm font-mono backdrop-blur-sm">Human-in-the-Loop</span>
-      </div>
-
-      <!-- Terminal-style prompt -->
-      <div class="max-w-2xl mx-auto rounded-2xl bg-slate_bg border border-white/10 overflow-hidden">
-        <div class="flex items-center gap-2 px-4 py-3 border-b border-white/5">
-          <div class="w-3 h-3 rounded-full bg-red-500/70"></div>
-          <div class="w-3 h-3 rounded-full bg-amber-500/70"></div>
-          <div class="w-3 h-3 rounded-full bg-emerald-500/70"></div>
-          <span class="ml-3 text-xs text-slate_muted font-mono">GitHub Copilot Chat</span>
-        </div>
-        <div class="p-6 font-mono text-sm">
-          <div class="flex items-start gap-3">
-            <span class="text-slate_accent flex-shrink-0">❯</span>
-            <span class="typing-text text-slate_muted"></span>
-            <span class="typing-cursor w-2 h-5 bg-slate_accent animate-pulse"></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Internal link -->
-      <div class="mt-12 text-sm text-slate_muted">
-        <span>Internal tool · </span>
-        <span class="text-slate_accent">aka.ms/slate</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== FOOTER ==================== -->
-  <footer class="relative z-10 border-t border-white/5 py-12">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-fuchsia-500 flex items-center justify-center font-display font-bold text-white text-sm">S</div>
-        <span class="font-display font-semibold">Slate</span>
-        <span class="text-slate_muted text-sm ml-2">v0.1.0</span>
-      </div>
-      <div class="flex items-center gap-6 text-sm text-slate_muted">
-        <span>Microsoft Internal</span>
-        <span>·</span>
-        <span>Azure AI Foundry</span>
-        <span>·</span>
-        <span>Powered by HyperFrames</span>
-      </div>
-      <div class="text-xs text-slate_muted">
-        &copy; 2026 Microsoft. Internal use only.
-      </div>
-    </div>
-    <!-- Legal disclaimer -->
-    <div class="max-w-7xl mx-auto px-6 mt-8 pt-6 border-t border-white/5">
-      <div class="flex items-start gap-3 max-w-3xl mx-auto">
-        <svg class="w-5 h-5 text-amber-400/70 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-        <p class="text-xs text-slate_muted/70 leading-relaxed">
-          <strong class="text-amber-400/70">Early Preview.</strong>
-          Slate is an internal Microsoft tool in active development. Videos produced by Slate are intended for internal use.
-          Consult your Legal team before using Slate-generated content in external customer-facing demos, presentations, or marketing materials.
-          AI-generated imagery, narration, and video clips are subject to Azure AI content policies and responsible AI guidelines.
-        </p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- ==================== SCRIPTS ==================== -->
-  <!-- GSAP + Plugins (CDN) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.7/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.7/ScrollTrigger.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.7/ScrollToPlugin.min.js"></script>
-  <!-- Lenis smooth scroll (CDN) -->
-  <script src="https://unpkg.com/lenis@1.1.18/dist/lenis.min.js"></script>
-
-  <!-- All app scripts inlined -->
   <script>
-  /* === Cursor === */
-  (function(){if('ontouchstart' in window||navigator.maxTouchPoints>0)return;const c=document.getElementById('cursor'),f=document.getElementById('cursor-follower');if(!c||!f)return;let cx=0,cy=0,fx=0,fy=0,mx=-100,my=-100;document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});function r(){cx+=(mx-cx)*0.2;cy+=(my-cy)*0.2;fx+=(mx-fx)*0.08;fy+=(my-fy)*0.08;c.style.transform=`translate(${cx-6}px,${cy-6}px)`;f.style.transform=`translate(${fx-20}px,${fy-20}px)`;requestAnimationFrame(r)}r();document.querySelectorAll('[data-magnetic]').forEach(el=>{el.addEventListener('mouseenter',()=>{c.classList.add('is-active');f.classList.add('is-active')});el.addEventListener('mouseleave',()=>{c.classList.remove('is-active');f.classList.remove('is-active');if(typeof gsap!=='undefined')gsap.to(el,{x:0,y:0,duration:0.5,ease:'elastic.out(1,0.5)'})});el.addEventListener('mousemove',e=>{const r=el.getBoundingClientRect();if(typeof gsap!=='undefined')gsap.to(el,{x:(e.clientX-r.left-r.width/2)*0.2,y:(e.clientY-r.top-r.height/2)*0.2,duration:0.3,ease:'power2.out'})})});document.querySelectorAll('a,button,.principle-card,.component-card,.pipeline-card').forEach(el=>{el.addEventListener('mouseenter',()=>{c.classList.add('is-active');f.classList.add('is-active')});el.addEventListener('mouseleave',()=>{c.classList.remove('is-active');f.classList.remove('is-active')})});document.addEventListener('mouseleave',()=>{c.style.opacity='0';f.style.opacity='0'});document.addEventListener('mouseenter',()=>{c.style.opacity='1';f.style.opacity='1'})})();
+    const menuButton = document.querySelector('.rail-menu');
+    const menu = document.getElementById('site-menu');
+    menuButton.addEventListener('click', () => {
+      const expanded = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!expanded));
+      menu.classList.toggle('open', !expanded);
+    });
+    menu.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => {
+      menuButton.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('open');
+    }));
 
-  /* === Architecture fallback === */
-  (function(){const c=document.getElementById('arch-canvas'),f=document.getElementById('arch-fallback');if(c)c.style.display='none';if(f)f.classList.remove('hidden')})();
-
-  /* === Components glow === */
-  (function(){document.querySelectorAll('.component-card,.principle-card').forEach(card=>{card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();const x=e.clientX-r.left,y=e.clientY-r.top;card.style.setProperty('--glow-x',x+'px');card.style.setProperty('--glow-y',y+'px');card.style.background=`radial-gradient(circle 200px at ${x}px ${y}px, rgba(168,85,247,0.06), rgba(18,8,34,0.5) 70%)`});card.addEventListener('mouseleave',()=>{card.style.background=''})})})();
-
-  /* === Main orchestration === */
-  const lenis=new Lenis({duration:1.2,easing:t=>Math.min(1,1.001-Math.pow(2,-10*t)),smooth:true,smoothTouch:false});function raf(t){lenis.raf(t);requestAnimationFrame(raf)}requestAnimationFrame(raf);gsap.registerPlugin(ScrollTrigger,ScrollToPlugin);lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(t=>{lenis.raf(t*1000)});gsap.ticker.lagSmoothing(0);
-  ScrollTrigger.create({start:'top -80',onUpdate:s=>{const n=document.getElementById('navbar');if(s.direction===1&&s.scroll()>80)n.classList.add('scrolled');if(s.scroll()<80)n.classList.remove('scrolled')}});
-  document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();const t=document.querySelector(a.getAttribute('href'));if(t)lenis.scrollTo(t,{offset:-80})})});
-  const heroTl=gsap.timeline({delay:0.3});heroTl.to('.hero-badge',{opacity:1,y:0,duration:0.8,ease:'power3.out'}).to('.hero-title',{opacity:1,y:0,duration:1,ease:'power3.out'},'-=0.5').to('.hero-subtitle',{opacity:1,y:0,duration:0.8,ease:'power3.out'},'-=0.6').to('.hero-ctas',{opacity:1,y:0,duration:0.8,ease:'power3.out'},'-=0.5').to('.hero-stats',{opacity:1,y:0,duration:0.8,ease:'power3.out'},'-=0.4');
-  document.querySelectorAll('.counter').forEach(c=>{const t=parseInt(c.dataset.target);if(!t)return;ScrollTrigger.create({trigger:c,start:'top 90%',once:true,onEnter:()=>{gsap.to(c,{innerText:t,duration:2,ease:'power2.out',snap:{innerText:1},onUpdate:function(){c.textContent=Math.round(gsap.getProperty(c,'innerText'))}})}})});
-  document.querySelectorAll('section:not(#hero)').forEach(s=>{const l=s.querySelectorAll('.section-label'),t=s.querySelectorAll('.section-title'),u=s.querySelectorAll('.section-subtitle');const tl=gsap.timeline({scrollTrigger:{trigger:s,start:'top 75%',once:true}});if(l.length)tl.to(l,{opacity:1,y:0,duration:0.6,ease:'power3.out'});if(t.length)tl.to(t,{opacity:1,y:0,duration:0.8,ease:'power3.out'},'-=0.3');if(u.length)tl.to(u,{opacity:1,y:0,duration:0.6,ease:'power3.out'},'-=0.4')});
-  const ps=document.getElementById('pipeline'),pt=document.querySelector('.pipeline-track');if(ps&&pt){gsap.to('.pipeline-card',{opacity:1,y:0,duration:0.6,stagger:0.1,ease:'power3.out',scrollTrigger:{trigger:ps,start:'top 70%',once:true}});gsap.to('.pipeline-connector',{opacity:1,duration:0.4,stagger:0.1,ease:'power2.out',scrollTrigger:{trigger:ps,start:'top 70%',once:true}});gsap.to(pt,{x:()=>-(pt.scrollWidth-window.innerWidth),ease:'none',scrollTrigger:{trigger:ps,start:'top top',end:()=>`+=${pt.scrollWidth-window.innerWidth}`,pin:true,scrub:1,invalidateOnRefresh:true}})}
-  gsap.to('.principle-card',{opacity:1,y:0,duration:0.5,stagger:0.06,ease:'power3.out',scrollTrigger:{trigger:'#principles .grid',start:'top 80%',once:true}});
-  const ut=document.querySelector('.usecase-track');if(ut){gsap.to('.usecase-card',{opacity:1,y:0,duration:0.6,stagger:0.1,ease:'power3.out',scrollTrigger:{trigger:'#use-cases',start:'top 70%',once:true}});let dr=false;ut.addEventListener('mousedown',e=>{dr=true;ut.style.cursor='grabbing'});ut.addEventListener('mousemove',e=>{if(!dr)return;e.preventDefault();const cx=gsap.getProperty(ut,'x')||0;const mx=-(ut.scrollWidth-ut.parentElement.clientWidth);gsap.set(ut,{x:Math.max(mx,Math.min(0,cx+e.movementX*2))})});document.addEventListener('mouseup',()=>{dr=false;if(ut)ut.style.cursor='grab'})}
-  gsap.to('.video-container',{opacity:1,scale:1,duration:1,ease:'power3.out',scrollTrigger:{trigger:'#demo',start:'top 70%',once:true}});
-  const dv=document.getElementById('demo-video'),ph=document.getElementById('video-placeholder');if(dv&&dv.dataset.src){dv.src=dv.dataset.src;dv.classList.remove('hidden');if(ph)ph.classList.add('hidden')}
-  gsap.to('.component-card',{opacity:1,y:0,duration:0.5,stagger:0.08,ease:'power3.out',scrollTrigger:{trigger:'#components .grid',start:'top 80%',once:true}});
-  gsap.to('.arch-layer',{opacity:1,x:0,duration:0.6,stagger:0.1,ease:'power3.out',scrollTrigger:{trigger:'#architecture',start:'top 70%',once:true}});
-  gsap.to('.cta-title',{opacity:1,y:0,duration:1,ease:'power3.out',scrollTrigger:{trigger:'#cta',start:'top 75%',once:true}});
-  const typingTexts=['"Turn this Sprint 14 review deck into a 90-second video with Teams and Azure Portal walkthroughs."','"Here\'s our architecture doc \u2014 build a 2-minute explainer without recording a single screen."','"Take this keynote footage, trim to the AI segment, add brand intro/outro, produce 5 audience versions."','"Use these product screenshots and this PowerPoint \u2014 make a Copilot adoption video for Fabrikam."','"Convert this MS Learn page into a 3-minute training module with Entra admin center UI and Japanese narration."'];const te=document.querySelector('.typing-text');let ti=0;function typeT(t,e,cb){let i=0;e.textContent='';const iv=setInterval(()=>{e.textContent+=t[i];i++;if(i>=t.length){clearInterval(iv);setTimeout(cb,2500)}},35)}function delT(e,cb){const t=e.textContent;let i=t.length;const iv=setInterval(()=>{e.textContent=t.substring(0,i);i--;if(i<0){clearInterval(iv);setTimeout(cb,300)}},20)}function runTL(){if(!te)return;typeT(typingTexts[ti],te,()=>{delT(te,()=>{ti=(ti+1)%typingTexts.length;runTL()})})}ScrollTrigger.create({trigger:'#cta',start:'top 80%',once:true,onEnter:()=>{setTimeout(runTL,500)}});
-  gsap.to('#hero .hero-text-block',{yPercent:15,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:1}});
-  gsap.to('.hero-bg',{opacity:0,ease:'none',scrollTrigger:{trigger:'#hero',start:'center center',end:'bottom top',scrub:1}});
-  document.querySelectorAll('#architecture .grid > div').forEach(c=>{c.addEventListener('mousemove',e=>{const r=c.getBoundingClientRect();c.style.background=`radial-gradient(circle at ${e.clientX-r.left}px ${e.clientY-r.top}px, rgba(168,85,247,0.08), rgba(18,8,34,0.3))`});c.addEventListener('mouseleave',()=>{c.style.background=''})});
-  console.log('Slate showcase loaded.');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+    document.querySelectorAll('.reveal').forEach((element) => observer.observe(element));
   </script>
 </body>
 </html>

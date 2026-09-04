@@ -1,0 +1,157 @@
+{
+  "version": "1.0",
+  "pipeline": "animated-explainer",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 24,
+    "codec": "h264",
+    "quality": "draft",
+    "deliveryProfile": "draft"
+  },
+  "scenes": [
+    {
+      "id": "s1-search",
+      "duration": 11.9,
+      "component": "HelpTitleCard",
+      "props": {
+        "visualSupport": "componentOverlay of the referenced project files and page",
+        "visualBeats": ["title resolves", "notebook mark appears", "camera breathes through narration"]
+      },
+      "narration": "assets/narration/s1-search.wav",
+      "narrationText": "You open a launch brief, a slide deck, a tracker, meeting notes, and one useful web page. The answer exists somewhere, but finding it becomes the work.",
+      "narrationStartSec": 0.45,
+      "notes": "Reference-matched Microsoft 365 title card; pale field, centered hierarchy, restrained resolve."
+    },
+    {
+      "id": "s2-focused-home",
+      "duration": 13.4,
+      "component": "CopilotNotebookLight",
+      "props": {
+        "mode": "home",
+        "callout": "One focused project space",
+        "visualSupport": "primarySidebarBodyHtml Copilot product surface with visible actions",
+        "visualBeats": ["home surface establishes", "camera pushes toward new notebook", "cursor arrives", "callout identifies focused workspace"]
+      },
+      "narration": "assets/narration/s2-focused-home.wav",
+      "narrationText": "Copilot Notebooks gives that project a focused home. You choose the references that matter and bring them into one AI-powered workspace, instead of searching across unrelated information.",
+      "narrationStartSec": 0.4,
+      "notes": "Full-frame Copilot Notebooks home; slow push and cursor-led new-notebook action."
+    },
+    {
+      "id": "s3-create-add",
+      "duration": 13.4,
+      "component": "CopilotNotebookLight",
+      "props": {
+        "mode": "add",
+        "callout": "Add only what matters",
+        "visualSupport": "primarySidebarBodyHtml componentOverlay table of selected file references",
+        "visualBeats": ["side sheet opens", "first references select", "remaining references select", "cursor confirms add"]
+      },
+      "narration": "assets/narration/s3-create-and-add.wav",
+      "narrationText": "Start with a new notebook. Add the launch brief, presentation, spreadsheet, notes, and web page. As those references change, the notebook keeps the project context together.",
+      "narrationStartSec": 0.35,
+      "notes": "Reference picker side sheet with five selected sources and stable product chrome."
+    },
+    {
+      "id": "s4-ask-project",
+      "duration": 11.9,
+      "component": "CopilotNotebookLight",
+      "props": {
+        "mode": "ask",
+        "callout": "Ask about this notebook",
+        "visualSupport": "primarySidebarBodyHtml Copilot product surface with visible prompt and answer actions",
+        "visualBeats": ["notebook workspace establishes", "question appears", "grounded answer resolves"]
+      },
+      "narration": "assets/narration/s4-ask-the-project.wav",
+      "narrationText": "Now ask a real question: What should the team prioritize before launch? Copilot works from the references in this notebook and returns an answer focused on this project.",
+      "narrationStartSec": 0.35,
+      "notes": "Light-mode Copilot shell with the documented Message Copilot composer and References pane."
+    },
+    {
+      "id": "s5-outcomes",
+      "duration": 12.7,
+      "component": "CopilotNotebookLight",
+      "props": {
+        "mode": "outcomes",
+        "callout": "Turn context into a first draft",
+        "visualSupport": "primarySidebarBodyHtml Copilot product surface with visible grounded answer actions",
+        "visualBeats": ["grounded answer establishes", "summary and themes appear", "details and draft actions appear", "draft result resolves"]
+      },
+      "narration": "assets/narration/s5-connect-the-dots.wav",
+      "narrationText": "That same context can surface themes across documents, summarize the latest decisions, connect details buried in different files, or turn what it finds into a first draft.",
+      "narrationStartSec": 0.35,
+      "notes": "Grounded answer remains in product context while actions and draft state reveal sequentially."
+    },
+    {
+      "id": "s6-boundary",
+      "duration": 13.7,
+      "component": "CopilotNotebookLight",
+      "props": {
+        "mode": "boundary",
+        "callout": "Only your selected references",
+        "visualSupport": "primarySidebarBodyHtml Copilot product surface with visible reference boundary",
+        "visualBeats": ["scope card resolves", "selected references appear", "out-of-scope areas separate", "scope callout lands"]
+      },
+      "narration": "assets/narration/s6-boundary.wav",
+      "narrationText": "The boundary is the point. Microsoft says Copilot Notebooks does not search your entire OneDrive, email, Teams chats, or the web. Its responses use the references you've added.",
+      "narrationStartSec": 0.35,
+      "notes": "Scope is demonstrated inside product chrome; out-of-scope areas remain visibly separate."
+    },
+    {
+      "id": "s7-forward",
+      "duration": 10.5,
+      "component": "CopilotNotebookLight",
+      "props": {
+        "mode": "forward",
+        "callout": "Move the project forward",
+        "visualSupport": "primarySidebarBodyHtml Copilot product surface with visible draft actions",
+        "visualBeats": ["draft plan establishes", "first action appears", "remaining actions appear", "forward callout lands"]
+      },
+      "narration": "assets/narration/s7-move-the-project-forward.wav",
+      "narrationText": "So the launch team spends less time hunting and more time deciding. Bring the right material together, give Copilot the right context, and move the project forward.",
+      "narrationStartSec": 0.35,
+      "notes": "Completed launch-readiness plan holds after narration before the branded close."
+    },
+    {
+      "id": "s8-copilot-end-card",
+      "duration": 2.5,
+      "layers": [
+        {
+          "type": "video",
+          "src": "assets/video/M365-Copilot-endcard-seamless-2s-16-9-silent.mov",
+          "startTime": 0,
+          "endTime": 2.5
+        }
+      ],
+      "notes": "Original Microsoft 365 Copilot 16:9 end card from the user-provided asset package; rendered muted."
+    }
+  ],
+  "captions": {
+    "style": "static",
+    "font": "Segoe UI",
+    "fontSize": 30,
+    "color": "#FFFFFF",
+    "lineBackgroundColor": "rgba(20,24,31,0.92)",
+    "panel": false,
+    "position": "bottom",
+    "maxWordsPerLine": 9,
+    "timingOffsetSec": 0.05
+  },
+  "metadata": {
+    "slug": "copilot-notebooks-explainer",
+    "totalDurationSec": 90,
+    "storyboardStatus": "authentic-light-ui-v4",
+    "narration_engine": "edge-tts 7.2.8 / en-US-AvaNeural",
+    "reference_url": "https://www.youtube.com/watch?v=GvUCEcQBb2o",
+    "music": "none",
+    "total_cost_usd": 0.0,
+    "theme": {
+      "bg": "#F5F5F5",
+      "surface": "#FFFFFF",
+      "ink": "#242424",
+      "muted": "#616161",
+      "accent": "#0078D4"
+    }
+  }
+}
