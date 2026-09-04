@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Copilot Notebooks - Review</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      font-family: "Segoe UI", sans-serif;
+      background: #111214;
+      color: #f5f5f5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle at 50% 0%, #292c32 0, #111214 55%);
+    }
+
+    main {
+      width: min(1120px, 100%);
+      padding: 24px;
+    }
+
+    .player {
+      overflow: hidden;
+      border: 1px solid #3c4048;
+      border-radius: 8px;
+      background: #000;
+      box-shadow: 0 24px 80px rgb(0 0 0 / 45%);
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: auto minmax(120px, 1fr) auto minmax(80px, 160px);
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: #191b1f;
+    }
+
+    button {
+      min-width: 76px;
+      height: 38px;
+      border: 1px solid #6a6f79;
+      border-radius: 4px;
+      color: #fff;
+      background: #292c32;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover { background: #373b43; }
+    input[type="range"] { width: 100%; accent-color: #4f8cff; }
+    output { min-width: 96px; color: #d7dae0; font-variant-numeric: tabular-nums; }
+    .volume-label { color: #d7dae0; font-size: 14px; }
+
+    .status {
+      margin: 12px 2px 0;
+      color: #b8bdc7;
+      font-size: 14px;
+    }
+
+    @media (max-width: 640px) {
+      main { padding: 0; }
+      .player { border-width: 0 0 1px; border-radius: 0; }
+      .controls { grid-template-columns: auto 1fr auto; }
+      .volume-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="player">
+      <video id="picture" preload="metadata" playsinline muted>
+        <source src="renders/composition.v8.mp4" type="video/mp4">
+      </video>
+      <audio id="narration" preload="metadata">
+        <source src="renders/composition.v8-review-audio.mp3" type="audio/mpeg">
+      </audio>
+      <div class="controls">
+        <button id="play" type="button">Play</button>
+        <input id="seek" type="range" min="0" max="90.1" value="0" step="0.01" aria-label="Video position">
+        <output id="time">0:00 / 1:30</output>
+        <label class="volume-label" for="volume">Volume</label>
+        <input id="volume" type="range" min="0" max="1" value="1" step="0.01" aria-label="Narration volume">
+      </div>
+    </div>
+    <p class="status" id="status">Narration uses a separate MP3 track for reliable review playback.</p>
+  </main>
+  <script>
+    const picture = document.querySelector('#picture');
+    const narration = document.querySelector('#narration');
+    const play = document.querySelector('#play');
+    const seek = document.querySelector('#seek');
+    const time = document.querySelector('#time');
+    const volume = document.querySelector('#volume');
+    const status = document.querySelector('#status');
+
+    const formatTime = (seconds) => {
+      const safeSeconds = Number.isFinite(seconds) ? seconds : 0;
+      const minutes = Math.floor(safeSeconds / 60);
+      return `${minutes}:${Math.floor(safeSeconds % 60).toString().padStart(2, '0')}`;
+    };
+
+    const sync = () => {
+      if (Math.abs(picture.currentTime - narration.currentTime) > 0.08) {
+        picture.currentTime = narration.currentTime;
+      }
+    };
+
+    const update = () => {
+      seek.value = narration.currentTime;
+      time.value = `${formatTime(narration.currentTime)} / ${formatTime(picture.duration)}`;
+    };
+
+    play.addEventListener('click', async () => {
+      if (picture.paused) {
+        await narration.play();
+        picture.currentTime = narration.currentTime;
+        await picture.play();
+        play.textContent = 'Pause';
+        status.textContent = 'Playing synchronized MP3 narration.';
+      } else {
+        picture.pause();
+        narration.pause();
+        play.textContent = 'Play';
+      }
+    });
+
+    seek.addEventListener('input', () => {
+      picture.currentTime = Number(seek.value);
+      narration.currentTime = Number(seek.value);
+      update();
+    });
+
+    volume.addEventListener('input', () => {
+      narration.volume = Number(volume.value);
+    });
+
+    narration.addEventListener('timeupdate', () => {
+      sync();
+      update();
+    });
+
+    picture.addEventListener('loadedmetadata', () => {
+      seek.max = picture.duration;
+      update();
+    });
+
+    picture.addEventListener('ended', () => {
+      narration.pause();
+      play.textContent = 'Play';
+    });
+
+    narration.addEventListener('error', () => {
+      status.textContent = 'The narration track could not be loaded.';
+    });
+  </script>
+</body>
+</html>
