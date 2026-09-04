@@ -89,9 +89,7 @@
 .cnl-picker-actions { display:flex; gap:8px; }.cnl-picker-actions button { width:46px; height:42px; border:0; background:transparent; font-size:24px; }
 .cnl-picker-list { margin-top:14px; }.cnl-picker-list label { height:66px; display:flex; align-items:center; gap:15px; border-bottom:1px solid #eee; font-size:19px; }.cnl-picker-list i { width:22px; height:22px; display:grid; place-items:center; border:1px solid #aaa; border-radius:4px; color:#fff; font-size:14px; font-style:normal; }.cnl-picker-list i::after { content:"\2713"; }.cnl-picker-list strong { font-weight:500; }
 .cnl-picker footer { position:absolute; right:46px; bottom:34px; display:flex; gap:10px; }.cnl-picker footer button { height:48px; padding:0 22px; border:0; border-radius:24px; background:#eee; font-size:18px; }.cnl-picker footer .cnl-add-button { background:#242424; color:#fff; }
-.cnl-callout { position:absolute; z-index:40; left:112px; top:110px; width:430px; min-height:116px; display:flex; flex-direction:column; justify-content:center; gap:9px; padding:21px 28px 23px; border:4px solid #fff; border-radius:4px; background:#0078d4; color:#fff; box-shadow:0 0 0 2px #0078d4,0 16px 38px rgba(0,0,0,.24); text-align:left; will-change:transform,opacity; }
-.cnl-callout::after { content:""; position:absolute; left:28px; bottom:-30px; width:74px; height:4px; background:#0078d4; transform:rotate(28deg); transform-origin:left center; }
-.cnl-callout span { font-size:16px; font-weight:700; line-height:1; text-transform:uppercase; }
+.cnl-callout { position:absolute; z-index:40; left:112px; top:110px; width:430px; min-height:94px; display:flex; align-items:center; padding:22px 28px; border:4px solid #fff; border-radius:4px; background:#0078d4; color:#fff; box-shadow:0 0 0 2px #0078d4,0 16px 38px rgba(0,0,0,.24); text-align:left; will-change:transform,opacity; }
 .cnl-callout strong { font-size:30px; font-weight:600; line-height:1.15; }
 .cnl-mode-home .cnl-callout { left:auto; right:74px; top:118px; }
 .cnl-mode-add .cnl-callout { left:102px; top:114px; }
