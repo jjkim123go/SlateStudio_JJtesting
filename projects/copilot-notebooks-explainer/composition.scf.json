@@ -31,12 +31,12 @@
         "mode": "home",
         "callout": "One focused project space",
         "visualSupport": "primarySidebarBodyHtml Copilot product surface with visible actions",
-        "visualBeats": ["home surface establishes", "camera pushes toward new notebook", "cursor arrives", "callout identifies focused workspace"]
+        "visualBeats": ["Copilot start window establishes", "cursor moves to the labeled Notebooks entry", "cursor clicks Notebooks", "Notebooks dashboard opens", "camera pushes toward Create new"]
       },
       "narration": "assets/narration/s2-focused-home.wav",
       "narrationText": "Copilot Notebooks gives that project a focused home. You choose the references that matter and bring them into one AI-powered workspace, instead of searching across unrelated information.",
       "narrationStartSec": 0.4,
-      "notes": "Full-frame Copilot Notebooks home; slow push and cursor-led new-notebook action."
+      "notes": "Begin on the expanded Copilot start window, visibly click the labeled Notebooks entry, then open the full-frame Notebooks dashboard and move toward Create new."
     },
     {
       "id": "s3-create-add",
