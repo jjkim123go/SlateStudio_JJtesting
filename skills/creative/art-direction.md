@@ -43,8 +43,13 @@ an example value (or a previous video's choice) into a new video.**
 - Keep both upper corners free of small labels, kickers, scene names, metadata,
   or other auxiliary text. Put essential copy in the primary composition.
 - Use one approved icon glyph per concept marker. Responsive icon variant sheets
-  are source material only: extract one appropriate glyph, never place the full
-  sheet, and never duplicate an icon merely for symmetry.
+  are source material only: use the largest or highest-resolution approved glyph
+  available (typically the bottommost filled variant), never place the full
+  sheet, and never duplicate an icon merely for symmetry. Prefer a source vector
+  when one exists; never upscale a smaller variant when a larger one is present.
+- Use one strong main scene title without a subtitle or deck line directly
+  underneath. Put supporting explanation in narration or make the primary visual
+  carry it; do not stack routine explanatory copy below every heading.
 
 ### Find the world in the subject — never default to an idiom
 

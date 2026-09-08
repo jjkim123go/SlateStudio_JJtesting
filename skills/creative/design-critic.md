@@ -26,6 +26,10 @@ ffmpeg -ss <t> -i <scene.mp4> -frames:v 1 _crit.png   # view it
 - evenly-spaced bullet rows / a centered single column
 - clip-art or emoji icons standing in for design
 - identical rounded rectangles in a grid
+- a routine subtitle or explanatory deck line placed directly under the main
+  scene title instead of letting the visual and narration carry the detail
+- a low-resolution icon, a full responsive variant sheet, or a smaller glyph
+  variant used when a larger approved source is available
 - instant or linear reveals; motion that only decorates
 - a catalog component shipped with its **default** styling
 - the **tech-dark default idiom** — dark bg + glowing neon nodes / grid / threads
