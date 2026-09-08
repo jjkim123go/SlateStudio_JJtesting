@@ -43,7 +43,20 @@ if (__cnlRoot.classList.contains('cnl-mode-home')) {
     { autoAlpha: 0, y: 20 },
     { autoAlpha: 1, y: 0, duration: 0.4, ease: 'power2.out', stagger: 0.08 },
     SCENE_START + 3.7 * __cnlScale);
-} else {
+  master.to(__cnlScope + '.cnl-cursor',
+    { x: 74, y: 48, duration: 0.75, ease: 'power2.inOut' },
+    SCENE_START + 7.25 * __cnlScale);
+  master.to(__cnlScope + '.cnl-cursor',
+    { scale: 0.82, duration: 0.1, ease: 'power2.in' },
+    SCENE_START + 8.0 * __cnlScale);
+  master.to(__cnlScope + '.cnl-cursor',
+    { scale: 1, duration: 0.16, ease: 'power2.out' },
+    SCENE_START + 8.1 * __cnlScale);
+  master.fromTo(__cnlScope + '.cnl-create-card',
+    { scale: 1 },
+    { scale: 0.97, duration: 0.1, ease: 'power2.in', yoyo: true, repeat: 1 },
+    SCENE_START + 8.0 * __cnlScale);
+} else if (!__cnlRoot.classList.contains('cnl-mode-add')) {
   master.fromTo(__cnlScope + '.cnl-cursor',
     { autoAlpha: 0, x: -70, y: 55 },
     { autoAlpha: 1, x: 0, y: 0, duration: 0.4, ease: 'power2.out' },
@@ -63,10 +76,46 @@ if (__cnlRoot.classList.contains('cnl-mode-add')) {
     { autoAlpha: 0, x: 20 },
     { autoAlpha: 1, x: 0, duration: 0.4, ease: 'power2.out', stagger: 0.08 },
     SCENE_START + 1.25 * __cnlScale);
-  master.fromTo(__cnlScope + '.cnl-picker-list i',
-    { backgroundColor: '#ffffff' },
-    { backgroundColor: '#242424', duration: 0.28, ease: 'power2.out', stagger: 0.16 },
-    SCENE_START + 3.0 * __cnlScale);
+  master.fromTo(__cnlScope + '.cnl-cursor',
+    { autoAlpha: 0, x: -760, y: -390 },
+    { autoAlpha: 1, x: -795, y: -363, duration: 0.45, ease: 'power2.inOut' },
+    SCENE_START + 1.2 * __cnlScale);
+  [1.7, 2.6, 3.5, 4.4].forEach(function (clickAt, index) {
+    if (index > 0) {
+      master.to(__cnlScope + '.cnl-cursor',
+        { x: -795, y: -363 + 66 * index, duration: 0.42, ease: 'power2.inOut' },
+        SCENE_START + (clickAt - 0.5) * __cnlScale);
+    }
+    master.to(__cnlScope + '.cnl-cursor',
+      { scale: 0.82, duration: 0.1, ease: 'power2.in' },
+      SCENE_START + clickAt * __cnlScale);
+    master.to(__cnlScope + '.cnl-cursor',
+      { scale: 1, duration: 0.16, ease: 'power2.out' },
+      SCENE_START + (clickAt + 0.1) * __cnlScale);
+    master.to(__cnlScope + '.cnl-picker-list label:nth-child(' + (index + 1) + ') i',
+      { backgroundColor: '#242424', duration: 0.18, ease: 'power2.out' },
+      SCENE_START + clickAt * __cnlScale);
+  });
+  master.to(__cnlScope + '.cnl-cursor',
+    { x: -2, y: 19, duration: 0.8, ease: 'power2.inOut' },
+    SCENE_START + 4.85 * __cnlScale);
+  master.to(__cnlScope + '.cnl-cursor',
+    { scale: 0.82, duration: 0.1, ease: 'power2.in' },
+    SCENE_START + 5.7 * __cnlScale);
+  master.to(__cnlScope + '.cnl-cursor',
+    { scale: 1, duration: 0.16, ease: 'power2.out' },
+    SCENE_START + 5.8 * __cnlScale);
+  master.fromTo(__cnlScope + '.cnl-add-button',
+    { scale: 1 },
+    { scale: 0.94, duration: 0.1, ease: 'power2.in', yoyo: true, repeat: 1 },
+    SCENE_START + 5.7 * __cnlScale);
+  master.to(__cnlScope + '.cnl-picker, ' + __cnlScope + '.cnl-picker-scrim',
+    { autoAlpha: 0, duration: 0.35, ease: 'power2.in' },
+    SCENE_START + 6.15 * __cnlScale);
+  master.fromTo(__cnlScope + '.cnl-reference-list > div',
+    { autoAlpha: 0, x: 18 },
+    { autoAlpha: 1, x: 0, duration: 0.35, ease: 'power2.out', stagger: 0.08 },
+    SCENE_START + 6.35 * __cnlScale);
 }
 
 if (__cnlRoot.classList.contains('cnl-mode-ask') || __cnlRoot.classList.contains('cnl-mode-outcomes')) {

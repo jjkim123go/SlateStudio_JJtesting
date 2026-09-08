@@ -46,12 +46,12 @@
         "mode": "add",
         "callout": "Add only what matters",
         "visualSupport": "primarySidebarBodyHtml componentOverlay table of selected file references",
-        "visualBeats": ["side sheet opens", "first references select", "remaining references select", "cursor confirms add"]
+        "visualBeats": ["Create new is clicked", "cursor selects four of five references", "Research page remains unchecked", "cursor clicks Add", "four selected references appear in the right panel"]
       },
       "narration": "assets/narration/s3-create-and-add.wav",
-      "narrationText": "Start with a new notebook. Add the launch brief, presentation, spreadsheet, notes, and web page. As those references change, the notebook keeps the project context together.",
+      "narrationText": "Start with a new notebook. Add four references: the launch brief, presentation, spreadsheet, and notes. Leave the web page out, keeping the project context focused.",
       "narrationStartSec": 0.35,
-      "notes": "Reference picker side sheet with five selected sources and stable product chrome."
+      "notes": "Create new is clicked before the reference picker opens; four sources are selected, Research page stays unchecked, and only the selected four populate the right panel."
     },
     {
       "id": "s4-ask-project",
