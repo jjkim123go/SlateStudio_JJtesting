@@ -38,6 +38,14 @@ an example value (or a previous video's choice) into a new video.**
 | `sceneTreatments` | A per-scene plan assigning each scene a **distinct visual technique** (see [`scene-primitives.md`](scene-primitives.md)). This is how you get variety instead of one motif repeated. | s1 kinetic-type · s2 3D-stack · s3 hand-drawn line · s4 particle-field · s5 chrome-demo · … |
 | `referenceDirection` | 1–2 named looks to design *toward* (raises the ceiling above the agent's bland prior). | "Apple keynote dark", "Stripe docs", "noir title sequence", "Kurzgesagt flat-depth". |
 
+**Composition hygiene (binding):**
+
+- Keep both upper corners free of small labels, kickers, scene names, metadata,
+  or other auxiliary text. Put essential copy in the primary composition.
+- Use one approved icon glyph per concept marker. Responsive icon variant sheets
+  are source material only: extract one appropriate glyph, never place the full
+  sheet, and never duplicate an icon merely for symmetry.
+
 ### Find the world in the subject — never default to an idiom
 
 The `concept` is the whole game. The agent's lazy default is **"dark background +
