@@ -149,6 +149,11 @@ cd SlateStudio
 
 Then open the folder in VS Code with GitHub Copilot enabled and start working with Slate through Copilot Chat.
 
+For documentation-to-script workflows, select the **Video Script Producer**
+custom agent in VS Code Copilot Chat. See the
+[Video Script Producer guide](docs/VIDEO_SCRIPT_PRODUCER.md) for installation,
+starter prompts, review steps, generated files, and troubleshooting.
+
 Recommended agent models for Slate sessions:
 
 - **GPT-5.5 (Medium)**
