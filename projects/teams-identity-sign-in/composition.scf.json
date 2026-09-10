@@ -1,0 +1,124 @@
+{
+  "version": "1.0",
+  "pipeline": "conceptual-explainer-storyboard",
+  "outputProfile": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "h264",
+    "quality": "draft",
+    "deliveryProfile": "draft"
+  },
+  "scenes": [
+    {
+      "id": "s1-identity-question",
+      "duration": 6,
+      "component": "IdentityMotionScene",
+      "props": {
+        "variant": "intro",
+        "personSrc": "assets/icons/Person-highres.svg",
+        "shieldSrc": "assets/icons/Shield Checkmark-highres.svg"
+      },
+      "narrationText": "Every Teams sign-in starts with one question: who are you, and how do we know?",
+      "transition": "crossfade",
+      "notes": "Animated editorial title, identity assembly, proof-line draw, and verification reveal."
+    },
+    {
+      "id": "s2-two-paths",
+      "duration": 8,
+      "component": "IdentityMotionScene",
+      "props": {
+        "variant": "paths",
+        "personKeySrc": "assets/icons/Person Key-highres.svg",
+        "cloudSrc": "assets/icons/Cloud-highres.svg",
+        "buildingSrc": "assets/icons/Building-highres.svg"
+      },
+      "narrationText": "Teams supports every identity model Microsoft 365 does - and it really comes down to two.",
+      "transition": "crossfade",
+      "notes": "The request appears first, then each branch draws and its identity model pops into place."
+    },
+    {
+      "id": "s3-cloud-only",
+      "duration": 10,
+      "component": "IdentityMotionScene",
+      "props": {
+        "variant": "cloud",
+        "personSrc": "assets/icons/Person-highres.svg",
+        "shieldSrc": "assets/icons/Shield Checkmark-highres.svg"
+      },
+      "narrationText": "First, cloud-only. Accounts live in Microsoft Entra ID, which handles sign-in in the cloud.",
+      "transition": "crossfade",
+      "notes": "Cloud boundary draws, the account appears, the sign-in route draws, and verification lands."
+    },
+    {
+      "id": "s4-hybrid",
+      "duration": 10,
+      "component": "IdentityMotionScene",
+      "props": {
+        "variant": "hybrid",
+        "buildingSrc": "assets/icons/Building-highres.svg",
+        "connectSrc": "assets/icons/Entra-Connect-Sync.svg",
+        "cloudSrc": "assets/icons/Cloud-highres.svg"
+      },
+      "narrationText": "Second, hybrid. Accounts are managed in your on-premises Active Directory and synced up with Microsoft Entra Connect. Credentials get validated by Entra ID, AD DS, or a federated provider.",
+      "transition": "crossfade",
+      "notes": "AD, Connect, and Entra appear in order as both routes draw; validation choices reveal sequentially."
+    },
+    {
+      "id": "s5-add-mfa",
+      "duration": 6.5,
+      "component": "IdentityMotionScene",
+      "props": {
+        "variant": "mfa",
+        "passwordSrc": "assets/icons/Password-highres.svg",
+        "mfaSrc": "assets/icons/Multifactor-Authentication.svg",
+        "dialpadSrc": "assets/icons/Dialpad-highres.svg",
+        "callSrc": "assets/icons/Call-highres.svg",
+        "phoneSrc": "assets/icons/Phone-highres.svg"
+      },
+      "narrationText": "Passwords are the weak link, so add multifactor authentication: a code, a call, or Microsoft Authenticator.",
+      "transition": "crossfade",
+      "notes": "Password appears, the broken route draws, MFA lands, then code, call, and Authenticator pop in sequence."
+    },
+    {
+      "id": "s6-admins-first",
+      "duration": 5,
+      "component": "AdminRolloutScene",
+      "props": {
+        "iconSrc": "assets/icons/People-highres.svg"
+      },
+      "narrationText": "Start with admin accounts. Then roll it out to everyone.",
+      "transition": "cut",
+      "notes": "Admin bubble enters left, arrow draws right, then the blue everyone bubble appears using the same approved Fluent people glyph."
+    },
+    {
+      "id": "s7-approved-end-card",
+      "duration": 2.5,
+      "layers": [{
+        "type": "video",
+        "src": "assets/video/M365-Copilot-endcard-type-2s-16-9-visual.mov",
+        "startTime": 0,
+        "endTime": 2.5
+      }],
+      "notes": "Original supplied Microsoft 365 Copilot end-card animation, played full-frame with its native audio intentionally muted."
+    }
+  ],
+  "captions": {
+    "style": "static",
+    "position": "bottom",
+    "fontSize": 27,
+    "font": "Segoe UI",
+    "color": "#FFFFFF",
+    "backgroundColor": "#1B1A19E6"
+  },
+  "metadata": {
+    "status": "animated-review",
+    "totalDurationSec": 48,
+    "theme": {
+      "name": "Verified passage",
+      "primary": "#0078D4",
+      "accent": "#5B5FC7",
+      "background": "#F7F7F5"
+    }
+  }
+}

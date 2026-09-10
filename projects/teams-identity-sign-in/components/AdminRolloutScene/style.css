@@ -1,0 +1,114 @@
+.ars-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #1b1a19;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.ars-background {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 42%, #ffffff 0%, #eef4f7 58%, #ddeff5 100%);
+}
+
+.ars-title {
+  position: absolute;
+  top: 112px;
+  left: 210px;
+  right: 210px;
+  margin: 0;
+  text-align: center;
+  font-size: 78px;
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.ars-flow {
+  position: absolute;
+  top: 320px;
+  left: 190px;
+  width: 1540px;
+  height: 570px;
+}
+
+.ars-bubble {
+  position: absolute;
+  top: 52px;
+  display: flex;
+  width: 450px;
+  height: 450px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 28px 70px rgba(31, 55, 66, 0.14);
+}
+
+.ars-admin {
+  left: 0;
+  border: 3px solid rgba(91, 95, 199, 0.28);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.ars-everyone {
+  right: 0;
+  border: 3px solid rgba(0, 120, 212, 0.22);
+  background: #d9effc;
+  box-shadow: 0 30px 76px rgba(0, 120, 212, 0.2);
+}
+
+.ars-icon-shell {
+  display: grid;
+  width: 190px;
+  height: 190px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.ars-icon-shell img {
+  display: block;
+  width: 138px;
+  height: 138px;
+  object-fit: contain;
+}
+
+.ars-bubble strong {
+  margin-top: 24px;
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.ars-bubble span {
+  margin-top: 8px;
+  color: #5b5fc7;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.ars-arrow {
+  position: absolute;
+  top: 216px;
+  left: 550px;
+  width: 440px;
+  height: 120px;
+  overflow: visible;
+}
+
+.ars-arrow-line,
+.ars-arrow-head {
+  fill: none;
+  stroke: #0078d4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 14px;
+}
+
+.ars-arrow-line {
+  stroke-dasharray: 380;
+  stroke-dashoffset: 380;
+}

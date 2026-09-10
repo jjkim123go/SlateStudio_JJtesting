@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "variant": {"enum": ["intro", "paths", "cloud", "hybrid", "mfa"]},
+    "personSrc": {"type": "string"},
+    "shieldSrc": {"type": "string"},
+    "personKeySrc": {"type": "string"},
+    "cloudSrc": {"type": "string"},
+    "buildingSrc": {"type": "string"},
+    "connectSrc": {"type": "string"},
+    "passwordSrc": {"type": "string"},
+    "mfaSrc": {"type": "string"},
+    "dialpadSrc": {"type": "string"},
+    "callSrc": {"type": "string"},
+    "phoneSrc": {"type": "string"}
+  },
+  "required": ["variant"],
+  "additionalProperties": false
+}

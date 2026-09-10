@@ -1,0 +1,269 @@
+{
+  "review_type": "final",
+  "reviewer": "runtime-review-stage",
+  "timestamp": "2026-09-08T22:58:52.040122+00:00",
+  "scores": {
+    "brand_compliance": 2,
+    "pacing": 3,
+    "content_coverage": 3,
+    "narration_timing": 3,
+    "audio_quality": 1,
+    "visual_consistency": 1,
+    "caption_accuracy": 2,
+    "content_redundancy": 3
+  },
+  "total_score": 18,
+  "max_score": 24,
+  "passed": false,
+  "findings": [
+    {
+      "category": "brand_color",
+      "description": "brand_compliance scored 2/3 during compose self-review",
+      "severity": "warning",
+      "owner": "assets",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "audio_level",
+      "description": "audio_quality scored 1/3 during compose self-review",
+      "severity": "blocker",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "transition_jarring",
+      "description": "visual_consistency scored 1/3 during compose self-review",
+      "severity": "blocker",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "caption_sync",
+      "description": "caption_accuracy scored 2/3 during compose self-review",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "No brand package applied \u2014 consider using --brand for consistency",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "Video Indexer not configured \u2014 caption accuracy uses heuristic scoring",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "2 silence gap(s) > 3 seconds",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "Inspection: FROZEN_FRAMES: 7 sections (42.7s total)",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "Inspection: LONG_SILENCE: 2 gaps > 3s",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "\u26a0 s1-identity-question: Scene runs 6.0s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "\u26a0 s2-two-paths: Scene runs 8.0s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "\u26a0 s3-cloud-only: Scene runs 10.0s with only 1 visual beat(s). Use at least 3 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "\u26a0 s4-hybrid: Scene runs 10.0s with only 1 visual beat(s). Use at least 3 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "\u26a0 s5-add-mfa: Scene runs 6.5s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "\u26a0 s6-admins-first: Scene runs 5.0s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    }
+  ],
+  "blockers": 2,
+  "warnings": 13,
+  "summary": "Explicit review stage executed after compose using ReviewerAgent. Compose self-review verdict was FAIL.",
+  "routed_findings": {
+    "assets": [
+      {
+        "category": "brand_color",
+        "description": "brand_compliance scored 2/3 during compose self-review",
+        "severity": "warning",
+        "owner": "assets",
+        "scene_id": null,
+        "suggested_fix": ""
+      }
+    ],
+    "compose": [
+      {
+        "category": "audio_level",
+        "description": "audio_quality scored 1/3 during compose self-review",
+        "severity": "blocker",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "transition_jarring",
+        "description": "visual_consistency scored 1/3 during compose self-review",
+        "severity": "blocker",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "caption_sync",
+        "description": "caption_accuracy scored 2/3 during compose self-review",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "No brand package applied \u2014 consider using --brand for consistency",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "Video Indexer not configured \u2014 caption accuracy uses heuristic scoring",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "2 silence gap(s) > 3 seconds",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "Inspection: FROZEN_FRAMES: 7 sections (42.7s total)",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "Inspection: LONG_SILENCE: 2 gaps > 3s",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "\u26a0 s1-identity-question: Scene runs 6.0s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "\u26a0 s2-two-paths: Scene runs 8.0s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "\u26a0 s3-cloud-only: Scene runs 10.0s with only 1 visual beat(s). Use at least 3 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "\u26a0 s4-hybrid: Scene runs 10.0s with only 1 visual beat(s). Use at least 3 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "\u26a0 s5-add-mfa: Scene runs 6.5s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "\u26a0 s6-admins-first: Scene runs 5.0s with only 1 visual beat(s). Use at least 2 beat(s), a video layer, or a sequenced component so no visual holds longer than 4s.",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      }
+    ]
+  }
+}

@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1920, height=1080" />
+<title>Slate Composition</title>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/DrawSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MorphSVGPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/Physics2DPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomEase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomBounce.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/CustomWiggle.min.js"></script>
+
+<style>
+:root { color-scheme: dark; --brand-primary:#0078D4;--brand-accent:#5B5FC7;--brand-bg:#F7F7F5;--brand-text:#1F2933;--slate-bg:#F7F7F5;--slate-surface:#EBE8E0;--slate-elevated-surface:#E7E1D3;--slate-text:#1F2933;--slate-muted-text:#59636E;--slate-border:#D2C8B8;--slate-success:#3DDC97;--slate-warning:#F7C948;--slate-danger:#FF6B6B;--slate-caption-highlight:#0078D4; }
+
+* { box-sizing: border-box; }
+html, body { margin:0; padding:0; width:1920px; height:1080px; background:var(--slate-bg,#120A1F); color:var(--slate-text,#F8F4EC); overflow:hidden; font-family:Inter,Inter,-apple-system,BlinkMacSystemFont,sans-serif; }
+.scene { opacity: 0; }
+.ims-root{position:absolute;inset:0;overflow:hidden;color:#1b1a19;font-family:"Segoe UI",sans-serif}.ims-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#fff 0%,#eef4f7 58%,#ddeff5 100%)}.ims-variant{display:none;position:absolute;inset:0}.ims-root[data-variant="intro"] .ims-intro,.ims-root[data-variant="paths"] .ims-paths,.ims-root[data-variant="cloud"] .ims-cloud,.ims-root[data-variant="hybrid"] .ims-hybrid,.ims-root[data-variant="mfa"] .ims-mfa{display:block}.ims-variant>h1{position:absolute;top:112px;left:190px;right:190px;margin:0;text-align:center;font-size:78px;line-height:1.05;font-weight:650;letter-spacing:0}.ims-intro-copy{position:absolute;left:120px;top:350px;width:760px}.ims-intro-copy h1{margin:0;font-size:76px;font-weight:650;letter-spacing:0}.ims-intro-copy strong{display:block;margin-top:12px;color:#3b4bea;font-size:68px;line-height:1.05}.ims-panel{position:absolute;right:120px;top:205px;width:820px;height:670px;border:1px solid rgba(91,95,199,.16);border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 34px 76px rgba(33,42,65,.18)}.ims-panel-label{position:absolute;left:55px;top:42px;font-size:26px;font-weight:650}.ims-person-orbit{position:absolute;left:82px;top:155px;display:grid;width:180px;height:180px;place-items:center;border-radius:50%;background:#e7f0ff}.ims-person-orbit img{width:120px;height:120px}.ims-question{position:absolute;font-size:34px;font-weight:650}.ims-who{left:310px;top:195px}.ims-how{left:310px;top:430px}.ims-proof-line{position:absolute;left:285px;top:290px;width:430px;height:70px}.ims-proof-line path,.ims-cloud-route path,.ims-h-line,.ims-factor-route path{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.ims-proof-line path{stroke-dasharray:430;stroke-dashoffset:430}.ims-verify{position:absolute;left:555px;top:380px;display:flex;align-items:center;gap:18px}.ims-verify img{width:82px;height:82px}.ims-verify span{color:#107c10;font-size:30px;font-weight:650}.ims-source{position:absolute;left:810px;top:300px;display:flex;width:300px;height:210px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-source img{width:100px;height:100px}.ims-source strong{margin-top:15px;font-size:28px}.ims-branches{position:absolute;left:400px;top:460px;width:1120px;height:360px}.ims-branch{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-dasharray:620;stroke-dashoffset:620}.ims-path-card{position:absolute;top:710px;display:flex;width:480px;height:250px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#ddecf5;box-shadow:0 18px 42px rgba(31,55,66,.1)}.ims-cloud-card{left:245px}.ims-hybrid-card{right:245px}.ims-path-card img{width:105px;height:105px}.ims-path-card strong{margin-top:12px;font-size:32px}.ims-path-card span{margin-top:7px;color:#525252;font-size:22px}.ims-cloud-boundary{position:absolute;left:370px;top:315px;width:1180px;height:500px}.ims-cloud-boundary path{fill:rgba(255,255,255,.65);stroke:#8cc8e8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3200;stroke-dashoffset:3200}.ims-entra-label{position:absolute;top:380px;left:0;right:0;text-align:center;color:#5b5fc7;font-size:26px;font-weight:650}.ims-cloud-user,.ims-cloud-check{position:absolute;top:485px;display:flex;width:310px;height:245px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-cloud-user{left:535px}.ims-cloud-check{right:535px}.ims-cloud-user img,.ims-cloud-check img{width:116px;height:116px}.ims-cloud-user strong,.ims-cloud-check strong{margin-top:16px;font-size:27px}.ims-cloud-route{position:absolute;left:745px;top:565px;width:430px;height:80px}.ims-cloud-route path{stroke-dasharray:430;stroke-dashoffset:430}.ims-h-node{position:absolute;top:410px;display:flex;width:360px;height:280px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-h-ad{left:120px}.ims-h-connect{left:780px}.ims-h-entra{right:120px}.ims-h-node img{width:125px;height:125px}.ims-h-node strong{margin-top:18px;text-align:center;font-size:27px}.ims-h-routes{position:absolute;left:300px;top:455px;width:1320px;height:190px}.ims-h-line{stroke-dasharray:520;stroke-dashoffset:520}.ims-validation-row{position:absolute;left:340px;right:340px;top:790px;display:flex;justify-content:space-between}.ims-validation-row span{padding:17px 24px;border:1px solid rgba(27,26,25,.12);border-radius:8px;background:#fff;font-size:24px;font-weight:600;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-factor{position:absolute;top:360px;display:flex;width:390px;height:350px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-password{left:290px}.ims-mfa-card{right:290px;border:2px solid rgba(16,124,16,.22)}.ims-factor img{width:145px;height:145px}.ims-factor strong{margin-top:18px;font-size:30px}.ims-factor span{margin-top:8px;font-size:23px}.ims-password span{color:#a4262c}.ims-mfa-card span{color:#107c10}.ims-factor-route{position:absolute;left:700px;top:470px;width:520px;height:130px}.ims-factor-route path{stroke-dasharray:220;stroke-dashoffset:220}.ims-methods{position:absolute;left:490px;right:490px;top:795px;display:flex;justify-content:space-between}.ims-methods div{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:8px;background:#fff;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-methods img{width:55px;height:55px}.ims-methods span{font-size:24px;font-weight:600}
+.ims-root{position:absolute;inset:0;overflow:hidden;color:#1b1a19;font-family:"Segoe UI",sans-serif}.ims-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#fff 0%,#eef4f7 58%,#ddeff5 100%)}.ims-variant{display:none;position:absolute;inset:0}.ims-root[data-variant="intro"] .ims-intro,.ims-root[data-variant="paths"] .ims-paths,.ims-root[data-variant="cloud"] .ims-cloud,.ims-root[data-variant="hybrid"] .ims-hybrid,.ims-root[data-variant="mfa"] .ims-mfa{display:block}.ims-variant>h1{position:absolute;top:112px;left:190px;right:190px;margin:0;text-align:center;font-size:78px;line-height:1.05;font-weight:650;letter-spacing:0}.ims-intro-copy{position:absolute;left:120px;top:350px;width:760px}.ims-intro-copy h1{margin:0;font-size:76px;font-weight:650;letter-spacing:0}.ims-intro-copy strong{display:block;margin-top:12px;color:#3b4bea;font-size:68px;line-height:1.05}.ims-panel{position:absolute;right:120px;top:205px;width:820px;height:670px;border:1px solid rgba(91,95,199,.16);border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 34px 76px rgba(33,42,65,.18)}.ims-panel-label{position:absolute;left:55px;top:42px;font-size:26px;font-weight:650}.ims-person-orbit{position:absolute;left:82px;top:155px;display:grid;width:180px;height:180px;place-items:center;border-radius:50%;background:#e7f0ff}.ims-person-orbit img{width:120px;height:120px}.ims-question{position:absolute;font-size:34px;font-weight:650}.ims-who{left:310px;top:195px}.ims-how{left:310px;top:430px}.ims-proof-line{position:absolute;left:285px;top:290px;width:430px;height:70px}.ims-proof-line path,.ims-cloud-route path,.ims-h-line,.ims-factor-route path{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.ims-proof-line path{stroke-dasharray:430;stroke-dashoffset:430}.ims-verify{position:absolute;left:555px;top:380px;display:flex;align-items:center;gap:18px}.ims-verify img{width:82px;height:82px}.ims-verify span{color:#107c10;font-size:30px;font-weight:650}.ims-source{position:absolute;left:810px;top:300px;display:flex;width:300px;height:210px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-source img{width:100px;height:100px}.ims-source strong{margin-top:15px;font-size:28px}.ims-branches{position:absolute;left:400px;top:460px;width:1120px;height:360px}.ims-branch{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-dasharray:620;stroke-dashoffset:620}.ims-path-card{position:absolute;top:710px;display:flex;width:480px;height:250px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#ddecf5;box-shadow:0 18px 42px rgba(31,55,66,.1)}.ims-cloud-card{left:245px}.ims-hybrid-card{right:245px}.ims-path-card img{width:105px;height:105px}.ims-path-card strong{margin-top:12px;font-size:32px}.ims-path-card span{margin-top:7px;color:#525252;font-size:22px}.ims-cloud-boundary{position:absolute;left:370px;top:315px;width:1180px;height:500px}.ims-cloud-boundary path{fill:rgba(255,255,255,.65);stroke:#8cc8e8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3200;stroke-dashoffset:3200}.ims-entra-label{position:absolute;top:380px;left:0;right:0;text-align:center;color:#5b5fc7;font-size:26px;font-weight:650}.ims-cloud-user,.ims-cloud-check{position:absolute;top:485px;display:flex;width:310px;height:245px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-cloud-user{left:535px}.ims-cloud-check{right:535px}.ims-cloud-user img,.ims-cloud-check img{width:116px;height:116px}.ims-cloud-user strong,.ims-cloud-check strong{margin-top:16px;font-size:27px}.ims-cloud-route{position:absolute;left:745px;top:565px;width:430px;height:80px}.ims-cloud-route path{stroke-dasharray:430;stroke-dashoffset:430}.ims-h-node{position:absolute;top:410px;display:flex;width:360px;height:280px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-h-ad{left:120px}.ims-h-connect{left:780px}.ims-h-entra{right:120px}.ims-h-node img{width:125px;height:125px}.ims-h-node strong{margin-top:18px;text-align:center;font-size:27px}.ims-h-routes{position:absolute;left:300px;top:455px;width:1320px;height:190px}.ims-h-line{stroke-dasharray:520;stroke-dashoffset:520}.ims-validation-row{position:absolute;left:340px;right:340px;top:790px;display:flex;justify-content:space-between}.ims-validation-row span{padding:17px 24px;border:1px solid rgba(27,26,25,.12);border-radius:8px;background:#fff;font-size:24px;font-weight:600;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-factor{position:absolute;top:360px;display:flex;width:390px;height:350px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-password{left:290px}.ims-mfa-card{right:290px;border:2px solid rgba(16,124,16,.22)}.ims-factor img{width:145px;height:145px}.ims-factor strong{margin-top:18px;font-size:30px}.ims-factor span{margin-top:8px;font-size:23px}.ims-password span{color:#a4262c}.ims-mfa-card span{color:#107c10}.ims-factor-route{position:absolute;left:700px;top:470px;width:520px;height:130px}.ims-factor-route path{stroke-dasharray:220;stroke-dashoffset:220}.ims-methods{position:absolute;left:490px;right:490px;top:795px;display:flex;justify-content:space-between}.ims-methods div{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:8px;background:#fff;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-methods img{width:55px;height:55px}.ims-methods span{font-size:24px;font-weight:600}
+.ims-root{position:absolute;inset:0;overflow:hidden;color:#1b1a19;font-family:"Segoe UI",sans-serif}.ims-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#fff 0%,#eef4f7 58%,#ddeff5 100%)}.ims-variant{display:none;position:absolute;inset:0}.ims-root[data-variant="intro"] .ims-intro,.ims-root[data-variant="paths"] .ims-paths,.ims-root[data-variant="cloud"] .ims-cloud,.ims-root[data-variant="hybrid"] .ims-hybrid,.ims-root[data-variant="mfa"] .ims-mfa{display:block}.ims-variant>h1{position:absolute;top:112px;left:190px;right:190px;margin:0;text-align:center;font-size:78px;line-height:1.05;font-weight:650;letter-spacing:0}.ims-intro-copy{position:absolute;left:120px;top:350px;width:760px}.ims-intro-copy h1{margin:0;font-size:76px;font-weight:650;letter-spacing:0}.ims-intro-copy strong{display:block;margin-top:12px;color:#3b4bea;font-size:68px;line-height:1.05}.ims-panel{position:absolute;right:120px;top:205px;width:820px;height:670px;border:1px solid rgba(91,95,199,.16);border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 34px 76px rgba(33,42,65,.18)}.ims-panel-label{position:absolute;left:55px;top:42px;font-size:26px;font-weight:650}.ims-person-orbit{position:absolute;left:82px;top:155px;display:grid;width:180px;height:180px;place-items:center;border-radius:50%;background:#e7f0ff}.ims-person-orbit img{width:120px;height:120px}.ims-question{position:absolute;font-size:34px;font-weight:650}.ims-who{left:310px;top:195px}.ims-how{left:310px;top:430px}.ims-proof-line{position:absolute;left:285px;top:290px;width:430px;height:70px}.ims-proof-line path,.ims-cloud-route path,.ims-h-line,.ims-factor-route path{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.ims-proof-line path{stroke-dasharray:430;stroke-dashoffset:430}.ims-verify{position:absolute;left:555px;top:380px;display:flex;align-items:center;gap:18px}.ims-verify img{width:82px;height:82px}.ims-verify span{color:#107c10;font-size:30px;font-weight:650}.ims-source{position:absolute;left:810px;top:300px;display:flex;width:300px;height:210px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-source img{width:100px;height:100px}.ims-source strong{margin-top:15px;font-size:28px}.ims-branches{position:absolute;left:400px;top:460px;width:1120px;height:360px}.ims-branch{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-dasharray:620;stroke-dashoffset:620}.ims-path-card{position:absolute;top:710px;display:flex;width:480px;height:250px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#ddecf5;box-shadow:0 18px 42px rgba(31,55,66,.1)}.ims-cloud-card{left:245px}.ims-hybrid-card{right:245px}.ims-path-card img{width:105px;height:105px}.ims-path-card strong{margin-top:12px;font-size:32px}.ims-path-card span{margin-top:7px;color:#525252;font-size:22px}.ims-cloud-boundary{position:absolute;left:370px;top:315px;width:1180px;height:500px}.ims-cloud-boundary path{fill:rgba(255,255,255,.65);stroke:#8cc8e8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3200;stroke-dashoffset:3200}.ims-entra-label{position:absolute;top:380px;left:0;right:0;text-align:center;color:#5b5fc7;font-size:26px;font-weight:650}.ims-cloud-user,.ims-cloud-check{position:absolute;top:485px;display:flex;width:310px;height:245px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-cloud-user{left:535px}.ims-cloud-check{right:535px}.ims-cloud-user img,.ims-cloud-check img{width:116px;height:116px}.ims-cloud-user strong,.ims-cloud-check strong{margin-top:16px;font-size:27px}.ims-cloud-route{position:absolute;left:745px;top:565px;width:430px;height:80px}.ims-cloud-route path{stroke-dasharray:430;stroke-dashoffset:430}.ims-h-node{position:absolute;top:410px;display:flex;width:360px;height:280px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-h-ad{left:120px}.ims-h-connect{left:780px}.ims-h-entra{right:120px}.ims-h-node img{width:125px;height:125px}.ims-h-node strong{margin-top:18px;text-align:center;font-size:27px}.ims-h-routes{position:absolute;left:300px;top:455px;width:1320px;height:190px}.ims-h-line{stroke-dasharray:520;stroke-dashoffset:520}.ims-validation-row{position:absolute;left:340px;right:340px;top:790px;display:flex;justify-content:space-between}.ims-validation-row span{padding:17px 24px;border:1px solid rgba(27,26,25,.12);border-radius:8px;background:#fff;font-size:24px;font-weight:600;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-factor{position:absolute;top:360px;display:flex;width:390px;height:350px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-password{left:290px}.ims-mfa-card{right:290px;border:2px solid rgba(16,124,16,.22)}.ims-factor img{width:145px;height:145px}.ims-factor strong{margin-top:18px;font-size:30px}.ims-factor span{margin-top:8px;font-size:23px}.ims-password span{color:#a4262c}.ims-mfa-card span{color:#107c10}.ims-factor-route{position:absolute;left:700px;top:470px;width:520px;height:130px}.ims-factor-route path{stroke-dasharray:220;stroke-dashoffset:220}.ims-methods{position:absolute;left:490px;right:490px;top:795px;display:flex;justify-content:space-between}.ims-methods div{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:8px;background:#fff;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-methods img{width:55px;height:55px}.ims-methods span{font-size:24px;font-weight:600}
+.ims-root{position:absolute;inset:0;overflow:hidden;color:#1b1a19;font-family:"Segoe UI",sans-serif}.ims-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#fff 0%,#eef4f7 58%,#ddeff5 100%)}.ims-variant{display:none;position:absolute;inset:0}.ims-root[data-variant="intro"] .ims-intro,.ims-root[data-variant="paths"] .ims-paths,.ims-root[data-variant="cloud"] .ims-cloud,.ims-root[data-variant="hybrid"] .ims-hybrid,.ims-root[data-variant="mfa"] .ims-mfa{display:block}.ims-variant>h1{position:absolute;top:112px;left:190px;right:190px;margin:0;text-align:center;font-size:78px;line-height:1.05;font-weight:650;letter-spacing:0}.ims-intro-copy{position:absolute;left:120px;top:350px;width:760px}.ims-intro-copy h1{margin:0;font-size:76px;font-weight:650;letter-spacing:0}.ims-intro-copy strong{display:block;margin-top:12px;color:#3b4bea;font-size:68px;line-height:1.05}.ims-panel{position:absolute;right:120px;top:205px;width:820px;height:670px;border:1px solid rgba(91,95,199,.16);border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 34px 76px rgba(33,42,65,.18)}.ims-panel-label{position:absolute;left:55px;top:42px;font-size:26px;font-weight:650}.ims-person-orbit{position:absolute;left:82px;top:155px;display:grid;width:180px;height:180px;place-items:center;border-radius:50%;background:#e7f0ff}.ims-person-orbit img{width:120px;height:120px}.ims-question{position:absolute;font-size:34px;font-weight:650}.ims-who{left:310px;top:195px}.ims-how{left:310px;top:430px}.ims-proof-line{position:absolute;left:285px;top:290px;width:430px;height:70px}.ims-proof-line path,.ims-cloud-route path,.ims-h-line,.ims-factor-route path{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.ims-proof-line path{stroke-dasharray:430;stroke-dashoffset:430}.ims-verify{position:absolute;left:555px;top:380px;display:flex;align-items:center;gap:18px}.ims-verify img{width:82px;height:82px}.ims-verify span{color:#107c10;font-size:30px;font-weight:650}.ims-source{position:absolute;left:810px;top:300px;display:flex;width:300px;height:210px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-source img{width:100px;height:100px}.ims-source strong{margin-top:15px;font-size:28px}.ims-branches{position:absolute;left:400px;top:460px;width:1120px;height:360px}.ims-branch{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-dasharray:620;stroke-dashoffset:620}.ims-path-card{position:absolute;top:710px;display:flex;width:480px;height:250px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#ddecf5;box-shadow:0 18px 42px rgba(31,55,66,.1)}.ims-cloud-card{left:245px}.ims-hybrid-card{right:245px}.ims-path-card img{width:105px;height:105px}.ims-path-card strong{margin-top:12px;font-size:32px}.ims-path-card span{margin-top:7px;color:#525252;font-size:22px}.ims-cloud-boundary{position:absolute;left:370px;top:315px;width:1180px;height:500px}.ims-cloud-boundary path{fill:rgba(255,255,255,.65);stroke:#8cc8e8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3200;stroke-dashoffset:3200}.ims-entra-label{position:absolute;top:380px;left:0;right:0;text-align:center;color:#5b5fc7;font-size:26px;font-weight:650}.ims-cloud-user,.ims-cloud-check{position:absolute;top:485px;display:flex;width:310px;height:245px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-cloud-user{left:535px}.ims-cloud-check{right:535px}.ims-cloud-user img,.ims-cloud-check img{width:116px;height:116px}.ims-cloud-user strong,.ims-cloud-check strong{margin-top:16px;font-size:27px}.ims-cloud-route{position:absolute;left:745px;top:565px;width:430px;height:80px}.ims-cloud-route path{stroke-dasharray:430;stroke-dashoffset:430}.ims-h-node{position:absolute;top:410px;display:flex;width:360px;height:280px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-h-ad{left:120px}.ims-h-connect{left:780px}.ims-h-entra{right:120px}.ims-h-node img{width:125px;height:125px}.ims-h-node strong{margin-top:18px;text-align:center;font-size:27px}.ims-h-routes{position:absolute;left:300px;top:455px;width:1320px;height:190px}.ims-h-line{stroke-dasharray:520;stroke-dashoffset:520}.ims-validation-row{position:absolute;left:340px;right:340px;top:790px;display:flex;justify-content:space-between}.ims-validation-row span{padding:17px 24px;border:1px solid rgba(27,26,25,.12);border-radius:8px;background:#fff;font-size:24px;font-weight:600;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-factor{position:absolute;top:360px;display:flex;width:390px;height:350px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-password{left:290px}.ims-mfa-card{right:290px;border:2px solid rgba(16,124,16,.22)}.ims-factor img{width:145px;height:145px}.ims-factor strong{margin-top:18px;font-size:30px}.ims-factor span{margin-top:8px;font-size:23px}.ims-password span{color:#a4262c}.ims-mfa-card span{color:#107c10}.ims-factor-route{position:absolute;left:700px;top:470px;width:520px;height:130px}.ims-factor-route path{stroke-dasharray:220;stroke-dashoffset:220}.ims-methods{position:absolute;left:490px;right:490px;top:795px;display:flex;justify-content:space-between}.ims-methods div{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:8px;background:#fff;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-methods img{width:55px;height:55px}.ims-methods span{font-size:24px;font-weight:600}
+.ims-root{position:absolute;inset:0;overflow:hidden;color:#1b1a19;font-family:"Segoe UI",sans-serif}.ims-bg{position:absolute;inset:0;background:radial-gradient(circle at 50% 42%,#fff 0%,#eef4f7 58%,#ddeff5 100%)}.ims-variant{display:none;position:absolute;inset:0}.ims-root[data-variant="intro"] .ims-intro,.ims-root[data-variant="paths"] .ims-paths,.ims-root[data-variant="cloud"] .ims-cloud,.ims-root[data-variant="hybrid"] .ims-hybrid,.ims-root[data-variant="mfa"] .ims-mfa{display:block}.ims-variant>h1{position:absolute;top:112px;left:190px;right:190px;margin:0;text-align:center;font-size:78px;line-height:1.05;font-weight:650;letter-spacing:0}.ims-intro-copy{position:absolute;left:120px;top:350px;width:760px}.ims-intro-copy h1{margin:0;font-size:76px;font-weight:650;letter-spacing:0}.ims-intro-copy strong{display:block;margin-top:12px;color:#3b4bea;font-size:68px;line-height:1.05}.ims-panel{position:absolute;right:120px;top:205px;width:820px;height:670px;border:1px solid rgba(91,95,199,.16);border-radius:28px;background:rgba(255,255,255,.9);box-shadow:0 34px 76px rgba(33,42,65,.18)}.ims-panel-label{position:absolute;left:55px;top:42px;font-size:26px;font-weight:650}.ims-person-orbit{position:absolute;left:82px;top:155px;display:grid;width:180px;height:180px;place-items:center;border-radius:50%;background:#e7f0ff}.ims-person-orbit img{width:120px;height:120px}.ims-question{position:absolute;font-size:34px;font-weight:650}.ims-who{left:310px;top:195px}.ims-how{left:310px;top:430px}.ims-proof-line{position:absolute;left:285px;top:290px;width:430px;height:70px}.ims-proof-line path,.ims-cloud-route path,.ims-h-line,.ims-factor-route path{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-linejoin:round}.ims-proof-line path{stroke-dasharray:430;stroke-dashoffset:430}.ims-verify{position:absolute;left:555px;top:380px;display:flex;align-items:center;gap:18px}.ims-verify img{width:82px;height:82px}.ims-verify span{color:#107c10;font-size:30px;font-weight:650}.ims-source{position:absolute;left:810px;top:300px;display:flex;width:300px;height:210px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-source img{width:100px;height:100px}.ims-source strong{margin-top:15px;font-size:28px}.ims-branches{position:absolute;left:400px;top:460px;width:1120px;height:360px}.ims-branch{fill:none;stroke:#0078d4;stroke-width:10;stroke-linecap:round;stroke-dasharray:620;stroke-dashoffset:620}.ims-path-card{position:absolute;top:710px;display:flex;width:480px;height:250px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#ddecf5;box-shadow:0 18px 42px rgba(31,55,66,.1)}.ims-cloud-card{left:245px}.ims-hybrid-card{right:245px}.ims-path-card img{width:105px;height:105px}.ims-path-card strong{margin-top:12px;font-size:32px}.ims-path-card span{margin-top:7px;color:#525252;font-size:22px}.ims-cloud-boundary{position:absolute;left:370px;top:315px;width:1180px;height:500px}.ims-cloud-boundary path{fill:rgba(255,255,255,.65);stroke:#8cc8e8;stroke-width:8;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:3200;stroke-dashoffset:3200}.ims-entra-label{position:absolute;top:380px;left:0;right:0;text-align:center;color:#5b5fc7;font-size:26px;font-weight:650}.ims-cloud-user,.ims-cloud-check{position:absolute;top:485px;display:flex;width:310px;height:245px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-cloud-user{left:535px}.ims-cloud-check{right:535px}.ims-cloud-user img,.ims-cloud-check img{width:116px;height:116px}.ims-cloud-user strong,.ims-cloud-check strong{margin-top:16px;font-size:27px}.ims-cloud-route{position:absolute;left:745px;top:565px;width:430px;height:80px}.ims-cloud-route path{stroke-dasharray:430;stroke-dashoffset:430}.ims-h-node{position:absolute;top:410px;display:flex;width:360px;height:280px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-h-ad{left:120px}.ims-h-connect{left:780px}.ims-h-entra{right:120px}.ims-h-node img{width:125px;height:125px}.ims-h-node strong{margin-top:18px;text-align:center;font-size:27px}.ims-h-routes{position:absolute;left:300px;top:455px;width:1320px;height:190px}.ims-h-line{stroke-dasharray:520;stroke-dashoffset:520}.ims-validation-row{position:absolute;left:340px;right:340px;top:790px;display:flex;justify-content:space-between}.ims-validation-row span{padding:17px 24px;border:1px solid rgba(27,26,25,.12);border-radius:8px;background:#fff;font-size:24px;font-weight:600;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-factor{position:absolute;top:360px;display:flex;width:390px;height:350px;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;background:#fff;box-shadow:0 18px 44px rgba(30,53,64,.1)}.ims-password{left:290px}.ims-mfa-card{right:290px;border:2px solid rgba(16,124,16,.22)}.ims-factor img{width:145px;height:145px}.ims-factor strong{margin-top:18px;font-size:30px}.ims-factor span{margin-top:8px;font-size:23px}.ims-password span{color:#a4262c}.ims-mfa-card span{color:#107c10}.ims-factor-route{position:absolute;left:700px;top:470px;width:520px;height:130px}.ims-factor-route path{stroke-dasharray:220;stroke-dashoffset:220}.ims-methods{position:absolute;left:490px;right:490px;top:795px;display:flex;justify-content:space-between}.ims-methods div{display:flex;align-items:center;gap:14px;padding:16px 22px;border-radius:8px;background:#fff;box-shadow:0 12px 30px rgba(30,53,64,.08)}.ims-methods img{width:55px;height:55px}.ims-methods span{font-size:24px;font-weight:600}
+.ars-root {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: #1b1a19;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.ars-background {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 42%, #ffffff 0%, #eef4f7 58%, #ddeff5 100%);
+}
+
+.ars-title {
+  position: absolute;
+  top: 112px;
+  left: 210px;
+  right: 210px;
+  margin: 0;
+  text-align: center;
+  font-size: 78px;
+  font-weight: 650;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.ars-flow {
+  position: absolute;
+  top: 320px;
+  left: 190px;
+  width: 1540px;
+  height: 570px;
+}
+
+.ars-bubble {
+  position: absolute;
+  top: 52px;
+  display: flex;
+  width: 450px;
+  height: 450px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: 0 28px 70px rgba(31, 55, 66, 0.14);
+}
+
+.ars-admin {
+  left: 0;
+  border: 3px solid rgba(91, 95, 199, 0.28);
+  background: rgba(255, 255, 255, 0.96);
+}
+
+.ars-everyone {
+  right: 0;
+  border: 3px solid rgba(0, 120, 212, 0.22);
+  background: #d9effc;
+  box-shadow: 0 30px 76px rgba(0, 120, 212, 0.2);
+}
+
+.ars-icon-shell {
+  display: grid;
+  width: 190px;
+  height: 190px;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.ars-icon-shell img {
+  display: block;
+  width: 138px;
+  height: 138px;
+  object-fit: contain;
+}
+
+.ars-bubble strong {
+  margin-top: 24px;
+  font-size: 36px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.ars-bubble span {
+  margin-top: 8px;
+  color: #5b5fc7;
+  font-size: 26px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.ars-arrow {
+  position: absolute;
+  top: 216px;
+  left: 550px;
+  width: 440px;
+  height: 120px;
+  overflow: visible;
+}
+
+.ars-arrow-line,
+.ars-arrow-head {
+  fill: none;
+  stroke: #0078d4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 14px;
+}
+
+.ars-arrow-line {
+  stroke-dasharray: 380;
+  stroke-dashoffset: 380;
+}
+</style>
+</head>
+<body>
+<div id="root"
+  data-composition-id="conceptual-explainer-storyboard"
+  data-start="0"
+  data-duration="48"
+  data-width="1920"
+  data-height="1080"
+  style="position:relative;width:1920px;height:1080px;background:var(--slate-bg,#120A1F);overflow:hidden">
+<div class="scene scene-s1-identity-question"
+    data-composition-id="s1-identity-question"
+    data-start="0"
+    data-duration="6"
+    data-track-index="1"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="ims-root" data-variant="intro">
+  <div class="ims-bg"></div>
+
+  <section class="ims-variant ims-intro">
+    <div class="ims-intro-copy">
+      <h1>Microsoft Teams</h1>
+      <strong>Identity and sign-in</strong>
+    </div>
+    <div class="ims-panel">
+      <span class="ims-panel-label">Sign-in verification</span>
+      <div class="ims-person-orbit"><img src="assets/icons/Person-highres.svg" alt=""></div>
+      <div class="ims-question ims-who">Who are you?</div>
+      <div class="ims-question ims-how" style="top: 330px">How do we know?</div>
+      <svg class="ims-proof-line" style="top: 390px" viewBox="0 0 430 70" aria-hidden="true">
+        <path d="M 18 35 C 130 35, 286 35, 400 35"></path>
+      </svg>
+      <div class="ims-verify" style="left: 525px; top: 485px"><img src="assets/icons/Shield Checkmark-highres.svg" alt=""><span>Verified</span></div>
+    </div>
+  </section>
+
+  <section class="ims-variant ims-paths">
+    <h1>Two identity models</h1>
+    <div class="ims-source"><img src="" alt=""><strong>Sign-in request</strong></div>
+    <svg class="ims-branches" viewBox="0 0 1120 360" aria-hidden="true">
+      <path class="ims-branch ims-branch-left" d="M 560 50 C 520 135, 225 165, 85 250"></path>
+      <path class="ims-branch ims-branch-right" d="M 560 50 C 600 135, 895 165, 1035 250"></path>
+    </svg>
+    <div class="ims-path-card ims-cloud-card"><img src="" alt=""><strong>Cloud-only</strong><span>Microsoft Entra ID</span></div>
+    <div class="ims-path-card ims-hybrid-card"><img src="" alt=""><strong>Hybrid</strong><span>On-premises to cloud</span></div>
+  </section>
+
+  <section class="ims-variant ims-cloud">
+    <h1>Cloud-only</h1>
+    <svg class="ims-cloud-boundary" style="left: 260px; top: 245px; width: 1400px; height: 650px" viewBox="0 0 1400 650" aria-hidden="true">
+      <path d="M 190 570 C 105 570, 55 515, 55 430 C 55 330, 145 235, 270 235 C 350 90, 500 65, 620 170 C 730 25, 920 45, 1010 185 C 1140 120, 1280 220, 1260 360 C 1350 375, 1385 450, 1350 515 C 1325 555, 1270 570, 1190 570 L 190 570 Z"></path>
+    </svg>
+    <span class="ims-entra-label" style="top: 435px">Microsoft Entra ID</span>
+    <div class="ims-cloud-user" style="left: 500px; top: 490px"><img src="assets/icons/Person-highres.svg" alt=""><strong>Cloud account</strong></div>
+    <svg class="ims-cloud-route" style="left: 810px; top: 572px; width: 300px" viewBox="0 0 300 80" aria-hidden="true"><path d="M 0 40 L 300 40"></path></svg>
+    <div class="ims-cloud-check" style="right: 500px; top: 490px"><img src="assets/icons/Shield Checkmark-highres.svg" alt=""><strong>Sign-in verified</strong></div>
+  </section>
+
+  <section class="ims-variant ims-hybrid">
+    <h1>Hybrid identity</h1>
+    <div class="ims-h-node ims-h-ad"><img src="" alt=""><strong>On-premises AD DS</strong></div>
+    <div class="ims-h-node ims-h-connect"><img src="" alt=""><strong>Microsoft Entra Connect</strong></div>
+    <div class="ims-h-node ims-h-entra"><img src="" alt=""><strong>Microsoft Entra ID</strong></div>
+    <svg class="ims-h-routes" viewBox="0 0 1320 190" aria-hidden="true">
+      <path class="ims-h-line ims-h-line-one" d="M 180 95 L 480 95"></path>
+      <path class="ims-h-line ims-h-line-two" d="M 840 95 L 1140 95"></path>
+    </svg>
+  </section>
+
+  <section class="ims-variant ims-mfa">
+    <h1>Add another factor</h1>
+    <div class="ims-factor ims-password"><img src="" alt=""><strong>Password only</strong><span>Weak link</span></div>
+    <svg class="ims-factor-route" viewBox="0 0 520 130" aria-hidden="true">
+      <path class="ims-broken-a" d="M 25 65 L 210 65"></path>
+      <path class="ims-broken-b" d="M 310 65 L 495 65"></path>
+      <path class="ims-upgrade-arrow" d="M 220 30 L 285 65 L 220 100"></path>
+    </svg>
+    <div class="ims-factor ims-mfa-card"><img src="" alt=""><strong>Multifactor authentication</strong><span>Stronger sign-in</span></div>
+    <div class="ims-methods">
+      <div><img src="" alt=""><span>Code</span></div>
+      <div><img src="" alt=""><span>Call</span></div>
+      <div><img src="" alt=""><span>Authenticator</span></div>
+    </div>
+  </section>
+</div>
+    </div>
+    
+  </div>
+  
+<div class="scene scene-s2-two-paths"
+    data-composition-id="s2-two-paths"
+    data-start="6"
+    data-duration="8"
+    data-track-index="2"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="ims-root" data-variant="paths">
+  <div class="ims-bg"></div>
+
+  <section class="ims-variant ims-intro">
+    <div class="ims-intro-copy">
+      <h1>Microsoft Teams</h1>
+      <strong>Identity and sign-in</strong>
+    </div>
+    <div class="ims-panel">
+      <span class="ims-panel-label">Sign-in verification</span>
+      <div class="ims-person-orbit"><img src="" alt=""></div>
+      <div class="ims-question ims-who">Who are you?</div>
+      <div class="ims-question ims-how" style="top: 330px">How do we know?</div>
+      <svg class="ims-proof-line" style="top: 390px" viewBox="0 0 430 70" aria-hidden="true">
+        <path d="M 18 35 C 130 35, 286 35, 400 35"></path>
+      </svg>
+      <div class="ims-verify" style="left: 525px; top: 485px"><img src="" alt=""><span>Verified</span></div>
+    </div>
+  </section>
+
+  <section class="ims-variant ims-paths">
+    <h1>Two identity models</h1>
+    <div class="ims-source"><img src="assets/icons/Person Key-highres.svg" alt=""><strong>Sign-in request</strong></div>
+    <svg class="ims-branches" viewBox="0 0 1120 360" aria-hidden="true">
+      <path class="ims-branch ims-branch-left" d="M 560 50 C 520 135, 225 165, 85 250"></path>
+      <path class="ims-branch ims-branch-right" d="M 560 50 C 600 135, 895 165, 1035 250"></path>
+    </svg>
+    <div class="ims-path-card ims-cloud-card"><img src="assets/icons/Cloud-highres.svg" alt=""><strong>Cloud-only</strong><span>Microsoft Entra ID</span></div>
+    <div class="ims-path-card ims-hybrid-card"><img src="assets/icons/Building-highres.svg" alt=""><strong>Hybrid</strong><span>On-premises to cloud</span></div>
+  </section>
+
+  <section class="ims-variant ims-cloud">
+    <h1>Cloud-only</h1>
+    <svg class="ims-cloud-boundary" style="left: 260px; top: 245px; width: 1400px; height: 650px" viewBox="0 0 1400 650" aria-hidden="true">
+      <path d="M 190 570 C 105 570, 55 515, 55 430 C 55 330, 145 235, 270 235 C 350 90, 500 65, 620 170 C 730 25, 920 45, 1010 185 C 1140 120, 1280 220, 1260 360 C 1350 375, 1385 450, 1350 515 C 1325 555, 1270 570, 1190 570 L 190 570 Z"></path>
+    </svg>
+    <span class="ims-entra-label" style="top: 435px">Microsoft Entra ID</span>
+    <div class="ims-cloud-user" style="left: 500px; top: 490px"><img src="" alt=""><strong>Cloud account</strong></div>
+    <svg class="ims-cloud-route" style="left: 810px; top: 572px; width: 300px" viewBox="0 0 300 80" aria-hidden="true"><path d="M 0 40 L 300 40"></path></svg>
+    <div class="ims-cloud-check" style="right: 500px; top: 490px"><img src="" alt=""><strong>Sign-in verified</strong></div>
+  </section>
+
+  <section class="ims-variant ims-hybrid">
+    <h1>Hybrid identity</h1>
+    <div class="ims-h-node ims-h-ad"><img src="assets/icons/Building-highres.svg" alt=""><strong>On-premises AD DS</strong></div>
+    <div class="ims-h-node ims-h-connect"><img src="" alt=""><strong>Microsoft Entra Connect</strong></div>
+    <div class="ims-h-node ims-h-entra"><img src="assets/icons/Cloud-highres.svg" alt=""><strong>Microsoft Entra ID</strong></div>
+    <svg class="ims-h-routes" viewBox="0 0 1320 190" aria-hidden="true">
+      <path class="ims-h-line ims-h-line-one" d="M 180 95 L 480 95"></path>
+      <path class="ims-h-line ims-h-line-two" d="M 840 95 L 1140 95"></path>
+    </svg>
+  </section>
+
+  <section class="ims-variant ims-mfa">
+    <h1>Add another factor</h1>
+    <div class="ims-factor ims-password"><img src="" alt=""><strong>Password only</strong><span>Weak link</span></div>
+    <svg class="ims-factor-route" viewBox="0 0 520 130" aria-hidden="true">
+      <path class="ims-broken-a" d="M 25 65 L 210 65"></path>
+      <path class="ims-broken-b" d="M 310 65 L 495 65"></path>
+      <path class="ims-upgrade-arrow" d="M 220 30 L 285 65 L 220 100"></path>
+    </svg>
+    <div class="ims-factor ims-mfa-card"><img src="" alt=""><strong>Multifactor authentication</strong><span>Stronger sign-in</span></div>
+    <div class="ims-methods">
+      <div><img src="" alt=""><span>Code</span></div>
+      <div><img src="" alt=""><span>Call</span></div>
+      <div><img src="" alt=""><span>Authenticator</span></div>
+    </div>
+  </section>
+</div>
+    </div>
+    
+  </div>
+  
+<div class="scene scene-s3-cloud-only"
+    data-composition-id="s3-cloud-only"
+    data-start="14"
+    data-duration="10"
+    data-track-index="3"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="ims-root" data-variant="cloud">
+  <div class="ims-bg"></div>
+
+  <section class="ims-variant ims-intro">
+    <div class="ims-intro-copy">
+      <h1>Microsoft Teams</h1>
+      <strong>Identity and sign-in</strong>
+    </div>
+    <div class="ims-panel">
+      <span class="ims-panel-label">Sign-in verification</span>
+      <div class="ims-person-orbit"><img src="assets/icons/Person-highres.svg" alt=""></div>
+      <div class="ims-question ims-who">Who are you?</div>
+      <div class="ims-question ims-how" style="top: 330px">How do we know?</div>
+      <svg class="ims-proof-line" style="top: 390px" viewBox="0 0 430 70" aria-hidden="true">
+        <path d="M 18 35 C 130 35, 286 35, 400 35"></path>
+      </svg>
+      <div class="ims-verify" style="left: 525px; top: 485px"><img src="assets/icons/Shield Checkmark-highres.svg" alt=""><span>Verified</span></div>
+    </div>
+  </section>
+
+  <section class="ims-variant ims-paths">
+    <h1>Two identity models</h1>
+    <div class="ims-source"><img src="" alt=""><strong>Sign-in request</strong></div>
+    <svg class="ims-branches" viewBox="0 0 1120 360" aria-hidden="true">
+      <path class="ims-branch ims-branch-left" d="M 560 50 C 520 135, 225 165, 85 250"></path>
+      <path class="ims-branch ims-branch-right" d="M 560 50 C 600 135, 895 165, 1035 250"></path>
+    </svg>
+    <div class="ims-path-card ims-cloud-card"><img src="" alt=""><strong>Cloud-only</strong><span>Microsoft Entra ID</span></div>
+    <div class="ims-path-card ims-hybrid-card"><img src="" alt=""><strong>Hybrid</strong><span>On-premises to cloud</span></div>
+  </section>
+
+  <section class="ims-variant ims-cloud">
+    <h1>Cloud-only</h1>
+    <svg class="ims-cloud-boundary" style="left: 260px; top: 245px; width: 1400px; height: 650px" viewBox="0 0 1400 650" aria-hidden="true">
+      <path d="M 190 570 C 105 570, 55 515, 55 430 C 55 330, 145 235, 270 235 C 350 90, 500 65, 620 170 C 730 25, 920 45, 1010 185 C 1140 120, 1280 220, 1260 360 C 1350 375, 1385 450, 1350 515 C 1325 555, 1270 570, 1190 570 L 190 570 Z"></path>
+    </svg>
+    <span class="ims-entra-label" style="top: 435px">Microsoft Entra ID</span>
+    <div class="ims-cloud-user" style="left: 500px; top: 490px"><img src="assets/icons/Person-highres.svg" alt=""><strong>Cloud account</strong></div>
+    <svg class="ims-cloud-route" style="left: 810px; top: 572px; width: 300px" viewBox="0 0 300 80" aria-hidden="true"><path d="M 0 40 L 300 40"></path></svg>
+    <div class="ims-cloud-check" style="right: 500px; top: 490px"><img src="assets/icons/Shield Checkmark-highres.svg" alt=""><strong>Sign-in verified</strong></div>
+  </section>
+
+  <section class="ims-variant ims-hybrid">
+    <h1>Hybrid identity</h1>
+    <div class="ims-h-node ims-h-ad"><img src="" alt=""><strong>On-premises AD DS</strong></div>
+    <div class="ims-h-node ims-h-connect"><img src="" alt=""><strong>Microsoft Entra Connect</strong></div>
+    <div class="ims-h-node ims-h-entra"><img src="" alt=""><strong>Microsoft Entra ID</strong></div>
+    <svg class="ims-h-routes" viewBox="0 0 1320 190" aria-hidden="true">
+      <path class="ims-h-line ims-h-line-one" d="M 180 95 L 480 95"></path>
+      <path class="ims-h-line ims-h-line-two" d="M 840 95 L 1140 95"></path>
+    </svg>
+  </section>
+
+  <section class="ims-variant ims-mfa">
+    <h1>Add another factor</h1>
+    <div class="ims-factor ims-password"><img src="" alt=""><strong>Password only</strong><span>Weak link</span></div>
+    <svg class="ims-factor-route" viewBox="0 0 520 130" aria-hidden="true">
+      <path class="ims-broken-a" d="M 25 65 L 210 65"></path>
+      <path class="ims-broken-b" d="M 310 65 L 495 65"></path>
+      <path class="ims-upgrade-arrow" d="M 220 30 L 285 65 L 220 100"></path>
+    </svg>
+    <div class="ims-factor ims-mfa-card"><img src="" alt=""><strong>Multifactor authentication</strong><span>Stronger sign-in</span></div>
+    <div class="ims-methods">
+      <div><img src="" alt=""><span>Code</span></div>
+      <div><img src="" alt=""><span>Call</span></div>
+      <div><img src="" alt=""><span>Authenticator</span></div>
+    </div>
+  </section>
+</div>
+    </div>
+    
+  </div>
+  
+<div class="scene scene-s4-hybrid"
+    data-composition-id="s4-hybrid"
+    data-start="24"
+    data-duration="10"
+    data-track-index="4"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="ims-root" data-variant="hybrid">
+  <div class="ims-bg"></div>
+
+  <section class="ims-variant ims-intro">
+    <div class="ims-intro-copy">
+      <h1>Microsoft Teams</h1>
+      <strong>Identity and sign-in</strong>
+    </div>
+    <div class="ims-panel">
+      <span class="ims-panel-label">Sign-in verification</span>
+      <div class="ims-person-orbit"><img src="" alt=""></div>
+      <div class="ims-question ims-who">Who are you?</div>
+      <div class="ims-question ims-how" style="top: 330px">How do we know?</div>
+      <svg class="ims-proof-line" style="top: 390px" viewBox="0 0 430 70" aria-hidden="true">
+        <path d="M 18 35 C 130 35, 286 35, 400 35"></path>
+      </svg>
+      <div class="ims-verify" style="left: 525px; top: 485px"><img src="" alt=""><span>Verified</span></div>
+    </div>
+  </section>
+
+  <section class="ims-variant ims-paths">
+    <h1>Two identity models</h1>
+    <div class="ims-source"><img src="" alt=""><strong>Sign-in request</strong></div>
+    <svg class="ims-branches" viewBox="0 0 1120 360" aria-hidden="true">
+      <path class="ims-branch ims-branch-left" d="M 560 50 C 520 135, 225 165, 85 250"></path>
+      <path class="ims-branch ims-branch-right" d="M 560 50 C 600 135, 895 165, 1035 250"></path>
+    </svg>
+    <div class="ims-path-card ims-cloud-card"><img src="assets/icons/Cloud-highres.svg" alt=""><strong>Cloud-only</strong><span>Microsoft Entra ID</span></div>
+    <div class="ims-path-card ims-hybrid-card"><img src="assets/icons/Building-highres.svg" alt=""><strong>Hybrid</strong><span>On-premises to cloud</span></div>
+  </section>
+
+  <section class="ims-variant ims-cloud">
+    <h1>Cloud-only</h1>
+    <svg class="ims-cloud-boundary" style="left: 260px; top: 245px; width: 1400px; height: 650px" viewBox="0 0 1400 650" aria-hidden="true">
+      <path d="M 190 570 C 105 570, 55 515, 55 430 C 55 330, 145 235, 270 235 C 350 90, 500 65, 620 170 C 730 25, 920 45, 1010 185 C 1140 120, 1280 220, 1260 360 C 1350 375, 1385 450, 1350 515 C 1325 555, 1270 570, 1190 570 L 190 570 Z"></path>
+    </svg>
+    <span class="ims-entra-label" style="top: 435px">Microsoft Entra ID</span>
+    <div class="ims-cloud-user" style="left: 500px; top: 490px"><img src="" alt=""><strong>Cloud account</strong></div>
+    <svg class="ims-cloud-route" style="left: 810px; top: 572px; width: 300px" viewBox="0 0 300 80" aria-hidden="true"><path d="M 0 40 L 300 40"></path></svg>
+    <div class="ims-cloud-check" style="right: 500px; top: 490px"><img src="" alt=""><strong>Sign-in verified</strong></div>
+  </section>
+
+  <section class="ims-variant ims-hybrid">
+    <h1>Hybrid identity</h1>
+    <div class="ims-h-node ims-h-ad"><img src="assets/icons/Building-highres.svg" alt=""><strong>On-premises AD DS</strong></div>
+    <div class="ims-h-node ims-h-connect"><img src="assets/icons/Entra-Connect-Sync.svg" alt=""><strong>Microsoft Entra Connect</strong></div>
+    <div class="ims-h-node ims-h-entra"><img src="assets/icons/Cloud-highres.svg" alt=""><strong>Microsoft Entra ID</strong></div>
+    <svg class="ims-h-routes" viewBox="0 0 1320 190" aria-hidden="true">
+      <path class="ims-h-line ims-h-line-one" d="M 180 95 L 480 95"></path>
+      <path class="ims-h-line ims-h-line-two" d="M 840 95 L 1140 95"></path>
+    </svg>
+  </section>
+
+  <section class="ims-variant ims-mfa">
+    <h1>Add another factor</h1>
+    <div class="ims-factor ims-password"><img src="" alt=""><strong>Password only</strong><span>Weak link</span></div>
+    <svg class="ims-factor-route" viewBox="0 0 520 130" aria-hidden="true">
+      <path class="ims-broken-a" d="M 25 65 L 210 65"></path>
+      <path class="ims-broken-b" d="M 310 65 L 495 65"></path>
+      <path class="ims-upgrade-arrow" d="M 220 30 L 285 65 L 220 100"></path>
+    </svg>
+    <div class="ims-factor ims-mfa-card"><img src="" alt=""><strong>Multifactor authentication</strong><span>Stronger sign-in</span></div>
+    <div class="ims-methods">
+      <div><img src="" alt=""><span>Code</span></div>
+      <div><img src="" alt=""><span>Call</span></div>
+      <div><img src="" alt=""><span>Authenticator</span></div>
+    </div>
+  </section>
+</div>
+    </div>
+    
+  </div>
+  
+<div class="scene scene-s5-add-mfa"
+    data-composition-id="s5-add-mfa"
+    data-start="34"
+    data-duration="6.5"
+    data-track-index="5"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="ims-root" data-variant="mfa">
+  <div class="ims-bg"></div>
+
+  <section class="ims-variant ims-intro">
+    <div class="ims-intro-copy">
+      <h1>Microsoft Teams</h1>
+      <strong>Identity and sign-in</strong>
+    </div>
+    <div class="ims-panel">
+      <span class="ims-panel-label">Sign-in verification</span>
+      <div class="ims-person-orbit"><img src="" alt=""></div>
+      <div class="ims-question ims-who">Who are you?</div>
+      <div class="ims-question ims-how" style="top: 330px">How do we know?</div>
+      <svg class="ims-proof-line" style="top: 390px" viewBox="0 0 430 70" aria-hidden="true">
+        <path d="M 18 35 C 130 35, 286 35, 400 35"></path>
+      </svg>
+      <div class="ims-verify" style="left: 525px; top: 485px"><img src="" alt=""><span>Verified</span></div>
+    </div>
+  </section>
+
+  <section class="ims-variant ims-paths">
+    <h1>Two identity models</h1>
+    <div class="ims-source"><img src="" alt=""><strong>Sign-in request</strong></div>
+    <svg class="ims-branches" viewBox="0 0 1120 360" aria-hidden="true">
+      <path class="ims-branch ims-branch-left" d="M 560 50 C 520 135, 225 165, 85 250"></path>
+      <path class="ims-branch ims-branch-right" d="M 560 50 C 600 135, 895 165, 1035 250"></path>
+    </svg>
+    <div class="ims-path-card ims-cloud-card"><img src="" alt=""><strong>Cloud-only</strong><span>Microsoft Entra ID</span></div>
+    <div class="ims-path-card ims-hybrid-card"><img src="" alt=""><strong>Hybrid</strong><span>On-premises to cloud</span></div>
+  </section>
+
+  <section class="ims-variant ims-cloud">
+    <h1>Cloud-only</h1>
+    <svg class="ims-cloud-boundary" style="left: 260px; top: 245px; width: 1400px; height: 650px" viewBox="0 0 1400 650" aria-hidden="true">
+      <path d="M 190 570 C 105 570, 55 515, 55 430 C 55 330, 145 235, 270 235 C 350 90, 500 65, 620 170 C 730 25, 920 45, 1010 185 C 1140 120, 1280 220, 1260 360 C 1350 375, 1385 450, 1350 515 C 1325 555, 1270 570, 1190 570 L 190 570 Z"></path>
+    </svg>
+    <span class="ims-entra-label" style="top: 435px">Microsoft Entra ID</span>
+    <div class="ims-cloud-user" style="left: 500px; top: 490px"><img src="" alt=""><strong>Cloud account</strong></div>
+    <svg class="ims-cloud-route" style="left: 810px; top: 572px; width: 300px" viewBox="0 0 300 80" aria-hidden="true"><path d="M 0 40 L 300 40"></path></svg>
+    <div class="ims-cloud-check" style="right: 500px; top: 490px"><img src="" alt=""><strong>Sign-in verified</strong></div>
+  </section>
+
+  <section class="ims-variant ims-hybrid">
+    <h1>Hybrid identity</h1>
+    <div class="ims-h-node ims-h-ad"><img src="" alt=""><strong>On-premises AD DS</strong></div>
+    <div class="ims-h-node ims-h-connect"><img src="" alt=""><strong>Microsoft Entra Connect</strong></div>
+    <div class="ims-h-node ims-h-entra"><img src="" alt=""><strong>Microsoft Entra ID</strong></div>
+    <svg class="ims-h-routes" viewBox="0 0 1320 190" aria-hidden="true">
+      <path class="ims-h-line ims-h-line-one" d="M 180 95 L 480 95"></path>
+      <path class="ims-h-line ims-h-line-two" d="M 840 95 L 1140 95"></path>
+    </svg>
+  </section>
+
+  <section class="ims-variant ims-mfa">
+    <h1>Add another factor</h1>
+    <div class="ims-factor ims-password"><img src="assets/icons/Password-highres.svg" alt=""><strong>Password only</strong><span>Weak link</span></div>
+    <svg class="ims-factor-route" viewBox="0 0 520 130" aria-hidden="true">
+      <path class="ims-broken-a" d="M 25 65 L 210 65"></path>
+      <path class="ims-broken-b" d="M 310 65 L 495 65"></path>
+      <path class="ims-upgrade-arrow" d="M 220 30 L 285 65 L 220 100"></path>
+    </svg>
+    <div class="ims-factor ims-mfa-card"><img src="assets/icons/Multifactor-Authentication.svg" alt=""><strong>Multifactor authentication</strong><span>Stronger sign-in</span></div>
+    <div class="ims-methods">
+      <div><img src="assets/icons/Dialpad-highres.svg" alt=""><span>Code</span></div>
+      <div><img src="assets/icons/Call-highres.svg" alt=""><span>Call</span></div>
+      <div><img src="assets/icons/Phone-highres.svg" alt=""><span>Authenticator</span></div>
+    </div>
+  </section>
+</div>
+    </div>
+    
+  </div>
+  
+<div class="scene scene-s6-admins-first"
+    data-composition-id="s6-admins-first"
+    data-start="40.5"
+    data-duration="5"
+    data-track-index="6"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <div class="ars-root">
+  <div class="ars-background"></div>
+  <h1 class="ars-title">Admins first. Then everyone.</h1>
+  <div class="ars-flow">
+    <div class="ars-bubble ars-admin">
+      <div class="ars-icon-shell">
+        <img src="assets/icons/People-highres.svg" alt="">
+      </div>
+      <strong>Admin accounts</strong>
+      <span>MFA first</span>
+    </div>
+
+    <svg class="ars-arrow" viewBox="0 0 440 120" aria-hidden="true">
+      <path class="ars-arrow-line" d="M 24 60 C 130 60, 290 60, 394 60"></path>
+      <path class="ars-arrow-head" d="M 364 28 L 406 60 L 364 92"></path>
+    </svg>
+
+    <div class="ars-bubble ars-everyone">
+      <div class="ars-icon-shell">
+        <img src="assets/icons/People-highres.svg" alt="">
+      </div>
+      <strong>Everyone</strong>
+    </div>
+  </div>
+</div>
+    </div>
+    
+  </div>
+  
+<div class="scene scene-s7-approved-end-card"
+    data-composition-id="s7-approved-end-card"
+    data-start="45.5"
+    data-duration="2.5"
+    data-track-index="7"
+    data-width="1920"
+    data-height="1080"
+    style="position:absolute;inset:0;overflow:hidden;opacity:0">
+    <div class="slate-scene-content" style="position:absolute;inset:0;overflow:hidden">
+      <video class="layer layer-video clip"
+    id="s7-approved-end-card-video-1"
+    data-composition-id="s7-approved-end-card-video-1"
+    data-start="45.5"
+    data-end="48"
+    data-duration="2.5"
+    data-track-index="1"
+    data-layer-start="0" data-layer-end="2.5"
+    src="assets/video/M365-Copilot-endcard-type-2s-16-9-visual.mov"
+    muted
+    playsinline
+    style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"
+  ></video>
+    </div>
+    
+  </div>
+  
+</div>
+
+<script>
+window.__timelines = window.__timelines || {};
+window.__slateFontsReady = !document.fonts;
+if (document.fonts) {
+  document.fonts.ready.then(function(){ window.__slateFontsReady = true; document.documentElement.setAttribute('data-fonts-ready', 'true'); });
+}
+// Register the now-free GSAP plugins (loaded from CDN above). GSAP went fully
+// free in v3.13; these were previously Club-only. Defensive registration: only
+// register plugins that actually loaded, so a CDN hiccup degrades gracefully.
+[window.Flip, window.SplitText, window.DrawSVGPlugin, window.MorphSVGPlugin, window.MotionPathPlugin, window.Physics2DPlugin, window.CustomEase, window.CustomBounce, window.CustomWiggle].forEach(function(p){ if (p) { try { gsap.registerPlugin(p); } catch (e) {} } });
+const master = gsap.timeline({ paused: true });
+
+// Per-scene visibility — only the active scene is shown at any time
+master.set('.scene-s1-identity-question', { opacity: 0 }, 0);
+master.set('.scene-s1-identity-question', { opacity: 1 }, 0);
+master.set('.scene-s1-identity-question', { opacity: 0 }, 6);
+master.set('.scene-s2-two-paths', { opacity: 0 }, 0);
+master.fromTo('.scene-s2-two-paths', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 5.5);
+master.set('.scene-s2-two-paths', { opacity: 0 }, 14);
+master.set('.scene-s3-cloud-only', { opacity: 0 }, 0);
+master.fromTo('.scene-s3-cloud-only', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 13.5);
+master.set('.scene-s3-cloud-only', { opacity: 0 }, 24);
+master.set('.scene-s4-hybrid', { opacity: 0 }, 0);
+master.fromTo('.scene-s4-hybrid', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 23.5);
+master.set('.scene-s4-hybrid', { opacity: 0 }, 34);
+master.set('.scene-s5-add-mfa', { opacity: 0 }, 0);
+master.fromTo('.scene-s5-add-mfa', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 33.5);
+master.set('.scene-s5-add-mfa', { opacity: 0 }, 40.5);
+master.set('.scene-s6-admins-first', { opacity: 0 }, 0);
+master.fromTo('.scene-s6-admins-first', { opacity: 0 }, { opacity: 1, duration: 0.5, ease: 'power1.inOut' }, 40);
+master.set('.scene-s6-admins-first', { opacity: 0 }, 45.5);
+master.set('.scene-s7-approved-end-card', { opacity: 0 }, 0);
+master.set('.scene-s7-approved-end-card', { opacity: 1 }, 45.5);
+master.set('.scene-s7-approved-end-card', { opacity: 0 }, 48);
+master.to('.scene-s1-identity-question', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 5.5);
+master.to('.scene-s2-two-paths', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 13.5);
+master.to('.scene-s3-cloud-only', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 23.5);
+master.to('.scene-s4-hybrid', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 33.5);
+master.to('.scene-s5-add-mfa', { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 40);
+
+// Per-layer visibility — layers with startTime/endTime are revealed/hidden
+// at composition-time. CSS-id selectors are escaped for GSAP (it accepts
+// '#id' selectors directly). Initial opacity is also set inline on the
+// element so the very first seeked frame does not flash content that
+// should still be hidden.
+master.set('#s7-approved-end-card-video-1', { opacity: 1 }, 45.5);
+master.set('#s7-approved-end-card-video-1', { opacity: 0 }, 48);
+
+window.__timelines["conceptual-explainer-storyboard"] = master;
+
+
+// s1-identity-question
+(function(){
+const SCENE_ID="s1-identity-question";
+const SCENE_START=0;
+const SCENE_DURATION=6;
+const SCENE_PROPS={"variant":"intro","personSrc":"assets/icons/Person-highres.svg","shieldSrc":"assets/icons/Shield Checkmark-highres.svg"};
+// Intent: glass - precise, phrase-led visual construction for identity concepts.
+const S = '.scene-' + SCENE_ID;
+const t = SCENE_START;
+const enter = { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.5, ease: 'power2.out' };
+
+if (SCENE_PROPS.variant === 'intro') {
+  master.fromTo(S + ' .ims-intro-copy', { autoAlpha: 0, x: -30 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-panel', { autoAlpha: 0, x: 30, scale: 0.98 }, enter, t + 0.65);
+  master.fromTo(S + ' .ims-person-orbit', { autoAlpha: 0, scale: 0.7 }, enter, t + 1.25);
+  master.fromTo(S + ' .ims-who', { autoAlpha: 0, y: 20 }, enter, t + 1.8);
+  master.fromTo(S + ' .ims-how', { autoAlpha: 0, y: 20 }, enter, t + 2.5);
+  master.to(S + ' .ims-proof-line path', { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-verify', { autoAlpha: 0, scale: 0.75 }, enter, t + 3.85);
+}
+
+if (SCENE_PROPS.variant === 'paths') {
+  master.fromTo(S + ' .ims-paths h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-source', { autoAlpha: 0, scale: 0.8 }, enter, t + 0.9);
+  master.to(S + ' .ims-branch-left', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 1.7);
+  master.fromTo(S + ' .ims-cloud-card', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.45);
+  master.to(S + ' .ims-branch-right', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-hybrid-card', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 3.9);
+}
+
+if (SCENE_PROPS.variant === 'cloud') {
+  master.fromTo(S + ' .ims-cloud h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.to(S + ' .ims-cloud-boundary path', { strokeDashoffset: 0, duration: 1.5, ease: 'power1.inOut' }, t + 0.9);
+  master.fromTo(S + ' .ims-entra-label', { autoAlpha: 0, y: 12 }, enter, t + 1.9);
+  master.fromTo(S + ' .ims-cloud-user', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.6);
+  master.to(S + ' .ims-cloud-route path', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.45);
+  master.fromTo(S + ' .ims-cloud-check', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 4.35);
+  master.fromTo(S + ' .ims-cloud-check img', { scale: 0.72 }, { scale: 1, duration: 0.45, ease: 'back.out(1.4)' }, t + 4.85);
+}
+
+if (SCENE_PROPS.variant === 'hybrid') {
+  master.fromTo(S + ' .ims-hybrid h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-h-ad', { autoAlpha: 0, x: -25, scale: 0.94 }, enter, t + 0.9);
+  master.to(S + ' .ims-h-line-one', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 1.65);
+  master.fromTo(S + ' .ims-h-connect', { autoAlpha: 0, scale: 0.85 }, enter, t + 2.55);
+  master.to(S + ' .ims-h-line-two', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.25);
+  master.fromTo(S + ' .ims-h-entra', { autoAlpha: 0, x: 25, scale: 0.94 }, enter, t + 4.15);
+}
+
+if (SCENE_PROPS.variant === 'mfa') {
+  master.fromTo(S + ' .ims-mfa h1', { autoAlpha: 0, y: 20 }, enter, t + 0.2);
+  master.fromTo(S + ' .ims-password', { autoAlpha: 0, x: -24, scale: 0.94 }, enter, t + 0.75);
+  master.to(S + ' .ims-broken-a', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.45);
+  master.to(S + ' .ims-broken-b', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.7);
+  master.to(S + ' .ims-upgrade-arrow', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 2.05);
+  master.fromTo(S + ' .ims-mfa-card', { autoAlpha: 0, x: 24, scale: 0.9 }, enter, t + 2.45);
+  master.fromTo(S + ' .ims-methods div', { autoAlpha: 0, y: 24, scale: 0.88 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.35)', stagger: 0.55 }, t + 3.2);
+}
+})();
+// s2-two-paths
+(function(){
+const SCENE_ID="s2-two-paths";
+const SCENE_START=6;
+const SCENE_DURATION=8;
+const SCENE_PROPS={"variant":"paths","personKeySrc":"assets/icons/Person Key-highres.svg","cloudSrc":"assets/icons/Cloud-highres.svg","buildingSrc":"assets/icons/Building-highres.svg"};
+// Intent: glass - precise, phrase-led visual construction for identity concepts.
+const S = '.scene-' + SCENE_ID;
+const t = SCENE_START;
+const enter = { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.5, ease: 'power2.out' };
+
+if (SCENE_PROPS.variant === 'intro') {
+  master.fromTo(S + ' .ims-intro-copy', { autoAlpha: 0, x: -30 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-panel', { autoAlpha: 0, x: 30, scale: 0.98 }, enter, t + 0.65);
+  master.fromTo(S + ' .ims-person-orbit', { autoAlpha: 0, scale: 0.7 }, enter, t + 1.25);
+  master.fromTo(S + ' .ims-who', { autoAlpha: 0, y: 20 }, enter, t + 1.8);
+  master.fromTo(S + ' .ims-how', { autoAlpha: 0, y: 20 }, enter, t + 2.5);
+  master.to(S + ' .ims-proof-line path', { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-verify', { autoAlpha: 0, scale: 0.75 }, enter, t + 3.85);
+}
+
+if (SCENE_PROPS.variant === 'paths') {
+  master.fromTo(S + ' .ims-paths h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-source', { autoAlpha: 0, scale: 0.8 }, enter, t + 0.9);
+  master.to(S + ' .ims-branch-left', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 1.7);
+  master.fromTo(S + ' .ims-cloud-card', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.45);
+  master.to(S + ' .ims-branch-right', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-hybrid-card', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 3.9);
+}
+
+if (SCENE_PROPS.variant === 'cloud') {
+  master.fromTo(S + ' .ims-cloud h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.to(S + ' .ims-cloud-boundary path', { strokeDashoffset: 0, duration: 1.5, ease: 'power1.inOut' }, t + 0.9);
+  master.fromTo(S + ' .ims-entra-label', { autoAlpha: 0, y: 12 }, enter, t + 1.9);
+  master.fromTo(S + ' .ims-cloud-user', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.6);
+  master.to(S + ' .ims-cloud-route path', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.45);
+  master.fromTo(S + ' .ims-cloud-check', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 4.35);
+  master.fromTo(S + ' .ims-cloud-check img', { scale: 0.72 }, { scale: 1, duration: 0.45, ease: 'back.out(1.4)' }, t + 4.85);
+}
+
+if (SCENE_PROPS.variant === 'hybrid') {
+  master.fromTo(S + ' .ims-hybrid h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-h-ad', { autoAlpha: 0, x: -25, scale: 0.94 }, enter, t + 0.9);
+  master.to(S + ' .ims-h-line-one', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 1.65);
+  master.fromTo(S + ' .ims-h-connect', { autoAlpha: 0, scale: 0.85 }, enter, t + 2.55);
+  master.to(S + ' .ims-h-line-two', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.25);
+  master.fromTo(S + ' .ims-h-entra', { autoAlpha: 0, x: 25, scale: 0.94 }, enter, t + 4.15);
+}
+
+if (SCENE_PROPS.variant === 'mfa') {
+  master.fromTo(S + ' .ims-mfa h1', { autoAlpha: 0, y: 20 }, enter, t + 0.2);
+  master.fromTo(S + ' .ims-password', { autoAlpha: 0, x: -24, scale: 0.94 }, enter, t + 0.75);
+  master.to(S + ' .ims-broken-a', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.45);
+  master.to(S + ' .ims-broken-b', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.7);
+  master.to(S + ' .ims-upgrade-arrow', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 2.05);
+  master.fromTo(S + ' .ims-mfa-card', { autoAlpha: 0, x: 24, scale: 0.9 }, enter, t + 2.45);
+  master.fromTo(S + ' .ims-methods div', { autoAlpha: 0, y: 24, scale: 0.88 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.35)', stagger: 0.55 }, t + 3.2);
+}
+})();
+// s3-cloud-only
+(function(){
+const SCENE_ID="s3-cloud-only";
+const SCENE_START=14;
+const SCENE_DURATION=10;
+const SCENE_PROPS={"variant":"cloud","personSrc":"assets/icons/Person-highres.svg","shieldSrc":"assets/icons/Shield Checkmark-highres.svg"};
+// Intent: glass - precise, phrase-led visual construction for identity concepts.
+const S = '.scene-' + SCENE_ID;
+const t = SCENE_START;
+const enter = { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.5, ease: 'power2.out' };
+
+if (SCENE_PROPS.variant === 'intro') {
+  master.fromTo(S + ' .ims-intro-copy', { autoAlpha: 0, x: -30 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-panel', { autoAlpha: 0, x: 30, scale: 0.98 }, enter, t + 0.65);
+  master.fromTo(S + ' .ims-person-orbit', { autoAlpha: 0, scale: 0.7 }, enter, t + 1.25);
+  master.fromTo(S + ' .ims-who', { autoAlpha: 0, y: 20 }, enter, t + 1.8);
+  master.fromTo(S + ' .ims-how', { autoAlpha: 0, y: 20 }, enter, t + 2.5);
+  master.to(S + ' .ims-proof-line path', { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-verify', { autoAlpha: 0, scale: 0.75 }, enter, t + 3.85);
+}
+
+if (SCENE_PROPS.variant === 'paths') {
+  master.fromTo(S + ' .ims-paths h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-source', { autoAlpha: 0, scale: 0.8 }, enter, t + 0.9);
+  master.to(S + ' .ims-branch-left', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 1.7);
+  master.fromTo(S + ' .ims-cloud-card', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.45);
+  master.to(S + ' .ims-branch-right', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-hybrid-card', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 3.9);
+}
+
+if (SCENE_PROPS.variant === 'cloud') {
+  master.fromTo(S + ' .ims-cloud h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.to(S + ' .ims-cloud-boundary path', { strokeDashoffset: 0, duration: 1.5, ease: 'power1.inOut' }, t + 0.9);
+  master.fromTo(S + ' .ims-entra-label', { autoAlpha: 0, y: 12 }, enter, t + 1.9);
+  master.fromTo(S + ' .ims-cloud-user', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.6);
+  master.to(S + ' .ims-cloud-route path', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.45);
+  master.fromTo(S + ' .ims-cloud-check', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 4.35);
+  master.fromTo(S + ' .ims-cloud-check img', { scale: 0.72 }, { scale: 1, duration: 0.45, ease: 'back.out(1.4)' }, t + 4.85);
+}
+
+if (SCENE_PROPS.variant === 'hybrid') {
+  master.fromTo(S + ' .ims-hybrid h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-h-ad', { autoAlpha: 0, x: -25, scale: 0.94 }, enter, t + 0.9);
+  master.to(S + ' .ims-h-line-one', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 1.65);
+  master.fromTo(S + ' .ims-h-connect', { autoAlpha: 0, scale: 0.85 }, enter, t + 2.55);
+  master.to(S + ' .ims-h-line-two', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.25);
+  master.fromTo(S + ' .ims-h-entra', { autoAlpha: 0, x: 25, scale: 0.94 }, enter, t + 4.15);
+}
+
+if (SCENE_PROPS.variant === 'mfa') {
+  master.fromTo(S + ' .ims-mfa h1', { autoAlpha: 0, y: 20 }, enter, t + 0.2);
+  master.fromTo(S + ' .ims-password', { autoAlpha: 0, x: -24, scale: 0.94 }, enter, t + 0.75);
+  master.to(S + ' .ims-broken-a', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.45);
+  master.to(S + ' .ims-broken-b', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.7);
+  master.to(S + ' .ims-upgrade-arrow', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 2.05);
+  master.fromTo(S + ' .ims-mfa-card', { autoAlpha: 0, x: 24, scale: 0.9 }, enter, t + 2.45);
+  master.fromTo(S + ' .ims-methods div', { autoAlpha: 0, y: 24, scale: 0.88 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.35)', stagger: 0.55 }, t + 3.2);
+}
+})();
+// s4-hybrid
+(function(){
+const SCENE_ID="s4-hybrid";
+const SCENE_START=24;
+const SCENE_DURATION=10;
+const SCENE_PROPS={"variant":"hybrid","buildingSrc":"assets/icons/Building-highres.svg","connectSrc":"assets/icons/Entra-Connect-Sync.svg","cloudSrc":"assets/icons/Cloud-highres.svg"};
+// Intent: glass - precise, phrase-led visual construction for identity concepts.
+const S = '.scene-' + SCENE_ID;
+const t = SCENE_START;
+const enter = { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.5, ease: 'power2.out' };
+
+if (SCENE_PROPS.variant === 'intro') {
+  master.fromTo(S + ' .ims-intro-copy', { autoAlpha: 0, x: -30 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-panel', { autoAlpha: 0, x: 30, scale: 0.98 }, enter, t + 0.65);
+  master.fromTo(S + ' .ims-person-orbit', { autoAlpha: 0, scale: 0.7 }, enter, t + 1.25);
+  master.fromTo(S + ' .ims-who', { autoAlpha: 0, y: 20 }, enter, t + 1.8);
+  master.fromTo(S + ' .ims-how', { autoAlpha: 0, y: 20 }, enter, t + 2.5);
+  master.to(S + ' .ims-proof-line path', { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-verify', { autoAlpha: 0, scale: 0.75 }, enter, t + 3.85);
+}
+
+if (SCENE_PROPS.variant === 'paths') {
+  master.fromTo(S + ' .ims-paths h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-source', { autoAlpha: 0, scale: 0.8 }, enter, t + 0.9);
+  master.to(S + ' .ims-branch-left', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 1.7);
+  master.fromTo(S + ' .ims-cloud-card', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.45);
+  master.to(S + ' .ims-branch-right', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-hybrid-card', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 3.9);
+}
+
+if (SCENE_PROPS.variant === 'cloud') {
+  master.fromTo(S + ' .ims-cloud h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.to(S + ' .ims-cloud-boundary path', { strokeDashoffset: 0, duration: 1.5, ease: 'power1.inOut' }, t + 0.9);
+  master.fromTo(S + ' .ims-entra-label', { autoAlpha: 0, y: 12 }, enter, t + 1.9);
+  master.fromTo(S + ' .ims-cloud-user', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.6);
+  master.to(S + ' .ims-cloud-route path', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.45);
+  master.fromTo(S + ' .ims-cloud-check', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 4.35);
+  master.fromTo(S + ' .ims-cloud-check img', { scale: 0.72 }, { scale: 1, duration: 0.45, ease: 'back.out(1.4)' }, t + 4.85);
+}
+
+if (SCENE_PROPS.variant === 'hybrid') {
+  master.fromTo(S + ' .ims-hybrid h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-h-ad', { autoAlpha: 0, x: -25, scale: 0.94 }, enter, t + 0.9);
+  master.to(S + ' .ims-h-line-one', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 1.65);
+  master.fromTo(S + ' .ims-h-connect', { autoAlpha: 0, scale: 0.85 }, enter, t + 2.55);
+  master.to(S + ' .ims-h-line-two', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.25);
+  master.fromTo(S + ' .ims-h-entra', { autoAlpha: 0, x: 25, scale: 0.94 }, enter, t + 4.15);
+}
+
+if (SCENE_PROPS.variant === 'mfa') {
+  master.fromTo(S + ' .ims-mfa h1', { autoAlpha: 0, y: 20 }, enter, t + 0.2);
+  master.fromTo(S + ' .ims-password', { autoAlpha: 0, x: -24, scale: 0.94 }, enter, t + 0.75);
+  master.to(S + ' .ims-broken-a', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.45);
+  master.to(S + ' .ims-broken-b', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.7);
+  master.to(S + ' .ims-upgrade-arrow', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 2.05);
+  master.fromTo(S + ' .ims-mfa-card', { autoAlpha: 0, x: 24, scale: 0.9 }, enter, t + 2.45);
+  master.fromTo(S + ' .ims-methods div', { autoAlpha: 0, y: 24, scale: 0.88 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.35)', stagger: 0.55 }, t + 3.2);
+}
+})();
+// s5-add-mfa
+(function(){
+const SCENE_ID="s5-add-mfa";
+const SCENE_START=34;
+const SCENE_DURATION=6.5;
+const SCENE_PROPS={"variant":"mfa","passwordSrc":"assets/icons/Password-highres.svg","mfaSrc":"assets/icons/Multifactor-Authentication.svg","dialpadSrc":"assets/icons/Dialpad-highres.svg","callSrc":"assets/icons/Call-highres.svg","phoneSrc":"assets/icons/Phone-highres.svg"};
+// Intent: glass - precise, phrase-led visual construction for identity concepts.
+const S = '.scene-' + SCENE_ID;
+const t = SCENE_START;
+const enter = { autoAlpha: 1, x: 0, y: 0, scale: 1, duration: 0.5, ease: 'power2.out' };
+
+if (SCENE_PROPS.variant === 'intro') {
+  master.fromTo(S + ' .ims-intro-copy', { autoAlpha: 0, x: -30 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-panel', { autoAlpha: 0, x: 30, scale: 0.98 }, enter, t + 0.65);
+  master.fromTo(S + ' .ims-person-orbit', { autoAlpha: 0, scale: 0.7 }, enter, t + 1.25);
+  master.fromTo(S + ' .ims-who', { autoAlpha: 0, y: 20 }, enter, t + 1.8);
+  master.fromTo(S + ' .ims-how', { autoAlpha: 0, y: 20 }, enter, t + 2.5);
+  master.to(S + ' .ims-proof-line path', { strokeDashoffset: 0, duration: 0.8, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-verify', { autoAlpha: 0, scale: 0.75 }, enter, t + 3.85);
+}
+
+if (SCENE_PROPS.variant === 'paths') {
+  master.fromTo(S + ' .ims-paths h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-source', { autoAlpha: 0, scale: 0.8 }, enter, t + 0.9);
+  master.to(S + ' .ims-branch-left', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 1.7);
+  master.fromTo(S + ' .ims-cloud-card', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.45);
+  master.to(S + ' .ims-branch-right', { strokeDashoffset: 0, duration: 1.0, ease: 'power2.inOut' }, t + 3.15);
+  master.fromTo(S + ' .ims-hybrid-card', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 3.9);
+}
+
+if (SCENE_PROPS.variant === 'cloud') {
+  master.fromTo(S + ' .ims-cloud h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.to(S + ' .ims-cloud-boundary path', { strokeDashoffset: 0, duration: 1.5, ease: 'power1.inOut' }, t + 0.9);
+  master.fromTo(S + ' .ims-entra-label', { autoAlpha: 0, y: 12 }, enter, t + 1.9);
+  master.fromTo(S + ' .ims-cloud-user', { autoAlpha: 0, x: -24, scale: 0.92 }, enter, t + 2.6);
+  master.to(S + ' .ims-cloud-route path', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.45);
+  master.fromTo(S + ' .ims-cloud-check', { autoAlpha: 0, x: 24, scale: 0.92 }, enter, t + 4.35);
+  master.fromTo(S + ' .ims-cloud-check img', { scale: 0.72 }, { scale: 1, duration: 0.45, ease: 'back.out(1.4)' }, t + 4.85);
+}
+
+if (SCENE_PROPS.variant === 'hybrid') {
+  master.fromTo(S + ' .ims-hybrid h1', { autoAlpha: 0, y: 20 }, enter, t + 0.25);
+  master.fromTo(S + ' .ims-h-ad', { autoAlpha: 0, x: -25, scale: 0.94 }, enter, t + 0.9);
+  master.to(S + ' .ims-h-line-one', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 1.65);
+  master.fromTo(S + ' .ims-h-connect', { autoAlpha: 0, scale: 0.85 }, enter, t + 2.55);
+  master.to(S + ' .ims-h-line-two', { strokeDashoffset: 0, duration: 1.1, ease: 'power2.inOut' }, t + 3.25);
+  master.fromTo(S + ' .ims-h-entra', { autoAlpha: 0, x: 25, scale: 0.94 }, enter, t + 4.15);
+}
+
+if (SCENE_PROPS.variant === 'mfa') {
+  master.fromTo(S + ' .ims-mfa h1', { autoAlpha: 0, y: 20 }, enter, t + 0.2);
+  master.fromTo(S + ' .ims-password', { autoAlpha: 0, x: -24, scale: 0.94 }, enter, t + 0.75);
+  master.to(S + ' .ims-broken-a', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.45);
+  master.to(S + ' .ims-broken-b', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 1.7);
+  master.to(S + ' .ims-upgrade-arrow', { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, t + 2.05);
+  master.fromTo(S + ' .ims-mfa-card', { autoAlpha: 0, x: 24, scale: 0.9 }, enter, t + 2.45);
+  master.fromTo(S + ' .ims-methods div', { autoAlpha: 0, y: 24, scale: 0.88 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.4, ease: 'back.out(1.35)', stagger: 0.55 }, t + 3.2);
+}
+})();
+// s6-admins-first
+(function(){
+const SCENE_ID="s6-admins-first";
+const SCENE_START=40.5;
+const SCENE_DURATION=5;
+const SCENE_PROPS={"iconSrc":"assets/icons/People-highres.svg"};
+// Intent: glass - guided momentum from protected admins to broad rollout.
+const S = '.scene-' + SCENE_ID;
+const t = SCENE_START;
+
+master.fromTo(S + ' .ars-admin',
+  { autoAlpha: 0, x: -20, scale: 0.96 },
+  { autoAlpha: 1, x: 0, scale: 1, duration: 0.6, ease: 'power2.out' },
+  t + 0.2);
+
+master.fromTo(S + ' .ars-arrow-line',
+  { strokeDashoffset: 380 },
+  { strokeDashoffset: 0, duration: 0.7, ease: 'power2.inOut' },
+  t + 1.15);
+
+master.fromTo(S + ' .ars-arrow-head',
+  { autoAlpha: 0, x: -20 },
+  { autoAlpha: 1, x: 0, duration: 0.3, ease: 'power2.out' },
+  t + 1.68);
+
+master.fromTo(S + ' .ars-everyone',
+  { autoAlpha: 0, x: 20, scale: 0.96 },
+  { autoAlpha: 1, x: 0, scale: 1, duration: 0.6, ease: 'power2.out' },
+  t + 2.15);
+})();
+
+</script>
+</body>
+</html>

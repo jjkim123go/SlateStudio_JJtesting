@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Teams Identity Sign-In Storyboard</title>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; background: #cfd8dc; font-family: "Segoe UI", sans-serif; }
+    .scene { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: #f7f7f5; color: #1b1a19; }
+    .scene::before { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 42%, #fff 0%, #eef4f7 58%, #ddeff5 100%); }
+    .title { position: absolute; left: 50%; top: 112px; transform: translateX(-50%); margin: 0; width: 1500px; text-align: center; font-size: 78px; line-height: 1.05; font-weight: 650; letter-spacing: 0; }
+    .tile { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(221, 239, 245, .93); border: 1px solid rgba(0,120,212,.15); border-radius: 8px; box-shadow: 0 18px 42px rgba(31,55,66,.1); }
+    .tile img { width: 150px; height: 150px; object-fit: contain; }
+    .tile strong { margin-top: 26px; font-size: 34px; font-weight: 650; }
+    .tile span { margin-top: 10px; font-size: 24px; color: #525252; text-align: center; }
+    .pulse { position: absolute; height: 6px; border-radius: 3px; background: #0078d4; box-shadow: 0 0 20px rgba(0,120,212,.35); }
+    .dot { position: absolute; width: 24px; height: 24px; border-radius: 50%; background: #5b5fc7; box-shadow: 0 0 0 10px rgba(91,95,199,.12); }
+    .question { position: absolute; top: 790px; font-size: 38px; font-weight: 650; }
+    .smallcap { font-size: 22px; font-weight: 650; color: #5b5fc7; text-transform: uppercase; }
+    .route { position: absolute; height: 4px; background: #8cc8e8; transform-origin: left center; }
+    .route::after { content: ""; position: absolute; right: -2px; top: -7px; border-left: 16px solid #8cc8e8; border-top: 9px solid transparent; border-bottom: 9px solid transparent; }
+    .node { position: absolute; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 300px; height: 260px; border-radius: 8px; background: #fff; border: 1px solid rgba(27,26,25,.12); box-shadow: 0 18px 44px rgba(30,53,64,.1); }
+    .node img { width: 116px; height: 116px; object-fit: contain; }
+    .node strong { margin-top: 18px; font-size: 28px; }
+    .node span { margin-top: 8px; font-size: 20px; color: #5f5f5f; }
+    .chip { position: absolute; display: flex; align-items: center; gap: 18px; padding: 18px 24px; border-radius: 8px; background: #fff; border: 1px solid rgba(27,26,25,.12); box-shadow: 0 12px 30px rgba(30,53,64,.08); font-size: 25px; font-weight: 600; }
+    .chip img { width: 54px; height: 54px; object-fit: contain; }
+    .caption { position: absolute; left: 50%; bottom: 72px; transform: translateX(-50%); padding: 14px 24px; border-radius: 6px; background: rgba(20,20,20,.9); color: #fff; font-size: 27px; }
+    .intro-copy { position: absolute; z-index: 2; left: 110px; top: 286px; width: 800px; }
+    .intro-copy h1 { margin: 0; font-size: 72px; line-height: 1.04; font-weight: 650; letter-spacing: 0; }
+    .intro-copy h1 span { display: block; color: #3b4bea; }
+    .intro-stage { position: absolute; z-index: 1; right: -72px; top: 128px; width: 1020px; height: 720px; border-radius: 28px; background: rgba(252,249,255,.9); border: 1px solid rgba(91,95,199,.14); box-shadow: 0 34px 76px rgba(33,42,65,.2), 0 8px 20px rgba(33,42,65,.1); }
+    .intro-stage::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: linear-gradient(135deg, rgba(255,255,255,.9), rgba(241,232,255,.58)); }
+    .intro-stage::after { content: ""; position: absolute; left: 0; right: 0; top: 118px; height: 1px; background: rgba(91,95,199,.16); }
+    .stage-bar { position: absolute; z-index: 2; left: 58px; top: 45px; display: flex; align-items: center; gap: 22px; font-size: 25px; font-weight: 650; }
+    .stage-mark { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(145deg,#5b5fc7,#8b7cf6); box-shadow: 0 12px 22px rgba(91,95,199,.28); }
+    .sign-card { position: absolute; z-index: 2; left: 62px; top: 166px; width: 790px; height: 420px; padding: 54px 58px; border-radius: 22px; background: rgba(255,255,255,.94); border: 1px solid rgba(27,26,25,.08); box-shadow: 0 20px 50px rgba(56,47,82,.12); }
+    .sign-card h2 { margin: 0 0 38px; font-size: 31px; font-weight: 650; }
+    .identity-row { display: grid; grid-template-columns: 104px 1fr 70px; align-items: center; gap: 28px; }
+    .identity-row img { width: 104px; height: 104px; object-fit: contain; }
+    .identity-row strong { display: block; font-size: 30px; }
+    .identity-row span { display: block; margin-top: 9px; font-size: 23px; color: #616161; }
+    .verify-badge { display: grid; place-items: center; width: 68px; height: 68px; border-radius: 50%; background: #e7f5e7; }
+    .verify-badge img { width: 44px; height: 44px; object-fit: contain; }
+    .proof-line { position: absolute; left: 58px; right: 58px; bottom: 54px; height: 76px; display: flex; align-items: center; padding: 0 26px; border-radius: 12px; background: #eef4ff; color: #323130; font-size: 24px; }
+    .proof-line b { margin-left: auto; color: #107c10; }
+    .material-pill { position: absolute; z-index: 1; border-radius: 22px; box-shadow: 0 18px 28px rgba(33,42,65,.18); }
+    .material-pill.a { left: 850px; top: 70px; width: 130px; height: 260px; background: linear-gradient(180deg,rgba(255,255,255,.94),rgba(202,189,255,.85)); transform: rotate(-7deg); }
+    .material-pill.b { left: 790px; top: 740px; width: 210px; height: 160px; background: linear-gradient(145deg,#c9f0df,#85d8c5); transform: rotate(5deg); }
+    .material-dot { position: absolute; z-index: 1; left: 315px; top: 150px; width: 105px; height: 105px; border-radius: 50%; background: radial-gradient(circle at 32% 28%,#e4f5ff,#9dd9f2); box-shadow: 0 18px 25px rgba(60,120,150,.18); }
+    .rollout-stage { position: absolute; left: 310px; top: 318px; width: 1300px; height: 520px; }
+    .rollout-ring { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); border-radius: 50%; border: 2px solid rgba(91,95,199,.14); background: rgba(255,255,255,.34); }
+    .rollout-ring.outer { width: 660px; height: 420px; box-shadow: 0 0 0 72px rgba(0,120,212,.035); }
+    .rollout-ring.inner { width: 420px; height: 300px; background: rgba(221,239,245,.72); }
+    .admin-focus { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); display: flex; flex-direction: column; align-items: center; }
+    .admin-focus img { width: 190px; height: 190px; object-fit: contain; }
+    .admin-focus strong { margin-top: 4px; font-size: 34px; }
+    .admin-focus span { margin-top: 8px; font-size: 24px; color: #5b5fc7; font-weight: 650; }
+    .audience-focus { position: absolute; left: 72px; top: 178px; display: flex; align-items: center; gap: 22px; }
+    .audience-focus img { width: 180px; height: 180px; object-fit: contain; opacity: .7; }
+    .audience-focus strong { font-size: 29px; color: #4a4a48; }
+    .rollout-pulse { position: absolute; left: 286px; top: 258px; width: 250px; height: 5px; border-radius: 3px; background: linear-gradient(90deg,rgba(0,120,212,.4),#5b5fc7); }
+    .scene + .scene { margin-top: 32px; }
+  </style>
+</head>
+<body>
+  <section class="scene" id="s01">
+    <div class="material-dot"></div>
+    <div class="material-pill a"></div>
+    <div class="material-pill b"></div>
+    <div class="intro-copy">
+      <h1>Microsoft Teams<span>Identity and sign-in</span></h1>
+    </div>
+    <div class="intro-stage">
+      <div class="stage-bar"><div class="stage-mark"></div>Sign-in verification</div>
+      <div class="sign-card">
+        <h2>Identity details</h2>
+        <div class="identity-row">
+          <img src="icons/Person-highres.svg" alt="Person">
+          <div><strong>Who are you?</strong><span>Microsoft Entra ID account</span></div>
+          <div class="verify-badge"><img src="icons/Shield Checkmark-highres.svg" alt="Verified"></div>
+        </div>
+        <div class="proof-line">Credential and access policy <b>Verified</b></div>
+      </div>
+    </div>
+    <div class="caption">Every Teams sign-in starts with one question: who are you, and how do we know?</div>
+  </section>
+
+  <section class="scene" id="s02">
+    <h1 class="title">Two identity models</h1>
+    <div class="node" style="left:810px;top:335px;width:300px;height:220px">
+      <img src="icons/Person Key-highres.svg" alt="Person with key" style="width:100px;height:100px">
+      <strong>Sign-in request</strong>
+    </div>
+    <div class="route" style="left:960px;top:555px;width:500px;transform:rotate(24deg)"></div>
+    <div class="route" style="left:960px;top:555px;width:500px;transform:rotate(156deg)"></div>
+    <div class="tile" style="left:240px;top:650px;width:520px;height:275px">
+      <img src="icons/Cloud-highres.svg" alt="Cloud" style="width:110px;height:110px">
+      <strong>Cloud-only</strong><span>Identity lives in Microsoft Entra ID</span>
+    </div>
+    <div class="tile" style="right:240px;top:650px;width:520px;height:275px">
+      <img src="icons/Building-highres.svg" alt="On-premises directory" style="width:110px;height:110px">
+      <strong>Hybrid</strong><span>On-premises identity connects to the cloud</span>
+    </div>
+  </section>
+
+  <section class="scene" id="s03">
+    <h1 class="title">Cloud-only</h1>
+    <div style="position:absolute;left:420px;top:340px;width:1080px;height:490px;border:3px solid #8cc8e8;border-radius:180px 180px 90px 90px;background:rgba(255,255,255,.72);box-shadow:0 30px 70px rgba(0,120,212,.10)"></div>
+    <div class="smallcap" style="position:absolute;left:50%;top:382px;transform:translateX(-50%)">Microsoft Entra ID</div>
+    <div class="node" style="left:555px;top:470px">
+      <img src="icons/Person-highres.svg" alt="Person"><strong>Cloud account</strong>
+    </div>
+    <div class="pulse" style="left:855px;top:598px;width:210px"></div>
+    <div class="node" style="left:1065px;top:470px">
+      <img src="icons/Shield Checkmark-highres.svg" alt="Verified"><strong>Sign-in verified</strong>
+    </div>
+    <div class="caption">Accounts live in Microsoft Entra ID, which handles sign-in in the cloud.</div>
+  </section>
+
+  <section class="scene" id="s04">
+    <h1 class="title">Hybrid identity</h1>
+    <div class="node" style="left:180px;top:420px">
+      <img src="icons/Building-highres.svg" alt="On-premises directory">
+      <strong>On-premises AD DS</strong><span>Accounts managed here</span>
+    </div>
+    <div class="route" style="left:480px;top:548px;width:300px"></div>
+    <div class="node" style="left:780px;top:420px;width:360px">
+      <img src="icons/Entra-Connect-Sync.svg" alt="Microsoft Entra Connect Sync">
+      <strong>Microsoft Entra Connect</strong><span>Directory synchronization</span>
+    </div>
+    <div class="route" style="left:1140px;top:548px;width:300px"></div>
+    <div class="node" style="left:1440px;top:420px">
+      <img src="icons/Cloud-highres.svg" alt="Cloud"><strong>Microsoft Entra ID</strong><span>Cloud identity</span>
+    </div>
+    <div class="chip" style="left:420px;top:780px">Cloud validation</div>
+    <div class="chip" style="left:790px;top:780px">Pass-through validation</div>
+    <div class="chip" style="left:1220px;top:780px">Federated validation</div>
+  </section>
+
+  <section class="scene" id="s05">
+    <h1 class="title">Add another factor</h1>
+    <div class="node" style="left:360px;top:410px;width:390px;height:360px">
+      <img src="icons/Password-highres.svg" alt="Password" style="width:145px;height:145px"><strong>Password only</strong><span style="color:#a4262c">Weak link</span>
+    </div>
+    <div class="pulse" style="left:750px;top:585px;width:420px;background:linear-gradient(90deg,#a4262c 0 35%,transparent 35% 47%,#107c10 47%)"></div>
+    <div class="node" style="left:1170px;top:410px;width:390px;height:360px;border-color:rgba(16,124,16,.3)">
+      <img src="icons/Multifactor-Authentication.svg" alt="Multifactor Authentication" style="width:145px;height:145px"><strong>Multifactor authentication</strong><span style="color:#107c10">Stronger sign-in</span>
+    </div>
+    <div class="chip" style="left:540px;top:830px"><img src="icons/Dialpad-highres.svg" alt="Dialpad">Code</div>
+    <div class="chip" style="left:835px;top:830px"><img src="icons/Call-highres.svg" alt="Call">Call</div>
+    <div class="chip" style="left:1120px;top:830px"><img src="icons/Phone-highres.svg" alt="Phone">Microsoft Authenticator</div>
+  </section>
+
+  <section class="scene" id="s06">
+    <h1 class="title">Admins first. Then everyone.</h1>
+    <div class="rollout-stage">
+      <div class="rollout-ring outer"></div>
+      <div class="rollout-ring inner"></div>
+      <div class="audience-focus">
+        <img src="icons/People-highres.svg" alt="Everyone">
+        <strong>Everyone</strong>
+      </div>
+      <div class="rollout-pulse"></div>
+      <div class="admin-focus">
+        <img src="icons/People Lock-highres.svg" alt="Administrator accounts protected">
+        <strong>Admin accounts</strong>
+        <span>MFA first</span>
+      </div>
+    </div>
+    <div class="caption">Start with your admin accounts. Then roll it out to everyone.</div>
+  </section>
+</body>
+</html>

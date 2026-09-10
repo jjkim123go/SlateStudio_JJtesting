@@ -1,0 +1,48 @@
+{
+  "concept": "A single identity pulse travels through a clean Microsoft sign-in system, splitting into two routes and becoming stronger when a second factor closes the circuit.",
+  "palette": {
+    "background": ["#F7F7F5", "#EEF4F7", "#DDEFF5"],
+    "ink": "#1B1A19",
+    "accent": "#0078D4",
+    "secondary": "#5B5FC7",
+    "success": "#107C10",
+    "gradientMesh": "radial-gradient(circle at 50% 42%, #FFFFFF 0%, #EEF4F7 58%, #DDEFF5 100%)",
+    "assetRule": "Official Microsoft service icons retain their supplied colors."
+  },
+  "material": "soft-lit acrylic on warm paper",
+  "motionSignature": {
+    "name": "Verified passage",
+    "rules": [
+      "elements enter on a thin travelling pulse",
+      "tiles settle without overshoot after a short 12px rise",
+      "verification uses one restrained close or check motion rather than repeated bouncing"
+    ]
+  },
+  "composition": {
+    "grammar": "center-weighted modular diagrams with large quiet margins",
+    "headlinePx": 88,
+    "labelPx": 30,
+    "negativeSpaceMin": 0.4,
+    "rules": [
+      "Do not place small labels, kickers, scene names, or metadata in either top corner.",
+      "Use one approved source icon per concept; never duplicate icons for symmetry or combine multiple icons into one concept marker.",
+      "Responsive icon variant sheets are source material only; extract the largest or highest-resolution approved glyph, usually the bottommost filled variant, and never place the full sheet in a scene.",
+      "Use one strong main title without a subtitle directly underneath; supporting explanation belongs in narration or the primary visual.",
+      "Keep supporting distinctions in the diagram structure or primary copy, not in decorative micro-text."
+    ]
+  },
+  "signatureMotif": "A thin sign-in pulse connects scene transitions and owns only the opening junction and MFA close.",
+  "sceneTreatments": {
+    "s01": "tactile-editorial-title-and-acrylic-sign-in-panel",
+    "s02": "hand-stitched-svg-branch",
+    "s03": "layered-acrylic-cloud-boundary",
+    "s04": "isometric-two-plane-topology",
+    "s05": "macro-material-transformation",
+    "s06": "high-resolution-radial-user-field-expansion",
+    "s07": "supplied-prores-end-card"
+  },
+  "referenceDirection": [
+    "Kelly sample: light field, pale-blue tiles, progressive concept assembly",
+    "Microsoft Fluent clarity with restrained editorial scale"
+  ]
+}
