@@ -1,0 +1,120 @@
+{
+  "schemaVersion": "1.0",
+  "project": {
+    "title": "Managing usage-based billing for Microsoft 365 Copilot",
+    "slug": "m365-copilot-usage-based-billing",
+    "product": "Microsoft 365 Copilot",
+    "feature": "Usage-based billing and Copilot Credits",
+    "audience": "Microsoft 365 administrators; secondary Azure cost administrators",
+    "videoType": "hybrid",
+    "contentClassification": "hybrid",
+    "targetRuntimeSec": 55,
+    "language": "en-US"
+  },
+  "intent": {
+    "customerProblem": "Administrators need to understand how eligible Copilot usage is connected to Azure billing, governed, validated, and monitored.",
+    "valueProposition": "Usage-based billing can expand access to supported Copilot experiences while keeping policy scope, usage, and cost visible.",
+    "viewerOutcome": "The viewer can explain the connect-govern-observe model and identify required checks before enabling usage-based billing.",
+    "learningObjectives": [
+      "Understand how a Microsoft 365 billing policy connects eligible usage to an Azure billing scope.",
+      "Identify how users, groups, and supported services are governed by the policy.",
+      "Validate a configuration without assuming that usage reports update instantly.",
+      "Distinguish budget alerts from controls that automatically stop consumption."
+    ]
+  },
+  "requirements": {
+    "prerequisites": [
+      "Appropriate Microsoft 365 administrator permissions",
+      "An Azure subscription and resource group in the same tenant",
+      "Appropriate Azure permissions on the billing scope",
+      "An eligible user and supported service for validation"
+    ],
+    "licensing": ["Eligibility and Copilot Credit consumption depend on the supported experience, license, and action."],
+    "warnings": [
+      "Not every Copilot interaction necessarily creates a usage charge.",
+      "Billing-policy budgets and standard Azure budget alerts do not automatically stop usage.",
+      "Usage and cost reporting can be delayed."
+    ],
+    "limitations": [
+      "The product UI is simplified conceptual UI, not a pixel-exact tutorial.",
+      "No live Microsoft 365 tenant or Azure billing configuration was changed or tested.",
+      "Current navigation labels require product review before publication."
+    ]
+  },
+  "scenes": [
+    {
+      "id": "s1", "startSec": 0, "durationSec": 7,
+      "purpose": "Establish the value proposition.",
+      "voiceover": "Usage-based billing lets your organization pay for supported Copilot services and AI experiences as they're used.",
+      "visualGuidance": "Activate dormant service tiles only when a request reaches them, then emit a measured credit token into a cost counter.",
+      "onScreenText": ["Pay for eligible usage"],
+      "sourceRefs": ["research.md#1-copilot-credits-and-eligible-experiences"],
+      "screenCapture": {"required": false, "surface": "", "actions": [], "reason": "Conceptual animation communicates eligible usage more clearly."},
+      "reviewFlags": ["Keep supported and eligible visible."]
+    },
+    {
+      "id": "s2", "startSec": 7, "durationSec": 9,
+      "purpose": "Show the billing connection.",
+      "voiceover": "In Microsoft 365, create a billing policy, then connect an Azure subscription and resource group.",
+      "visualGuidance": "Populate Subscription and Resource group in simplified Microsoft 365 admin chrome, then lock the policy to an Azure billing-scope tile.",
+      "onScreenText": ["Connect", "Billing policy", "Azure subscription", "Resource group", "Conceptual UI"],
+      "sourceRefs": ["https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/setup"],
+      "screenCapture": {"required": false, "surface": "Microsoft 365 admin center", "actions": [], "reason": "The evolving UI is better represented by durable conceptual labels."},
+      "reviewFlags": ["Confirm current navigation labels before publication."]
+    },
+    {
+      "id": "s3", "startSec": 16, "durationSec": 11,
+      "purpose": "Explain governance and the budget limitation.",
+      "voiceover": "Scope the policy to eligible users or groups, and connect a supported service. A budget can send alerts, but it doesn't automatically stop usage.",
+      "visualGuidance": "Add a fictional group and service, then show usage crossing a budget threshold and continuing after an alert appears.",
+      "onScreenText": ["Govern", "Users or groups", "Supported service", "Alerts don't stop usage", "Conceptual UI"],
+      "sourceRefs": ["https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/setup", "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/tutorial-acm-create-budgets"],
+      "screenCapture": {"required": false, "surface": "Microsoft 365 admin center", "actions": [], "reason": "Synthetic UI makes the alert-versus-enforcement distinction explicit."},
+      "reviewFlags": ["Do not imply that a budget enforces a hard stop."]
+    },
+    {
+      "id": "s4", "startSec": 27, "durationSec": 9,
+      "purpose": "Demonstrate configuration validation.",
+      "voiceover": "Validate the setup with an eligible user and supported experience. Features and actions can consume different amounts of Copilot Credits.",
+      "visualGuidance": "Send one test request through the policy, then resolve it into differently sized credit markers without exact quantities.",
+      "onScreenText": ["Validate", "Consumption varies"],
+      "sourceRefs": ["https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/microsoft-365-copilot-credits"],
+      "screenCapture": {"required": false, "surface": "Supported Copilot experience", "actions": [], "reason": "No live tenant is available; show the documented loop conceptually."},
+      "reviewFlags": ["Do not claim a live tenant test or exact credit quantities."]
+    },
+    {
+      "id": "s5", "startSec": 36, "durationSec": 10,
+      "purpose": "Show monitoring across Microsoft 365 and Azure.",
+      "voiceover": "Microsoft 365 reports show usage. Azure Cost Management adds cost analysis, forecasts, and alerts. Allow time for charges and reports to appear.",
+      "visualGuidance": "Reveal policy and agent rows in a Credits report, then grow Actual cost and Forecast signals in Azure Cost analysis with a clock badge between them.",
+      "onScreenText": ["Observe", "Usage", "Actual cost", "Forecast", "Reporting can be delayed", "Conceptual UI"],
+      "sourceRefs": ["https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/view-cost", "https://learn.microsoft.com/en-us/azure/cost-management-billing/costs/overview-cost-management"],
+      "screenCapture": {"required": false, "surface": "Microsoft 365 reports and Azure Cost Management", "actions": [], "reason": "Simplified surfaces keep the relationship legible."},
+      "reviewFlags": ["Keep the reporting-latency caveat legible."]
+    },
+    {
+      "id": "s6", "startSec": 46, "durationSec": 9,
+      "purpose": "Close with prerequisites and the operating model.",
+      "voiceover": "Before you begin, confirm the required Microsoft 365 and Azure permissions. With billing connected, scoped, and monitored, you can expand access while keeping costs visible.",
+      "visualGuidance": "Verify Microsoft 365 and Azure role badges, then align the connected billing scope, governed policy, and observable cost signal.",
+      "onScreenText": ["Connect", "Govern", "Observe"],
+      "sourceRefs": ["https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/overview"],
+      "screenCapture": {"required": false, "surface": "", "actions": [], "reason": "A hand-stitched summary is clearer than another product surface."},
+      "reviewFlags": ["Confirm role wording in final product review."]
+    }
+  ],
+  "review": {
+    "confidenceScore": 0.9,
+    "confidenceRationale": "The operating model and caveats are grounded in current Microsoft Learn sources; navigation labels remain subject to product change.",
+    "humanReviewRequired": true,
+    "reviewAreas": ["Current Microsoft 365 navigation labels", "Administrator role wording", "Budget alert caveat", "Reporting latency caveat", "Narration source"],
+    "sourceGaps": ["The Microsoft 365 Cost management experience may change after the research date.", "A live customer tenant was not available for UI verification."]
+  },
+  "production": {
+    "estimatedWordCount": 123,
+    "screenCaptureRequired": false,
+    "assetRequirements": ["Microsoft 365 billing-policy scene", "Azure Cost analysis scene", "Fluent icons", "Static high-contrast captions"],
+    "localizationNotes": ["Keep labels separate from narration.", "Allow text expansion.", "Do not rely on color alone for state."],
+    "futureAssets": ["Approved final voiceover", "Timed captions", "Quiet built-in technology music bed"]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "artifact": "renders/m365-copilot-usage-based-billing-silent-r3.mp4",
+  "reviewedAt": "2026-09-10T23:29:09Z",
+  "direction": "Action and result",
+  "passed": true,
+  "blockers": 0,
+  "automatedScore": {"score": 21, "maxScore": 24},
+  "userFeedbackChecks": {
+    "s1OnlyRequestedHeadline": true,
+    "s1UsageCountingIsVisible": true,
+    "reconciliationCrossRemovedGlobally": true,
+    "s2Preserved": true,
+    "s3DecorativeHeadingRemoved": true,
+    "s3CrookedBoxesRemoved": true,
+    "s3EventsOrdered01Through07": true,
+    "s3RepeatedEligibleActionTextRemoved": true,
+    "s3UsageContinuesAfterAlert": true,
+    "s4DecorativeHeadingRemoved": true,
+    "s4UnexplainedNumberTokenRemoved": true,
+    "s5DecorativeHeadingRemoved": true,
+    "s5ClockRemoved": true,
+    "s5SurfacesAligned": true
+  },
+  "notes": [
+    "S1 uses three service symbols and a corresponding three-event meter with no secondary text.",
+    "S3 shows 01 through 07 from left to right; events 05 through 07 continue after the budget alert.",
+    "S4 shows an eligible user, prompt, connected policy, and illustrative relative consumption without an exact rate claim.",
+    "S5 replaces the clock with a labeled horizontal reporting-delay handoff between equal-height surfaces.",
+    "Audio and synchronized captions remain pending an approved narration source."
+  ]
+}

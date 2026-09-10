@@ -1,0 +1,15 @@
+{
+  "version":"1.0",
+  "pipeline":"animated-explainer",
+  "outputProfile":{"width":1920,"height":1080,"fps":30,"codec":"h264","quality":"draft","deliveryProfile":"draft"},
+  "scenes":[
+    {"id":"s1-eligible-usage","duration":7,"component":"UsageRegisterScene","props":{"visualBeats":["eligible usage named","request enters register","usage entry posted"]},"narrationText":"Usage-based billing lets your organization pay for supported Copilot services and AI experiences as they're used."},
+    {"id":"s2-billing-policy","duration":9,"component":"BillingPolicyScene","props":{"tenantName":"Contoso Sandbox","policyName":"AI Services - Pilot","subscriptionName":"Contoso Innovation","resourceGroupName":"rg-copilot-usage-demo","visualBeats":["empty policy","Azure scope populated","scope connected"]},"narrationText":"In Microsoft 365, create a billing policy, then connect an Azure subscription and resource group."},
+    {"id":"s3-budget-threshold","duration":11,"component":"BudgetThresholdScene","props":{"visualBeats":["scope fields confirm","usage events appear from 01 through 04","alert appears while events 05 through 07 continue"]},"narrationText":"Scope the policy to eligible users or groups, and connect a supported service. A budget can send alerts, but it doesn't automatically stop usage."},
+    {"id":"s4-validation-route","duration":9,"component":"ValidationRouteScene","props":{"visualBeats":["eligible user submits request","connected policy validates request","illustrative variable consumption appears"]},"narrationText":"Validate the setup with an eligible user and supported experience. Features and actions can consume different amounts of Copilot Credits."},
+    {"id":"s5-reporting","duration":10,"component":"ReportReconcileScene","props":{"visualBeats":["Microsoft 365 usage rows post","latency clock advances","Azure actual and forecast appear"]},"narrationText":"Microsoft 365 reports show usage. Azure Cost Management adds cost analysis, forecasts, and alerts. Allow time for charges and reports to appear."},
+    {"id":"s6-close","duration":9,"component":"ClosingLedgerScene","props":{"visualBeats":["permissions verify","Connect Govern and Observe align","cost visibility closes the video"]},"narrationText":"Before you begin, confirm the required Microsoft 365 and Azure permissions. With billing connected, scoped, and monitored, you can expand access while keeping costs visible."}
+  ],
+  "captions":{"style":"static","position":"bottom","fontSize":30,"maxWordsPerLine":8,"panel":false,"lineBackgroundColor":"rgba(18,24,33,0.9)"},
+  "metadata":{"title":"Managing usage-based billing for Microsoft 365 Copilot","totalDurationSec":55,"theme":{"name":"Action and result","primary":"#2563EB","accent":"#16855B"},"status":"draft","voiceoverStatus":"pending approved source"}
+}

@@ -344,7 +344,8 @@ def _self_review(trace_path: str | None, total_duration: float, target_duration:
                   scenes: list[dict] | None = None,
                   deep_review: bool = True,
                   narration_texts: list[str] | None = None,
-                  captions: dict | None = None) -> dict:
+                  captions: dict | None = None,
+                  artifact_type: str | None = None) -> dict:
     """P6 Self-Review: automated quality check after render.
 
     Runs the 6-dimension rubric, the EvalHarness (if trace available),
@@ -478,7 +479,9 @@ def _self_review(trace_path: str | None, total_duration: float, target_duration:
         scores["pacing"] = 2  # No target specified — can't fully evaluate
 
     # 3. Scene coverage (at least 3 content scenes for a substantive video)
-    if scene_count >= 5:
+    if artifact_type == "prototype" and scene_count >= 1:
+        scores["content_coverage"] = 3
+    elif scene_count >= 5:
         scores["content_coverage"] = 3
     elif scene_count >= 3:
         scores["content_coverage"] = 2

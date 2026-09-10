@@ -91,7 +91,9 @@ function renderBanner(s) {
       el("span", { class: "glyph" }, "◈"),
       el("span", {}, el("b", {}, `Awaiting you — ${g.checkpoint_type || "gate"}. `),
         `Review “${g.scope || "the artifact"}”, then approve to continue.`),
-      g.shown ? el("a", { href: mediaURL(slug, g.shown), target: "_blank" }, g.shown) : null,
+      g.shown && !(s.review_packet || []).length
+        ? el("a", { href: mediaURL(slug, g.shown), target: "_blank" }, g.shown)
+        : null,
       STATIC ? null : el("div", { class: "gate-actions" },
         el("button", { class: "gbtn approve", onclick: () => gateAction("approved") }, "✓ Approve"),
         el("button", { class: "gbtn changes", onclick: () => gateAction("changes_requested") }, "⟲ Request changes")),
@@ -110,6 +112,29 @@ function renderBanner(s) {
     );
   }
   return null;
+}
+
+function renderReviewPacket(s) {
+  const packet = s.review_packet || [];
+  if (!packet.length) return null;
+  return el("section", { style: "margin-top:24px" },
+    el("div", { class: "sec-head" }, el("h2", {}, "Review packet"), el("div", { class: "rule" })),
+    ...packet.map((item, index) => el("details", {
+      open: index === 0,
+      style: "margin-top:12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);overflow:hidden"
+    },
+    el("summary", {
+      style: "cursor:pointer;padding:14px 16px;font-weight:700;color:var(--text-1)"
+    }, item.title || item.path),
+    el("div", { style: "border-top:1px solid var(--line);padding:16px" },
+      el("a", {
+        href: mediaURL(slug, item.path),
+        target: "_blank",
+        style: "display:inline-block;margin-bottom:14px"
+      }, `Open ${item.path}`),
+      el("div", {
+        style: "white-space:pre-wrap;font-family:var(--font-body);font-size:14px;line-height:1.65;color:var(--text-2)"
+      }, item.content || "")))));
 }
 
 // ---------------------------------------------------------------- storyboard
@@ -483,7 +508,9 @@ function render() {
 
   const sb0 = state.storyboard;
   if (!sb0 || !(sb0.scenes || []).length) {
-    app.append(el("div", { class: "empty", style: "margin-top:30px" },
+    const reviewPacket = renderReviewPacket(state);
+    if (reviewPacket) app.append(reviewPacket);
+    else app.append(el("div", { class: "empty", style: "margin-top:30px" },
       el("div", { class: "big" }, "Nothing to storyboard yet"),
       el("div", {}, "Soundstage fills in live as the pipeline writes the script, "
         + "scene plan, and assets — no need to wait for the final render.")));

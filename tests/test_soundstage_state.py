@@ -98,6 +98,26 @@ def test_delivered_project_is_not_awaiting(tmp_path):
     assert summ["awaiting_human"] is False and summ["delivered"] is True
 
 
+def test_intake_gate_exposes_review_packet(tmp_path):
+    d = tmp_path / "intake"
+    _write(d / "project.json", {"name": "Intake", "slug": "intake"})
+    _write(d / "brief.md", "# Brief\n\nConnect, govern, observe.")
+    _write(d / "research.md", "# Research\n\nGrounded in primary sources.")
+    _write(d / "decisions.jsonl", json.dumps({
+        "type": "checkpoint",
+        "checkpoint_id": "ck_intake",
+        "checkpoint_type": "CK-REVIEW",
+        "scope": "research and creative brief",
+    }))
+
+    state = load_board_state(d)
+
+    assert state["storyboard"] is None
+    assert state["awaiting_human"] is True
+    assert [item["path"] for item in state["review_packet"]] == ["brief.md", "research.md"]
+    assert "Connect, govern, observe." in state["review_packet"][0]["content"]
+
+
 def test_narration_falls_back_to_script_md(tmp_path):
     """After the SCF exists, per-scene narration + the whole script must come from
     script.md when the SCF references audio by path (no inline narrationText)."""
@@ -153,7 +173,7 @@ def test_gate_action_endpoint(tmp_path, monkeypatch):
                                         "scenes": [{"id": "s1", "duration": 5.0}]})
     _write(d / "decisions.jsonl", json.dumps(
         {"type": "checkpoint", "checkpoint_id": "ck_x",
-         "checkpoint_type": "CK-REVIEW", "scope": "script"}) + "\n")
+         "checkpoint_type": "CK-REVIEW", "scope": "script"}))
     assert load_board_state(d)["awaiting_human"] is True
 
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), server.Handler)
@@ -175,7 +195,9 @@ def test_gate_action_endpoint(tmp_path, monkeypatch):
     assert resp.status == 200 and payload["ok"] is True and payload["resolved"] == "ck_x"
     after = load_board_state(d)
     assert after["awaiting_human"] is False and after["active_gate"] is None
-    last = json.loads((d / "decisions.jsonl").read_text(encoding="utf-8").strip().splitlines()[-1])
+    lines = (d / "decisions.jsonl").read_text(encoding="utf-8").strip().splitlines()
+    assert len(lines) == 2
+    last = json.loads(lines[-1])
     assert last["type"] == "checkpoint_resolved" and last["source"] == "soundstage"
 
 
@@ -299,6 +321,25 @@ def test_planned_storyboard_before_scf(tmp_path):
     assert rail["script"] == "completed"
     assert rail["scene_plan"] == "completed"
     assert rail["compose"] == "pending"
+
+
+def test_planned_storyboard_falls_back_to_script_package(tmp_path):
+    d = tmp_path / "producer-package"
+    _write(d / "project.json", {"name": "Producer package", "slug": "producer-package"})
+    _write(d / "script.md", "# Production Script\n\n| Scene | Voiceover |\n|---|---|\n| S1 | First line. |")
+    _write(d / "script-package.json", {
+        "project": {"targetRuntimeSec": 12},
+        "scenes": [
+            {"id": "s1", "durationSec": 5, "purpose": "Open the idea", "voiceover": "First line."},
+            {"id": "s2", "durationSec": 7, "purpose": "Resolve the idea", "voiceover": "Second line."},
+        ],
+    })
+
+    storyboard = load_board_state(d)["storyboard"]
+
+    assert storyboard["planned"] is True
+    assert [scene["duration_seconds"] for scene in storyboard["scenes"]] == [5.0, 7.0]
+    assert storyboard["scenes"][1]["narration_text"] == "Second line."
 
 
 def test_planned_storyboard_parses_canonical_script_template(tmp_path):

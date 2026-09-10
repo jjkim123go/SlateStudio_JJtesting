@@ -588,6 +588,20 @@ class TestReviewCorrectiveLoop:
         assert len(coverage_fixes) == 1
         assert coverage_fixes[0]["action"] == "add_scenes"
 
+    def test_single_scene_prototype_is_complete_for_its_review_scope(self):
+        render_path_fixup()
+        from slate_render import _self_review
+        result = _self_review(
+            trace_path=None,
+            total_duration=9,
+            target_duration=9,
+            scene_count=1,
+            brand_name=None,
+            artifact_type="prototype",
+        )
+        assert result["scores"]["content_coverage"] == 3
+        assert not [fix for fix in result["fixes_needed"] if fix["dimension"] == "content_coverage"]
+
     def test_passing_review_no_fixes(self):
         render_path_fixup()
         from slate_render import _self_review

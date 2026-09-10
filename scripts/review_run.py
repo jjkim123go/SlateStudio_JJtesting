@@ -161,6 +161,7 @@ def _load_review_inputs(video_path: Path, scenario_arg: str, scf_arg: str) -> tu
     scf = json.loads(scf_path.read_text(encoding="utf-8"))
     scenario = {
         "title": scf.get("metadata", {}).get("title") or scf.get("title") or video_path.stem,
+        "artifact_type": scf.get("metadata", {}).get("status"),
         "target_duration": sum(float(scene.get("duration", 0) or 0) for scene in scf.get("scenes", [])) or None,
         "motion_style": "image",
         "brand_package": scf.get("brandPackage"),
@@ -248,6 +249,7 @@ def main() -> int:
         motion_style=scenario.get("motion_style"),
         scenes=scenario.get("scenes", []),
         narration_texts=narrations,
+        artifact_type=scenario.get("artifact_type"),
         captions=scenario.get("captions"),
     )
     explicit_review = _run_review_stage(

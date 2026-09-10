@@ -1,0 +1,79 @@
+<div class="bps-root">
+  <div class="bps-ledger-lines" aria-hidden="true"></div>
+  <div class="bps-reconcile-sweep" aria-hidden="true"></div>
+  <div class="bps-shell">
+    <header class="bps-header">
+      <div class="bps-waffle" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <strong>Microsoft 365 admin center</strong>
+      <span class="bps-conceptual">Conceptual UI</span>
+    </header>
+
+    <div class="bps-workspace">
+      <nav class="bps-minimal-nav" aria-label="Conceptual admin navigation">
+        <span class="bps-nav-bar bps-nav-bar-short"></span>
+        <span class="bps-nav-bar"></span>
+        <div class="bps-nav-billing">Billing &amp; usage</div>
+        <span class="bps-nav-bar bps-nav-bar-medium"></span>
+        <span class="bps-nav-bar"></span>
+      </nav>
+      <main class="bps-main">
+        <div class="bps-page-head">
+          <div class="bps-breadcrumb">Copilot / Billing &amp; usage</div>
+          <h1>Billing policies</h1>
+        </div>
+
+        <section class="bps-drawer" aria-label="Add a billing policy">
+          <div class="bps-drawer-head">
+            <div>
+              <span class="bps-step-label">New policy</span>
+              <h2>Add a billing policy</h2>
+            </div>
+          </div>
+
+          <div class="bps-field bps-policy-field">
+            <label>Policy name</label>
+            <div class="bps-control"><span class="bps-value">{{policyName}}</span></div>
+          </div>
+          <div class="bps-scope-group">
+            <div class="bps-scope-rail" aria-hidden="true">
+              <span class="bps-scope-line"></span>
+              <i class="bps-scope-node bps-scope-node-one"></i>
+              <i class="bps-scope-node bps-scope-node-two"></i>
+              <i class="bps-scope-node bps-scope-node-three"></i>
+            </div>
+            <div class="bps-field bps-subscription-field">
+              <label>Azure subscription</label>
+              <div class="bps-control">
+                <span class="bps-placeholder">Select a subscription</span>
+                <span class="bps-value">{{subscriptionName}}</span>
+                <span class="bps-chevron">⌄</span>
+              </div>
+            </div>
+            <div class="bps-field bps-resource-field">
+              <label>Resource group</label>
+              <div class="bps-control">
+                <span class="bps-placeholder">Select a resource group</span>
+                <span class="bps-value">{{resourceGroupName}}</span>
+                <span class="bps-chevron">⌄</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="bps-status">
+            <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"></circle><path d="M10 16.5L14.2 21L22.5 11.5"></path></svg>
+            <div><strong>Connected</strong><span>Azure billing scope verified</span></div>
+          </div>
+
+          <div class="bps-actions">
+            <button class="bps-secondary">Cancel</button>
+            <button class="bps-primary">Continue</button>
+          </div>
+          <div class="bps-pointer" aria-hidden="true">
+            <svg viewBox="0 0 32 38"><path d="M4 3L27 22L16.5 23.5L22 34L16.5 37L11 26.5L4 34Z"></path></svg>
+            <span></span>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+</div>

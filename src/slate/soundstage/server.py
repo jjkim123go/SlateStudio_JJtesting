@@ -25,6 +25,7 @@ import subprocess
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import os
 from pathlib import Path
 from urllib.parse import unquote, urlparse
 
@@ -355,8 +356,13 @@ class Handler(BaseHTTPRequestHandler):
             "source": "soundstage",
         }
         try:                                 # APPEND-ONLY — never rewrites state
-            with open(project_dir / "decisions.jsonl", "a", encoding="utf-8") as f:
-                f.write(json.dumps(entry) + "\n")
+            with open(project_dir / "decisions.jsonl", "ab+") as f:
+                f.seek(0, os.SEEK_END)
+                if f.tell():
+                    f.seek(-1, os.SEEK_END)
+                    if f.read(1) != b"\n":
+                        f.write(b"\n")
+                f.write((json.dumps(entry) + "\n").encode("utf-8"))
         except OSError as exc:
             return self._json({"error": str(exc)}, 500)
         HUB.publish(slug)

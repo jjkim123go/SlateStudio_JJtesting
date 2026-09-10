@@ -1,0 +1,125 @@
+{
+  "review_type": "final",
+  "reviewer": "runtime-review-stage",
+  "timestamp": "2026-09-10T23:29:09.088581+00:00",
+  "scores": {
+    "brand_compliance": 2,
+    "pacing": 3,
+    "content_coverage": 3,
+    "narration_timing": 3,
+    "audio_quality": 2,
+    "visual_consistency": 3,
+    "caption_accuracy": 2,
+    "content_redundancy": 3
+  },
+  "total_score": 21,
+  "max_score": 24,
+  "passed": true,
+  "findings": [
+    {
+      "category": "brand_color",
+      "description": "brand_compliance scored 2/3 during compose self-review",
+      "severity": "warning",
+      "owner": "assets",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "audio_level",
+      "description": "audio_quality scored 2/3 during compose self-review",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "caption_sync",
+      "description": "caption_accuracy scored 2/3 during compose self-review",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "No brand package applied \u2014 consider using --brand for consistency",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "Video Indexer not configured \u2014 caption accuracy uses heuristic scoring",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    },
+    {
+      "category": "unknown",
+      "description": "Inspection: FROZEN_FRAMES: 11 sections (33.5s total)",
+      "severity": "warning",
+      "owner": "compose",
+      "scene_id": null,
+      "suggested_fix": ""
+    }
+  ],
+  "blockers": 0,
+  "warnings": 6,
+  "summary": "Explicit review stage executed after compose using ReviewerAgent. Compose self-review verdict was PASS.",
+  "routed_findings": {
+    "assets": [
+      {
+        "category": "brand_color",
+        "description": "brand_compliance scored 2/3 during compose self-review",
+        "severity": "warning",
+        "owner": "assets",
+        "scene_id": null,
+        "suggested_fix": ""
+      }
+    ],
+    "compose": [
+      {
+        "category": "audio_level",
+        "description": "audio_quality scored 2/3 during compose self-review",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "caption_sync",
+        "description": "caption_accuracy scored 2/3 during compose self-review",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "No brand package applied \u2014 consider using --brand for consistency",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "Video Indexer not configured \u2014 caption accuracy uses heuristic scoring",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      },
+      {
+        "category": "unknown",
+        "description": "Inspection: FROZEN_FRAMES: 11 sections (33.5s total)",
+        "severity": "warning",
+        "owner": "compose",
+        "scene_id": null,
+        "suggested_fix": ""
+      }
+    ]
+  }
+}

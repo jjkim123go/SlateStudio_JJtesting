@@ -1,0 +1,58 @@
+{
+  "runId": "6b4c25a3-d915-4cbe-93ec-5c8aa6d2e9e4",
+  "timestamp": "2026-09-10T23:28:46.437Z",
+  "gitCommit": "e08be3b62816c592c5b2c1f71007afb36983dd7b",
+  "scfPath": "E:\\Projects\\Agentic Video Author 01\\SlateStudio_JJtesting\\projects\\m365-copilot-usage-based-billing\\composition.scf.json",
+  "pipeline": "animated-explainer",
+  "deliveryProfile": "draft",
+  "brandPackage": null,
+  "brandPackageHash": null,
+  "brandPackageSource": null,
+  "brandLintPassed": null,
+  "componentsUsed": [
+    "UsageRegisterScene",
+    "BillingPolicyScene",
+    "BudgetThresholdScene",
+    "ValidationRouteScene",
+    "ReportReconcileScene",
+    "ClosingLedgerScene"
+  ],
+  "sceneCount": 6,
+  "totalDurationSec": 55,
+  "output": {
+    "width": 1920,
+    "height": 1080,
+    "fps": 30
+  },
+  "status": "success",
+  "error": null,
+  "renderDurationSec": 51.5,
+  "governanceGateResult": {
+    "passed": true,
+    "profile": "draft",
+    "blockingFindings": [],
+    "waiversHonored": [],
+    "brandLintRequired": false,
+    "brandPinRequired": false,
+    "classifierResult": {
+      "summary": {
+        "totalFindings": 0,
+        "byClass": {},
+        "bySeverity": {},
+        "waiveredFindings": 0,
+        "highSeverityUnwaivered": 0
+      },
+      "findings": [],
+      "scanned": {
+        "scfPath": "E:\\Projects\\Agentic Video Author 01\\SlateStudio_JJtesting\\projects\\m365-copilot-usage-based-billing\\composition.scf.json",
+        "sceneCount": 6,
+        "stringFieldsScanned": 54,
+        "deliveryProfile": "draft"
+      }
+    }
+  },
+  "lottieAssets": [],
+  "costUsd": null,
+  "foundryModelsUsed": [],
+  "toolsInvoked": []
+}

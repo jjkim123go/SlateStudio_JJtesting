@@ -1,0 +1,71 @@
+{
+  "concept": "A restrained conceptual product walkthrough: each scene presents one billing action and its direct result with aligned administrative surfaces, plain labels, and minimal decoration.",
+  "palette": {
+    "background": ["#F7F8FA", "#E8EBF0", "#D6DAE2"],
+    "surface": "#FFFFFF",
+    "ink": "#171A1F",
+    "mutedText": "#5A6472",
+    "accent": "#2563EB",
+    "secondary": "#174EA6",
+    "success": "#16855B",
+    "warning": "#B45F06",
+    "gradientMesh": "none",
+    "assetRule": "Official Microsoft Fluent System Icons retain their source geometry; product marks retain supplied colors."
+  },
+  "material": "light Microsoft-style administrative surfaces with crisp borders, quiet shadows, and a neutral canvas",
+  "motionSignature": {
+    "name": "Action and result",
+    "rules": [
+      "each scene reveals the action first and the resulting state second",
+      "motion follows visible connectors, ordered events, or progressive disclosure",
+      "avoid decorative symbols, rotation, physical-paper metaphors, and unexplained moving tokens"
+    ]
+  },
+  "composition": {
+    "grammar": "centered conceptual product surfaces with aligned controls, explicit state changes, and generous negative space",
+    "headlinePx": 88,
+    "bodyMinPx": 26,
+    "negativeSpaceMin": 0.32,
+    "safeArea": {"landscape": 80, "portraitCropWidth": 608},
+    "rules": [
+      "Keep both upper corners free of small labels, scene names, and metadata.",
+      "Use one strong main title without a subtitle directly beneath it.",
+      "Place essential policy fields, status, and captions inside the centered portrait-safe column when the frame must survive a 1080x1920 crop.",
+      "Use icon plus text or shape plus text for state; never rely on color alone."
+    ]
+  },
+  "signatureMotif": "None. The previously used black-and-coral reconciliation cross was removed because it had no self-evident product meaning.",
+  "sceneTreatments": {
+    "s01": "one headline above three service symbols feeding a simple usage meter",
+    "s02": "project-scoped Microsoft 365 admin chrome with a focused billing-policy drawer",
+    "s03": "billing-policy surface with ordered usage events, a budget threshold, and a standard alert notification",
+    "s04": "configuration-test surface with a request, connected policy, and illustrative variable-consumption rows",
+    "s05": "equal-height Microsoft 365 and Azure reporting surfaces joined by a labeled reporting-delay handoff",
+    "s06": "aligned permission cards, three operating steps, and one closing statement"
+  },
+  "primarySubjects": {
+    "s01": "eligible service interactions being counted by a usage meter",
+    "s02": "a billing-policy drawer inside Microsoft 365 admin chrome",
+    "s03": "ordered usage events continuing after a budget alert",
+    "s04": "one test request validated by a connected policy before variable consumption appears",
+    "s05": "two aligned reporting surfaces joined by a reporting-delay arrow",
+    "s06": "permissions leading through Connect, Govern, and Observe"
+  },
+  "referenceDirection": [
+    "Microsoft Fluent administrative clarity",
+    "quiet enterprise product walkthroughs",
+    "plain cause-and-effect diagrams"
+  ],
+  "iconSource": {
+    "name": "Microsoft Fluent UI System Icons",
+    "url": "https://github.com/microsoft/fluentui-system-icons",
+    "license": "MIT",
+    "usage": "Freeze only required regular or filled plain SVG glyphs locally; never use emoji as product UI icons."
+  },
+  "productionLayers": {
+    "captions": "Static high-contrast near-black blocks with white text; captions carry accessibility narration while scene headlines remain short and non-duplicative.",
+    "music": "Quiet built-in technology bed, looped and ducked under narration after final selection approval.",
+    "voice": "Pending approved source: supplied or Clipchamp recording, or Azure Speech when callable.",
+    "generatedMedia": "Intentionally omitted because image and video generation are unavailable and synthetic product UI must remain deterministic. Chrome plus bespoke SVG/CSS supplies visual texture."
+  }
+}

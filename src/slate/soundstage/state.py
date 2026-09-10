@@ -777,6 +777,19 @@ def _parse_script_scenes(project_dir: Path) -> list[dict]:
     for sc in scenes:
         sc["narration_text"] = " ".join(x for x in sc.pop("_narr") if x).strip()
         sc.pop("_collect_narr", None)
+    if not scenes:
+        package = _read_json(project_dir / "script-package.json") or {}
+        for position, item in enumerate(package.get("scenes") or [], start=1):
+            if not isinstance(item, dict):
+                continue
+            match = re.search(r"(\d+)", str(item.get("id") or ""))
+            index = int(match.group(1)) if match else position
+            scenes.append({
+                "index": index,
+                "title": str(item.get("purpose") or f"Scene {index}").rstrip("."),
+                "narration_text": str(item.get("voiceover") or "").strip(),
+                "dur_hint": item.get("durationSec"),
+            })
     return scenes
 
 
@@ -918,6 +931,18 @@ def load_board_state(project_dir: Path) -> dict[str, Any]:
             or _build_planned_storyboard(project_dir, decisions, ledger, events)
         cost = _build_cost(ledger, marker)
 
+        review_packet = []
+        if active_gate and active_gate.get("stage") in ("ingest", "research"):
+            for filename, artifact_title in (("brief.md", "Creative brief"),
+                                             ("research.md", "Research grounding")):
+                content = _read_text(project_dir / filename)
+                if content:
+                    review_packet.append({
+                        "title": artifact_title,
+                        "path": filename,
+                        "content": content,
+                    })
+
         last = _last_activity(project_dir)
         now = time.time()
         delivered = _is_delivered(decisions)
@@ -935,6 +960,7 @@ def load_board_state(project_dir: Path) -> dict[str, Any]:
             "stages": stages,
             "active_gate": active_gate,
             "awaiting_human": bool(active_gate),
+            "review_packet": review_packet,
             "storyboard": storyboard,
             "cost": cost,
             "decisions": _decision_trail(decisions),

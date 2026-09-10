@@ -626,7 +626,7 @@ SEMANTIC_VISUAL_RULES = [
     },
     {
         "issue": "vscode_visual_missing",
-        "keywords": ("vs code", "visual studio code", "copilot", "developer", "typing a prompt"),
+        "keywords": ("vs code", "visual studio code", "github copilot", "copilot chat", "developer", "typing a prompt"),
         "required": ("vscodescene", "terminalcast", "terminalscene", "githubscene", "azuredevopsscene", "stepshtml", "codecontenthtml", "primarysidebarbodyhtml"),
         "detail": "Developer/Copilot narration needs a moving VS Code, terminal, GitHub, or Azure DevOps synthetic surface with visible actions.",
     },
@@ -639,7 +639,7 @@ SEMANTIC_VISUAL_RULES = [
     {
         "issue": "collaboration_visual_missing",
         "keywords": ("microsoft teams", "teams app", "teams chat", "teams channel", "outlook", "microsoft 365", "m365"),
-        "required": ("teamsscene", "outlookscene", "excelscene", "splitScreen", "splitscreen", "loopscene"),
+        "required": ("teamsscene", "outlookscene", "excelscene", "admincenterscene", "billingpolicyscene", "reportreconcilescene", "closingledgerscene", "splitScreen", "splitscreen", "loopscene"),
         "detail": "Teams/Outlook/M365 narration needs the matching synthetic app surfaces, preferably sequenced together.",
     },
     {

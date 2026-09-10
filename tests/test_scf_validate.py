@@ -191,6 +191,51 @@ def test_narration_visual_support_requires_surface_for_microsoft_teams():
     assert issues[0]["issue"] == "collaboration_visual_missing"
 
 
+def test_narration_visual_support_accepts_m365_admin_center_surface():
+    scf = {
+        "scenes": [
+            {
+                "id": "billing-policy",
+                "duration": 9,
+                "narrationText": "In Microsoft 365, create a billing policy and connect its Azure billing scope.",
+                "component": "BillingPolicyScene",
+            }
+        ]
+    }
+
+    assert validate_narration_visual_support(scf) == []
+
+
+def test_narration_visual_support_does_not_treat_plain_copilot_as_developer_workflow():
+    scf = {
+        "scenes": [
+            {
+                "id": "eligible-usage",
+                "duration": 7,
+                "narrationText": "Eligible Copilot services post usage to the billing record.",
+                "component": "UsageRegisterScene",
+            }
+        ]
+    }
+
+    assert validate_narration_visual_support(scf) == []
+
+
+def test_narration_visual_support_accepts_m365_reporting_surface():
+    scf = {
+        "scenes": [
+            {
+                "id": "reporting",
+                "duration": 10,
+                "narrationText": "Microsoft 365 reports show usage alongside Azure cost analysis.",
+                "component": "ReportReconcileScene",
+            }
+        ]
+    }
+
+    assert validate_narration_visual_support(scf) == []
+
+
 def test_narration_text_quality_blocks_dot_dot_artifacts():
     scf = {"scenes": [{"id": "s1", "duration": 3, "narration": "Slate thinks dot dot then renders."}]}
 

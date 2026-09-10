@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "tenantName": {"type": "string"},
+    "policyName": {"type": "string"},
+    "subscriptionName": {"type": "string"},
+    "resourceGroupName": {"type": "string"},
+    "visualBeats": {
+      "type": "array",
+      "items": {"type": "string"},
+      "minItems": 3
+    }
+  },
+  "required": ["tenantName", "policyName", "subscriptionName", "resourceGroupName", "visualBeats"],
+  "additionalProperties": false
+}
