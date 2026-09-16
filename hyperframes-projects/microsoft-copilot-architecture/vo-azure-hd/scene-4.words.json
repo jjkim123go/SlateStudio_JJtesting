@@ -1,0 +1,167 @@
+[
+  {
+    "word": "But",
+    "start": 0.031,
+    "end": 0.156
+  },
+  {
+    "word": "grounding",
+    "start": 0.156,
+    "end": 0.656
+  },
+  {
+    "word": "does",
+    "start": 0.656,
+    "end": 0.822
+  },
+  {
+    "word": "not",
+    "start": 0.822,
+    "end": 1.113
+  },
+  {
+    "word": "mean",
+    "start": 1.114,
+    "end": 1.405
+  },
+  {
+    "word": "tenant-wide",
+    "start": 1.406,
+    "end": 1.989
+  },
+  {
+    "word": "access",
+    "start": 1.989,
+    "end": 2.697
+  },
+  {
+    "word": ".",
+    "start": 2.697,
+    "end": 2.697
+  },
+  {
+    "word": "Copilot",
+    "start": 2.988,
+    "end": 3.571
+  },
+  {
+    "word": "can",
+    "start": 3.571,
+    "end": 3.78
+  },
+  {
+    "word": "only",
+    "start": 3.781,
+    "end": 4.113
+  },
+  {
+    "word": "surface",
+    "start": 4.113,
+    "end": 4.572
+  },
+  {
+    "word": "organizational",
+    "start": 4.572,
+    "end": 5.405
+  },
+  {
+    "word": "data",
+    "start": 5.406,
+    "end": 5.781
+  },
+  {
+    "word": "the",
+    "start": 5.781,
+    "end": 5.989
+  },
+  {
+    "word": "signed-in",
+    "start": 5.989,
+    "end": 6.489
+  },
+  {
+    "word": "user",
+    "start": 6.489,
+    "end": 6.947
+  },
+  {
+    "word": "is",
+    "start": 6.947,
+    "end": 7.155
+  },
+  {
+    "word": "already",
+    "start": 7.156,
+    "end": 7.656
+  },
+  {
+    "word": "allowed",
+    "start": 7.656,
+    "end": 7.989
+  },
+  {
+    "word": "to",
+    "start": 7.989,
+    "end": 8.072
+  },
+  {
+    "word": "view",
+    "start": 8.072,
+    "end": 8.863
+  },
+  {
+    "word": ".",
+    "start": 8.864,
+    "end": 8.864
+  },
+  {
+    "word": "Documents",
+    "start": 8.988,
+    "end": 9.613
+  },
+  {
+    "word": "outside",
+    "start": 9.613,
+    "end": 10.113
+  },
+  {
+    "word": "that",
+    "start": 10.113,
+    "end": 10.28
+  },
+  {
+    "word": "permission",
+    "start": 10.281,
+    "end": 10.738
+  },
+  {
+    "word": "boundary",
+    "start": 10.738,
+    "end": 11.197
+  },
+  {
+    "word": "stay",
+    "start": 11.197,
+    "end": 11.612
+  },
+  {
+    "word": "outside",
+    "start": 11.613,
+    "end": 12.155
+  },
+  {
+    "word": "the",
+    "start": 12.156,
+    "end": 12.281
+  },
+  {
+    "word": "response",
+    "start": 12.281,
+    "end": 12.988
+  },
+  {
+    "word": ".",
+    "start": 12.988,
+    "end": 12.988
+  }
+]

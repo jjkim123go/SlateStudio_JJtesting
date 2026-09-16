@@ -60,7 +60,9 @@ class AzureSpeechTTS(BaseTool):
     @property
     def is_available(self) -> bool:
         from slate.core.azure_config import azure_config
-        return azure_config.is_configured
+        return azure_config.is_configured or bool(
+            _IMPL_AVAILABLE and _backend.is_configured()
+        )
 
     agent_skills = ["core/foundry-models"]
     version = "0.1.0"

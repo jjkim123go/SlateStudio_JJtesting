@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <style>
+    :root {
+      --ink: #17191f;
+      --muted: #5f6570;
+      --line: #d8dbe2;
+      --blue: #2563c9;
+      --purple: #7956d8;
+      --green: #23875a;
+      --amber: #bd7a16;
+      --red: #c94d57;
+      --paper: #ffffff;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      width: 1920px;
+      height: 1080px;
+      margin: 0;
+      overflow: hidden;
+      background: #fbfbf8;
+      font-family: "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    #scene {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 76% 12%, rgba(98, 205, 231, .22), transparent 31%),
+        radial-gradient(circle at 93% 65%, rgba(241, 217, 119, .15), transparent 34%),
+        linear-gradient(120deg, #fff 0%, #fbfcf9 54%, #f8fbf7 100%);
+    }
+    .grain {
+      position: absolute;
+      inset: 0;
+      opacity: .22;
+      background-image: radial-gradient(rgba(32, 36, 44, .13) .55px, transparent .55px);
+      background-size: 5px 5px;
+      pointer-events: none;
+    }
+    .shell { position: absolute; inset: 0; }
+    .brand {
+      position: absolute;
+      left: 62px;
+      top: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    .brand img { width: 26px; height: 26px; object-fit: contain; }
+    .editorial {
+      position: absolute;
+      left: 62px;
+      top: 190px;
+      width: 430px;
+    }
+    h1 {
+      max-width: 390px;
+      margin: 0;
+      font-size: 43px;
+      line-height: 1.08;
+      font-weight: 700;
+    }
+    .copy-stack {
+      position: relative;
+      width: 405px;
+      height: 310px;
+      margin-top: 42px;
+    }
+    .copy {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      color: #3f444d;
+      font-size: 24px;
+      line-height: 1.43;
+      font-weight: 400;
+      opacity: 0;
+    }
+    .copy .spoken-word { font-weight: 400; color: #656b75; transition: color .08s linear, font-weight .08s linear; }
+    .copy .spoken-word.active { color: #101217; font-weight: 700; }
+    .stage {
+      position: absolute;
+      left: 575px;
+      top: 132px;
+      width: 1275px;
+      height: 800px;
+      overflow: hidden;
+    }
+    .beat { position: absolute; inset: 0; opacity: 0; transform-origin: 0 0; will-change: transform, opacity; }
+    .card {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      padding: 24px;
+      border: 1px solid rgba(29, 33, 41, .08);
+      border-radius: 7px;
+      background: rgba(255, 255, 255, .96);
+      box-shadow: 0 20px 48px rgba(35, 42, 56, .14), 0 4px 12px rgba(35, 42, 56, .08);
+      color: #22262e;
+      font-size: 23px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .icon {
+      width: 58px;
+      height: 58px;
+      flex: 0 0 auto;
+      display: grid;
+      place-items: center;
+      border: 2px solid currentColor;
+      border-radius: 7px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .icon img { width: 42px; height: 42px; display: block; object-fit: contain; }
+    .line {
+      position: absolute;
+      height: 3px;
+      border-radius: 3px;
+      background: #aeb7c5;
+      transform-origin: left center;
+    }
+    .line.blue { background: var(--blue); }
+    .line.green { background: var(--green); }
+    .pill {
+      position: absolute;
+      padding: 10px 18px;
+      border-radius: 999px;
+      background: #fff;
+      box-shadow: 0 8px 24px rgba(45, 51, 63, .09);
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .b0 .word-window { left: 52px; top: 78px; width: 720px; height: 620px; padding: 0; overflow: hidden; display: block; }
+    .b0 .word-bar { height: 68px; display: flex; align-items: center; gap: 14px; padding: 0 22px; background: #e9f0ff; border-bottom: 1px solid #c9d7f0; }
+    .b0 .word-bar img { width: 38px; height: 38px; object-fit: contain; }
+    .b0 .word-bar span { font-size: 23px; font-weight: 600; }
+    .b0 .word-body { position: absolute; left: 34px; top: 104px; width: 410px; height: 466px; padding: 42px; background: #f7f8fa; }
+    .b0 .doc-line { height: 10px; margin-bottom: 20px; border-radius: 3px; background: #d8dee7; }
+    .b0 .doc-line.strong { width: 66%; height: 16px; background: #8ea5c8; }
+    .b0 .copilot-pane { position: absolute; right: 0; top: 68px; width: 242px; bottom: 0; padding: 28px 22px; border-left: 1px solid #d9e0e9; }
+    .b0 .copilot-head { display: flex; align-items: center; gap: 12px; font-size: 23px; font-weight: 700; }
+    .b0 .copilot-head img { width: 36px; height: 36px; object-fit: contain; }
+    .b0 .composer { position: absolute; left: 20px; right: 20px; bottom: 24px; min-height: 130px; padding: 20px; border: 2px solid rgba(37, 99, 201, .55); border-radius: 7px; font-size: 23px; line-height: 1.3; font-weight: 600; }
+    .b0 .context { right: 70px; top: 265px; width: 330px; height: 188px; flex-direction: column; color: var(--blue); }
+    .b0 .access { right: 110px; top: 518px; color: var(--green); }
+    .b0 .l1 { left: 772px; top: 386px; width: 173px; }
+    .b1 .source { left: 1052px; width: 220px; height: 104px; justify-content: flex-start; padding: 22px 24px; gap: 18px; font-size: 20px; text-align: left; }
+    .b1 .source > span:last-child { flex: 1; text-align: left; }
+    .b1 .files { top: 68px; }
+    .b1 .email { top: 196px; }
+    .b1 .chats { top: 324px; }
+    .b1 .meetings { top: 452px; }
+    .b1 .prompt { left: 28px; top: 252px; width: 232px; height: 136px; color: var(--blue); }
+    .b1 .preprocess { left: 54px; top: 412px; color: var(--blue); }
+    .b1 .graph { left: 440px; top: 226px; width: 272px; height: 188px; color: var(--blue); }
+    .b1 .grounded { left: 440px; top: 526px; width: 272px; height: 136px; color: var(--purple); }
+    .b1 .routes { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .b1 .card, .b1 .pill { z-index: 1; }
+    .b1 .route { fill: none; stroke: #aeb7c5; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; }
+    .b1 .route.primary { stroke: var(--blue); }
+
+    .b2 .grounded { left: 80px; top: 318px; width: 270px; height: 150px; color: var(--purple); }
+    .b2 .model { left: 500px; top: 190px; width: 300px; height: 410px; flex-direction: column; overflow: hidden; }
+    .model-core {
+      width: 142px;
+      height: 142px;
+      display: grid;
+      place-items: center;
+      border: 3px solid #394150;
+      border-radius: 34px;
+      transform: rotate(45deg);
+    }
+    .model-core span {
+      width: 58px;
+      height: 58px;
+      border-radius: 15px;
+      background: var(--blue);
+      transform: rotate(-45deg);
+    }
+    .b2 .response { right: 62px; top: 278px; width: 290px; height: 230px; flex-direction: column; color: var(--green); }
+    .response-lines { width: 190px; }
+    .response-lines i { display: block; height: 8px; margin: 11px 0; border-radius: 5px; background: #cbd2dd; transform-origin: left center; }
+    .response-lines i:first-child { width: 72%; background: #7d91ae; }
+    .b2 .l1 { left: 350px; top: 392px; width: 150px; }
+    .b2 .l2 { left: 800px; top: 392px; width: 123px; }
+    .token { position: absolute; width: 12px; height: 12px; border-radius: 50%; background: var(--purple); }
+    .b2 .model .t1 { left: 46px; top: 102px; } .b2 .model .t2 { left: 72px; top: 148px; }
+    .b2 .model .t3 { right: 54px; top: 112px; } .b2 .model .t4 { right: 76px; top: 164px; }
+
+    .b3 .user { left: 76px; top: 316px; width: 230px; height: 164px; flex-direction: column; color: var(--blue); }
+    .permission-box {
+      position: absolute;
+      left: 428px;
+      top: 112px;
+      width: 594px;
+      height: 574px;
+      border: 4px solid var(--green);
+      border-radius: 24px;
+      background: rgba(237, 250, 243, .32);
+      box-shadow: 0 18px 42px rgba(35, 135, 90, .09);
+    }
+    .permission-routes { position: absolute; inset: 42px 24px 28px; width: calc(100% - 48px); height: calc(100% - 70px); overflow: visible; }
+    .permission-routes path { fill: none; stroke: var(--green); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+    .permission-box .doc { z-index: 2; }
+    .permission-box .pill { left: 20px; top: -23px; color: var(--green); }
+    .doc { width: 224px; height: 126px; flex-direction: column; gap: 9px; font-size: 22px; }
+    .doc .icon { width: 42px; height: 42px; font-size: 17px; }
+    .d1 { left: 46px; top: 86px; } .d2 { right: 46px; top: 86px; }
+    .d3 { left: 46px; bottom: 78px; } .d4 { right: 46px; bottom: 78px; }
+    .restricted-zone { position: absolute; right: 0; top: 198px; width: 226px; height: 304px; padding: 38px 12px 15px; border: 3px solid var(--red); border-radius: 18px; background: rgba(255, 247, 247, .72); }
+    .restricted-zone .zone-label { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); padding: 7px 14px; border-radius: 999px; background: #fff; color: var(--red); font-size: 17px; font-weight: 700; }
+    .blocked { position: relative; left: auto; right: auto; top: auto; width: 196px; height: 102px; margin-bottom: 18px; padding: 14px; gap: 10px; color: #8d949e; background: rgba(239, 241, 244, .96); border: 0; box-shadow: 0 12px 26px rgba(47, 54, 66, .12); font-size: 18px; }
+    .blocked .icon { width: 42px; height: 42px; font-size: 17px; }
+    .b3 .l1 { left: 306px; top: 398px; width: 122px; }
+
+    .service-boundary {
+      position: absolute;
+      left: 20px;
+      top: 92px;
+      width: 1010px;
+      height: 590px;
+      border: 0;
+      border-radius: 24px;
+      background: transparent;
+    }
+    .boundary-stroke { position: absolute; inset: 0; border: 4px solid var(--purple); border-radius: 24px; transform-origin: left center; }
+    .service-boundary > .boundary-label { left: 28px; top: -23px; color: var(--purple); }
+    .flow-row { position: absolute; left: 48px; right: 48px; top: 205px; display: grid; grid-template-columns: 176px 54px 176px 54px 176px 54px 176px; align-items: center; }
+    .flow-row .card { position: relative; width: 176px; height: 132px; flex-direction: column; gap: 8px; padding: 16px; font-size: 20px; }
+    .flow-row .icon { width: 42px; height: 42px; font-size: 16px; }
+    .connector { width: 100%; height: 3px; background: var(--blue); transform-origin: left center; }
+    .service-boundary > .encrypted { left: 50%; top: auto; bottom: 68px; color: var(--green); transform: translateX(-50%); }
+    .training { right: 12px; top: 283px; width: 190px; height: 210px; flex-direction: column; color: #707782; background: rgba(244, 244, 242, .97); border: 2px solid #c9ced6; }
+    .disconnect { position: absolute; right: 205px; top: 352px; width: 34px; height: 66px; display: grid; place-items: center; color: var(--red); background: #fbfbf8; font-size: 48px; line-height: 1; font-weight: 400; }
+
+    .b5 .flow-row { left: 28px; right: 28px; top: 318px; grid-template-columns: 220px 1fr 220px 1fr 220px 1fr 220px; }
+    .b5 .flow-row .card { width: 220px; height: 150px; }
+    .b5 .card { opacity: 1; overflow: hidden; filter: grayscale(.85); box-shadow: 0 12px 30px rgba(50, 56, 68, .08); }
+    .b5 .card::after { content: ""; position: absolute; inset: 0; z-index: 2; background: rgba(255, 255, 255, var(--mute-overlay, .42)); pointer-events: none; }
+    .b5 .flow-prompt { color: var(--blue); }
+    .b5 .flow-context { color: var(--green); }
+    .b5 .flow-model { color: var(--purple); }
+    .b5 .flow-response { color: var(--green); }
+    .gate { top: 94px; width: 288px; height: 138px; color: #80530b; border: 2px solid var(--amber); background: #fffaf0; }
+    .ca { left: 327px; } .mfa { left: 660px; }
+    .gate-line { position: absolute; top: 232px; width: 3px; height: 86px; background: var(--amber); transform-origin: top center; }
+    .gl1 { left: 471px; } .gl2 { left: 804px; }
+    .verified { left: 50%; top: 514px; width: 430px; min-height: 66px; display: grid; place-items: center; padding: 14px 24px; color: #17191f; border: 1px solid rgba(23, 25, 31, .12); font-size: 23px; font-weight: 700; text-align: center; transform: translateX(-50%); }
+    .endcard {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      opacity: 0;
+      background: #f5f4e9;
+    }
+    .end-lockup { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .end-lockup img { width: 520px; height: 312px; object-fit: contain; }
+  </style>
+</head>
+<body>
+  <div id="scene" data-composition-id="copilot-architecture-editorial" data-start="0" data-width="1920" data-height="1080">
+    <div class="shell">
+      <div class="grain"></div>
+      <div class="brand"><img src="assets/official/copilot-current-mark.png" alt=""><span>Microsoft 365 Copilot</span></div>
+      <aside class="editorial">
+        <h1>How Microsoft Copilot works</h1>
+        <div class="copy-stack">
+          <p class="copy">You ask Copilot in Word to summarize a project. The request looks simple, but the useful answer depends on more than a language model. It needs the right work context, and it needs to respect your access.</p>
+          <p class="copy">First, Copilot preprocesses your prompt. It uses grounding to connect the request with relevant context, such as files, emails, chats, meetings, and other Microsoft 365 content available through Microsoft Graph.</p>
+          <p class="copy">That grounded prompt goes to a large language model. The model generates a response for the task, and Copilot returns it to the app, with the work context making the result more relevant and actionable.</p>
+          <p class="copy">But grounding does not mean tenant-wide access. Copilot can only surface organizational data the signed-in user is already allowed to view. Documents outside that permission boundary stay outside the response.</p>
+          <p class="copy">The same Microsoft 365 boundary continues to protect the interaction. Customer data remains within the service boundary, data is encrypted in transit, and prompts, responses, and Graph-accessed data are not used to train foundation language models.</p>
+          <p class="copy">Finally, Copilot honors the controls your organization already uses, including Conditional Access and multifactor authentication. So the architecture is not a model with unlimited visibility. It is an orchestrated flow: prompt, permitted context, model, protected response.</p>
+        </div>
+      </aside>
+      <main class="stage">
+        <section class="beat b0">
+          <div class="card word-window">
+            <div class="word-bar"><img src="assets/official/word-current-article.png" alt=""><span>Project brief.docx</span></div>
+            <div class="word-body"><div class="doc-line strong"></div><div class="doc-line"></div><div class="doc-line"></div><div class="doc-line"></div><div class="doc-line"></div></div>
+            <div class="copilot-pane"><div class="copilot-head"><img src="assets/official/copilot-current-mark.png" alt=""><span>Copilot</span></div><div class="composer">Summarize this project</div></div>
+          </div>
+          <span class="line blue l1"></span>
+          <div class="card context"><span class="icon">365</span><span>Work context</span></div>
+          <div class="pill access">Respects your access</div>
+        </section>
+        <section class="beat b1">
+          <div class="card prompt"><span class="icon">→</span><span>Your prompt</span></div>
+          <div class="pill preprocess">Preprocessing</div>
+          <div class="card source files"><span class="icon"><img src="assets/fluent/folder.svg" alt=""></span><span>Files</span></div>
+          <div class="card source email"><span class="icon"><img src="assets/fluent/mail.svg" alt=""></span><span>Email</span></div>
+          <div class="card source chats"><span class="icon"><img src="assets/fluent/chat.svg" alt=""></span><span>Chats</span></div>
+          <div class="card source meetings"><span class="icon"><img src="assets/fluent/calendar.svg" alt=""></span><span>Meetings</span></div>
+          <svg class="routes" viewBox="0 0 1300 760" aria-hidden="true">
+            <path class="route primary" d="M260 320H440"/>
+            <path class="route" d="M712 320H900M900 120V504"/>
+            <path class="route" d="M900 120H1052"/>
+            <path class="route" d="M900 248H1052"/>
+            <path class="route" d="M900 376H1052"/>
+            <path class="route" d="M900 504H1052"/>
+            <path class="route primary" d="M576 414V526"/>
+          </svg>
+          <div class="card graph"><span>Microsoft Graph</span></div>
+          <div class="card grounded"><span class="icon">✓</span><span>Grounded prompt</span></div>
+        </section>
+        <section class="beat b2">
+          <div class="card grounded"><span class="icon">✓</span><span>Grounded prompt</span></div>
+          <span class="line blue l1"></span><span class="line blue l2"></span>
+          <div class="card model"><span class="token t1"></span><span class="token t2"></span><span class="token t3"></span><span class="token t4"></span><div class="model-core"><span></span></div><span>Language model</span></div>
+          <div class="card response"><span class="icon">✓</span><span>Relevant response</span><div class="response-lines"><i></i><i></i><i></i></div></div>
+        </section>
+        <section class="beat b3">
+          <div class="card user"><span class="icon"><img src="assets/fluent/person.svg" alt=""></span><span>Signed-in user</span></div><span class="line green l1"></span>
+          <div class="permission-box"><div class="pill">Allowed to access</div>
+            <svg class="permission-routes" viewBox="0 0 546 504" aria-hidden="true"><path d="M273 252H158V149M273 252H388V149M273 252H158V385M273 252H388V385"/></svg>
+            <div class="card doc d1"><span class="icon"><img src="assets/fluent/board.svg" alt=""></span><span>Project brief</span></div>
+            <div class="card doc d2"><span class="icon"><img src="assets/fluent/money.svg" alt=""></span><span>Budget</span></div>
+            <div class="card doc d3"><span class="icon"><img src="assets/fluent/note-edit.svg" alt=""></span><span>Meeting notes</span></div>
+            <div class="card doc d4"><span class="icon"><img src="assets/fluent/notebook.svg" alt=""></span><span>Team plan</span></div>
+          </div>
+          <div class="restricted-zone"><span class="zone-label">Restricted</span><div class="card blocked x1"><span class="icon"><img src="assets/fluent/document.svg" alt=""></span><span>Document</span></div><div class="card blocked x2"><span class="icon"><img src="assets/fluent/document.svg" alt=""></span><span>Document</span></div></div>
+        </section>
+        <section class="beat b4">
+          <div class="service-boundary"><div class="boundary-stroke"></div><div class="pill boundary-label">Microsoft 365 service boundary</div>
+            <div class="flow-row">
+              <div class="card"><span class="icon">→</span><span>Prompt</span></div><span class="connector"></span>
+              <div class="card"><span class="icon">✓</span><span>Permitted context</span></div><span class="connector"></span>
+              <div class="card"><span class="icon">AI</span><span>Language model</span></div><span class="connector"></span>
+              <div class="card"><span class="icon">✓</span><span>Protected response</span></div>
+            </div>
+            <div class="pill encrypted">Encrypted in transit</div>
+          </div>
+          <div class="card training"><span class="icon">◇</span><span>Foundation model training</span></div><span class="disconnect">×</span>
+        </section>
+        <section class="beat b5">
+          <div class="card gate ca"><span class="icon">CA</span><span>Conditional Access</span></div><span class="gate-line gl1"></span>
+          <div class="card gate mfa"><span class="icon">2×</span><span>MFA</span></div><span class="gate-line gl2"></span>
+          <div class="flow-row">
+            <div class="card flow-prompt"><span class="icon">→</span><span>Prompt</span></div><span class="connector"></span>
+            <div class="card flow-context"><span class="icon">✓</span><span>Permitted context</span></div><span class="connector"></span>
+            <div class="card flow-model"><span class="icon">AI</span><span>Language model</span></div><span class="connector"></span>
+            <div class="card flow-response"><span class="icon">✓</span><span>Protected response</span></div>
+          </div>
+          <div class="pill verified">Organizational controls applied</div>
+        </section>
+      </main>
+    </div>
+    <div class="endcard"><div class="end-lockup"><img src="assets/official/microsoft-365-copilot.png" alt=""></div></div>
+    <audio data-composition-id="vo-1" data-start="0.6" data-duration="12.768" data-track-index="11" src="vo-azure-hd/scene-1.wav"></audio>
+    <audio data-composition-id="vo-2" data-start="17.1" data-duration="15.270" data-track-index="12" src="vo-azure-hd/scene-2.wav"></audio>
+    <audio data-composition-id="vo-3" data-start="33.6" data-duration="11.931" data-track-index="13" src="vo-azure-hd/scene-3.wav"></audio>
+    <audio data-composition-id="vo-4" data-start="47.6" data-duration="12.889" data-track-index="14" src="vo-azure-hd/scene-4.wav"></audio>
+    <audio data-composition-id="vo-5" data-start="62.2" data-duration="16.251" data-track-index="15" src="vo-azure-hd/scene-5.wav"></audio>
+    <audio data-composition-id="vo-6" data-start="80.1" data-duration="19.404" data-track-index="16" src="vo-azure-hd/scene-6.wav"></audio>
+  </div>
+  <script src="vo-azure-hd/timings.js"></script>
+  <script>
+    const duration = 103;
+    const segments = [
+      { start: 0, length: 16.5 },
+      { start: 16.5, length: 16.5 },
+      { start: 33, length: 14 },
+      { start: 47, length: 14.6 },
+      { start: 61.6, length: 17.9 },
+      { start: 79.5, length: 20.6 }
+    ];
+    const shell = document.querySelector('.shell');
+    const endcard = document.querySelector('.endcard');
+    const beats = [...document.querySelectorAll('.beat')];
+    const copies = [...document.querySelectorAll('.copy')];
+    const narrationTimings = (window.NARRATION_TIMINGS || []).map(entry => entry.value || entry);
+    const narrationOffsets = [.6, .6, .6, .6, .6, .6];
+    const clamp = value => Math.max(0, Math.min(1, value));
+    const ease = value => 1 - Math.pow(1 - clamp(value), 3);
+    const smooth = value => {
+      const progress = clamp(value);
+      return progress * progress * (3 - 2 * progress);
+    };
+    const windowed = (local, length) => Math.min(ease(local / .55), ease((length - local) / .55));
+    const cameraMoves = [
+      null,
+      { focusX: 144, focusY: 320, scale: 1.50, start: 4.05, end: 7.0 },
+      { focusX: 215, focusY: 393, scale: 1.48, start: 2.35, end: 5.0 },
+      { focusX: 191, focusY: 398, scale: 1.48, start: 3.35, end: 5.9 },
+      { focusX: 156, focusY: 363, scale: 1.42, start: 1.35, end: 4.0 },
+      null
+    ];
+    const animateCamera = (beat, local, index) => {
+      const move = cameraMoves[index];
+      if (!move) {
+        beat.style.transform = 'none';
+        return;
+      }
+      const progress = smooth((local - move.start) / (move.end - move.start));
+      const scale = move.scale + (1 - move.scale) * progress;
+      const startX = 637.5 - move.focusX * move.scale;
+      const startY = 400 - move.focusY * move.scale;
+      const translateX = startX * (1 - progress);
+      const translateY = startY * (1 - progress);
+      beat.style.transform = `translate3d(${translateX}px, ${translateY}px, 0) scale(${scale})`;
+    };
+    const reveal = (element, local, start, span = .55, distance = 18) => {
+      const progress = ease((local - start) / span);
+      element.style.opacity = progress;
+      element.style.transform = `translateY(${(1 - progress) * distance}px)`;
+    };
+    const draw = (element, local, start, span = .65) => {
+      const progress = ease((local - start) / span);
+      element.style.opacity = progress;
+      element.style.scale = `${progress} 1`;
+    };
+    const animateBeat = (beat, local, index) => {
+      if (index === 1) {
+        const sourceStarts = [8.089, 8.922, 9.881, 10.672];
+        reveal(beat.querySelector('.prompt'), local, .6, .4, 14);
+        reveal(beat.querySelector('.preprocess'), local, 1.25, .4, 10);
+        [...beat.querySelectorAll('.source')].forEach((element, sourceIndex) => reveal(element, local, sourceStarts[sourceIndex], .38, 14));
+        [...beat.querySelectorAll('.route')].forEach((element, routeIndex) => {
+          const length = element.getTotalLength();
+          const start = routeIndex === 0 ? 2.2 : routeIndex === 1 ? 4.5 : routeIndex < 6 ? sourceStarts[routeIndex - 2] + .28 : 14.2;
+          const progress = ease((local - start) / .48);
+          element.style.opacity = progress;
+          element.style.strokeDasharray = `${length}`;
+          element.style.strokeDashoffset = `${length * (1 - progress)}`;
+        });
+        reveal(beat.querySelector('.graph'), local, 4.2, .45, 14);
+        reveal(beat.querySelector('.grounded'), local, 14.5, .45, 14);
+        return;
+      }
+      if (index === 2) {
+        reveal(beat.querySelector('.grounded'), local, .839, .42, 16);
+        draw(beat.querySelector('.l1'), local, 2.15, .45);
+        reveal(beat.querySelector('.model'), local, 2.547, .48, 16);
+        draw(beat.querySelector('.l2'), local, 4.25, .45);
+        reveal(beat.querySelector('.response'), local, 4.671, .48, 16);
+        [...beat.querySelectorAll('.response-lines i')].forEach((line, lineIndex) => {
+          const progress = ease((local - (5.05 + lineIndex * .34)) / .46);
+          line.style.opacity = progress;
+          line.style.transform = `scaleX(${progress})`;
+        });
+        [...beat.querySelectorAll('.token')].forEach((element, tokenIndex) => {
+          const progress = ease((local - (3.15 + tokenIndex * .16)) / .4);
+          element.style.opacity = progress;
+          element.style.transform = `translate(${Math.sin(local * 2.4 + tokenIndex) * 12}px, ${Math.cos(local * 2 + tokenIndex) * 9}px) scale(${.5 + progress * .5})`;
+        });
+        return;
+      }
+      if (index === 3) {
+        reveal(beat.querySelector('.user'), local, .6, .45, 16);
+        reveal(beat.querySelector('.permission-box'), local, 3.55, .5, 16);
+        [...beat.querySelectorAll('.permission-box .doc')].forEach((element, docIndex) => reveal(element, local, 5.0 + docIndex * .55, .42, 12));
+        [...beat.querySelectorAll('.permission-routes path')].forEach((element, pathIndex) => draw(element, local, 5.35 + pathIndex * .45, .5));
+        reveal(beat.querySelector('.restricted-zone'), local, 9.588, .5, 16);
+        [...beat.querySelectorAll('.restricted-zone .blocked')].forEach((element, blockedIndex) => reveal(element, local, 9.9 + blockedIndex * .45, .4, 10));
+        draw(beat.querySelector('.l1'), local, 3.1, .5);
+        return;
+      }
+      if (index === 4) {
+        const boundary = beat.querySelector('.service-boundary');
+        boundary.style.opacity = 1;
+        boundary.style.transform = 'none';
+        const boundaryProgress = ease((local - 7.297) / .75);
+        const boundaryStroke = beat.querySelector('.boundary-stroke');
+        boundaryStroke.style.opacity = boundaryProgress;
+        boundaryStroke.style.transform = `scaleX(${boundaryProgress})`;
+        boundary.style.background = `rgba(255, 255, 255, ${boundaryProgress * .3})`;
+        const boundaryLabel = beat.querySelector('.boundary-label');
+        boundaryLabel.style.opacity = boundaryProgress;
+        boundaryLabel.style.transform = `translateY(${(1 - boundaryProgress) * 10}px)`;
+        [...beat.querySelectorAll('.flow-row .card')].forEach((element, cardIndex) => reveal(element, local, .35 + cardIndex * .55, .45, 12));
+        [...beat.querySelectorAll('.connector')].forEach((element, connectorIndex) => draw(element, local, .8 + connectorIndex * .55, .42));
+        const encrypted = beat.querySelector('.encrypted');
+        const encryptedProgress = ease((local - 8.1) / .45);
+        encrypted.style.opacity = encryptedProgress;
+        encrypted.style.transform = `translateX(-50%) translateY(${(1 - encryptedProgress) * 10}px)`;
+        reveal(beat.querySelector('.training'), local, 12.1, .5, 14);
+        reveal(beat.querySelector('.disconnect'), local, 13.0, .35, 8);
+        return;
+      }
+      if (index === 5) {
+        const cards = [
+          [beat.querySelector('.ca'), 5.881],
+          [beat.querySelector('.mfa'), 7.589],
+          [beat.querySelector('.flow-prompt'), 15.912],
+          [beat.querySelector('.flow-context'), 16.577],
+          [beat.querySelector('.flow-model'), 17.995],
+          [beat.querySelector('.flow-response'), 18.787]
+        ];
+        cards.forEach(([element, start]) => {
+          const progress = ease((local - start) / .45);
+          element.style.opacity = 1;
+          element.style.filter = `grayscale(${.85 * (1 - progress)})`;
+          element.style.setProperty('--mute-overlay', `${.42 * (1 - progress)}`);
+          element.style.transform = `scale(${.98 + progress * .02})`;
+          element.style.boxShadow = `0 ${12 + progress * 8}px ${30 + progress * 18}px rgba(35, 42, 56, ${.08 + progress * .08})`;
+        });
+        [...beat.querySelectorAll('.connector')].forEach((element, connectorIndex) => {
+          const progress = ease((local - [16.35, 17.75, 18.55][connectorIndex]) / .38);
+          element.style.opacity = .2 + progress * .8;
+          element.style.scale = `${.15 + progress * .85} 1`;
+        });
+        [beat.querySelector('.gl1'), beat.querySelector('.gl2')].forEach((line, lineIndex) => {
+          const progress = ease((local - [6.25, 8.2][lineIndex]) / .4);
+          line.style.opacity = .2 + progress * .8;
+          line.style.scale = `1 ${.2 + progress * .8}`;
+        });
+        const verified = beat.querySelector('.verified');
+        const verifiedProgress = ease((local - 18.7) / .35);
+        verified.style.opacity = verifiedProgress;
+        verified.style.transform = `translateX(-50%) translateY(${(1 - verifiedProgress) * 8}px)`;
+        return;
+      }
+      [...beat.querySelectorAll('.card')].forEach((element, index) => reveal(element, local, .35 + index * .28, .5, 16));
+      [...beat.querySelectorAll('.line, .connector, .gate-line')].forEach((element, index) => draw(element, local, 1.25 + index * .23, .55));
+      [...beat.querySelectorAll('.pill')].forEach((element, index) => reveal(element, local, 2.2 + index * .45, .45, 10));
+      [...beat.querySelectorAll('.token')].forEach((element, index) => {
+        const progress = ease((local - (2.2 + index * .18)) / .45);
+        element.style.opacity = progress;
+        element.style.transform = `scale(${.45 + progress * .55})`;
+      });
+    };
+    const render = time => {
+      const endProgress = ease((time - 100.1) / .55);
+      shell.style.opacity = 1 - endProgress;
+      endcard.style.opacity = endProgress;
+      endcard.querySelector('.end-lockup').style.transform = `translateY(${(1 - endProgress) * 16}px)`;
+      segments.forEach((segment, index) => {
+        const local = time - segment.start;
+        const visibility = time >= segment.start && time <= segment.start + segment.length ? windowed(local, segment.length) : 0;
+        beats[index].style.opacity = visibility;
+        copies[index].style.opacity = visibility;
+        copies[index].style.transform = `translateY(${(1 - ease(local / .55)) * 12}px)`;
+        animateBeat(beats[index], local, index);
+        animateCamera(beats[index], local, index);
+        const narrationTime = local - narrationOffsets[index];
+        const words = copies[index].querySelectorAll('.spoken-word');
+        const timings = narrationTimings[index] || [];
+        words.forEach((word, wordIndex) => word.classList.toggle('active', narrationTime >= timings[wordIndex]?.start && narrationTime < timings[wordIndex]?.end));
+      });
+    };
+    copies.forEach((copy, index) => {
+      const timings = narrationTimings[index] || [];
+      if (!timings.length) return;
+      copy.replaceChildren(...timings.map((timing, wordIndex) => {
+        const span = document.createElement('span');
+        span.className = 'spoken-word';
+        span.textContent = `${wordIndex && !/^[.,:;!?]$/.test(timing.word) ? ' ' : ''}${timing.word}`;
+        return span;
+      }));
+    });
+    window.__timelines = window.__timelines || {};
+    window.__timelines['copilot-architecture-editorial'] = { duration: () => duration, seek: render, time: render, pause: () => {} };
+    render(0);
+  </script>
+</body>
+</html>

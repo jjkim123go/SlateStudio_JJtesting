@@ -1,0 +1,187 @@
+[
+  {
+    "word": "First",
+    "start": 0.05,
+    "end": 0.624
+  },
+  {
+    "word": ",",
+    "start": 0.726,
+    "end": 0.726
+  },
+  {
+    "word": "Copilot",
+    "start": 0.739,
+    "end": 1.326
+  },
+  {
+    "word": "preprocesses",
+    "start": 1.338,
+    "end": 2.129
+  },
+  {
+    "word": "your",
+    "start": 2.142,
+    "end": 2.257
+  },
+  {
+    "word": "prompt",
+    "start": 2.269,
+    "end": 2.729
+  },
+  {
+    "word": ".",
+    "start": 2.741,
+    "end": 2.843
+  },
+  {
+    "word": "It",
+    "start": 3.098,
+    "end": 3.29
+  },
+  {
+    "word": "uses",
+    "start": 3.303,
+    "end": 3.609
+  },
+  {
+    "word": "grounding",
+    "start": 3.621,
+    "end": 3.979
+  },
+  {
+    "word": "to",
+    "start": 3.991,
+    "end": 4.093
+  },
+  {
+    "word": "connect",
+    "start": 4.106,
+    "end": 4.514
+  },
+  {
+    "word": "the",
+    "start": 4.527,
+    "end": 4.604
+  },
+  {
+    "word": "request",
+    "start": 4.616,
+    "end": 5.127
+  },
+  {
+    "word": "with",
+    "start": 5.139,
+    "end": 5.318
+  },
+  {
+    "word": "relevant",
+    "start": 5.356,
+    "end": 5.764
+  },
+  {
+    "word": "context",
+    "start": 5.777,
+    "end": 6.364
+  },
+  {
+    "word": ",",
+    "start": 6.466,
+    "end": 6.581
+  },
+  {
+    "word": "such",
+    "start": 6.593,
+    "end": 6.797
+  },
+  {
+    "word": "as",
+    "start": 6.81,
+    "end": 6.963
+  },
+  {
+    "word": "files",
+    "start": 6.976,
+    "end": 7.524
+  },
+  {
+    "word": ",",
+    "start": 7.627,
+    "end": 7.882
+  },
+  {
+    "word": "emails",
+    "start": 7.882,
+    "end": 8.43
+  },
+  {
+    "word": ",",
+    "start": 8.545,
+    "end": 8.621
+  },
+  {
+    "word": "chats",
+    "start": 8.634,
+    "end": 9.17
+  },
+  {
+    "word": ",",
+    "start": 9.272,
+    "end": 9.285
+  },
+  {
+    "word": "meetings",
+    "start": 9.297,
+    "end": 9.922
+  },
+  {
+    "word": ",",
+    "start": 9.935,
+    "end": 9.935
+  },
+  {
+    "word": "and",
+    "start": 9.948,
+    "end": 10.267
+  },
+  {
+    "word": "other",
+    "start": 10.433,
+    "end": 10.649
+  },
+  {
+    "word": "Microsoft 365",
+    "start": 10.662,
+    "end": 12.295
+  },
+  {
+    "word": "content",
+    "start": 12.308,
+    "end": 12.831
+  },
+  {
+    "word": "available",
+    "start": 12.869,
+    "end": 13.456
+  },
+  {
+    "word": "through",
+    "start": 13.468,
+    "end": 13.685
+  },
+  {
+    "word": "Microsoft",
+    "start": 13.698,
+    "end": 14.412
+  },
+  {
+    "word": "Graph",
+    "start": 14.425,
+    "end": 14.871
+  },
+  {
+    "word": ".",
+    "start": 14.884,
+    "end": 14.986
+  }
+]

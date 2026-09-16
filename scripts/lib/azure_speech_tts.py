@@ -25,6 +25,7 @@ Design notes
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import time
 import wave
@@ -83,6 +84,40 @@ def _aad_auth_token(token: str) -> str:
     return f"aad#{_resource_id()}#{token}"
 
 
+def _get_key_credentials() -> tuple[Optional[str], Optional[str]]:
+    """Resolve Speech key credentials without exposing secret values.
+
+    Environment variables take precedence. Windows Credential Manager supports
+    both Slate's service name and the legacy TTSHotkey entry used by OneTake.
+    """
+    key = os.environ.get("SLATE_AZURE_SPEECH_KEY")
+    region = os.environ.get("SLATE_AZURE_SPEECH_REGION") or os.environ.get(
+        "SLATE_AZURE_LOCATION"
+    )
+    if key and region:
+        return key, region
+
+    try:
+        import keyring
+
+        for service_name in ("SlateAzureSpeech", "TTSHotkey"):
+            stored_key = keyring.get_password(service_name, "azure_api_key")
+            stored_region = keyring.get_password(service_name, "azure_region")
+            if stored_key and stored_region:
+                return stored_key, stored_region
+    except Exception:
+        pass
+    return None, None
+
+
+def is_configured() -> bool:
+    """Return whether either key authentication or configured AAD can be used."""
+    key, region = _get_key_credentials()
+    if key and region:
+        return True
+    return bool(_SUB and _RG and _ACCT and _REGION)
+
+
 # ── Voice catalog (full, cached, filterable) ─────────────────────────────────
 def list_voices(
     locale: Optional[str] = None,
@@ -136,11 +171,19 @@ def _load_voice_catalog(force_refresh: bool = False) -> list[dict[str, Any]]:
 
 def _fetch_voice_catalog() -> list[dict[str, Any]]:
     import urllib.request
-    token = _get_token()
-    if not token:
-        raise RuntimeError("No Azure token (az login?) — cannot list Speech voices")
-    url = f"https://{_REGION}.tts.speech.microsoft.com/cognitiveservices/voices/list"
-    req = urllib.request.Request(url, headers={"Authorization": _aad_auth_token(token)})
+    key, key_region = _get_key_credentials()
+    region = key_region or _REGION
+    if key:
+        headers = {"Ocp-Apim-Subscription-Key": key}
+    else:
+        token = _get_token()
+        if not token:
+            raise RuntimeError(
+                "No Azure Speech key or Azure token (az login?) — cannot list voices"
+            )
+        headers = {"Authorization": _aad_auth_token(token)}
+    url = f"https://{region}.tts.speech.microsoft.com/cognitiveservices/voices/list"
+    req = urllib.request.Request(url, headers=headers)
     with urllib.request.urlopen(req, timeout=40) as resp:
         return json.loads(resp.read().decode("utf-8"))
 
@@ -207,14 +250,21 @@ def synthesize(
     """
     import azure.cognitiveservices.speech as speechsdk
 
-    token = _get_token()
-    if not token:
-        raise RuntimeError("No Azure token (az login?) — cannot synthesize speech")
-
     out = Path(output_path)
     out.parent.mkdir(parents=True, exist_ok=True)
 
-    speech_config = speechsdk.SpeechConfig(auth_token=_aad_auth_token(token), region=_REGION)
+    key, key_region = _get_key_credentials()
+    if key and key_region:
+        speech_config = speechsdk.SpeechConfig(subscription=key, region=key_region)
+    else:
+        token = _get_token()
+        if not token:
+            raise RuntimeError(
+                "No Azure Speech key or Azure token (az login?) — cannot synthesize speech"
+            )
+        speech_config = speechsdk.SpeechConfig(
+            auth_token=_aad_auth_token(token), region=_REGION
+        )
     speech_config.set_speech_synthesis_output_format(
         speechsdk.SpeechSynthesisOutputFormat.Riff24Khz16BitMonoPcm
     )

@@ -13,6 +13,7 @@ dependencies = [
     "openai>=1.0",
     "azure-identity>=1.14",
     "azure-cognitiveservices-speech>=1.41",
+    "keyring>=25.0",
 ]
 
 [project.scripts]

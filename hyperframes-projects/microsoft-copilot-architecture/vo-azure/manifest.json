@@ -1,0 +1,42 @@
+[
+  {
+    "scene": "scene-2",
+    "text": "First, Copilot preprocesses your prompt. It uses grounding to connect the request with relevant context, such as files, emails, chats, meetings, and other Microsoft 365 content available through Microsoft Graph.",
+    "audio": "scene-2.wav",
+    "duration_seconds": 15.201,
+    "voice": "en-US-AvaNeural",
+    "word_timings": "scene-2.words.json"
+  },
+  {
+    "scene": "scene-3",
+    "text": "That grounded prompt goes to a large language model. The model generates a response for the task, and Copilot returns it to the app, with the work context making the result more relevant and actionable.",
+    "audio": "scene-3.wav",
+    "duration_seconds": 12.776,
+    "voice": "en-US-AvaNeural",
+    "word_timings": "scene-3.words.json"
+  },
+  {
+    "scene": "scene-4",
+    "text": "But grounding does not mean tenant-wide access. Copilot can only surface organizational data the signed-in user is already allowed to view. Documents outside that permission boundary stay outside the response.",
+    "audio": "scene-4.wav",
+    "duration_seconds": 13.313,
+    "voice": "en-US-AvaNeural",
+    "word_timings": "scene-4.words.json"
+  },
+  {
+    "scene": "scene-5",
+    "text": "The same Microsoft 365 boundary continues to protect the interaction. Customer data remains within the service boundary, data is encrypted in transit, and prompts, responses, and Graph-accessed data are not used to train foundation language models.",
+    "audio": "scene-5.wav",
+    "duration_seconds": 16.564,
+    "voice": "en-US-AvaNeural",
+    "word_timings": "scene-5.words.json"
+  },
+  {
+    "scene": "scene-6",
+    "text": "Finally, Copilot honors the controls your organization already uses, including Conditional Access and multifactor authentication. So the architecture is not a model with unlimited visibility. It is an orchestrated flow: prompt, permitted context, model, protected response.",
+    "audio": "scene-6.wav",
+    "duration_seconds": 19.081,
+    "voice": "en-US-AvaNeural",
+    "word_timings": "scene-6.words.json"
+  }
+]

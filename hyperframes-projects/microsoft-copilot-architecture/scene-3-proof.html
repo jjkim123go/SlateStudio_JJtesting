@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <style>
+    :root { --unit: 32px; --safe: 80px; --ink: #182230; --muted: #667085; --blue: #185abd; --green: #16834b; --line: #b8c4d2; }
+    * { box-sizing: border-box; }
+    html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; background: #f5f8fc; font-family: "Segoe UI", sans-serif; letter-spacing: 0; }
+    #scene { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: linear-gradient(115deg, #f8fafd 0%, #edf3fa 100%); }
+    .grid { position: absolute; inset: var(--safe); background-image: linear-gradient(rgba(57,77,104,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(57,77,104,.05) 1px, transparent 1px); background-size: var(--unit) var(--unit); }
+    .grounded { position: absolute; left: 96px; top: 448px; width: 352px; height: 136px; display: grid; place-items: center; border: 3px solid rgba(24,90,189,.5); border-radius: 6px; background: #fff; color: #285fc8; font-size: 34px; font-weight: 750; box-shadow: 0 18px 44px rgba(24,34,48,.1); }
+    .model { position: absolute; left: 624px; top: 208px; width: 576px; height: 624px; display: grid; place-items: center; border: 3px solid #cbd5e1; border-radius: 8px; background: rgba(255,255,255,.97); box-shadow: 0 24px 60px rgba(24,34,48,.12); }
+    .model-core { position: relative; width: 286px; height: 286px; border: 4px solid #3b4656; border-radius: 58px; transform: rotate(45deg); }
+    .model-core::before, .model-core::after { content: ""; position: absolute; inset: 48px; border: 3px solid #8b96a6; border-radius: 34px; }
+    .model-core::after { inset: 100px; border-radius: 18px; border-color: var(--blue); background: var(--blue); }
+    .model-label { position: absolute; left: 0; right: 0; bottom: 58px; text-align: center; color: #344054; font-size: 32px; font-weight: 700; }
+    .tokens { position: absolute; inset: 62px; }
+    .token { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: var(--blue); }
+    .t1 { left: 28px; top: 126px; } .t2 { left: 70px; top: 74px; } .t3 { right: 70px; top: 74px; } .t4 { right: 28px; top: 126px; }
+    .word { position: absolute; right: 80px; top: 128px; width: 560px; height: 720px; overflow: hidden; border: 2px solid #c9d3df; border-radius: 8px; background: #fff; box-shadow: 0 24px 60px rgba(32,33,36,.13); }
+    .word-titlebar { height: 64px; display: flex; align-items: center; gap: 16px; padding: 0 24px; background: #e9f0ff; border-bottom: 1px solid #c9d7f0; color: #334155; font-size: 24px; font-weight: 650; }
+    .word-mark { width: 38px; height: 38px; object-fit: contain; }
+    .window-name { color: #64748b; font-weight: 500; }
+    .copilot { position: absolute; inset: 64px 0 0; padding: 30px; background: #fff; }
+    .copilot-head { display: flex; align-items: center; gap: 14px; color: #243047; font-size: 28px; font-weight: 750; }
+    .copilot-mark { width: 40px; height: 36px; object-fit: contain; }
+    .request { margin-top: 40px; margin-left: 94px; padding: 22px 26px; border-radius: 6px; background: #edf3ff; color: #344054; font-size: 25px; line-height: 1.35; font-weight: 600; }
+    .response { margin-top: 30px; padding: 30px; border: 2px solid rgba(22,131,75,.36); border-radius: 6px; background: #fff; box-shadow: 0 14px 32px rgba(24,34,48,.08); }
+    .response-head { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; color: var(--green); font-size: 24px; font-weight: 750; }
+    .check { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--green); color: #fff; font-size: 19px; }
+    .response-line { height: 12px; margin-bottom: 18px; border-radius: 3px; background: #cfd8e5; }
+    .response-line.strong { width: 82%; height: 16px; background: #7f96b8; }
+    .response-line.short { width: 66%; }
+    svg.flow { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: visible; }
+    .route { fill: none; stroke: var(--blue); stroke-width: 10; stroke-linecap: round; }
+    .signal { fill: #fff; stroke: var(--blue); stroke-width: 8; }
+  </style>
+</head>
+<body>
+  <div id="scene" data-composition-id="copilot-response-direct" data-start="0" data-width="1920" data-height="1080">
+    <div class="grid"></div>
+    <svg class="flow" aria-hidden="true">
+      <path id="route-in" class="route" d="M448 516 H624" pathLength="1"/>
+      <path id="route-out" class="route" d="M1200 516 H1280" pathLength="1"/>
+      <circle id="signal-in" class="signal" r="15" cx="448" cy="516"/>
+      <circle id="signal-out" class="signal" r="15" cx="1200" cy="516"/>
+    </svg>
+    <div class="grounded">Grounded prompt</div>
+    <div class="model"><div class="tokens"><span class="token t1"></span><span class="token t2"></span><span class="token t3"></span><span class="token t4"></span></div><div class="model-core"></div><div class="model-label">Language model</div></div>
+    <div class="word">
+      <div class="word-titlebar"><img class="word-mark" src="assets/official/word-current-article.png" alt=""><span>Project brief.docx</span><span class="window-name">Word</span></div>
+      <div class="copilot"><div class="copilot-head"><img class="copilot-mark" src="assets/official/copilot-mark.png" alt=""><span>Copilot</span></div><div class="request">Summarize this project</div><div class="response"><div class="response-head"><span class="check">✓</span><span>Response</span></div><div class="response-line strong"></div><div class="response-line"></div><div class="response-line"></div><div class="response-line short"></div></div></div>
+    </div>
+  </div>
+  <script>
+    const duration = 14;
+    const scene = document.getElementById('scene');
+    const grounded = scene.querySelector('.grounded');
+    const model = scene.querySelector('.model');
+    const tokens = [...scene.querySelectorAll('.token')];
+    const word = scene.querySelector('.word');
+    const request = scene.querySelector('.request');
+    const response = scene.querySelector('.response');
+    const responseLines = [...scene.querySelectorAll('.response-line')];
+    const routeIn = document.getElementById('route-in');
+    const routeOut = document.getElementById('route-out');
+    const signalIn = document.getElementById('signal-in');
+    const signalOut = document.getElementById('signal-out');
+    const clamp = value => Math.max(0, Math.min(1, value));
+    const ease = value => 1 - Math.pow(1 - clamp(value), 3);
+    const reveal = (element, time, start, span = .45, distance = 18) => {
+      const progress = ease((time - start) / span);
+      element.style.opacity = progress;
+      element.style.transform = `translateX(${(1 - progress) * distance}px)`;
+    };
+    const draw = (path, time, start, span) => { path.style.strokeDasharray = '1'; path.style.strokeDashoffset = 1 - ease((time - start) / span); };
+    const render = time => {
+      const slide = Math.pow(clamp((time - (duration - .7)) / .7), 3);
+      scene.style.transform = `translateX(${1920 * slide}px)`;
+      reveal(grounded, time, .3, .5, -18);
+      reveal(model, time, 1.5, .55, 18);
+      draw(routeIn, time, 2.5, .8);
+      const inProgress = ease((time - 2.5) / .8); signalIn.style.opacity = clamp((time - 2.5) / .15); signalIn.setAttribute('cx', 448 + 176 * inProgress);
+      const compress = ease((time - 3.2) / 1.2); grounded.style.transform = `translateX(${176 * compress}px) scale(${1 - .72 * compress})`; grounded.style.opacity = 1 - compress;
+      const consumed = ease((time - 4.35) / .35); routeIn.style.opacity = 1 - consumed; signalIn.style.opacity = Math.min(Number(signalIn.style.opacity || 0), 1 - consumed);
+      tokens.forEach((token, index) => { const progress = ease((time - (3.6 + index * .18)) / .5); token.style.opacity = progress; token.style.transform = `scale(${.5 + .5 * progress})`; });
+      reveal(word, time, 6.2, .6, 20);
+      reveal(request, time, 6.8, .4, 12);
+      draw(routeOut, time, 8.0, .7);
+      const outProgress = ease((time - 8.0) / .7); signalOut.style.opacity = clamp((time - 8.0) / .15); signalOut.setAttribute('cx', 1200 + 80 * outProgress);
+      reveal(response, time, 8.55, .5, 18);
+      responseLines.forEach((line, index) => { const progress = ease((time - (9.2 + index * .32)) / .45); line.style.opacity = progress; line.style.transform = `scaleX(${progress})`; line.style.transformOrigin = 'left center'; });
+    };
+    window.__timelines = window.__timelines || {};
+    window.__timelines['copilot-response-direct'] = { duration: () => duration, seek: render, time: render, pause: () => {} };
+    render(0);
+  </script>
+</body>
+</html>

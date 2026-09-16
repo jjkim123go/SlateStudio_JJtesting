@@ -1,0 +1,197 @@
+[
+  {
+    "word": "That",
+    "start": 0.031,
+    "end": 0.239
+  },
+  {
+    "word": "grounded",
+    "start": 0.239,
+    "end": 0.655
+  },
+  {
+    "word": "prompt",
+    "start": 0.656,
+    "end": 1.072
+  },
+  {
+    "word": "goes",
+    "start": 1.072,
+    "end": 1.363
+  },
+  {
+    "word": "to",
+    "start": 1.364,
+    "end": 1.53
+  },
+  {
+    "word": "a",
+    "start": 1.531,
+    "end": 1.572
+  },
+  {
+    "word": "large",
+    "start": 1.572,
+    "end": 1.947
+  },
+  {
+    "word": "language",
+    "start": 1.947,
+    "end": 2.322
+  },
+  {
+    "word": "model",
+    "start": 2.322,
+    "end": 2.863
+  },
+  {
+    "word": ".",
+    "start": 2.864,
+    "end": 2.864
+  },
+  {
+    "word": "The",
+    "start": 3.071,
+    "end": 3.28
+  },
+  {
+    "word": "model",
+    "start": 3.281,
+    "end": 3.571
+  },
+  {
+    "word": "generates",
+    "start": 3.571,
+    "end": 4.029
+  },
+  {
+    "word": "a",
+    "start": 4.03,
+    "end": 4.071
+  },
+  {
+    "word": "response",
+    "start": 4.071,
+    "end": 4.572
+  },
+  {
+    "word": "for",
+    "start": 4.572,
+    "end": 4.697
+  },
+  {
+    "word": "the",
+    "start": 4.697,
+    "end": 4.822
+  },
+  {
+    "word": "task",
+    "start": 4.822,
+    "end": 5.405
+  },
+  {
+    "word": ",",
+    "start": 5.406,
+    "end": 5.406
+  },
+  {
+    "word": "and",
+    "start": 5.406,
+    "end": 5.739
+  },
+  {
+    "word": "Copilot",
+    "start": 5.739,
+    "end": 6.322
+  },
+  {
+    "word": "returns",
+    "start": 6.322,
+    "end": 6.697
+  },
+  {
+    "word": "it",
+    "start": 6.697,
+    "end": 6.78
+  },
+  {
+    "word": "to",
+    "start": 6.781,
+    "end": 6.864
+  },
+  {
+    "word": "the",
+    "start": 6.864,
+    "end": 7.072
+  },
+  {
+    "word": "app",
+    "start": 7.072,
+    "end": 7.572
+  },
+  {
+    "word": ",",
+    "start": 7.572,
+    "end": 7.572
+  },
+  {
+    "word": "with",
+    "start": 7.656,
+    "end": 7.906
+  },
+  {
+    "word": "the",
+    "start": 7.906,
+    "end": 8.072
+  },
+  {
+    "word": "work",
+    "start": 8.072,
+    "end": 8.322
+  },
+  {
+    "word": "context",
+    "start": 8.322,
+    "end": 9.03
+  },
+  {
+    "word": "making",
+    "start": 9.031,
+    "end": 9.322
+  },
+  {
+    "word": "the",
+    "start": 9.322,
+    "end": 9.445
+  },
+  {
+    "word": "result",
+    "start": 9.446,
+    "end": 9.862
+  },
+  {
+    "word": "more",
+    "start": 9.863,
+    "end": 10.072
+  },
+  {
+    "word": "relevant",
+    "start": 10.072,
+    "end": 10.737
+  },
+  {
+    "word": "and",
+    "start": 10.738,
+    "end": 11.03
+  },
+  {
+    "word": "actionable",
+    "start": 11.031,
+    "end": 11.946
+  },
+  {
+    "word": ".",
+    "start": 11.946,
+    "end": 11.946
+  }
+]

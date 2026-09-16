@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=1920,height=1080">
+  <title>Microsoft 365 Copilot Architecture - Demo Day Storyboard</title>
+  <style>
+    :root {
+      --ink: #17191f;
+      --muted: #606772;
+      --line: #d9dde3;
+      --blue: #2563c9;
+      --purple: #7956d8;
+      --green: #23875a;
+      --paper: #fbfcfa;
+    }
+    * { box-sizing: border-box; }
+    html, body { width: 1920px; height: 1080px; margin: 0; overflow: hidden; }
+    body {
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 80% 8%, rgba(98, 205, 231, .16), transparent 27%),
+        radial-gradient(circle at 92% 78%, rgba(241, 217, 119, .12), transparent 29%),
+        var(--paper);
+      font-family: "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+    .page { width: 100%; height: 100%; padding: 42px 58px 34px; display: grid; grid-template-rows: 104px 1fr 36px; gap: 20px; }
+    header { display: grid; grid-template-columns: 1fr auto; align-items: end; border-bottom: 1px solid var(--line); padding-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 13px; margin-bottom: 10px; font-size: 17px; font-weight: 650; }
+    .brand img { width: 24px; height: 24px; object-fit: contain; }
+    h1 { margin: 0; font-size: 38px; line-height: 1; font-weight: 720; }
+    .summary { width: 660px; margin: 0 0 2px; color: #343941; font-size: 18px; line-height: 1.45; text-align: right; }
+    .grid { min-height: 0; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 20px; }
+    article { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 7px; background: rgba(255, 255, 255, .9); box-shadow: 0 10px 24px rgba(33, 39, 49, .07); }
+    .frame { position: relative; width: 100%; height: 250px; overflow: hidden; background: #f4f6f7; border-bottom: 1px solid var(--line); }
+    .frame img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .number { position: absolute; left: 14px; top: 14px; min-width: 38px; height: 30px; display: grid; place-items: center; padding: 0 9px; border-radius: 4px; color: #fff; background: rgba(23, 25, 31, .88); font-size: 14px; font-weight: 750; }
+    .details { padding: 12px 16px 13px; }
+    .title-row { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; }
+    h2 { margin: 0; font-size: 19px; line-height: 1.2; font-weight: 720; }
+    time { flex: 0 0 auto; color: var(--blue); font-size: 14px; font-weight: 700; }
+    .beat { min-height: 36px; margin: 7px 0 8px; color: #3f454e; font-size: 14px; line-height: 1.3; }
+    .motion { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 600; }
+    .motion::before { content: ""; width: 22px; height: 3px; border-radius: 2px; background: var(--accent, var(--blue)); }
+    article:nth-child(2), article:nth-child(3) { --accent: var(--purple); }
+    article:nth-child(4), article:nth-child(6) { --accent: var(--green); }
+    footer { display: flex; align-items: center; justify-content: space-between; color: #606772; font-size: 14px; }
+    .arc { color: #343941; font-weight: 650; }
+    @media print {
+      @page { size: 16in 9in; margin: 0; }
+      body { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <div>
+        <div class="brand"><img src="assets/official/copilot-current-mark.png" alt=""><span>Microsoft 365 Copilot</span></div>
+        <h1>Demo Day Video Storyboard</h1>
+      </div>
+      <p class="summary">A simple request becomes a grounded, permission-aware, protected response through Microsoft 365 Copilot.</p>
+    </header>
+
+    <section class="grid" aria-label="Six-scene storyboard">
+      <article>
+        <div class="frame"><img src="storyboard-frames/01-context.jpg" alt="Copilot in Word connected to work context"><span class="number">01</span></div>
+        <div class="details"><div class="title-row"><h2>Set up the problem</h2><time>0:00–0:16</time></div><p class="beat">A simple request needs the right work context and must respect the user’s access.</p><div class="motion">Static wide composition; UI and context reveal</div></div>
+      </article>
+      <article>
+        <div class="frame"><img src="storyboard-frames/02-grounding.jpg" alt="Prompt grounded through Microsoft Graph"><span class="number">02</span></div>
+        <div class="details"><div class="title-row"><h2>Ground the prompt</h2><time>0:16–0:33</time></div><p class="beat">Copilot preprocesses the request and connects it to relevant Microsoft 365 content through Graph.</p><div class="motion">Start tight on prompt; pull back as Graph expands</div></div>
+      </article>
+      <article>
+        <div class="frame"><img src="storyboard-frames/03-generation.jpg" alt="Grounded prompt sent to language model and returned as a response"><span class="number">03</span></div>
+        <div class="details"><div class="title-row"><h2>Generate the response</h2><time>0:33–0:47</time></div><p class="beat">The grounded prompt reaches the model and returns as a relevant, actionable response.</p><div class="motion">Start tight on grounded prompt; reveal model and result</div></div>
+      </article>
+      <article>
+        <div class="frame"><img src="storyboard-frames/04-permissions.jpg" alt="Signed-in user and permission boundary"><span class="number">04</span></div>
+        <div class="details"><div class="title-row"><h2>Enforce permissions</h2><time>0:47–1:02</time></div><p class="beat">Only organizational content the signed-in user can already access is eligible for grounding.</p><div class="motion">Start on user; widen to allowed and restricted data</div></div>
+      </article>
+      <article>
+        <div class="frame"><img src="storyboard-frames/05-boundary.jpg" alt="Protected flow inside the Microsoft 365 service boundary"><span class="number">05</span></div>
+        <div class="details"><div class="title-row"><h2>Protect the interaction</h2><time>1:02–1:20</time></div><p class="beat">Data stays inside the Microsoft 365 boundary, encrypted and excluded from foundation-model training.</p><div class="motion">Follow prompt node; widen to boundary and no-training proof</div></div>
+      </article>
+      <article>
+        <div class="frame"><img src="storyboard-frames/06-controls.jpg" alt="Conditional Access and MFA applied to the complete Copilot flow"><span class="number">06</span></div>
+        <div class="details"><div class="title-row"><h2>Apply organizational controls</h2><time>1:20–1:40</time></div><p class="beat">Conditional Access and MFA govern the complete orchestrated flow from prompt to protected response.</p><div class="motion">Static wide composition; controls emphasize in sequence</div></div>
+      </article>
+    </section>
+
+    <footer><span class="arc">Narrative arc: Ask → Ground → Generate → Authorize → Protect → Govern</span><span>Runtime 1:43 · 1920×1080 · DragonHD narration</span></footer>
+  </main>
+</body>
+</html>

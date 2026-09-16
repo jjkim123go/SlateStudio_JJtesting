@@ -1,0 +1,212 @@
+[
+  {
+    "word": "You",
+    "start": 0.072,
+    "end": 0.28
+  },
+  {
+    "word": "ask",
+    "start": 0.281,
+    "end": 0.614
+  },
+  {
+    "word": "Copilot",
+    "start": 0.614,
+    "end": 1.364
+  },
+  {
+    "word": "in",
+    "start": 1.364,
+    "end": 1.489
+  },
+  {
+    "word": "Word",
+    "start": 1.489,
+    "end": 2.03
+  },
+  {
+    "word": "to",
+    "start": 2.031,
+    "end": 2.156
+  },
+  {
+    "word": "summarize",
+    "start": 2.156,
+    "end": 2.656
+  },
+  {
+    "word": "a",
+    "start": 2.656,
+    "end": 2.739
+  },
+  {
+    "word": "project",
+    "start": 2.739,
+    "end": 3.197
+  },
+  {
+    "word": ".",
+    "start": 3.197,
+    "end": 3.197
+  },
+  {
+    "word": "The",
+    "start": 3.197,
+    "end": 3.863
+  },
+  {
+    "word": "request",
+    "start": 3.864,
+    "end": 4.28
+  },
+  {
+    "word": "looks",
+    "start": 4.281,
+    "end": 4.489
+  },
+  {
+    "word": "simple",
+    "start": 4.489,
+    "end": 5.239
+  },
+  {
+    "word": ",",
+    "start": 5.239,
+    "end": 5.239
+  },
+  {
+    "word": "but",
+    "start": 5.322,
+    "end": 5.488
+  },
+  {
+    "word": "the",
+    "start": 5.489,
+    "end": 5.655
+  },
+  {
+    "word": "useful",
+    "start": 5.656,
+    "end": 6.031
+  },
+  {
+    "word": "answer",
+    "start": 6.031,
+    "end": 6.364
+  },
+  {
+    "word": "depends",
+    "start": 6.364,
+    "end": 6.864
+  },
+  {
+    "word": "on",
+    "start": 6.864,
+    "end": 7.072
+  },
+  {
+    "word": "more",
+    "start": 7.072,
+    "end": 7.28
+  },
+  {
+    "word": "than",
+    "start": 7.281,
+    "end": 7.447
+  },
+  {
+    "word": "a",
+    "start": 7.447,
+    "end": 7.53
+  },
+  {
+    "word": "language",
+    "start": 7.531,
+    "end": 7.947
+  },
+  {
+    "word": "model",
+    "start": 7.947,
+    "end": 8.445
+  },
+  {
+    "word": ".",
+    "start": 8.446,
+    "end": 8.446
+  },
+  {
+    "word": "It",
+    "start": 8.655,
+    "end": 8.947
+  },
+  {
+    "word": "needs",
+    "start": 8.947,
+    "end": 9.28
+  },
+  {
+    "word": "the",
+    "start": 9.281,
+    "end": 9.406
+  },
+  {
+    "word": "right",
+    "start": 9.406,
+    "end": 9.656
+  },
+  {
+    "word": "work",
+    "start": 9.656,
+    "end": 9.989
+  },
+  {
+    "word": "context",
+    "start": 9.989,
+    "end": 10.864
+  },
+  {
+    "word": ",",
+    "start": 10.864,
+    "end": 10.864
+  },
+  {
+    "word": "and",
+    "start": 10.864,
+    "end": 11.114
+  },
+  {
+    "word": "it",
+    "start": 11.114,
+    "end": 11.197
+  },
+  {
+    "word": "needs",
+    "start": 11.197,
+    "end": 11.488
+  },
+  {
+    "word": "to",
+    "start": 11.489,
+    "end": 11.572
+  },
+  {
+    "word": "respect",
+    "start": 11.572,
+    "end": 11.988
+  },
+  {
+    "word": "your",
+    "start": 11.989,
+    "end": 12.155
+  },
+  {
+    "word": "access",
+    "start": 12.156,
+    "end": 12.821
+  },
+  {
+    "word": ".",
+    "start": 12.821,
+    "end": 12.821
+  }
+]

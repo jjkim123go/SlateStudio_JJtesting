@@ -1,0 +1,62 @@
+[
+  {
+    "scene": "scene-1",
+    "text": "You ask Copilot in Word to summarize a project. The request looks simple, but the useful answer depends on more than a language model. It needs the right work context, and it needs to respect your access.",
+    "audio": "scene-1.wav",
+    "duration_seconds": 12.768,
+    "voice": "en-US-Ava:DragonHDLatestNeural",
+    "rate": "-4%",
+    "temperature": 0.35,
+    "word_timings": "scene-1.words.json"
+  },
+  {
+    "scene": "scene-2",
+    "text": "First, Copilot preprocesses your prompt. It uses grounding to connect the request with relevant context, such as files, emails, chats, meetings, and other Microsoft 365 content available through Microsoft Graph.",
+    "audio": "scene-2.wav",
+    "duration_seconds": 15.27,
+    "voice": "en-US-Ava:DragonHDLatestNeural",
+    "rate": "-4%",
+    "temperature": 0.35,
+    "word_timings": "scene-2.words.json"
+  },
+  {
+    "scene": "scene-3",
+    "text": "That grounded prompt goes to a large language model. The model generates a response for the task, and Copilot returns it to the app, with the work context making the result more relevant and actionable.",
+    "audio": "scene-3.wav",
+    "duration_seconds": 11.931,
+    "voice": "en-US-Ava:DragonHDLatestNeural",
+    "rate": "-4%",
+    "temperature": 0.35,
+    "word_timings": "scene-3.words.json"
+  },
+  {
+    "scene": "scene-4",
+    "text": "But grounding does not mean tenant-wide access. Copilot can only surface organizational data the signed-in user is already allowed to view. Documents outside that permission boundary stay outside the response.",
+    "audio": "scene-4.wav",
+    "duration_seconds": 12.889,
+    "voice": "en-US-Ava:DragonHDLatestNeural",
+    "rate": "-4%",
+    "temperature": 0.35,
+    "word_timings": "scene-4.words.json"
+  },
+  {
+    "scene": "scene-5",
+    "text": "The same Microsoft 365 boundary continues to protect the interaction. Customer data remains within the service boundary, data is encrypted in transit, and prompts, responses, and Graph-accessed data are not used to train foundation language models.",
+    "audio": "scene-5.wav",
+    "duration_seconds": 16.251,
+    "voice": "en-US-Ava:DragonHDLatestNeural",
+    "rate": "-4%",
+    "temperature": 0.35,
+    "word_timings": "scene-5.words.json"
+  },
+  {
+    "scene": "scene-6",
+    "text": "Finally, Copilot honors the controls your organization already uses, including Conditional Access and multifactor authentication. So the architecture is not a model with unlimited visibility. It is an orchestrated flow: prompt, permitted context, model, protected response.",
+    "audio": "scene-6.wav",
+    "duration_seconds": 19.404,
+    "voice": "en-US-Ava:DragonHDLatestNeural",
+    "rate": "-4%",
+    "temperature": 0.35,
+    "word_timings": "scene-6.words.json"
+  }
+]

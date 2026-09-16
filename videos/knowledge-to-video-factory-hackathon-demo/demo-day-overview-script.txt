@@ -1,0 +1,6 @@
+Technical knowledge is valuable, but turning documentation into engaging video content can be difficult and time-consuming.
+This project explores how agentic AI can help transform trusted technical content into scripts, storyboards, and video-ready learning experiences.
+Starting with existing documentation, the workflow identifies key concepts and helps transform them into a structured visual narrative. Motion and visual storytelling can reveal relationships and processes that are often difficult to communicate through text alone.
+Rather than replacing creators, the goal is to reduce repetitive production tasks and help teams focus on storytelling, quality, creativity, and learning outcomes.
+Throughout this hackathon, we explored how AI-assisted workflows can support the creation of consistent, scalable learning content while keeping humans in control of accuracy, messaging, and creative direction.
+This project represents an early exploration of how agentic AI can help make technical knowledge more accessible, engaging, and easier to understand through video.

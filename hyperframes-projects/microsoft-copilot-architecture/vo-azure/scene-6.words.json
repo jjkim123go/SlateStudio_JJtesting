@@ -1,0 +1,227 @@
+[
+  {
+    "word": "Finally",
+    "start": 0.05,
+    "end": 0.764
+  },
+  {
+    "word": ",",
+    "start": 0.866,
+    "end": 1.019
+  },
+  {
+    "word": "Copilot",
+    "start": 1.032,
+    "end": 1.593
+  },
+  {
+    "word": "honors",
+    "start": 1.632,
+    "end": 2.002
+  },
+  {
+    "word": "the",
+    "start": 2.014,
+    "end": 2.104
+  },
+  {
+    "word": "controls",
+    "start": 2.116,
+    "end": 2.678
+  },
+  {
+    "word": "your",
+    "start": 2.69,
+    "end": 2.805
+  },
+  {
+    "word": "organization",
+    "start": 2.818,
+    "end": 3.66
+  },
+  {
+    "word": "already",
+    "start": 3.723,
+    "end": 4.157
+  },
+  {
+    "word": "uses",
+    "start": 4.17,
+    "end": 4.642
+  },
+  {
+    "word": ",",
+    "start": 4.744,
+    "end": 4.986
+  },
+  {
+    "word": "including",
+    "start": 4.986,
+    "end": 5.471
+  },
+  {
+    "word": "Conditional",
+    "start": 5.484,
+    "end": 6.07
+  },
+  {
+    "word": "Access",
+    "start": 6.083,
+    "end": 6.606
+  },
+  {
+    "word": "and",
+    "start": 6.619,
+    "end": 6.925
+  },
+  {
+    "word": "multifactor",
+    "start": 6.95,
+    "end": 7.741
+  },
+  {
+    "word": "authentication",
+    "start": 7.754,
+    "end": 8.647
+  },
+  {
+    "word": ".",
+    "start": 8.66,
+    "end": 8.762
+  },
+  {
+    "word": "So",
+    "start": 9.017,
+    "end": 9.259
+  },
+  {
+    "word": "the",
+    "start": 9.272,
+    "end": 9.399
+  },
+  {
+    "word": "architecture",
+    "start": 9.412,
+    "end": 10.165
+  },
+  {
+    "word": "is",
+    "start": 10.19,
+    "end": 10.382
+  },
+  {
+    "word": "not",
+    "start": 10.394,
+    "end": 10.752
+  },
+  {
+    "word": "a",
+    "start": 10.764,
+    "end": 10.803
+  },
+  {
+    "word": "model",
+    "start": 10.815,
+    "end": 11.262
+  },
+  {
+    "word": "with",
+    "start": 11.274,
+    "end": 11.44
+  },
+  {
+    "word": "unlimited",
+    "start": 11.517,
+    "end": 12.142
+  },
+  {
+    "word": "visibility",
+    "start": 12.155,
+    "end": 12.843
+  },
+  {
+    "word": ".",
+    "start": 12.856,
+    "end": 12.958
+  },
+  {
+    "word": "It",
+    "start": 13.213,
+    "end": 13.392
+  },
+  {
+    "word": "is",
+    "start": 13.405,
+    "end": 13.494
+  },
+  {
+    "word": "an",
+    "start": 13.507,
+    "end": 13.634
+  },
+  {
+    "word": "orchestrated",
+    "start": 13.647,
+    "end": 14.208
+  },
+  {
+    "word": "flow",
+    "start": 14.221,
+    "end": 14.616
+  },
+  {
+    "word": ":",
+    "start": 14.731,
+    "end": 14.961
+  },
+  {
+    "word": "prompt",
+    "start": 14.961,
+    "end": 15.42
+  },
+  {
+    "word": ",",
+    "start": 15.509,
+    "end": 15.7
+  },
+  {
+    "word": "permitted",
+    "start": 15.713,
+    "end": 16.109
+  },
+  {
+    "word": "context",
+    "start": 16.121,
+    "end": 16.797
+  },
+  {
+    "word": ",",
+    "start": 16.887,
+    "end": 16.887
+  },
+  {
+    "word": "model",
+    "start": 16.899,
+    "end": 17.448
+  },
+  {
+    "word": ",",
+    "start": 17.486,
+    "end": 17.486
+  },
+  {
+    "word": "protected",
+    "start": 17.499,
+    "end": 18.009
+  },
+  {
+    "word": "response",
+    "start": 18.022,
+    "end": 18.749
+  },
+  {
+    "word": ".",
+    "start": 18.762,
+    "end": 18.864
+  }
+]

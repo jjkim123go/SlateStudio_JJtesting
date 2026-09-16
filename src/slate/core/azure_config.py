@@ -49,7 +49,7 @@ def _load_yaml(path: Path) -> dict[str, Any]:
         return {}
     try:
         import yaml
-        with open(path) as f:
+        with open(path, encoding="utf-8") as f:
             return yaml.safe_load(f) or {}
     except ImportError:
         logger.warning("PyYAML not installed — cannot read %s", path)

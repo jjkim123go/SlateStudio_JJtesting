@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en" data-resolution="landscape">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <script>window.USE_EDITORIAL_REBUILD = true;</script>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Montserrat:wght@600;700;800&display=swap");
+
+      :root {
+        --paper: #f7f9fc;
+        --ink: #172033;
+        --muted: #5d687c;
+        --line: #c8d1df;
+        --blue: #0067b8;
+        --cyan: #00a4ef;
+        --green: #107c10;
+        --yellow: #f2c811;
+        --red: #d13438;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--paper);
+      }
+
+      body {
+        color: var(--ink);
+        font-family: "Montserrat", sans-serif;
+      }
+
+      .mono {
+        font-family: "JetBrains Mono", monospace;
+        letter-spacing: 0;
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        background-color: var(--paper);
+        background-image:
+          linear-gradient(rgba(23, 32, 51, 0.075) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(23, 32, 51, 0.075) 1px, transparent 1px),
+          linear-gradient(rgba(0, 103, 184, 0.08) 2px, transparent 2px),
+          linear-gradient(90deg, rgba(0, 103, 184, 0.08) 2px, transparent 2px);
+        background-size: 48px 48px, 48px 48px, 240px 240px, 240px 240px;
+      }
+
+      .clip {
+        position: absolute;
+        inset: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+      }
+
+      .scene {
+        padding: 96px 120px;
+      }
+
+      .eyebrow {
+        color: var(--blue);
+        font-size: 22px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .node {
+        align-items: center;
+        background: rgba(247, 249, 252, 0.94);
+        border: 3px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        min-height: 144px;
+        padding: 26px 30px;
+        position: absolute;
+      }
+
+      .node strong {
+        font-size: 28px;
+        line-height: 1.2;
+        text-align: center;
+      }
+
+      .node span {
+        color: var(--muted);
+        font-size: 18px;
+        margin-top: 10px;
+      }
+
+      .glyph {
+        align-items: center;
+        border: 4px solid var(--blue);
+        display: flex;
+        height: 104px;
+        justify-content: center;
+        margin-bottom: 24px;
+        position: relative;
+        width: 104px;
+      }
+
+      .glyph::before,
+      .glyph::after {
+        background: var(--blue);
+        content: "";
+        position: absolute;
+      }
+
+      .glyph.document::before {
+        height: 4px;
+        left: 20px;
+        top: 31px;
+        width: 60px;
+        box-shadow: 0 18px 0 var(--blue), 0 36px 0 var(--blue);
+      }
+
+      .glyph.video::before {
+        background: transparent;
+        border-bottom: 20px solid transparent;
+        border-left: 32px solid var(--blue);
+        border-top: 20px solid transparent;
+        height: 0;
+        left: 37px;
+        top: 28px;
+        width: 0;
+      }
+
+      .glyph.agent::before {
+        border-radius: 50%;
+        height: 26px;
+        left: 35px;
+        top: 20px;
+        width: 26px;
+        box-shadow: -26px 34px 0 -5px var(--blue), 26px 34px 0 -5px var(--blue);
+      }
+
+      .glyph.agent::after {
+        height: 32px;
+        left: 48px;
+        top: 46px;
+        width: 5px;
+      }
+
+      .signal {
+        background: var(--blue);
+        height: 14px;
+        position: absolute;
+        width: 14px;
+      }
+
+      .scene-one .source {
+        left: 190px;
+        top: 330px;
+      }
+
+      .scene-one .knowledge-word {
+        font-size: 112px;
+        font-weight: 800;
+        left: 560px;
+        line-height: 0.95;
+        position: absolute;
+        top: 320px;
+      }
+
+      .scene-one .knowledge-word em {
+        color: var(--blue);
+        display: block;
+        font-style: normal;
+      }
+
+      .scene-one .knowledge-list {
+        display: flex;
+        gap: 48px;
+        left: 570px;
+        position: absolute;
+        top: 740px;
+      }
+
+      .scene-one .knowledge-list span {
+        border-top: 4px solid var(--blue);
+        color: var(--muted);
+        font-size: 24px;
+        padding-top: 18px;
+        width: 260px;
+      }
+
+      .scene-two .knowledge-bank,
+      .scene-two .video-output {
+        top: 340px;
+        width: 330px;
+      }
+
+      .scene-two .knowledge-bank {
+        border-color: var(--blue);
+        left: 150px;
+      }
+
+      .scene-two .video-output {
+        border-color: var(--green);
+        right: 150px;
+      }
+
+      .scene-two .gap-rail {
+        border-top: 5px solid var(--line);
+        left: 480px;
+        position: absolute;
+        right: 480px;
+        top: 445px;
+      }
+
+      .scene-two .barrier {
+        background: var(--paper);
+        border: 3px solid var(--red);
+        padding: 18px 22px;
+        position: absolute;
+        top: 345px;
+      }
+
+      .scene-two .skills { left: 600px; }
+      .scene-two .tools { left: 850px; top: 510px; }
+      .scene-two .time { right: 600px; }
+
+      .scene-two .barrier strong {
+        color: var(--red);
+        display: block;
+        font-size: 21px;
+      }
+
+      .scene-two .bridge {
+        color: var(--blue);
+        font-size: 54px;
+        font-weight: 800;
+        left: 565px;
+        position: absolute;
+        text-align: center;
+        top: 720px;
+        width: 790px;
+      }
+
+      .scene-three .factory {
+        border: 4px solid var(--blue);
+        left: 690px;
+        min-height: 260px;
+        top: 350px;
+        width: 540px;
+      }
+
+      .scene-three .factory strong {
+        font-size: 45px;
+      }
+
+      .scene-three .role {
+        min-height: 116px;
+        width: 320px;
+      }
+
+      .scene-three .role-a { left: 160px; top: 230px; }
+      .scene-three .role-b { left: 160px; top: 690px; }
+      .scene-three .role-c { right: 160px; top: 230px; }
+      .scene-three .role-d { right: 160px; top: 690px; }
+
+      .scene-three svg,
+      .scene-five svg,
+      .scene-seven svg {
+        inset: 0;
+        pointer-events: none;
+        position: absolute;
+      }
+
+      .connector {
+        fill: none;
+        stroke: var(--blue);
+        stroke-width: 5;
+      }
+
+      .scene-four .experiment-grid {
+        display: grid;
+        gap: 42px;
+        grid-template-columns: repeat(4, 1fr);
+        left: 120px;
+        position: absolute;
+        right: 120px;
+        top: 285px;
+      }
+
+      .scene-four .experiment {
+        align-items: flex-start;
+        background: rgba(247, 249, 252, 0.95);
+        border: 3px solid var(--line);
+        display: flex;
+        flex-direction: column;
+        height: 390px;
+        justify-content: space-between;
+        padding: 42px 36px;
+      }
+
+      .scene-four .experiment b {
+        color: var(--blue);
+        font-size: 72px;
+      }
+
+      .scene-four .experiment strong {
+        font-size: 30px;
+      }
+
+      .scene-four .experiment span {
+        color: var(--muted);
+        font-size: 18px;
+      }
+
+      .scene-five .workflow {
+        align-items: center;
+        display: flex;
+        gap: 42px;
+        left: 95px;
+        position: absolute;
+        right: 95px;
+        top: 390px;
+      }
+
+      .scene-five .step {
+        align-items: center;
+        background: var(--paper);
+        border: 3px solid var(--line);
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        height: 230px;
+        justify-content: center;
+        position: relative;
+      }
+
+      .scene-five .step strong {
+        font-size: 24px;
+        text-align: center;
+      }
+
+      .scene-five .step span {
+        color: var(--blue);
+        font-size: 18px;
+        margin-bottom: 20px;
+      }
+
+      .scene-five .arrow {
+        color: var(--blue);
+        font-size: 40px;
+      }
+
+      .scene-five .receipt {
+        bottom: 170px;
+        color: var(--green);
+        font-size: 26px;
+        font-weight: 700;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+      }
+
+      .scene-six .balance {
+        border-bottom: 6px solid var(--ink);
+        height: 430px;
+        left: 180px;
+        position: absolute;
+        top: 275px;
+        width: 1560px;
+      }
+
+      .scene-six .repetition {
+        bottom: 48px;
+        left: 0;
+        position: absolute;
+        width: 680px;
+      }
+
+      .scene-six .repetition i {
+        background: var(--line);
+        display: block;
+        height: 24px;
+        margin-top: 18px;
+        transform-origin: left center;
+        width: 100%;
+      }
+
+      .scene-six .human-work {
+        bottom: 30px;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 1fr 1fr;
+        position: absolute;
+        right: 0;
+        width: 650px;
+      }
+
+      .scene-six .human-work span {
+        border-left: 8px solid var(--blue);
+        font-size: 27px;
+        font-weight: 700;
+        padding: 22px;
+      }
+
+      .scene-six .goal {
+        color: var(--blue);
+        font-size: 40px;
+        font-weight: 800;
+        left: 510px;
+        position: absolute;
+        text-align: center;
+        top: 790px;
+        width: 900px;
+      }
+
+      .scene-seven .network-center {
+        align-items: center;
+        background: var(--blue);
+        color: white;
+        display: flex;
+        flex-direction: column;
+        height: 330px;
+        justify-content: center;
+        left: 700px;
+        position: absolute;
+        top: 315px;
+        width: 520px;
+      }
+
+      .scene-seven .network-center strong {
+        font-size: 54px;
+        line-height: 1.02;
+        text-align: center;
+      }
+
+      .scene-seven .network-center span {
+        font-size: 20px;
+        margin-top: 28px;
+      }
+
+      .scene-seven .scale-node {
+        border: 3px solid var(--cyan);
+        font-size: 24px;
+        font-weight: 700;
+        padding: 22px 28px;
+        position: absolute;
+      }
+
+      .scene-seven .n1 { left: 170px; top: 220px; }
+      .scene-seven .n2 { left: 160px; top: 650px; }
+      .scene-seven .n3 { right: 160px; top: 220px; }
+      .scene-seven .n4 { right: 160px; top: 650px; }
+      .scene-seven .n5 { left: 790px; top: 790px; }
+
+      .scene-seven .final-line {
+        bottom: 90px;
+        color: var(--ink);
+        font-size: 24px;
+        font-weight: 700;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root" data-composition-id="main" data-start="0" data-duration="110" data-width="1920" data-height="1080">
+      <section id="scene-1" class="clip scene scene-one" data-start="0" data-duration="15" data-track-index="1">
+        <div class="node source"><div class="glyph document"></div><strong>Microsoft knowledge</strong></div>
+        <div class="knowledge-word">An enormous amount of <em>knowledge</em></div>
+        <div class="knowledge-list mono"><span>Technical documentation</span><span>Product guidance</span><span>Learning content</span></div>
+      </section>
+
+      <section id="scene-2" class="clip scene scene-two" data-start="15" data-duration="8" data-track-index="2">
+        <div class="node knowledge-bank"><div class="glyph document"></div><strong>Knowledge</strong></div>
+        <div class="gap-rail"></div>
+        <div class="barrier skills mono"><strong>Skills</strong></div>
+        <div class="barrier tools mono"><strong>Tools</strong></div>
+        <div class="barrier time mono"><strong>Time</strong></div>
+        <div class="node video-output"><div class="glyph video"></div><strong>Video experience</strong></div>
+        <div class="bridge">Agentic AI helps bridge the gap</div>
+        <div class="signal" id="bridge-signal"></div>
+      </section>
+
+      <section id="scene-3" class="clip scene scene-three" data-start="23" data-duration="23" data-track-index="3">
+        <svg width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path class="connector creator-path" d="M480 288 C620 288 610 430 690 430"></path>
+          <path class="connector creator-path" d="M480 748 C620 748 610 530 690 530"></path>
+          <path class="connector creator-path" d="M1440 288 C1300 288 1310 430 1230 430"></path>
+          <path class="connector creator-path" d="M1440 748 C1300 748 1310 530 1230 530"></path>
+        </svg>
+        <div class="node role role-a"><strong>Program managers</strong></div>
+        <div class="node role role-b"><strong>Content owners</strong></div>
+        <div class="node role role-c"><strong>Subject matter experts</strong></div>
+        <div class="node role role-d"><strong>Video producers</strong></div>
+        <div class="node factory"><div class="glyph agent"></div><strong>Knowledge-to-Video Factory</strong><span class="mono">scripts · storyboards · video-ready assets</span></div>
+      </section>
+
+      <section id="scene-4" class="clip scene scene-four" data-start="46" data-duration="14" data-track-index="4">
+        <div class="experiment-grid">
+          <div class="experiment"><b class="mono">01</b><strong>AI agents</strong><span class="mono">specialized roles</span></div>
+          <div class="experiment"><b class="mono">02</b><strong>Prompting strategies</strong><span class="mono">instruction patterns</span></div>
+          <div class="experiment"><b class="mono">03</b><strong>Script workflows</strong><span class="mono">learning structure</span></div>
+          <div class="experiment"><b class="mono">04</b><strong>Video pipelines</strong><span class="mono">production systems</span></div>
+        </div>
+      </section>
+
+      <section id="scene-5" class="clip scene scene-five" data-start="60" data-duration="20" data-track-index="5">
+        <div class="workflow">
+          <div class="step"><span class="mono">INPUT</span><strong>Technical article</strong></div><div class="arrow">→</div>
+          <div class="step"><span class="mono">ANALYZE</span><strong>Key concepts</strong></div><div class="arrow">→</div>
+          <div class="step"><span class="mono">STRUCTURE</span><strong>Learning script</strong></div><div class="arrow">→</div>
+          <div class="step"><span class="mono">DIRECT</span><strong>Visual guidance</strong></div><div class="arrow">→</div>
+          <div class="step"><span class="mono">PRODUCE</span><strong>Video assets</strong></div>
+        </div>
+        <div class="signal" id="workflow-signal"></div>
+        <div class="receipt mono">DOCUMENTATION → VIDEO-READY EXPERIENCE</div>
+      </section>
+
+      <section id="scene-6" class="clip scene scene-six" data-start="80" data-duration="14" data-track-index="6">
+        <div class="balance">
+          <div class="repetition"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="human-work"><span>Storytelling</span><span>Creativity</span><span>Accuracy</span><span>Learner impact</span></div>
+        </div>
+        <div class="goal">Less repetition. More meaningful creative work.</div>
+      </section>
+
+      <section id="scene-7" class="clip scene scene-seven" data-start="94" data-duration="16" data-track-index="7">
+        <svg width="1920" height="1080" viewBox="0 0 1920 1080" aria-hidden="true">
+          <path class="connector scale-path" d="M700 410 C520 410 520 285 410 285"></path>
+          <path class="connector scale-path" d="M700 560 C520 560 520 715 400 715"></path>
+          <path class="connector scale-path" d="M1220 410 C1400 410 1400 285 1510 285"></path>
+          <path class="connector scale-path" d="M1220 560 C1400 560 1400 715 1510 715"></path>
+          <path class="connector scale-path" d="M960 645 L960 790"></path>
+        </svg>
+        <div class="scale-node n1">Documentation</div><div class="scale-node n2">Product guidance</div>
+        <div class="scale-node n3">Learning content</div><div class="scale-node n4">Support knowledge</div>
+        <div class="scale-node n5">Learning at scale</div>
+        <div class="network-center"><strong>Knowledge-to-Video Factory</strong><span class="mono">FASTER · CONSISTENT · SCALABLE</span></div>
+        <div class="final-line mono">HUMAN CREATIVITY × AGENTIC AI</div>
+      </section>
+
+      <audio id="narration" data-composition-id="narration" data-start="0" data-duration="107.4" data-media-start="0" data-track-index="10" src="assets/narration.wav"></audio>
+    </div>
+
+    <script>
+      if (!window.USE_EDITORIAL_REBUILD) {
+      window.__timelines = window.__timelines || {};
+      const timeline = gsap.timeline({ paused: true });
+
+      timeline.from("#scene-1 .source", { x: -100, opacity: 0, duration: 1.1, ease: "power3.out" }, 0.3);
+      timeline.from("#scene-1 .knowledge-word", { x: 90, opacity: 0, duration: 1.2, ease: "power3.out" }, 1.2);
+      timeline.from("#scene-1 .knowledge-list span", { y: 42, opacity: 0, stagger: 1.05, duration: 0.8, ease: "power2.out" }, 5.0);
+
+      timeline.from("#scene-2 .knowledge-bank", { x: -80, opacity: 0, duration: 0.8, ease: "power3.out" }, 15.3);
+      timeline.from("#scene-2 .video-output", { x: 80, opacity: 0, duration: 0.8, ease: "power3.out" }, 15.3);
+      timeline.from("#scene-2 .gap-rail", { scaleX: 0, transformOrigin: "left center", duration: 1.2, ease: "power2.out" }, 16.0);
+      timeline.from("#scene-2 .barrier", { y: -45, opacity: 0, stagger: 0.45, duration: 0.55, ease: "back.out(1.4)" }, 16.7);
+      timeline.from("#scene-2 .bridge", { y: 45, opacity: 0, duration: 0.8, ease: "power3.out" }, 19.2);
+      timeline.set("#bridge-signal", { left: 470, top: 438, x: 0 }, 19.0);
+      timeline.to("#bridge-signal", { x: 965, duration: 2.4, ease: "power1.inOut" }, 19.1);
+
+      timeline.from("#scene-3 .factory", { scale: 0.82, opacity: 0, duration: 1.1, ease: "power3.out" }, 23.4);
+      timeline.from("#scene-3 .role", { scale: 0.92, opacity: 0, stagger: 1.0, duration: 0.65, ease: "power2.out" }, 26.0);
+      timeline.from("#scene-3 .creator-path", { strokeDasharray: 700, strokeDashoffset: 700, stagger: 1.0, duration: 1.2, ease: "power1.inOut" }, 27.0);
+      timeline.to("#scene-3 .factory", { borderColor: "#107c10", duration: 0.6 }, 38.0);
+
+      timeline.from("#scene-4 .experiment", { y: 110, opacity: 0, stagger: 1.6, duration: 0.85, ease: "power3.out" }, 46.5);
+      timeline.to("#scene-4 .experiment", { borderColor: "#0067b8", stagger: 0.4, duration: 0.45 }, 53.5);
+
+      timeline.from("#scene-5 .step", { y: 70, opacity: 0, stagger: 2.6, duration: 0.7, ease: "power3.out" }, 60.5);
+      timeline.from("#scene-5 .arrow", { scale: 0, opacity: 0, stagger: 2.6, duration: 0.45, ease: "back.out(1.5)" }, 62.3);
+      timeline.set("#workflow-signal", { left: 185, top: 497, x: 0 }, 61.2);
+      timeline.to("#workflow-signal", { x: 1525, duration: 13.0, ease: "none" }, 62.0);
+      timeline.from("#scene-5 .receipt", { y: 32, opacity: 0, duration: 0.8, ease: "power2.out" }, 76.0);
+
+      timeline.from("#scene-6 .balance", { scaleX: 0, transformOrigin: "center", duration: 1.1, ease: "power2.out" }, 80.4);
+      timeline.from("#scene-6 .repetition i", { scaleX: 0, stagger: 0.25, duration: 0.5, ease: "power2.out" }, 81.2);
+      timeline.to("#scene-6 .repetition i", { scaleX: 0.2, opacity: 0.35, stagger: 0.2, duration: 0.8, ease: "power2.inOut" }, 85.0);
+      timeline.from("#scene-6 .human-work span", { x: 55, opacity: 0, stagger: 0.55, duration: 0.65, ease: "power3.out" }, 84.5);
+      timeline.from("#scene-6 .goal", { y: 30, opacity: 0, duration: 0.8, ease: "power2.out" }, 89.2);
+
+      timeline.from("#scene-7 .network-center", { scale: 0.88, opacity: 0, duration: 1.0, ease: "power3.out" }, 94.4);
+      timeline.from("#scene-7 .scale-path", { strokeDasharray: 800, strokeDashoffset: 800, stagger: 0.55, duration: 1.1, ease: "power1.inOut" }, 96.0);
+      timeline.from("#scene-7 .scale-node", { scale: 0.82, opacity: 0, stagger: 0.55, duration: 0.65, ease: "back.out(1.25)" }, 96.4);
+      timeline.from("#scene-7 .final-line", { y: 22, opacity: 0, duration: 0.8, ease: "power2.out" }, 104.0);
+      timeline.to("#scene-7 .network-center", { scale: 1.035, duration: 2.2, ease: "power1.inOut", yoyo: true, repeat: 1 }, 101.0);
+
+      window.__timelines.main = timeline;
+      }
+    </script>
+    <script src="editorial-rebuild.js?v=5"></script>
+  </body>
+</html>

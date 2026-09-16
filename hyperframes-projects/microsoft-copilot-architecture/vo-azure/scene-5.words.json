@@ -1,0 +1,207 @@
+[
+  {
+    "word": "The",
+    "start": 0.05,
+    "end": 0.229
+  },
+  {
+    "word": "same",
+    "start": 0.241,
+    "end": 0.598
+  },
+  {
+    "word": "Microsoft 365",
+    "start": 0.611,
+    "end": 2.231
+  },
+  {
+    "word": "boundary",
+    "start": 2.244,
+    "end": 2.792
+  },
+  {
+    "word": "continues",
+    "start": 2.843,
+    "end": 3.43
+  },
+  {
+    "word": "to",
+    "start": 3.443,
+    "end": 3.57
+  },
+  {
+    "word": "protect",
+    "start": 3.583,
+    "end": 4.004
+  },
+  {
+    "word": "the",
+    "start": 4.017,
+    "end": 4.106
+  },
+  {
+    "word": "interaction",
+    "start": 4.119,
+    "end": 4.871
+  },
+  {
+    "word": ".",
+    "start": 4.884,
+    "end": 4.986
+  },
+  {
+    "word": "Customer",
+    "start": 5.241,
+    "end": 5.764
+  },
+  {
+    "word": "data",
+    "start": 5.777,
+    "end": 6.083
+  },
+  {
+    "word": "remains",
+    "start": 6.147,
+    "end": 6.619
+  },
+  {
+    "word": "within",
+    "start": 6.632,
+    "end": 6.899
+  },
+  {
+    "word": "the",
+    "start": 6.912,
+    "end": 6.989
+  },
+  {
+    "word": "service",
+    "start": 7.002,
+    "end": 7.333
+  },
+  {
+    "word": "boundary",
+    "start": 7.346,
+    "end": 7.856
+  },
+  {
+    "word": ",",
+    "start": 7.958,
+    "end": 8.315
+  },
+  {
+    "word": "data",
+    "start": 8.315,
+    "end": 8.685
+  },
+  {
+    "word": "is",
+    "start": 8.698,
+    "end": 8.813
+  },
+  {
+    "word": "encrypted",
+    "start": 8.825,
+    "end": 9.348
+  },
+  {
+    "word": "in",
+    "start": 9.361,
+    "end": 9.45
+  },
+  {
+    "word": "transit",
+    "start": 9.463,
+    "end": 10.075
+  },
+  {
+    "word": ",",
+    "start": 10.165,
+    "end": 10.28
+  },
+  {
+    "word": "and",
+    "start": 10.292,
+    "end": 10.509
+  },
+  {
+    "word": "prompts",
+    "start": 10.522,
+    "end": 11.007
+  },
+  {
+    "word": ",",
+    "start": 11.109,
+    "end": 11.249
+  },
+  {
+    "word": "responses",
+    "start": 11.262,
+    "end": 12.065
+  },
+  {
+    "word": ",",
+    "start": 12.078,
+    "end": 12.078
+  },
+  {
+    "word": "and",
+    "start": 12.091,
+    "end": 12.397
+  },
+  {
+    "word": "Graph-accessed",
+    "start": 12.422,
+    "end": 13.137
+  },
+  {
+    "word": "data",
+    "start": 13.149,
+    "end": 13.558
+  },
+  {
+    "word": "are",
+    "start": 13.583,
+    "end": 13.736
+  },
+  {
+    "word": "not",
+    "start": 13.749,
+    "end": 13.979
+  },
+  {
+    "word": "used",
+    "start": 13.991,
+    "end": 14.246
+  },
+  {
+    "word": "to",
+    "start": 14.259,
+    "end": 14.336
+  },
+  {
+    "word": "train",
+    "start": 14.348,
+    "end": 14.718
+  },
+  {
+    "word": "foundation",
+    "start": 14.731,
+    "end": 15.28
+  },
+  {
+    "word": "language",
+    "start": 15.292,
+    "end": 15.649
+  },
+  {
+    "word": "models",
+    "start": 15.662,
+    "end": 16.236
+  },
+  {
+    "word": ".",
+    "start": 16.249,
+    "end": 16.351
+  }
+]
