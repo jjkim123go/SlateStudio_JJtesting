@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+  <style>
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; background: #fff; }
+    body { font-family: Inter, ui-sans-serif, system-ui, sans-serif; color: #242424; }
+    #root { width: 100%; height: 100%; position: relative; overflow: hidden; background: #fff; }
+    .clip { position: absolute; inset: 0; overflow: hidden; }
+
+    /* Reference-matched opener */
+    #intro { background: radial-gradient(circle at 50% 95%, #15834f 0%, #0e5837 55%, #0a4a31 100%); }
+    .intro-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; }
+    .quick-label { margin-top: 108px; padding: 10px 30px; border-radius: 12px; background: #f9b72b; color: #174f35; font-size: 54px; line-height: 1; font-weight: 450; }
+    .intro-title { margin: 58px 0 0; width: 1540px; color: #fff; font-size: 132px; line-height: .92; font-weight: 900; letter-spacing: 0; text-align: center; }
+    .intro-title-line { display: block; white-space: nowrap; }
+    .intro-preview { position: absolute; left: 290px; top: 690px; width: 1340px; height: 510px; border-radius: 8px 8px 0 0; background: #f5f4fa; box-shadow: 0 18px 44px rgba(0,0,0,.22); overflow: hidden; }
+    .preview-head { padding: 24px 30px 18px; font-size: 29px; font-weight: 700; }
+    .preview-sub { padding: 0 30px 22px; font-size: 19px; color: #616161; }
+    .preview-controls { display: flex; gap: 14px; padding: 0 30px; }
+    .preview-pill { padding: 13px 20px; border: 1px solid #d1d1d1; border-radius: 28px; background: white; font-size: 19px; }
+    .preview-panel { margin: 20px 30px; height: 170px; border: 1px solid #d9d9d9; border-radius: 10px; background: #fff; display: grid; grid-template-columns: 170px 1fr 150px; gap: 24px; padding: 24px; }
+    .preview-score { color: #107c10; font-size: 34px; font-weight: 800; }
+    .preview-bar { margin-top: 40px; height: 15px; background: linear-gradient(90deg,#c50f1f 0 16%,#f9b44d 16% 26%,#1d9b78 26%); }
+
+    /* Continuous demo surface */
+    #demo { background: #fff; }
+    #camera { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
+    .app { position: absolute; inset: 0; background: #fff; opacity: 0; }
+    .topbar { height: 68px; border-bottom: 1px solid #d1d1d1; display: flex; align-items: center; padding: 0 20px; gap: 14px; font-size: 24px; font-weight: 700; color: #3155a4; }
+    .preview-badge { padding: 8px 13px; border: 1px solid #8ed18e; border-radius: 6px; color: #107c10; font-size: 16px; }
+    .sidebar { position: absolute; top: 68px; bottom: 0; left: 0; width: 292px; border-right: 1px solid #d1d1d1; background: #fff; padding-top: 26px; }
+    .person { display: flex; align-items: center; gap: 14px; padding: 0 24px 28px; font-size: 18px; font-weight: 650; }
+    .avatar { width: 48px; height: 48px; border-radius: 50%; background: #ececec; display: grid; place-items: center; color: #5b5b5b; }
+    .nav-item { height: 58px; display: flex; align-items: center; gap: 16px; padding: 0 34px; border-left: 5px solid #1683c5; background: #f0eef2; font-size: 22px; font-weight: 650; }
+    .main { position: absolute; top: 68px; left: 292px; right: 0; bottom: 0; background: #f7f6fb; overflow: hidden; }
+    .main-head { height: 248px; padding: 46px 38px 0; }
+    .main-head h2 { margin: 0 0 14px; font-size: 38px; letter-spacing: 0; }
+    .main-head p { margin: 0 0 40px; font-size: 23px; color: #4f4f4f; }
+    .filters { display: flex; gap: 20px; }
+    .filter { min-width: 250px; padding: 14px 24px; border: 1px solid #d1d1d1; border-radius: 28px; background: #fff; font-size: 20px; }
+    .workspace { position: absolute; left: 38px; right: 38px; top: 248px; bottom: 28px; border: 1px solid #d6d6d6; border-radius: 10px; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.09); overflow: hidden; }
+    .toolbar { height: 78px; display: flex; align-items: center; gap: 18px; padding: 0 26px; border-bottom: 1px solid #ddd; }
+    .tab { padding: 16px 8px; border-bottom: 4px solid #2276b5; color: #1f6b9d; font-size: 19px; font-weight: 700; }
+    .toolbar-spacer { flex: 1; }
+    .button { padding: 12px 24px; border: 1px solid #c9c9c9; border-radius: 6px; background: #fff; font-size: 19px; font-weight: 650; }
+    .button.primary { border-color: #0f6cbd; background: #0f6cbd; color: #fff; }
+    .notice { margin: 18px 24px; padding: 14px 18px; border: 1px solid #b7c8e8; background: #f4f7fd; font-size: 17px; }
+    .table-head, .table-row { display: grid; grid-template-columns: 1fr 150px 180px 170px; gap: 16px; align-items: center; padding: 0 28px; }
+    .table-head { height: 54px; font-size: 17px; font-weight: 750; border-bottom: 1px solid #ddd; }
+    .table-row { min-height: 66px; border-bottom: 1px solid #e5e5e5; font-size: 17px; }
+    .status { width: max-content; padding: 6px 11px; border: 1px solid #e0ad42; border-radius: 5px; background: #fff6d8; color: #7a5b00; font-weight: 700; }
+    .status.ready { border-color: #6dbb6d; background: #eaf6ea; color: #107c10; }
+    .links { display: flex; gap: 16px; color: #226fb1; font-weight: 650; }
+
+    .state { position: absolute; inset: 0; opacity: 0; visibility: hidden; pointer-events: none; }
+    .create-panel { position: absolute; top: 72px; right: 54px; width: 940px; height: 940px; border: 1px solid #cfcfcf; border-radius: 4px; background: #fff; box-shadow: 0 18px 48px rgba(0,0,0,.18); padding: 24px 30px; overflow: hidden; }
+    .create-title { display: flex; align-items: center; justify-content: space-between; padding-bottom: 14px; border-bottom: 1px solid #d8d8d8; }
+    .create-panel h3 { margin: 0; font-size: 28px; }
+    .close-x { color: #666; font-size: 27px; line-height: 1; }
+    .form-grid { display: grid; grid-template-columns: 2.35fr 1fr; gap: 16px; }
+    .form-section { position: relative; margin-top: 13px; opacity: .28; filter: grayscale(1); }
+    .form-section label { display: block; margin-bottom: 6px; font-size: 16px; font-weight: 700; }
+    .required { color: #c4314b; }
+    .input { position: relative; min-height: 43px; padding: 10px 13px; border: 1px solid #b9b9b9; border-radius: 2px; background: #fff; font-size: 16px; color: #333; overflow: hidden; }
+    .input.prefilled { background: #edf4fd; }
+    .input.textarea { min-height: 112px; line-height: 1.42; }
+    .input.context { min-height: 120px; }
+    .input.repo { display: flex; align-items: center; gap: 10px; }
+    .repo-chip { padding: 5px 10px; background: #f2f2f2; color: #606060; }
+    .char-count { position: absolute; right: 7px; bottom: 5px; color: #777; font-size: 12px; }
+    .mute-lines { position: absolute; left: 5px; right: 5px; top: 25px; bottom: 3px; z-index: 2; border-radius: 2px; background: rgba(247,247,247,.94) repeating-linear-gradient(to bottom, transparent 0 8px, #c8c8c8 8px 13px, transparent 13px 23px); }
+    .next-copy { margin: 17px 0 0; font-size: 14px; line-height: 1.35; color: #555; }
+    .panel-actions { display: flex; justify-content: flex-start; margin-top: 15px; }
+    .button.disabled { border-color: #e4e4e4; background: #f3f3f3; color: #b5b5b5; }
+
+    .progress-card { position: absolute; left: 500px; top: 210px; width: 920px; min-height: 560px; border: 1px solid #d1d1d1; border-radius: 10px; background: #fff; box-shadow: 0 14px 40px rgba(0,0,0,.14); padding: 40px 48px; }
+    .receipt { color: #107c10; font-size: 30px; font-weight: 800; margin-bottom: 28px; }
+    .issue-chip { display: inline-block; padding: 10px 16px; border-radius: 6px; background: #edf5fb; color: #226fb1; font-size: 18px; }
+    .steps { margin-top: 36px; }
+    .step { display: flex; align-items: center; gap: 18px; height: 82px; border-top: 1px solid #e3e3e3; font-size: 22px; }
+    .step-dot { width: 28px; height: 28px; border: 3px solid #9aa8b3; border-radius: 50%; }
+    .step.done .step-dot { background: #107c10; border-color: #107c10; box-shadow: inset 0 0 0 6px #fff; }
+    .step.active .step-dot { border-color: #0f6cbd; box-shadow: inset 0 0 0 6px #fff, 0 0 0 4px #d7eaf8; }
+    .wait-note { margin-top: 24px; color: #616161; font-size: 18px; }
+
+    .pr-shell { position: absolute; inset: 0; background: #fff; }
+    .gh-top { height: 94px; border-bottom: 1px solid #d1d1d1; padding: 22px 32px; font-size: 20px; font-weight: 650; }
+    .pr-content { position: absolute; left: 190px; right: 190px; top: 145px; bottom: 70px; display: grid; grid-template-columns: 1fr 420px; gap: 28px; }
+    .article { border: 1px solid #d1d1d1; border-radius: 8px; overflow: hidden; }
+    .article-head { padding: 20px 26px; background: #f6f8fa; border-bottom: 1px solid #d1d1d1; font-size: 19px; font-weight: 700; }
+    .article-body { padding: 28px 34px; font-size: 18px; line-height: 1.55; }
+    .article-body h3 { margin: 0 0 18px; font-size: 29px; }
+    .review-side { border-left: 1px solid #ddd; padding-left: 28px; }
+    .check { display: flex; gap: 12px; margin-bottom: 20px; font-size: 18px; line-height: 1.35; }
+    .check-box { width: 24px; height: 24px; border: 2px solid #107c10; border-radius: 4px; flex: 0 0 auto; }
+    .approve { margin-top: 34px; width: 100%; padding: 14px; border: 0; border-radius: 6px; background: #107c10; color: #fff; font-size: 20px; font-weight: 750; }
+
+    /* Windows-scale white arrow cursor for the full tutorial. */
+    #pointer { position: absolute; left: 0; top: 0; z-index: 50; width: 38px; height: 38px; transform-origin: 0 0; }
+    #pointer svg { position: absolute; inset: 0; width: 38px; height: 38px; overflow: visible; filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .28)); }
+
+    #endcard { background: #fff; display: grid; place-items: center; }
+    .ms-lockup { display: flex; align-items: center; gap: 24px; color: #737373; font-size: 78px; font-weight: 650; }
+    .ms-mark { display: grid; grid-template-columns: 42px 42px; grid-template-rows: 42px 42px; gap: 5px; }
+    .ms-mark i:nth-child(1){background:#f25022}.ms-mark i:nth-child(2){background:#7fba00}.ms-mark i:nth-child(3){background:#00a4ef}.ms-mark i:nth-child(4){background:#ffb900}
+  </style>
+</head>
+<body>
+  <div data-hf-id="hf-vdpa" id="root" data-composition-id="main" data-start="0" data-duration="101.6" data-width="1920" data-height="1080">
+    <section data-hf-id="hf-e2e2" id="intro" class="clip" data-start="0" data-duration="5" data-track-index="1">
+      <div data-hf-id="hf-zfph" class="intro-inner">
+        <div data-hf-id="hf-wg6a" class="quick-label">Content Studio Quick Start</div>
+        <h1 data-hf-id="hf-i19n" class="intro-title"><span data-hf-id="hf-dck8" class="intro-title-line">Create</span><span data-hf-id="hf-a1qm" class="intro-title-line">a new article</span><span data-hf-id="hf-dc9s" class="intro-title-line">with Content Studio</span></h1>
+        <div data-hf-id="hf-3gy5" class="intro-preview">
+          <div data-hf-id="hf-oohr" class="preview-head">Welcome to Content Studio</div><div data-hf-id="hf-fbou" class="preview-sub">Create, manage, and collaborate on content in a modern, AI-powered workspace.</div>
+          <div data-hf-id="hf-72db" class="preview-controls"><div data-hf-id="hf-vy0n" class="preview-pill">Product: Microsoft 365 Copilot</div><div data-hf-id="hf-3sti" class="preview-pill">Site: SMC</div></div>
+          <div data-hf-id="hf-64ld" class="preview-panel"><div data-hf-id="hf-yeow"><b data-hf-id="hf-qzh2">Accuracy score</b><div data-hf-id="hf-598p" class="preview-score">96.2%</div></div><div data-hf-id="hf-y7yw"><b data-hf-id="hf-w693">Accuracy impact by article review status</b><div data-hf-id="hf-51p0" class="preview-bar"></div></div><div data-hf-id="hf-x11t"><b data-hf-id="hf-0629">Active issues</b><div data-hf-id="hf-av8v" style="font-size:34px;font-weight:800;margin-top:18px">38</div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section data-hf-id="hf-p7zr" id="demo" class="clip" data-start="5" data-duration="93" data-track-index="1">
+      <div data-hf-id="hf-j2lh" id="camera" data-layout-allow-overflow="">
+        <div data-hf-id="hf-zmlb" class="app" data-layout-allow-occlusion="" data-layout-allow-overlap="">
+          <div data-hf-id="hf-0lzt" class="topbar">Content Studio <span data-hf-id="hf-ns93" class="preview-badge">Preview</span></div>
+          <aside data-hf-id="hf-842t" class="sidebar"><div data-hf-id="hf-4x81" class="person"><span data-hf-id="hf-hrjc" class="avatar">CS</span> Content contributor</div><div data-hf-id="hf-da3h" class="nav-item">⌂ <span data-hf-id="hf-e1du">Home</span></div></aside>
+          <main data-hf-id="hf-g3rz" class="main">
+            <div data-hf-id="hf-pkp2" class="main-head"><h2 data-hf-id="hf-7a0r">Welcome to Content Studio</h2><p data-hf-id="hf-9cxw">Create, manage, and collaborate on content in a modern, AI-powered workspace.</p><div data-hf-id="hf-lhc1" class="filters"><div data-hf-id="hf-6l81" class="filter">Product: <b data-hf-id="hf-y9uf">Microsoft 365 Copilot</b>⌄</div><div data-hf-id="hf-du95" class="filter">Site: <b data-hf-id="hf-fwl6">SMC</b>⌄</div></div></div>
+            <div data-hf-id="hf-e8vj" class="workspace">
+              <div data-hf-id="hf-6uyx" class="toolbar"><div data-hf-id="hf-icue" class="tab">Issues: Create request</div><span data-hf-id="hf-wxnf" class="toolbar-spacer"></span><button data-hf-id="hf-p6o7" class="button primary" id="createBtn">Create</button><button data-hf-id="hf-6070" class="button">Update</button></div>
+              <div data-hf-id="hf-bmok" class="notice">GitHub access is required to create issues and review pull requests. Use a linked account with Microsoft Docs permissions.</div>
+              <div data-hf-id="hf-npab" class="table-head"><span data-hf-id="hf-xasq">Issue title</span><span data-hf-id="hf-jlu1">Type</span><span data-hf-id="hf-1743">Status</span><span data-hf-id="hf-yby8">Actions</span></div>
+              <div data-hf-id="hf-65wb" class="table-row"><span data-hf-id="hf-vcxj">Add guidance for a new collaboration feature</span><span data-hf-id="hf-bxjw">Create request</span><span data-hf-id="hf-xdm3" class="status">Assigned</span><span data-hf-id="hf-a0pe" class="links">View issue</span></div>
+              <div data-hf-id="hf-hjtn" class="table-row"><span data-hf-id="hf-xzfm">Document setup and expected behavior</span><span data-hf-id="hf-n34k">Create request</span><span data-hf-id="hf-bcaz" class="status">Assigned</span><span data-hf-id="hf-ic7q" class="links">View issue</span></div>
+              <div data-hf-id="hf-oe8e" id="readyRow" class="table-row"><span data-hf-id="hf-hoed">Add guidance for a new AI-assisted feature</span><span data-hf-id="hf-lw7h">Create request</span><span data-hf-id="hf-gznq" class="status ready">Draft ready</span><span data-hf-id="hf-s08o" class="links"><span data-hf-id="hf-ondz">View issue</span><span data-hf-id="hf-zdei">View PR</span></span></div>
+            </div>
+          </main>
+        </div>
+
+        <div data-hf-id="hf-50nc" id="state-home" class="state"></div>
+        <div data-hf-id="hf-i53l" id="state-create" class="state"><div data-hf-id="hf-dslz" class="create-panel" data-layout-allow-occlusion="" data-layout-allow-overlap=""><div data-hf-id="hf-91hd" class="create-title"><h3 data-hf-id="hf-iwof">Create a new article</h3><span data-hf-id="hf-ynsd" class="close-x">×</span></div>
+          <div data-hf-id="hf-i36f" class="form-grid">
+            <div data-hf-id="hf-q5uo" id="field-product" class="form-section"><label data-hf-id="hf-pev8">Product <span data-hf-id="hf-z1q4" class="required">*</span></label><div data-hf-id="hf-no19" class="input prefilled">Microsoft 365 Copilot</div><i data-hf-id="hf-o6e9" class="mute-lines"></i></div>
+            <div data-hf-id="hf-4sxy" id="field-site" class="form-section"><label data-hf-id="hf-vb9y">Site <span data-hf-id="hf-8d10" class="required">*</span></label><div data-hf-id="hf-kue9" class="input prefilled">LMC</div><i data-hf-id="hf-vbed" class="mute-lines"></i></div>
+          </div>
+          <div data-hf-id="hf-7w7z" id="field-title" class="form-section"><label data-hf-id="hf-zocx">Add a title <span data-hf-id="hf-763x" class="required">*</span></label><div data-hf-id="hf-s0lb" class="input">Rich images in Microsoft 365 Copilot responses</div><i data-hf-id="hf-wibg" class="mute-lines"></i></div>
+          <div data-hf-id="hf-50k3" id="field-type" class="form-section"><label data-hf-id="hf-8rvv">Article type <span data-hf-id="hf-7key" class="required">*</span></label><div data-hf-id="hf-pqai" class="input">Conceptual <span data-hf-id="hf-5wzc" style="float:right;color:#777">⌄</span></div><i data-hf-id="hf-w40f" class="mute-lines"></i></div>
+          <div data-hf-id="hf-54eu" id="field-about" class="form-section"><label data-hf-id="hf-91ey">Tell us what the article is about <span data-hf-id="hf-9jy3" class="required">*</span></label><div data-hf-id="hf-gvxj" class="input textarea">- Current limitations and availability considerations.<br data-hf-id="hf-q7jp">- Basic troubleshooting guidance if expected images do not appear.<br data-hf-id="hf-regs"><br data-hf-id="hf-r05r">Write for IT administrators who are preparing users and support teams for this capability.<span data-hf-id="hf-fmo7" class="char-count">1165/64000 characters</span></div><i data-hf-id="hf-xaxi" class="mute-lines"></i></div>
+          <div data-hf-id="hf-09cg" id="field-context" class="form-section"><label data-hf-id="hf-s24f">Paste specs, docs or any other context the agent should use</label><div data-hf-id="hf-32bd" class="input context">Feature name: Surface rich images inline within responses<br data-hf-id="hf-p0mm"><br data-hf-id="hf-ombl">Release date: July 29, 2026<br data-hf-id="hf-qsyj"><br data-hf-id="hf-r79k">Platforms: Windows and web<span data-hf-id="hf-loo3" class="char-count">1460/64000 characters</span></div><i data-hf-id="hf-wwmh" class="mute-lines"></i></div>
+          <div data-hf-id="hf-bbiy" id="field-github" class="form-section"><label data-hf-id="hf-aqya">Your GitHub ID <span data-hf-id="hf-9y94" class="required">*</span></label><div data-hf-id="hf-kmj8" class="input">pebaum</div><i data-hf-id="hf-y3jk" class="mute-lines"></i></div>
+          <div data-hf-id="hf-j11f" id="field-repo" class="form-section"><label data-hf-id="hf-y66p">Article location in repo <span data-hf-id="hf-8rc1" class="required">*</span></label><div data-hf-id="hf-jlog" class="input repo"><span data-hf-id="hf-uv6x" class="repo-chip">microsoft-365-docs-pr/</span><span data-hf-id="hf-4pr5">folder</span></div><i data-hf-id="hf-xp8j" class="mute-lines"></i></div>
+          <p data-hf-id="hf-18wr" class="next-copy"><b data-hf-id="hf-s67s">What happens next?</b><br data-hf-id="hf-q0ch">After you submit this issue, Content Studio will get to work. You'll receive a pull request shortly with a draft of your article, which you can then review and refine.</p>
+          <div data-hf-id="hf-cm08" class="panel-actions"><button data-hf-id="hf-mxxu" class="button disabled" id="submitBtn">Submit</button></div>
+        </div></div>
+        <div data-hf-id="hf-wick" id="state-progress" class="state"><div data-hf-id="hf-vasw" class="progress-card"><div data-hf-id="hf-ibtz" class="receipt">✓ Create request submitted</div><div data-hf-id="hf-4nl1" class="issue-chip">Linked issue · Add guidance for a new AI-assisted feature</div><div data-hf-id="hf-70xd" class="steps"><div data-hf-id="hf-8tqy" class="step done"><i data-hf-id="hf-8zkc" class="step-dot"></i><b data-hf-id="hf-d7ez">Research the topic and source material</b></div><div data-hf-id="hf-w24e" class="step done"><i data-hf-id="hf-yujo" class="step-dot"></i><b data-hf-id="hf-a3xf">Draft the new article</b></div><div data-hf-id="hf-ly7k" class="step active"><i data-hf-id="hf-xnml" class="step-dot"></i><b data-hf-id="hf-43jm">Validate structure, links, and guidance</b></div></div><div data-hf-id="hf-x6b9" class="wait-note">This can take a few minutes. You can return to the dashboard while the agent works.</div></div></div>
+        <div data-hf-id="hf-h9sz" id="state-pr" class="state"><div data-hf-id="hf-uje7" class="pr-shell"><div data-hf-id="hf-21mw" class="gh-top">MicrosoftDocs / Learn content · Pull request · Add guidance for a new AI-assisted feature</div><div data-hf-id="hf-vgn6" class="pr-content"><article data-hf-id="hf-nvkd" class="article"><div data-hf-id="hf-940n" class="article-head">Preview · new-feature-guidance.md</div><div data-hf-id="hf-ma2v" class="article-body"><h3 data-hf-id="hf-5a7l">Use the new collaboration feature</h3><p data-hf-id="hf-kkxd">This article explains how to prepare your environment and complete the workflow.</p><h4 data-hf-id="hf-vgoc">Before you begin</h4><p data-hf-id="hf-75e0">Confirm that the feature is available for your organization and that you have the required permissions.</p><h4 data-hf-id="hf-swf5">Set up the feature</h4><ol data-hf-id="hf-eaxy"><li data-hf-id="hf-0win">Open the product settings.</li><li data-hf-id="hf-9gki">Select the collaboration experience.</li><li data-hf-id="hf-9pq3">Review the expected behavior and limitations.</li></ol><h4 data-hf-id="hf-jcx9">Validate the result</h4><p data-hf-id="hf-0cdc">Test the workflow with representative content before sharing it with customers.</p></div></article><aside data-hf-id="hf-14z9" class="review-side"><h3 data-hf-id="hf-ppn4">Review the draft</h3><div data-hf-id="hf-zsdk" class="check"><i data-hf-id="hf-wuuc" class="check-box"></i><span data-hf-id="hf-elhi"><b data-hf-id="hf-rwmp">Correct</b><br data-hf-id="hf-rsrt">Matches current product behavior</span></div><div data-hf-id="hf-melc" class="check"><i data-hf-id="hf-fmqk" class="check-box"></i><span data-hf-id="hf-33mm"><b data-hf-id="hf-9r42">Complete</b><br data-hf-id="hf-szow">Includes every required step</span></div><div data-hf-id="hf-l7o9" class="check"><i data-hf-id="hf-efth" class="check-box"></i><span data-hf-id="hf-82xd"><b data-hf-id="hf-kr2s">Appropriate</b><br data-hf-id="hf-sldv">Fits the intended audience</span></div><div data-hf-id="hf-llza" class="check"><i data-hf-id="hf-eu4i" class="check-box"></i><span data-hf-id="hf-oqj2"><b data-hf-id="hf-8y2h">Subject-matter review</b><br data-hf-id="hf-qluq">Requested when needed</span></div><button data-hf-id="hf-nfm8" class="approve">Approve when ready</button></aside></div></div></div>
+      </div>
+
+      <div data-hf-id="hf-ys2k" id="pointer">
+        <svg data-hf-id="hf-l0yt" id="arrow" viewBox="0 0 64 64" aria-hidden="true">
+          <path data-hf-id="hf-sr7p" d="M2 1.5V48.5L14.2 37.1L23.7 60.3L33.4 56.2L23.8 33.8H40.8Z" fill="#fff" stroke="#111" stroke-width="2.4" stroke-linejoin="round" />
+        </svg>
+      </div>
+    </section>
+
+    <section data-hf-id="hf-q61q" id="endcard" class="clip" data-start="98" data-duration="3.6" data-track-index="1"><div data-hf-id="hf-d9hf" class="ms-lockup"><span data-hf-id="hf-utvh" class="ms-mark"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i><i data-hf-id="hf-ylp6"></i></span><span data-hf-id="hf-5v4j">Microsoft</span></div></section>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } });
+    tl.fromTo(".quick-label", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: .45 }, 0.05)
+      .fromTo(".intro-title", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: .55 }, .2)
+      .fromTo(".intro-preview", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: .75, ease: "power3.out" }, .35);
+
+    const pointTo = (selector, xRatio = .5, yRatio = .5) => {
+      const rect = document.querySelector(selector).getBoundingClientRect();
+      return { x: rect.left + rect.width * xRatio, y: rect.top + rect.height * yRatio };
+    };
+
+    // Keep the interface stable and move the pointer to real element bounds.
+    tl.set("#camera", { scale: 1, x: 0, y: 0 }, 5)
+      .set("#pointer", { ...pointTo("#createBtn"), opacity: 0 }, 5)
+      .fromTo("#demo .app", { opacity: 0 }, { opacity: 1, duration: .35 }, 5)
+      .to("#pointer", { ...pointTo("#createBtn"), opacity: 1, duration: 1.4, ease: "power2.inOut" }, 11)
+      .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 14)
+      .to(".workspace", { autoAlpha: 0, duration: .3 }, 14.8)
+      .to(".app", { autoAlpha: 0, duration: .3 }, 14.8)
+      .to("#state-create", { autoAlpha: 1, duration: .35 }, 15)
+      .to("#field-product, #field-site", { opacity: 1, filter: "grayscale(0)", duration: .35 }, 22)
+      .to("#field-product .mute-lines, #field-site .mute-lines", { opacity: 0, duration: .35 }, 22)
+      .to("#pointer", { ...pointTo("#field-product .input", .72), duration: 1.4 }, 23)
+      .to("#field-title, #field-type", { opacity: 1, filter: "grayscale(0)", duration: .35 }, 27)
+      .to("#field-title .mute-lines, #field-type .mute-lines", { opacity: 0, duration: .35 }, 27)
+      .to("#pointer", { ...pointTo("#field-title .input", .72), duration: 1.3 }, 28)
+      .to("#field-about", { opacity: 1, filter: "grayscale(0)", duration: .35 }, 33)
+      .to("#field-about .mute-lines", { opacity: 0, duration: .35 }, 33)
+      .to("#pointer", { ...pointTo("#field-about .input", .72), duration: 1.3 }, 34)
+      .to("#field-context", { opacity: 1, filter: "grayscale(0)", duration: .35 }, 38)
+      .to("#field-context .mute-lines", { opacity: 0, duration: .35 }, 38)
+      .to("#pointer", { ...pointTo("#field-context .input", .72), duration: 1.4 }, 39)
+      .to("#field-github, #field-repo", { opacity: 1, filter: "grayscale(0)", duration: .35 }, 43)
+      .to("#field-github .mute-lines, #field-repo .mute-lines", { opacity: 0, duration: .35 }, 43)
+      .to("#pointer", { ...pointTo("#field-repo .input", .72), duration: 1.2 }, 44)
+      .to("#pointer", { ...pointTo("#submitBtn", .5, .15), duration: 1.4 }, 46)
+      .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 47.7)
+      .to("#state-create", { autoAlpha: 0, duration: .3 }, 48.2)
+      .to(".app", { autoAlpha: 0, duration: .3 }, 48.2)
+      .to("#state-progress", { autoAlpha: 1, duration: .35 }, 48.45)
+      .to("#pointer", { ...pointTo("#state-progress .step:nth-child(1)", .68), duration: 1.4 }, 53)
+      .to("#pointer", { ...pointTo("#state-progress .step:nth-child(2)", .68), duration: 1.4 }, 57)
+      .to("#pointer", { ...pointTo("#state-progress .step:nth-child(3)", .68), duration: 1.4 }, 61)
+      .to("#state-progress", { autoAlpha: 0, duration: .35 }, 63.5)
+      .to(".app", { autoAlpha: 1, duration: .35 }, 63.5)
+      .to(".workspace", { autoAlpha: 1, duration: .35 }, 63.5)
+      .to("#pointer", { ...pointTo("[data-hf-id='hf-zdei']"), duration: 1.5 }, 65)
+      .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 70.1)
+      .to(".app", { autoAlpha: 0, duration: .35 }, 74.8)
+      .to("#state-pr", { autoAlpha: 1, duration: .4 }, 75)
+      .set("#pointer", pointTo("#state-pr .article-head"), 75)
+      .to("#pointer", { ...pointTo("#state-pr .article-body h3", .65), duration: 1.5 }, 79)
+      .to("#pointer", { ...pointTo("#state-pr .check:nth-of-type(1)", .65), duration: 1.3 }, 84)
+      .to("#pointer", { ...pointTo("#state-pr .check:nth-of-type(2)", .65), duration: 1.3 }, 88)
+      .to("#pointer", { ...pointTo("#state-pr .check:nth-of-type(3)", .65), duration: 1.3 }, 91)
+      .to("#pointer", { ...pointTo("#state-pr .approve"), duration: 1.2 }, 95)
+      .fromTo(".ms-lockup", { opacity: 0, scale: .96 }, { opacity: 1, scale: 1, duration: .5 }, 98.1);
+    window.__timelines["main"] = tl;
+    tl.seek(0);
+  </script>
+</body>
+</html>
