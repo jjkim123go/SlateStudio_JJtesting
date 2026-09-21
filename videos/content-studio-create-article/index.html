@@ -87,17 +87,50 @@
     .step.active .step-dot { border-color: #0f6cbd; box-shadow: inset 0 0 0 6px #fff, 0 0 0 4px #d7eaf8; }
     .wait-note { margin-top: 24px; color: #616161; font-size: 18px; }
 
-    .pr-shell { position: absolute; inset: 0; background: #fff; }
-    .gh-top { height: 94px; border-bottom: 1px solid #d1d1d1; padding: 22px 32px; font-size: 20px; font-weight: 650; }
-    .pr-content { position: absolute; left: 190px; right: 190px; top: 145px; bottom: 70px; display: grid; grid-template-columns: 1fr 420px; gap: 28px; }
-    .article { border: 1px solid #d1d1d1; border-radius: 8px; overflow: hidden; }
-    .article-head { padding: 20px 26px; background: #f6f8fa; border-bottom: 1px solid #d1d1d1; font-size: 19px; font-weight: 700; }
-    .article-body { padding: 28px 34px; font-size: 18px; line-height: 1.55; }
-    .article-body h3 { margin: 0 0 18px; font-size: 29px; }
-    .review-side { border-left: 1px solid #ddd; padding-left: 28px; }
-    .check { display: flex; gap: 12px; margin-bottom: 20px; font-size: 18px; line-height: 1.35; }
-    .check-box { width: 24px; height: 24px; border: 2px solid #107c10; border-radius: 4px; flex: 0 0 auto; }
-    .approve { margin-top: 34px; width: 100%; padding: 14px; border: 0; border-radius: 6px; background: #107c10; color: #fff; font-size: 20px; font-weight: 750; }
+    .pr-shell { position: absolute; inset: 0; background: #0d1117; color: #e6edf3; }
+    .gh-view { position: absolute; inset: 0; }
+    #gh-files { opacity: 0; visibility: hidden; }
+    .gh-top { height: 68px; border-bottom: 1px solid #30363d; display: flex; align-items: center; gap: 18px; padding: 0 30px; background: #010409; font-size: 18px; font-weight: 650; }
+    .gh-mark { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #f0f6fc; color: #0d1117; font-size: 20px; font-weight: 900; }
+    .gh-repo { color: #f0f6fc; }
+    .gh-nav { height: 58px; border-bottom: 1px solid #30363d; display: flex; align-items: end; gap: 28px; padding: 0 34px; color: #b1bac4; }
+    .gh-nav span { height: 46px; display: flex; align-items: center; border-bottom: 3px solid transparent; font-size: 16px; }
+    .gh-nav .active { color: #f0f6fc; border-color: #f78166; }
+    .gh-page { width: 1260px; margin: 30px auto 0; }
+    .gh-title-row { display: flex; justify-content: space-between; align-items: center; }
+    .gh-title { margin: 0; color: #f0f6fc; font-size: 32px; font-weight: 500; }
+    .gh-number { color: #7d8590; font-weight: 400; }
+    .gh-open { display: inline-block; margin-top: 14px; padding: 7px 13px; border-radius: 18px; background: #238636; color: #fff; font-size: 15px; font-weight: 700; }
+    .gh-branch { margin-left: 12px; color: #8c959f; font-size: 15px; }
+    .gh-tabs { height: 62px; display: flex; align-items: end; gap: 8px; border-bottom: 1px solid #30363d; margin-top: 18px; }
+    .gh-tab { height: 48px; padding: 0 20px; border: 1px solid transparent; display: flex; align-items: center; color: #c9d1d9; font-size: 16px; }
+    .gh-tab.active { border: 1px solid #30363d; border-bottom-color: #0d1117; border-radius: 7px 7px 0 0; background: #0d1117; font-weight: 700; }
+    .gh-layout { display: grid; grid-template-columns: 1fr 300px; gap: 28px; margin-top: 24px; }
+    .gh-comment { border: 1px solid #30363d; border-radius: 7px; overflow: hidden; }
+    .gh-comment-head { padding: 15px 18px; border-bottom: 1px solid #30363d; background: #161b22; color: #8c959f; font-size: 15px; }
+    .gh-comment-head b { color: #e6edf3; }
+    .gh-comment-body { padding: 22px; font-size: 16px; line-height: 1.55; }
+    .gh-comment-body h3 { margin: 0 0 14px; font-size: 18px; }
+    .gh-comment-body ol { margin: 10px 0 20px; padding-left: 24px; }
+    .gh-comment-body a, .gh-link { color: #58a6ff; }
+    .gh-side section { padding: 17px 0; border-bottom: 1px solid #30363d; color: #8c959f; font-size: 14px; }
+    .gh-side b { display: block; margin-bottom: 9px; color: #e6edf3; }
+    .gh-label { display: inline-block; margin: 3px; padding: 5px 8px; border: 1px solid #484f58; border-radius: 12px; color: #c9d1d9; font-size: 12px; }
+    .gh-review-top { height: 64px; display: flex; align-items: center; gap: 18px; padding: 0 30px; border-bottom: 1px solid #30363d; background: #0d1117; }
+    .gh-review-title { flex: 1; min-width: 0; color: #f0f6fc; font-size: 17px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .gh-checks { padding: 7px 12px; border: 1px solid #30363d; border-radius: 6px; color: #d29922; font-size: 14px; }
+    .submit-review { padding: 9px 15px; border: 1px solid rgba(240,246,252,.1); border-radius: 6px; background: #238636; color: #fff; font-size: 14px; font-weight: 700; }
+    .gh-file-layout { position: absolute; inset: 132px 24px 22px; display: grid; grid-template-columns: 230px 1fr; gap: 18px; }
+    .gh-files-list { border: 1px solid #30363d; border-radius: 7px; padding: 18px; color: #8c959f; font-size: 14px; }
+    .gh-files-list b { display: block; margin-bottom: 18px; color: #e6edf3; }
+    .gh-file { padding: 11px 0; color: #58a6ff; }
+    .gh-diff { border: 1px solid #30363d; border-radius: 7px; overflow: hidden; background: #0d1117; }
+    .gh-diff-head { height: 52px; padding: 15px 18px; border-bottom: 1px solid #30363d; background: #161b22; font: 700 15px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .diff-lines { padding: 11px 0 26px; background: #0f2d20; font: 15px/1.6 ui-monospace, SFMono-Regular, Consolas, monospace; color: #c9d1d9; }
+    .diff-line { display: grid; grid-template-columns: 58px 58px 1fr; min-height: 30px; padding-right: 18px; }
+    .diff-line span:first-child, .diff-line span:nth-child(2) { color: #7d8590; text-align: right; padding-right: 13px; user-select: none; }
+    .diff-line .code { color: #aff5b4; }
+    .diff-section { color: #79c0ff; font-weight: 700; }
 
     /* Windows-scale white arrow cursor for the full tutorial. */
     #pointer { position: absolute; left: 0; top: 0; z-index: 50; width: 38px; height: 38px; transform-origin: 0 0; }
@@ -157,7 +190,28 @@
           <div data-hf-id="hf-cm08" class="panel-actions"><button data-hf-id="hf-mxxu" class="button disabled" id="submitBtn">Submit</button></div>
         </div></div>
         <div data-hf-id="hf-wick" id="state-progress" class="state"><div data-hf-id="hf-vasw" class="progress-card"><div data-hf-id="hf-ibtz" class="receipt">✓ Create request submitted</div><div data-hf-id="hf-4nl1" class="issue-chip">Linked issue · Add guidance for a new AI-assisted feature</div><div data-hf-id="hf-70xd" class="steps"><div data-hf-id="hf-8tqy" class="step done"><i data-hf-id="hf-8zkc" class="step-dot"></i><b data-hf-id="hf-d7ez">Research the topic and source material</b></div><div data-hf-id="hf-w24e" class="step done"><i data-hf-id="hf-yujo" class="step-dot"></i><b data-hf-id="hf-a3xf">Draft the new article</b></div><div data-hf-id="hf-ly7k" class="step active"><i data-hf-id="hf-xnml" class="step-dot"></i><b data-hf-id="hf-43jm">Validate structure, links, and guidance</b></div></div><div data-hf-id="hf-x6b9" class="wait-note">This can take a few minutes. You can return to the dashboard while the agent works.</div></div></div>
-        <div data-hf-id="hf-h9sz" id="state-pr" class="state"><div data-hf-id="hf-uje7" class="pr-shell"><div data-hf-id="hf-21mw" class="gh-top">MicrosoftDocs / Learn content · Pull request · Add guidance for a new AI-assisted feature</div><div data-hf-id="hf-vgn6" class="pr-content"><article data-hf-id="hf-nvkd" class="article"><div data-hf-id="hf-940n" class="article-head">Preview · new-feature-guidance.md</div><div data-hf-id="hf-ma2v" class="article-body"><h3 data-hf-id="hf-5a7l">Use the new collaboration feature</h3><p data-hf-id="hf-kkxd">This article explains how to prepare your environment and complete the workflow.</p><h4 data-hf-id="hf-vgoc">Before you begin</h4><p data-hf-id="hf-75e0">Confirm that the feature is available for your organization and that you have the required permissions.</p><h4 data-hf-id="hf-swf5">Set up the feature</h4><ol data-hf-id="hf-eaxy"><li data-hf-id="hf-0win">Open the product settings.</li><li data-hf-id="hf-9gki">Select the collaboration experience.</li><li data-hf-id="hf-9pq3">Review the expected behavior and limitations.</li></ol><h4 data-hf-id="hf-jcx9">Validate the result</h4><p data-hf-id="hf-0cdc">Test the workflow with representative content before sharing it with customers.</p></div></article><aside data-hf-id="hf-14z9" class="review-side"><h3 data-hf-id="hf-ppn4">Review the draft</h3><div data-hf-id="hf-zsdk" class="check"><i data-hf-id="hf-wuuc" class="check-box"></i><span data-hf-id="hf-elhi"><b data-hf-id="hf-rwmp">Correct</b><br data-hf-id="hf-rsrt">Matches current product behavior</span></div><div data-hf-id="hf-melc" class="check"><i data-hf-id="hf-fmqk" class="check-box"></i><span data-hf-id="hf-33mm"><b data-hf-id="hf-9r42">Complete</b><br data-hf-id="hf-szow">Includes every required step</span></div><div data-hf-id="hf-l7o9" class="check"><i data-hf-id="hf-efth" class="check-box"></i><span data-hf-id="hf-82xd"><b data-hf-id="hf-kr2s">Appropriate</b><br data-hf-id="hf-sldv">Fits the intended audience</span></div><div data-hf-id="hf-llza" class="check"><i data-hf-id="hf-eu4i" class="check-box"></i><span data-hf-id="hf-oqj2"><b data-hf-id="hf-8y2h">Subject-matter review</b><br data-hf-id="hf-qluq">Requested when needed</span></div><button data-hf-id="hf-nfm8" class="approve">Approve when ready</button></aside></div></div></div>
+        <div data-hf-id="hf-h9sz" id="state-pr" class="state">
+          <div data-hf-id="hf-uje7" class="pr-shell">
+            <div data-hf-id="hf-ghc1" id="gh-conversation" class="gh-view">
+              <div data-hf-id="hf-21mw" class="gh-top"><span data-hf-id="hf-ghm1" class="gh-mark">G</span><span data-hf-id="hf-ghr1" class="gh-repo">MicrosoftDocs / microsoft-365-docs-pr</span></div>
+              <div data-hf-id="hf-ghn1" class="gh-nav"><span data-hf-id="hf-ghn2">Code</span><span data-hf-id="hf-ghn3">Issues</span><span data-hf-id="hf-ghn4" class="active">Pull requests</span><span data-hf-id="hf-ghn5">Actions</span><span data-hf-id="hf-ghn6">Security</span><span data-hf-id="hf-ghn7">Insights</span></div>
+              <div data-hf-id="hf-ghp1" class="gh-page">
+                <div data-hf-id="hf-ghtr" class="gh-title-row"><h2 data-hf-id="hf-ght1" class="gh-title">Draft article: Rich images in Microsoft 365 Copilot responses <span data-hf-id="hf-ghno" class="gh-number">#34075</span></h2></div>
+                <span data-hf-id="hf-ghop" class="gh-open">Open</span><span data-hf-id="hf-ghbr" class="gh-branch">content-studio bot wants to merge 1 commit into main</span>
+                <div data-hf-id="hf-ghtb" class="gh-tabs"><div data-hf-id="hf-ghtc" class="gh-tab active">Conversation</div><div data-hf-id="hf-ghtm" class="gh-tab">Commits 1</div><div data-hf-id="hf-ghck" class="gh-tab">Checks 8</div><div data-hf-id="hf-ghtf" id="gh-tab-files" class="gh-tab">Files changed 1</div></div>
+                <div data-hf-id="hf-ghly" class="gh-layout">
+                  <div data-hf-id="hf-ghcm" class="gh-comment"><div data-hf-id="hf-ghch" class="gh-comment-head"><b data-hf-id="hf-ghcb">content-studio bot</b> commented 2 minutes ago</div><div data-hf-id="hf-ghbd" class="gh-comment-body"><h3 data-hf-id="hf-ghh3">Here is the draft article created from the linked request.</h3><b data-hf-id="hf-ghdn">What to do next</b><ol data-hf-id="hf-ghol"><li data-hf-id="hf-ghl1">Review the draft</li><li data-hf-id="hf-ghl2">Make any edits as needed</li><li data-hf-id="hf-ghl3">Add missing metadata</li><li data-hf-id="hf-ghl4">Submit the review when ready</li></ol><b data-hf-id="hf-ghmm">Linked issue</b><p data-hf-id="hf-ghip"><a data-hf-id="hf-ghia">Rich images in Microsoft 365 Copilot responses #34074</a></p><p data-hf-id="hf-ghpp">The draft follows Microsoft guidance and is ready for content review.</p></div></div>
+                  <aside data-hf-id="hf-ghsd" class="gh-side"><section data-hf-id="hf-ghs1"><b data-hf-id="hf-ghsb1">Reviewers</b>Copilot Lite</section><section data-hf-id="hf-ghs2"><b data-hf-id="hf-ghsb2">Assignees</b>pebaum</section><section data-hf-id="hf-ghs3"><b data-hf-id="hf-ghsb3">Labels</b><span data-hf-id="hf-ghla1" class="gh-label">Content Studio Agent</span><span data-hf-id="hf-ghla2" class="gh-label">Type: Create Request</span></section><section data-hf-id="hf-ghs4"><b data-hf-id="hf-ghsb4">Checks</b><span data-hf-id="hf-ghpc">8 checks pending</span></section></aside>
+                </div>
+              </div>
+            </div>
+            <div data-hf-id="hf-ghf1" id="gh-files" class="gh-view">
+              <div data-hf-id="hf-ghrt" class="gh-review-top"><span data-hf-id="hf-ghm2" class="gh-mark">G</span><span data-hf-id="hf-ghft" class="gh-review-title">Draft article: Rich images in Microsoft 365 Copilot responses #34075 / Files changed</span><span data-hf-id="hf-ghcp" class="gh-checks">Checks pending</span><button data-hf-id="hf-ghsr" id="submit-review" class="submit-review">Submit review</button></div>
+              <div data-hf-id="hf-ghn8" class="gh-nav"><span data-hf-id="hf-ghn9">Conversation</span><span data-hf-id="hf-ghna">Commits 1</span><span data-hf-id="hf-ghnb">Checks 8</span><span data-hf-id="hf-ghnc" class="active">Files changed 1</span></div>
+              <div data-hf-id="hf-ghfl" class="gh-file-layout"><aside data-hf-id="hf-ghls" class="gh-files-list"><b data-hf-id="hf-ghfb">Filter files</b><div data-hf-id="hf-ghfd">copilot/</div><div data-hf-id="hf-ghff" class="gh-file">rich-images-in-microsoft-365-copilot-responses.md</div></aside><div data-hf-id="hf-ghdf" class="gh-diff"><div data-hf-id="hf-ghdh" class="gh-diff-head">copilot/rich-images-in-microsoft-365-copilot-responses.md <span data-hf-id="hf-ghad" style="float:right;color:#3fb950">+129</span></div><div data-hf-id="hf-ghdl" class="diff-lines"><div data-hf-id="hf-ghd1" class="diff-line"><span data-hf-id="hf-gho1">1</span><span data-hf-id="hf-ghn1a">1</span><span data-hf-id="hf-ghc1a" class="code">+ ---</span></div><div data-hf-id="hf-ghd2" class="diff-line"><span data-hf-id="hf-gho2">2</span><span data-hf-id="hf-ghn2a">2</span><span data-hf-id="hf-ghc2a" class="code">+ title: Rich images in Microsoft 365 Copilot responses</span></div><div data-hf-id="hf-ghd3" class="diff-line"><span data-hf-id="hf-gho3">3</span><span data-hf-id="hf-ghn3a">3</span><span data-hf-id="hf-ghc3a" class="code">+ description: Learn how Copilot surfaces relevant images.</span></div><div data-hf-id="hf-ghd4" class="diff-line"><span data-hf-id="hf-gho4">4</span><span data-hf-id="hf-ghn4a">4</span><span data-hf-id="hf-ghc4a" class="code">+ author: pebaum</span></div><div data-hf-id="hf-ghd5" class="diff-line"><span data-hf-id="hf-gho5">5</span><span data-hf-id="hf-ghn5a">5</span><span data-hf-id="hf-ghc5a" class="code">+ ---</span></div><div data-hf-id="hf-ghd6" class="diff-line"><span data-hf-id="hf-gho6">24</span><span data-hf-id="hf-ghn6a">24</span><span data-hf-id="hf-ghc6a" class="code diff-section">+ # Rich images in Microsoft 365 Copilot responses</span></div><div data-hf-id="hf-ghd7" class="diff-line"><span data-hf-id="hf-gho7">25</span><span data-hf-id="hf-ghn7a">25</span><span data-hf-id="hf-ghc7a" class="code">+ Microsoft 365 Copilot can surface relevant images from files and meetings.</span></div><div data-hf-id="hf-ghd8" class="diff-line"><span data-hf-id="hf-gho8">26</span><span data-hf-id="hf-ghn8a">26</span><span data-hf-id="hf-ghc8a" class="code">+ This helps users understand information without leaving the response.</span></div><div data-hf-id="hf-ghd9" class="diff-line"><span data-hf-id="hf-gho9">35</span><span data-hf-id="hf-ghn9a">35</span><span data-hf-id="hf-ghc9a" class="code diff-section">+ ## How inline images work</span></div><div data-hf-id="hf-ghda" class="diff-line"><span data-hf-id="hf-ghoa">36</span><span data-hf-id="hf-ghnaa">36</span><span data-hf-id="hf-ghcaa" class="code">+ Copilot finds visual content that supports the answer.</span></div><div data-hf-id="hf-ghdb" class="diff-line"><span data-hf-id="hf-ghob">52</span><span data-hf-id="hf-ghnab">52</span><span data-hf-id="hf-ghcab" class="code diff-section">+ ## Supported platforms</span></div><div data-hf-id="hf-ghdc" class="diff-line"><span data-hf-id="hf-ghoc">53</span><span data-hf-id="hf-ghnac">53</span><span data-hf-id="hf-ghcac" class="code">+ Windows and web</span></div><div data-hf-id="hf-ghdd" class="diff-line"><span data-hf-id="hf-ghod">67</span><span data-hf-id="hf-ghnad">67</span><span data-hf-id="hf-ghcad" class="code diff-section">+ ## Permissions, security, and compliance</span></div><div data-hf-id="hf-ghde" class="diff-line"><span data-hf-id="hf-ghoe">68</span><span data-hf-id="hf-ghnae">68</span><span data-hf-id="hf-ghcae" class="code">+ Existing Microsoft 365 protections continue to apply.</span></div></div></div></div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div data-hf-id="hf-ys2k" id="pointer">
@@ -220,12 +274,20 @@
       .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 70.1)
       .to(".app", { autoAlpha: 0, duration: .35 }, 74.8)
       .to("#state-pr", { autoAlpha: 1, duration: .4 }, 75)
-      .set("#pointer", pointTo("#state-pr .article-head"), 75)
-      .to("#pointer", { ...pointTo("#state-pr .article-body h3", .65), duration: 1.5 }, 79)
-      .to("#pointer", { ...pointTo("#state-pr .check:nth-of-type(1)", .65), duration: 1.3 }, 84)
-      .to("#pointer", { ...pointTo("#state-pr .check:nth-of-type(2)", .65), duration: 1.3 }, 88)
-      .to("#pointer", { ...pointTo("#state-pr .check:nth-of-type(3)", .65), duration: 1.3 }, 91)
-      .to("#pointer", { ...pointTo("#state-pr .approve"), duration: 1.2 }, 95)
+      .set("#pointer", pointTo("#state-pr .gh-title"), 75)
+      .to("#pointer", { ...pointTo("#state-pr .gh-comment-body", .62, .28), duration: 1.5 }, 78.5)
+      .to("#pointer", { ...pointTo("#gh-tab-files"), duration: 1.3 }, 82)
+      .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 83.5)
+      .to("#gh-conversation", { autoAlpha: 0, duration: .3 }, 84)
+      .to("#gh-files", { autoAlpha: 1, duration: .35 }, 84.15)
+      .to("#pointer", { ...pointTo("#gh-files .diff-lines", .63, .42), duration: 1.5 }, 85)
+      .to("#pointer", { ...pointTo("#gh-files .diff-lines", .58, .78), duration: 1.5 }, 89)
+      .to("#pointer", { ...pointTo("#submit-review"), duration: 1.3 }, 92.5)
+      .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 94)
+      .to("#state-pr", { autoAlpha: 0, duration: .35 }, 95.2)
+      .to(".app", { autoAlpha: 1, duration: .35 }, 95.35)
+      .to(".workspace", { autoAlpha: 1, duration: .35 }, 95.35)
+      .to("#pointer", { ...pointTo("#readyRow", .86, .5), duration: 1.1 }, 95.6)
       .fromTo(".ms-lockup", { opacity: 0, scale: .96 }, { opacity: 1, scale: 1, duration: .5 }, 98.1);
     window.__timelines["main"] = tl;
     tl.seek(0);
