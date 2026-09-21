@@ -132,6 +132,47 @@
     .diff-line .code { color: #aff5b4; }
     .diff-section { color: #79c0ff; font-weight: 700; }
 
+    /* MicrosoftDocs GitHub reference styling. */
+    .pr-shell { background: #fff; color: #1f2328; }
+    .gh-top { height: 62px; border-color: #d0d7de; background: #f6f8fa; color: #1f2328; }
+    .gh-mark { width: 32px; height: 32px; background: #1f2328; color: #fff; font-size: 13px; }
+    .gh-repo, .gh-title, .gh-comment-head b, .gh-side b, .gh-review-title { color: #1f2328; }
+    .gh-nav { height: 54px; border-color: #d0d7de; background: #f6f8fa; color: #1f2328; }
+    .gh-nav span { height: 43px; font-size: 14px; }
+    .gh-nav .active { color: #1f2328; border-color: #fd8c73; }
+    .gh-page { margin-top: 24px; }
+    .gh-title { font-size: 30px; }
+    .gh-number, .gh-branch { color: #656d76; }
+    .gh-tabs { border-color: #d0d7de; }
+    .gh-tab { color: #1f2328; }
+    .gh-tab.active { border-color: #d0d7de; border-bottom-color: #fff; background: #fff; }
+    .gh-layout { grid-template-columns: 1fr 280px; gap: 24px; }
+    .gh-comment { position: relative; overflow: visible; border-color: #d0d7de; }
+    .gh-comment::before { content: ""; position: absolute; left: -50px; top: 0; width: 32px; height: 32px; background: conic-gradient(#7fba00 0 25%, #ffb900 0 50%, #f25022 0 75%, #00a4ef 0); }
+    .gh-comment-head { border-color: #d0d7de; background: #f6f8fa; color: #656d76; }
+    .gh-comment-body a, .gh-link, .gh-file { color: #0969da; }
+    .gh-side section { border-color: #d8dee4; color: #656d76; }
+    .gh-label { border-color: #d0d7de; color: #1f2328; }
+    .gh-review-top { height: 62px; border-color: #d0d7de; background: #f6f8fa; }
+    .gh-checks { border-color: #d0d7de; color: #656d76; }
+    .submit-review { border-color: rgba(27,31,36,.15); background: #1f883d; }
+    .gh-file-layout { inset: 130px 20px 18px; grid-template-columns: 260px 1fr; gap: 14px; }
+    .gh-files-list { border-color: #d0d7de; color: #656d76; }
+    .gh-files-list b { color: #1f2328; }
+    .gh-diff { border-color: #d0d7de; background: #fff; }
+    .gh-diff-head { border-color: #d0d7de; background: #f6f8fa; color: #1f2328; }
+    .diff-lines { position: relative; padding-top: 280px; background: #d8fbe1; color: #1f2328; font-size: 13px; line-height: 1.55; }
+    .diff-line { grid-template-columns: 42px 42px 1fr; min-height: 26px; }
+    .diff-line span:first-child, .diff-line span:nth-child(2) { color: #656d76; }
+    .diff-line .code, .diff-section { color: #164f27; }
+    .inline-review { position: absolute; z-index: 2; left: 95px; top: 20px; width: 650px; overflow: hidden; border: 1px solid #d0d7de; border-radius: 7px; background: #fff; color: #1f2328; font: 14px/1.45 "Segoe UI", sans-serif; box-shadow: 0 1px 2px rgba(31,35,40,.08); }
+    .inline-review-head { display: flex; justify-content: space-between; padding: 13px 16px 6px; font-weight: 650; }
+    .inline-review-copy { padding: 0 16px 12px; }
+    .inline-review-code { margin: 0 16px 12px; padding: 13px; border-radius: 6px; background: #f6f8fa; font: 12px ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .inline-review-reply { margin: 0 10px 10px; padding: 9px; border: 1px solid #d0d7de; border-radius: 5px; color: #656d76; }
+    .inline-review-actions { display: flex; gap: 8px; padding: 10px; border-top: 1px solid #d0d7de; }
+    .inline-review-actions span { padding: 7px 11px; border: 1px solid #d0d7de; border-radius: 6px; background: #f6f8fa; font-weight: 600; }
+
     /* Windows-scale white arrow cursor for the full tutorial. */
     #pointer { position: absolute; left: 0; top: 0; z-index: 50; width: 38px; height: 38px; transform-origin: 0 0; }
     #pointer svg { position: absolute; inset: 0; width: 38px; height: 38px; overflow: visible; filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, .28)); }
@@ -193,7 +234,7 @@
         <div data-hf-id="hf-h9sz" id="state-pr" class="state">
           <div data-hf-id="hf-uje7" class="pr-shell">
             <div data-hf-id="hf-ghc1" id="gh-conversation" class="gh-view">
-              <div data-hf-id="hf-21mw" class="gh-top"><span data-hf-id="hf-ghm1" class="gh-mark">G</span><span data-hf-id="hf-ghr1" class="gh-repo">MicrosoftDocs / microsoft-365-docs-pr</span></div>
+              <div data-hf-id="hf-21mw" class="gh-top"><span data-hf-id="hf-ghm1" class="gh-mark">GH</span><span data-hf-id="hf-ghr1" class="gh-repo">MicrosoftDocs / end-user-copilot-app-pr</span></div>
               <div data-hf-id="hf-ghn1" class="gh-nav"><span data-hf-id="hf-ghn2">Code</span><span data-hf-id="hf-ghn3">Issues</span><span data-hf-id="hf-ghn4" class="active">Pull requests</span><span data-hf-id="hf-ghn5">Actions</span><span data-hf-id="hf-ghn6">Security</span><span data-hf-id="hf-ghn7">Insights</span></div>
               <div data-hf-id="hf-ghp1" class="gh-page">
                 <div data-hf-id="hf-ghtr" class="gh-title-row"><h2 data-hf-id="hf-ght1" class="gh-title">Draft article: Rich images in Microsoft 365 Copilot responses <span data-hf-id="hf-ghno" class="gh-number">#34075</span></h2></div>
@@ -206,8 +247,8 @@
               </div>
             </div>
             <div data-hf-id="hf-ghf1" id="gh-files" class="gh-view">
-              <div data-hf-id="hf-ghrt" class="gh-review-top"><span data-hf-id="hf-ghm2" class="gh-mark">G</span><span data-hf-id="hf-ghft" class="gh-review-title">Draft article: Rich images in Microsoft 365 Copilot responses #34075 / Files changed</span><span data-hf-id="hf-ghcp" class="gh-checks">Checks pending</span><button data-hf-id="hf-ghsr" id="submit-review" class="submit-review">Submit review</button></div>
-              <div data-hf-id="hf-ghn8" class="gh-nav"><span data-hf-id="hf-ghn9">Conversation</span><span data-hf-id="hf-ghna">Commits 1</span><span data-hf-id="hf-ghnb">Checks 8</span><span data-hf-id="hf-ghnc" class="active">Files changed 1</span></div>
+              <div data-hf-id="hf-ghrt" class="gh-review-top"><span data-hf-id="hf-ghm2" class="gh-mark">GH</span><span data-hf-id="hf-ghft" class="gh-review-title">MicrosoftDocs / end-user-copilot-app-pr · Draft article: Rich images in Microsoft 365 Copilot responses #34075</span><span data-hf-id="hf-ghcp" class="gh-checks">0 / 1 viewed</span><button data-hf-id="hf-ghsr" id="submit-review" class="submit-review">Submit review</button></div>
+              <div data-hf-id="hf-ghn8" class="gh-nav"><span data-hf-id="hf-ghn9">Conversation 4</span><span data-hf-id="hf-ghna">Commits 1</span><span data-hf-id="hf-ghnb">Checks 9</span><span data-hf-id="hf-ghnc" class="active">Files changed 1</span></div>
               <div data-hf-id="hf-ghfl" class="gh-file-layout"><aside data-hf-id="hf-ghls" class="gh-files-list"><b data-hf-id="hf-ghfb">Filter files</b><div data-hf-id="hf-ghfd">copilot/</div><div data-hf-id="hf-ghff" class="gh-file">rich-images-in-microsoft-365-copilot-responses.md</div></aside><div data-hf-id="hf-ghdf" class="gh-diff"><div data-hf-id="hf-ghdh" class="gh-diff-head">copilot/rich-images-in-microsoft-365-copilot-responses.md <span data-hf-id="hf-ghad" style="float:right;color:#3fb950">+129</span></div><div data-hf-id="hf-ghdl" class="diff-lines"><div data-hf-id="hf-ghd1" class="diff-line"><span data-hf-id="hf-gho1">1</span><span data-hf-id="hf-ghn1a">1</span><span data-hf-id="hf-ghc1a" class="code">+ ---</span></div><div data-hf-id="hf-ghd2" class="diff-line"><span data-hf-id="hf-gho2">2</span><span data-hf-id="hf-ghn2a">2</span><span data-hf-id="hf-ghc2a" class="code">+ title: Rich images in Microsoft 365 Copilot responses</span></div><div data-hf-id="hf-ghd3" class="diff-line"><span data-hf-id="hf-gho3">3</span><span data-hf-id="hf-ghn3a">3</span><span data-hf-id="hf-ghc3a" class="code">+ description: Learn how Copilot surfaces relevant images.</span></div><div data-hf-id="hf-ghd4" class="diff-line"><span data-hf-id="hf-gho4">4</span><span data-hf-id="hf-ghn4a">4</span><span data-hf-id="hf-ghc4a" class="code">+ author: pebaum</span></div><div data-hf-id="hf-ghd5" class="diff-line"><span data-hf-id="hf-gho5">5</span><span data-hf-id="hf-ghn5a">5</span><span data-hf-id="hf-ghc5a" class="code">+ ---</span></div><div data-hf-id="hf-ghd6" class="diff-line"><span data-hf-id="hf-gho6">24</span><span data-hf-id="hf-ghn6a">24</span><span data-hf-id="hf-ghc6a" class="code diff-section">+ # Rich images in Microsoft 365 Copilot responses</span></div><div data-hf-id="hf-ghd7" class="diff-line"><span data-hf-id="hf-gho7">25</span><span data-hf-id="hf-ghn7a">25</span><span data-hf-id="hf-ghc7a" class="code">+ Microsoft 365 Copilot can surface relevant images from files and meetings.</span></div><div data-hf-id="hf-ghd8" class="diff-line"><span data-hf-id="hf-gho8">26</span><span data-hf-id="hf-ghn8a">26</span><span data-hf-id="hf-ghc8a" class="code">+ This helps users understand information without leaving the response.</span></div><div data-hf-id="hf-ghd9" class="diff-line"><span data-hf-id="hf-gho9">35</span><span data-hf-id="hf-ghn9a">35</span><span data-hf-id="hf-ghc9a" class="code diff-section">+ ## How inline images work</span></div><div data-hf-id="hf-ghda" class="diff-line"><span data-hf-id="hf-ghoa">36</span><span data-hf-id="hf-ghnaa">36</span><span data-hf-id="hf-ghcaa" class="code">+ Copilot finds visual content that supports the answer.</span></div><div data-hf-id="hf-ghdb" class="diff-line"><span data-hf-id="hf-ghob">52</span><span data-hf-id="hf-ghnab">52</span><span data-hf-id="hf-ghcab" class="code diff-section">+ ## Supported platforms</span></div><div data-hf-id="hf-ghdc" class="diff-line"><span data-hf-id="hf-ghoc">53</span><span data-hf-id="hf-ghnac">53</span><span data-hf-id="hf-ghcac" class="code">+ Windows and web</span></div><div data-hf-id="hf-ghdd" class="diff-line"><span data-hf-id="hf-ghod">67</span><span data-hf-id="hf-ghnad">67</span><span data-hf-id="hf-ghcad" class="code diff-section">+ ## Permissions, security, and compliance</span></div><div data-hf-id="hf-ghde" class="diff-line"><span data-hf-id="hf-ghoe">68</span><span data-hf-id="hf-ghnae">68</span><span data-hf-id="hf-ghcae" class="code">+ Existing Microsoft 365 protections continue to apply.</span></div></div></div></div>
             </div>
           </div>
@@ -225,6 +266,18 @@
   </div>
 
   <script>
+    const inlineReview = document.createElement("div");
+    inlineReview.className = "inline-review";
+    inlineReview.innerHTML = `
+      <div class="inline-review-head"><span>github-actions bot · 3w ago</span><span>•••</span></div>
+      <div class="inline-review-copy"><b>Missing <code>awa-articleGuid</code>.</b> This new article needs a unique GUID. Update the metadata as shown.</div>
+      <div class="inline-review-code">awa-articleGuid: 607e9e5f-a63c-4884-9047-c3295b1efcf7</div>
+      <div class="inline-review-reply">Write a reply</div>
+      <div class="inline-review-actions"><span>Resolve comment</span><span>Fix with Copilot</span><span>Add to batch</span></div>`;
+    document.querySelector("#gh-files .diff-lines").prepend(inlineReview);
+    document.querySelector("#gh-files .gh-files-list div").textContent = "Microsoft-365-Copilot";
+    document.querySelector("#gh-files .gh-diff-head").firstChild.textContent = "Microsoft-365-Copilot/rich-images-in-microsoft-365-copilot-responses.md ";
+
     const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.inOut" } });
     tl.fromTo(".quick-label", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: .45 }, 0.05)
       .fromTo(".intro-title", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: .55 }, .2)
@@ -280,7 +333,7 @@
       .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 83.5)
       .to("#gh-conversation", { autoAlpha: 0, duration: .3 }, 84)
       .to("#gh-files", { autoAlpha: 1, duration: .35 }, 84.15)
-      .to("#pointer", { ...pointTo("#gh-files .diff-lines", .63, .42), duration: 1.5 }, 85)
+      .to("#pointer", { ...pointTo("#gh-files .inline-review", .62, .42), duration: 1.5 }, 85)
       .to("#pointer", { ...pointTo("#gh-files .diff-lines", .58, .78), duration: 1.5 }, 89)
       .to("#pointer", { ...pointTo("#submit-review"), duration: 1.3 }, 92.5)
       .to("#pointer", { scale: .88, duration: .18, yoyo: true, repeat: 1, ease: "power1.inOut" }, 94)
