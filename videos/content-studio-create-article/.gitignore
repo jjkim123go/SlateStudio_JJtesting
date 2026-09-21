@@ -2,4 +2,8 @@
 .thumbnails/
 .waveform-cache/
 snapshots/
-assets/
+assets/*
+!assets/narration/
+assets/narration/*
+!assets/narration/content-studio-continuous.wav
+!assets/narration/content-studio-continuous.words.json

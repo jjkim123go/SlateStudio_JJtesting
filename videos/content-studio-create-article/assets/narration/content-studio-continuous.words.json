@@ -1,0 +1,1403 @@
+{
+  "voice": "en-US-Ava:DragonHDLatestNeural",
+  "duration_seconds": 91.391,
+  "engine": "azure-speech",
+  "sample_rate": 24000,
+  "words": [
+    {
+      "word": "When",
+      "start": 0.066,
+      "end": 0.218
+    },
+    {
+      "word": "your",
+      "start": 0.219,
+      "end": 0.371
+    },
+    {
+      "word": "content",
+      "start": 0.371,
+      "end": 0.79
+    },
+    {
+      "word": "set",
+      "start": 0.79,
+      "end": 0.98
+    },
+    {
+      "word": "has",
+      "start": 0.98,
+      "end": 1.17
+    },
+    {
+      "word": "a",
+      "start": 1.171,
+      "end": 1.247
+    },
+    {
+      "word": "gap",
+      "start": 1.247,
+      "end": 1.856
+    },
+    {
+      "word": ",",
+      "start": 1.857,
+      "end": 1.857
+    },
+    {
+      "word": "Content",
+      "start": 1.895,
+      "end": 2.351
+    },
+    {
+      "word": "Studio",
+      "start": 2.351,
+      "end": 2.808
+    },
+    {
+      "word": "can",
+      "start": 2.808,
+      "end": 2.961
+    },
+    {
+      "word": "help",
+      "start": 2.961,
+      "end": 3.188
+    },
+    {
+      "word": "you",
+      "start": 3.189,
+      "end": 3.303
+    },
+    {
+      "word": "create",
+      "start": 3.303,
+      "end": 3.722
+    },
+    {
+      "word": "a",
+      "start": 3.722,
+      "end": 3.837
+    },
+    {
+      "word": "new",
+      "start": 3.838,
+      "end": 4.104
+    },
+    {
+      "word": "article",
+      "start": 4.104,
+      "end": 4.751
+    },
+    {
+      "word": ".",
+      "start": 4.752,
+      "end": 4.752
+    },
+    {
+      "word": "Use",
+      "start": 5.814,
+      "end": 6.08
+    },
+    {
+      "word": "this",
+      "start": 6.081,
+      "end": 6.233
+    },
+    {
+      "word": "workflow",
+      "start": 6.233,
+      "end": 6.728
+    },
+    {
+      "word": "when",
+      "start": 6.728,
+      "end": 6.88
+    },
+    {
+      "word": "a",
+      "start": 6.881,
+      "end": 6.919
+    },
+    {
+      "word": "new",
+      "start": 6.919,
+      "end": 7.147
+    },
+    {
+      "word": "feature",
+      "start": 7.148,
+      "end": 7.795
+    },
+    {
+      "word": ",",
+      "start": 7.795,
+      "end": 7.795
+    },
+    {
+      "word": "capability",
+      "start": 7.795,
+      "end": 8.785
+    },
+    {
+      "word": ",",
+      "start": 8.786,
+      "end": 8.786
+    },
+    {
+      "word": "or",
+      "start": 8.786,
+      "end": 9.128
+    },
+    {
+      "word": "customer",
+      "start": 9.128,
+      "end": 9.546
+    },
+    {
+      "word": "scenario",
+      "start": 9.547,
+      "end": 10.081
+    },
+    {
+      "word": "needs",
+      "start": 10.081,
+      "end": 10.385
+    },
+    {
+      "word": "an",
+      "start": 10.386,
+      "end": 10.462
+    },
+    {
+      "word": "article",
+      "start": 10.462,
+      "end": 10.881
+    },
+    {
+      "word": "that",
+      "start": 10.881,
+      "end": 11.033
+    },
+    {
+      "word": "does",
+      "start": 11.033,
+      "end": 11.185
+    },
+    {
+      "word": "not",
+      "start": 11.186,
+      "end": 11.452
+    },
+    {
+      "word": "exist",
+      "start": 11.452,
+      "end": 11.794
+    },
+    {
+      "word": "yet",
+      "start": 11.795,
+      "end": 12.137
+    },
+    {
+      "word": ".",
+      "start": 12.138,
+      "end": 12.138
+    },
+    {
+      "word": "For",
+      "start": 13.194,
+      "end": 13.308
+    },
+    {
+      "word": "this",
+      "start": 13.308,
+      "end": 13.498
+    },
+    {
+      "word": "task",
+      "start": 13.499,
+      "end": 14.222
+    },
+    {
+      "word": ",",
+      "start": 14.223,
+      "end": 14.223
+    },
+    {
+      "word": "GitHub",
+      "start": 14.223,
+      "end": 14.642
+    },
+    {
+      "word": "access",
+      "start": 14.642,
+      "end": 15.099
+    },
+    {
+      "word": "is",
+      "start": 15.099,
+      "end": 15.289
+    },
+    {
+      "word": "required",
+      "start": 15.289,
+      "end": 15.973
+    },
+    {
+      "word": ".",
+      "start": 15.974,
+      "end": 15.974
+    },
+    {
+      "word": "Creating",
+      "start": 16.204,
+      "end": 16.736
+    },
+    {
+      "word": "issues",
+      "start": 16.736,
+      "end": 17.156
+    },
+    {
+      "word": "and",
+      "start": 17.156,
+      "end": 17.346
+    },
+    {
+      "word": "reviewing",
+      "start": 17.347,
+      "end": 17.766
+    },
+    {
+      "word": "PRs",
+      "start": 17.766,
+      "end": 18.413
+    },
+    {
+      "word": "needs",
+      "start": 18.489,
+      "end": 18.755
+    },
+    {
+      "word": "a",
+      "start": 18.756,
+      "end": 18.87
+    },
+    {
+      "word": "linked",
+      "start": 18.87,
+      "end": 19.212
+    },
+    {
+      "word": "GitHub",
+      "start": 19.213,
+      "end": 19.517
+    },
+    {
+      "word": "account",
+      "start": 19.518,
+      "end": 19.937
+    },
+    {
+      "word": "with",
+      "start": 19.937,
+      "end": 20.089
+    },
+    {
+      "word": "the",
+      "start": 20.089,
+      "end": 20.203
+    },
+    {
+      "word": "appropriate",
+      "start": 20.204,
+      "end": 20.774
+    },
+    {
+      "word": "Microsoft",
+      "start": 20.774,
+      "end": 21.308
+    },
+    {
+      "word": "Docs",
+      "start": 21.308,
+      "end": 21.612
+    },
+    {
+      "word": "permissions",
+      "start": 21.613,
+      "end": 22.26
+    },
+    {
+      "word": ".",
+      "start": 22.261,
+      "end": 22.261
+    },
+    {
+      "word": "To",
+      "start": 23.336,
+      "end": 23.412
+    },
+    {
+      "word": "get",
+      "start": 23.412,
+      "end": 23.564
+    },
+    {
+      "word": "started",
+      "start": 23.565,
+      "end": 24.212
+    },
+    {
+      "word": ",",
+      "start": 24.212,
+      "end": 24.212
+    },
+    {
+      "word": "select",
+      "start": 24.212,
+      "end": 24.783
+    },
+    {
+      "word": "Create",
+      "start": 24.784,
+      "end": 25.241
+    },
+    {
+      "word": ".",
+      "start": 25.241,
+      "end": 25.241
+    },
+    {
+      "word": "Then",
+      "start": 25.241,
+      "end": 25.506
+    },
+    {
+      "word": "describe",
+      "start": 26.002,
+      "end": 26.65
+    },
+    {
+      "word": "what",
+      "start": 26.65,
+      "end": 26.802
+    },
+    {
+      "word": "is",
+      "start": 26.803,
+      "end": 26.916
+    },
+    {
+      "word": "needed",
+      "start": 26.916,
+      "end": 27.297
+    },
+    {
+      "word": "and",
+      "start": 27.298,
+      "end": 27.564
+    },
+    {
+      "word": "give",
+      "start": 27.565,
+      "end": 27.755
+    },
+    {
+      "word": "the",
+      "start": 27.755,
+      "end": 27.907
+    },
+    {
+      "word": "agent",
+      "start": 27.908,
+      "end": 28.25
+    },
+    {
+      "word": "the",
+      "start": 28.25,
+      "end": 28.364
+    },
+    {
+      "word": "context",
+      "start": 28.365,
+      "end": 28.936
+    },
+    {
+      "word": "it",
+      "start": 28.936,
+      "end": 29.05
+    },
+    {
+      "word": "needs",
+      "start": 29.05,
+      "end": 29.621
+    },
+    {
+      "word": ":",
+      "start": 29.622,
+      "end": 29.622
+    },
+    {
+      "word": "the",
+      "start": 29.774,
+      "end": 29.964
+    },
+    {
+      "word": "product",
+      "start": 29.965,
+      "end": 30.422
+    },
+    {
+      "word": "and",
+      "start": 30.422,
+      "end": 30.612
+    },
+    {
+      "word": "content",
+      "start": 30.612,
+      "end": 31.068
+    },
+    {
+      "word": "set",
+      "start": 31.069,
+      "end": 31.298
+    },
+    {
+      "word": ",",
+      "start": 31.298,
+      "end": 31.298
+    },
+    {
+      "word": "the",
+      "start": 31.298,
+      "end": 31.831
+    },
+    {
+      "word": "proposed",
+      "start": 31.831,
+      "end": 32.25
+    },
+    {
+      "word": "topic",
+      "start": 32.25,
+      "end": 32.669
+    },
+    {
+      "word": "and",
+      "start": 32.67,
+      "end": 32.859
+    },
+    {
+      "word": "article",
+      "start": 32.859,
+      "end": 33.239
+    },
+    {
+      "word": "type",
+      "start": 33.24,
+      "end": 33.811
+    },
+    {
+      "word": ",",
+      "start": 33.811,
+      "end": 33.811
+    },
+    {
+      "word": "the",
+      "start": 33.85,
+      "end": 34.078
+    },
+    {
+      "word": "audience",
+      "start": 34.079,
+      "end": 34.688
+    },
+    {
+      "word": ",",
+      "start": 34.689,
+      "end": 34.689
+    },
+    {
+      "word": "and",
+      "start": 34.803,
+      "end": 35.144
+    },
+    {
+      "word": "the",
+      "start": 35.145,
+      "end": 35.26
+    },
+    {
+      "word": "key",
+      "start": 35.26,
+      "end": 35.526
+    },
+    {
+      "word": "points",
+      "start": 35.527,
+      "end": 35.907
+    },
+    {
+      "word": "the",
+      "start": 35.908,
+      "end": 36.021
+    },
+    {
+      "word": "article",
+      "start": 36.021,
+      "end": 36.402
+    },
+    {
+      "word": "should",
+      "start": 36.403,
+      "end": 36.631
+    },
+    {
+      "word": "cover",
+      "start": 36.631,
+      "end": 37.088
+    },
+    {
+      "word": ".",
+      "start": 37.089,
+      "end": 37.089
+    },
+    {
+      "word": "Be",
+      "start": 38.145,
+      "end": 38.297
+    },
+    {
+      "word": "specific",
+      "start": 38.298,
+      "end": 39.136
+    },
+    {
+      "word": ".",
+      "start": 39.136,
+      "end": 39.136
+    },
+    {
+      "word": "Clear",
+      "start": 39.517,
+      "end": 39.897
+    },
+    {
+      "word": "context",
+      "start": 39.898,
+      "end": 40.507
+    },
+    {
+      "word": "helps",
+      "start": 40.507,
+      "end": 40.734
+    },
+    {
+      "word": "the",
+      "start": 40.735,
+      "end": 40.925
+    },
+    {
+      "word": "agent",
+      "start": 40.925,
+      "end": 41.229
+    },
+    {
+      "word": "produce",
+      "start": 41.23,
+      "end": 41.573
+    },
+    {
+      "word": "a",
+      "start": 41.574,
+      "end": 41.65
+    },
+    {
+      "word": "draft",
+      "start": 41.65,
+      "end": 42.069
+    },
+    {
+      "word": "that",
+      "start": 42.069,
+      "end": 42.259
+    },
+    {
+      "word": "is",
+      "start": 42.259,
+      "end": 42.411
+    },
+    {
+      "word": "closer",
+      "start": 42.412,
+      "end": 42.907
+    },
+    {
+      "word": "to",
+      "start": 42.907,
+      "end": 42.983
+    },
+    {
+      "word": "what",
+      "start": 42.983,
+      "end": 43.173
+    },
+    {
+      "word": "you",
+      "start": 43.174,
+      "end": 43.326
+    },
+    {
+      "word": "need",
+      "start": 43.326,
+      "end": 43.783
+    },
+    {
+      "word": "and",
+      "start": 43.783,
+      "end": 44.163
+    },
+    {
+      "word": "reduces",
+      "start": 44.164,
+      "end": 44.583
+    },
+    {
+      "word": "the",
+      "start": 44.583,
+      "end": 44.697
+    },
+    {
+      "word": "amount",
+      "start": 44.698,
+      "end": 44.964
+    },
+    {
+      "word": "of",
+      "start": 44.964,
+      "end": 45.04
+    },
+    {
+      "word": "revision",
+      "start": 45.04,
+      "end": 45.459
+    },
+    {
+      "word": "later",
+      "start": 45.459,
+      "end": 45.915
+    },
+    {
+      "word": ".",
+      "start": 45.916,
+      "end": 45.916
+    },
+    {
+      "word": "Content",
+      "start": 46.999,
+      "end": 47.379
+    },
+    {
+      "word": "Studio",
+      "start": 47.38,
+      "end": 47.799
+    },
+    {
+      "word": "turns",
+      "start": 47.799,
+      "end": 48.103
+    },
+    {
+      "word": "your",
+      "start": 48.104,
+      "end": 48.256
+    },
+    {
+      "word": "request",
+      "start": 48.256,
+      "end": 48.675
+    },
+    {
+      "word": "into",
+      "start": 48.675,
+      "end": 48.903
+    },
+    {
+      "word": "a",
+      "start": 48.904,
+      "end": 49.056
+    },
+    {
+      "word": "GitHub",
+      "start": 49.056,
+      "end": 49.436
+    },
+    {
+      "word": "issue",
+      "start": 49.437,
+      "end": 49.778
+    },
+    {
+      "word": "in",
+      "start": 49.779,
+      "end": 49.894
+    },
+    {
+      "word": "the",
+      "start": 49.894,
+      "end": 50.046
+    },
+    {
+      "word": "Learn",
+      "start": 50.047,
+      "end": 50.313
+    },
+    {
+      "word": "repo",
+      "start": 50.313,
+      "end": 50.808
+    },
+    {
+      "word": "where",
+      "start": 50.923,
+      "end": 51.113
+    },
+    {
+      "word": "the",
+      "start": 51.113,
+      "end": 51.227
+    },
+    {
+      "word": "content",
+      "start": 51.228,
+      "end": 51.647
+    },
+    {
+      "word": "is",
+      "start": 51.647,
+      "end": 51.723
+    },
+    {
+      "word": "stored",
+      "start": 51.723,
+      "end": 52.256
+    },
+    {
+      "word": ".",
+      "start": 52.256,
+      "end": 52.256
+    },
+    {
+      "word": "The",
+      "start": 53.326,
+      "end": 53.478
+    },
+    {
+      "word": "Create",
+      "start": 53.479,
+      "end": 53.821
+    },
+    {
+      "word": "agent",
+      "start": 53.821,
+      "end": 54.201
+    },
+    {
+      "word": "uses",
+      "start": 54.202,
+      "end": 54.582
+    },
+    {
+      "word": "the",
+      "start": 54.583,
+      "end": 54.773
+    },
+    {
+      "word": "issue",
+      "start": 54.774,
+      "end": 55.116
+    },
+    {
+      "word": "to",
+      "start": 55.117,
+      "end": 55.269
+    },
+    {
+      "word": "research",
+      "start": 55.269,
+      "end": 55.953
+    },
+    {
+      "word": ",",
+      "start": 55.954,
+      "end": 55.954
+    },
+    {
+      "word": "draft",
+      "start": 55.992,
+      "end": 56.449
+    },
+    {
+      "word": ",",
+      "start": 56.449,
+      "end": 56.449
+    },
+    {
+      "word": "and",
+      "start": 56.449,
+      "end": 56.678
+    },
+    {
+      "word": "validate",
+      "start": 56.679,
+      "end": 57.174
+    },
+    {
+      "word": "the",
+      "start": 57.174,
+      "end": 57.326
+    },
+    {
+      "word": "new",
+      "start": 57.326,
+      "end": 57.478
+    },
+    {
+      "word": "article",
+      "start": 57.479,
+      "end": 58.012
+    },
+    {
+      "word": ".",
+      "start": 58.012,
+      "end": 58.012
+    },
+    {
+      "word": "This",
+      "start": 58.279,
+      "end": 58.621
+    },
+    {
+      "word": "may",
+      "start": 58.621,
+      "end": 58.849
+    },
+    {
+      "word": "take",
+      "start": 58.85,
+      "end": 59.04
+    },
+    {
+      "word": "a",
+      "start": 59.04,
+      "end": 59.078
+    },
+    {
+      "word": "few",
+      "start": 59.079,
+      "end": 59.231
+    },
+    {
+      "word": "minutes",
+      "start": 59.231,
+      "end": 59.764
+    },
+    {
+      "word": ".",
+      "start": 59.764,
+      "end": 59.764
+    },
+    {
+      "word": "When",
+      "start": 60.221,
+      "end": 60.373
+    },
+    {
+      "word": "the",
+      "start": 60.374,
+      "end": 60.488
+    },
+    {
+      "word": "draft",
+      "start": 60.488,
+      "end": 60.754
+    },
+    {
+      "word": "is",
+      "start": 60.755,
+      "end": 60.831
+    },
+    {
+      "word": "ready",
+      "start": 60.831,
+      "end": 61.364
+    },
+    {
+      "word": ",",
+      "start": 61.364,
+      "end": 61.364
+    },
+    {
+      "word": "it",
+      "start": 61.364,
+      "end": 61.553
+    },
+    {
+      "word": "appears",
+      "start": 61.554,
+      "end": 61.973
+    },
+    {
+      "word": "in",
+      "start": 61.973,
+      "end": 62.049
+    },
+    {
+      "word": "the",
+      "start": 62.049,
+      "end": 62.164
+    },
+    {
+      "word": "content",
+      "start": 62.164,
+      "end": 62.583
+    },
+    {
+      "word": "set",
+      "start": 62.583,
+      "end": 62.887
+    },
+    {
+      "word": "as",
+      "start": 62.925,
+      "end": 63.077
+    },
+    {
+      "word": "a",
+      "start": 63.078,
+      "end": 63.193
+    },
+    {
+      "word": "linked",
+      "start": 63.193,
+      "end": 63.535
+    },
+    {
+      "word": "pull",
+      "start": 63.536,
+      "end": 63.764
+    },
+    {
+      "word": "request",
+      "start": 63.764,
+      "end": 64.41
+    },
+    {
+      "word": ".",
+      "start": 64.411,
+      "end": 64.411
+    },
+    {
+      "word": "Your",
+      "start": 65.464,
+      "end": 65.654
+    },
+    {
+      "word": "review",
+      "start": 65.655,
+      "end": 66.074
+    },
+    {
+      "word": "is",
+      "start": 66.074,
+      "end": 66.226
+    },
+    {
+      "word": "the",
+      "start": 66.226,
+      "end": 66.34
+    },
+    {
+      "word": "final",
+      "start": 66.34,
+      "end": 66.644
+    },
+    {
+      "word": "step",
+      "start": 66.645,
+      "end": 67.368
+    },
+    {
+      "word": ".",
+      "start": 67.369,
+      "end": 67.369
+    },
+    {
+      "word": "Check",
+      "start": 67.521,
+      "end": 67.863
+    },
+    {
+      "word": "that",
+      "start": 67.864,
+      "end": 68.435
+    },
+    {
+      "word": "the",
+      "start": 68.436,
+      "end": 68.625
+    },
+    {
+      "word": "article",
+      "start": 68.625,
+      "end": 69.044
+    },
+    {
+      "word": "is",
+      "start": 69.044,
+      "end": 69.12
+    },
+    {
+      "word": "correct",
+      "start": 69.236,
+      "end": 69.54
+    },
+    {
+      "word": ",",
+      "start": 69.54,
+      "end": 69.54
+    },
+    {
+      "word": "complete",
+      "start": 69.54,
+      "end": 69.844
+    },
+    {
+      "word": ",",
+      "start": 69.845,
+      "end": 69.845
+    },
+    {
+      "word": "and",
+      "start": 69.845,
+      "end": 69.959
+    },
+    {
+      "word": "appropriate",
+      "start": 69.959,
+      "end": 70.492
+    },
+    {
+      "word": "for",
+      "start": 70.493,
+      "end": 70.607
+    },
+    {
+      "word": "the",
+      "start": 70.607,
+      "end": 70.759
+    },
+    {
+      "word": "audience",
+      "start": 70.759,
+      "end": 71.33
+    },
+    {
+      "word": ".",
+      "start": 71.331,
+      "end": 71.331
+    },
+    {
+      "word": "Edit",
+      "start": 71.636,
+      "end": 71.788
+    },
+    {
+      "word": "the",
+      "start": 71.788,
+      "end": 72.016
+    },
+    {
+      "word": "draft",
+      "start": 72.017,
+      "end": 72.359
+    },
+    {
+      "word": "as",
+      "start": 72.359,
+      "end": 72.625
+    },
+    {
+      "word": "needed",
+      "start": 72.626,
+      "end": 73.234
+    },
+    {
+      "word": ",",
+      "start": 73.235,
+      "end": 73.235
+    },
+    {
+      "word": "work",
+      "start": 73.274,
+      "end": 73.502
+    },
+    {
+      "word": "with",
+      "start": 73.502,
+      "end": 73.691
+    },
+    {
+      "word": "a",
+      "start": 73.692,
+      "end": 73.731
+    },
+    {
+      "word": "subject-matter",
+      "start": 73.731,
+      "end": 74.378
+    },
+    {
+      "word": "expert",
+      "start": 74.378,
+      "end": 74.758
+    },
+    {
+      "word": "when",
+      "start": 74.759,
+      "end": 74.911
+    },
+    {
+      "word": "necessary",
+      "start": 74.912,
+      "end": 75.673
+    },
+    {
+      "word": ",",
+      "start": 75.674,
+      "end": 75.674
+    },
+    {
+      "word": "and",
+      "start": 75.674,
+      "end": 76.092
+    },
+    {
+      "word": "approve",
+      "start": 76.092,
+      "end": 76.549
+    },
+    {
+      "word": "it",
+      "start": 76.549,
+      "end": 76.74
+    },
+    {
+      "word": "only",
+      "start": 76.817,
+      "end": 77.236
+    },
+    {
+      "word": "when",
+      "start": 77.236,
+      "end": 77.388
+    },
+    {
+      "word": "it",
+      "start": 77.388,
+      "end": 77.464
+    },
+    {
+      "word": "is",
+      "start": 77.464,
+      "end": 77.578
+    },
+    {
+      "word": "ready",
+      "start": 77.578,
+      "end": 77.843
+    },
+    {
+      "word": "for",
+      "start": 77.844,
+      "end": 77.959
+    },
+    {
+      "word": "customers",
+      "start": 77.959,
+      "end": 78.682
+    },
+    {
+      "word": ".",
+      "start": 78.683,
+      "end": 78.683
+    },
+    {
+      "word": "That\u2019s",
+      "start": 79.75,
+      "end": 80.054
+    },
+    {
+      "word": "it",
+      "start": 80.055,
+      "end": 80.359
+    },
+    {
+      "word": ".",
+      "start": 80.36,
+      "end": 80.36
+    },
+    {
+      "word": "Select",
+      "start": 80.664,
+      "end": 81.197
+    },
+    {
+      "word": "Create",
+      "start": 81.198,
+      "end": 81.958
+    },
+    {
+      "word": ",",
+      "start": 81.959,
+      "end": 81.959
+    },
+    {
+      "word": "provide",
+      "start": 81.959,
+      "end": 82.454
+    },
+    {
+      "word": "clear",
+      "start": 82.454,
+      "end": 82.797
+    },
+    {
+      "word": "context",
+      "start": 82.798,
+      "end": 83.559
+    },
+    {
+      "word": ",",
+      "start": 83.56,
+      "end": 83.56
+    },
+    {
+      "word": "and",
+      "start": 83.56,
+      "end": 83.979
+    },
+    {
+      "word": "review",
+      "start": 83.979,
+      "end": 84.398
+    },
+    {
+      "word": "the",
+      "start": 84.398,
+      "end": 84.512
+    },
+    {
+      "word": "generated",
+      "start": 84.512,
+      "end": 85.045
+    },
+    {
+      "word": "pull",
+      "start": 85.045,
+      "end": 85.235
+    },
+    {
+      "word": "request",
+      "start": 85.236,
+      "end": 85.883
+    },
+    {
+      "word": ".",
+      "start": 85.884,
+      "end": 85.884
+    },
+    {
+      "word": "Content",
+      "start": 86.226,
+      "end": 86.683
+    },
+    {
+      "word": "Studio",
+      "start": 86.684,
+      "end": 87.103
+    },
+    {
+      "word": "handles",
+      "start": 87.103,
+      "end": 87.444
+    },
+    {
+      "word": "the",
+      "start": 87.444,
+      "end": 87.596
+    },
+    {
+      "word": "first",
+      "start": 87.597,
+      "end": 87.977
+    },
+    {
+      "word": "draft",
+      "start": 87.978,
+      "end": 88.512
+    },
+    {
+      "word": ",",
+      "start": 88.512,
+      "end": 88.512
+    },
+    {
+      "word": "while",
+      "start": 88.588,
+      "end": 88.816
+    },
+    {
+      "word": "you",
+      "start": 88.817,
+      "end": 89.083
+    },
+    {
+      "word": "stay",
+      "start": 89.084,
+      "end": 89.312
+    },
+    {
+      "word": "accountable",
+      "start": 89.312,
+      "end": 89.882
+    },
+    {
+      "word": "for",
+      "start": 89.883,
+      "end": 90.036
+    },
+    {
+      "word": "what",
+      "start": 90.036,
+      "end": 90.264
+    },
+    {
+      "word": "reaches",
+      "start": 90.264,
+      "end": 90.605
+    },
+    {
+      "word": "customers",
+      "start": 90.606,
+      "end": 91.406
+    },
+    {
+      "word": ".",
+      "start": 91.406,
+      "end": 91.406
+    }
+  ]
+}
