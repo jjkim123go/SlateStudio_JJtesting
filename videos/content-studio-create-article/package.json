@@ -3,9 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npx --yes hyperframes@0.8.40 preview",
-    "check": "npx --yes hyperframes@0.8.40 check",
-    "render": "npx --yes hyperframes@0.8.40 render",
-    "publish": "npx --yes hyperframes@0.8.40 publish"
+    "dev": "npx --yes hyperframes@0.8.41 preview",
+    "check": "npx --yes hyperframes@0.8.41 check",
+    "render": "npx --yes hyperframes@0.8.41 render",
+    "render:cloud": "npx --yes hyperframes@0.8.41 cloud render . --quality standard --resolution 1080p --fps 30 --format mp4 --output %USERPROFILE%/Downloads/content-studio-create-article-final.mp4",
+    "publish": "npx --yes hyperframes@0.8.41 publish"
   }
 }
