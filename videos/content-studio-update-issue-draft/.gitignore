@@ -1,0 +1,12 @@
+.hyperframes/
+.thumbnails/
+.waveform-cache/
+snapshots/
+pointer-audit/
+reference-analysis/
+reference-contact-sheet.jpg
+assets/*
+!assets/narration/
+assets/narration/*
+!assets/narration/content-studio-update-continuous.wav
+!assets/narration/content-studio-update-continuous.words.json

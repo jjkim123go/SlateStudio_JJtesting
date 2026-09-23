@@ -1,0 +1,40 @@
+{
+  "concept": "A request moves through three real work surfaces as one continuous, controlled editorial handoff.",
+  "palette": {
+    "background": ["#FFFFFF", "#F5F4FA", "#0D1117", "#1E1E1E"],
+    "accent": "#226FB1",
+    "secondary": "#F9B72B",
+    "success": "#107C10",
+    "text": "#242424",
+    "mutedText": "#616161",
+    "gradientMesh": "none"
+  },
+  "material": "product-chrome with fine gray rules",
+  "motionSignature": {
+    "name": "Guided focus",
+    "rules": [
+      "camera pushes slowly toward the active control",
+      "pointer arrives before each state change",
+      "every click is followed by a readable hold"
+    ]
+  },
+  "composition": {
+    "grammar": "full-frame application chrome with action-centered crops",
+    "headlinePx": 72,
+    "negativeSpaceMin": 0.08
+  },
+  "signatureMotif": "an oversized white pointer with black outline and brief blue focus rings",
+  "sceneTreatments": {
+    "s01": "reference-matched title card",
+    "s02": "Content Studio light chrome",
+    "s03": "GitHub issue activity in dark chrome",
+    "s04": "GitHub PR conversation and diff",
+    "s05": "VS Code for the Web and Content Mentor",
+    "s06": "merge confirmation and dashboard resolution",
+    "s07": "Microsoft end mark"
+  },
+  "referenceDirection": [
+    "approved Content Studio Create article walkthrough",
+    "supplied Content Studio update recording"
+  ]
+}

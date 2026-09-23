@@ -1,0 +1,2900 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, height=1080">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #fff;
+      }
+      body {
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        color: #242424;
+      }
+      #root {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
+        background: #fff;
+      }
+      .clip {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+      }
+
+      /* Reference-matched opener */
+      #intro {
+        background: radial-gradient(
+          circle at 50% 95%,
+          #15834f 0%,
+          #0e5837 55%,
+          #0a4a31 100%
+        );
+      }
+      .intro-inner {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .quick-label {
+        margin-top: 108px;
+        padding: 10px 30px;
+        border-radius: 12px;
+        background: #f9b72b;
+        color: #174f35;
+        font-size: 54px;
+        line-height: 1;
+        font-weight: 450;
+      }
+      .intro-title {
+        margin: 58px 0 0;
+        width: 1540px;
+        color: #fff;
+        font-size: 132px;
+        line-height: 0.92;
+        font-weight: 900;
+        letter-spacing: 0;
+        text-align: center;
+      }
+      .intro-title-line {
+        display: block;
+        white-space: nowrap;
+      }
+      .intro-preview {
+        position: absolute;
+        left: 290px;
+        top: 690px;
+        width: 1340px;
+        height: 510px;
+        border-radius: 8px 8px 0 0;
+        background: #f5f4fa;
+        box-shadow: 0 18px 44px rgba(0, 0, 0, 0.22);
+        overflow: hidden;
+      }
+      .preview-head {
+        padding: 24px 30px 18px;
+        font-size: 29px;
+        font-weight: 700;
+      }
+      .preview-create {
+        position: absolute;
+        top: 22px;
+        right: 30px;
+        padding: 12px 27px;
+        border: 1px solid #0f6cbd;
+        border-radius: 6px;
+        background: #0f6cbd;
+        color: #fff;
+        font-size: 19px;
+        font-weight: 700;
+      }
+      .preview-sub {
+        padding: 0 30px 22px;
+        font-size: 19px;
+        color: #616161;
+      }
+      .preview-controls {
+        display: flex;
+        gap: 14px;
+        padding: 0 30px;
+      }
+      .preview-pill {
+        padding: 13px 20px;
+        border: 1px solid #d1d1d1;
+        border-radius: 28px;
+        background: white;
+        font-size: 19px;
+      }
+      .preview-panel {
+        margin: 20px 30px;
+        height: 170px;
+        border: 1px solid #d9d9d9;
+        border-radius: 10px;
+        background: #fff;
+        display: grid;
+        grid-template-columns: 170px 1fr 150px;
+        gap: 24px;
+        padding: 24px;
+      }
+      .preview-score {
+        color: #107c10;
+        font-size: 34px;
+        font-weight: 800;
+      }
+      .preview-bar {
+        margin-top: 40px;
+        height: 15px;
+        background: linear-gradient(
+          90deg,
+          #c50f1f 0 16%,
+          #f9b44d 16% 26%,
+          #1d9b78 26%
+        );
+      }
+
+      /* Continuous demo surface */
+      #demo {
+        background: #fff;
+      }
+      #camera {
+        position: absolute;
+        inset: 0;
+        transform-origin: 0 0;
+        will-change: transform;
+      }
+      .app {
+        position: absolute;
+        inset: 0;
+        background: #fff;
+        opacity: 0;
+      }
+      .topbar {
+        height: 68px;
+        border-bottom: 1px solid #d1d1d1;
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+        gap: 14px;
+        font-size: 24px;
+        font-weight: 700;
+        color: #3155a4;
+      }
+      .preview-badge {
+        padding: 8px 13px;
+        border: 1px solid #8ed18e;
+        border-radius: 6px;
+        color: #107c10;
+        font-size: 16px;
+      }
+      .sidebar {
+        position: absolute;
+        top: 68px;
+        bottom: 0;
+        left: 0;
+        width: 292px;
+        border-right: 1px solid #d1d1d1;
+        background: #fff;
+        padding-top: 26px;
+      }
+      .person {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 0 24px 28px;
+        font-size: 18px;
+        font-weight: 650;
+      }
+      .avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: #ececec;
+        display: grid;
+        place-items: center;
+        color: #5b5b5b;
+      }
+      .nav-item {
+        height: 58px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 0 34px;
+        border-left: 5px solid #1683c5;
+        background: #f0eef2;
+        font-size: 22px;
+        font-weight: 650;
+      }
+      .main {
+        position: absolute;
+        top: 68px;
+        left: 292px;
+        right: 0;
+        bottom: 0;
+        background: #f7f6fb;
+        overflow: hidden;
+      }
+      .main-head {
+        height: 248px;
+        padding: 46px 38px 0;
+      }
+      .main-head h2 {
+        margin: 0 0 14px;
+        font-size: 38px;
+        letter-spacing: 0;
+      }
+      .main-head p {
+        margin: 0 0 40px;
+        font-size: 23px;
+        color: #4f4f4f;
+      }
+      .filters {
+        display: flex;
+        gap: 20px;
+      }
+      .filter {
+        min-width: 250px;
+        padding: 14px 24px;
+        border: 1px solid #d1d1d1;
+        border-radius: 28px;
+        background: #fff;
+        font-size: 20px;
+      }
+      .workspace {
+        position: absolute;
+        left: 38px;
+        right: 38px;
+        top: 248px;
+        bottom: 28px;
+        border: 1px solid #d6d6d6;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.09);
+        overflow: hidden;
+      }
+      .toolbar {
+        height: 78px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 26px;
+        border-bottom: 1px solid #ddd;
+      }
+      .tab {
+        padding: 16px 8px;
+        border-bottom: 4px solid #2276b5;
+        color: #1f6b9d;
+        font-size: 19px;
+        font-weight: 700;
+      }
+      .toolbar-spacer {
+        flex: 1;
+      }
+      .button {
+        padding: 12px 24px;
+        border: 1px solid #c9c9c9;
+        border-radius: 6px;
+        background: #fff;
+        font-size: 19px;
+        font-weight: 650;
+      }
+      .button.primary {
+        border-color: #0f6cbd;
+        background: #0f6cbd;
+        color: #fff;
+      }
+      .access-overlay {
+        position: absolute;
+        left: 292px;
+        right: 0;
+        bottom: 54px;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        height: 230px;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .access-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+      }
+      .access-identity {
+        display: grid;
+        place-items: center;
+        width: 108px;
+        height: 108px;
+      }
+      .access-icon {
+        width: 104px;
+        height: 104px;
+      }
+      .github-icon {
+        padding: 18px;
+        border-radius: 50%;
+        background: #24292f;
+        fill: #fff;
+      }
+      .account-icon {
+        padding: 7px;
+        fill: none;
+        stroke: #0f6cbd;
+        stroke-width: 1.8;
+      }
+      .access-arrows {
+        width: 180px;
+        height: 88px;
+        fill: none;
+        stroke: #0f6cbd;
+        stroke-width: 3.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .table-head,
+      .table-row {
+        display: grid;
+        grid-template-columns: 1fr 150px 180px 170px;
+        gap: 16px;
+        align-items: center;
+        padding: 0 28px;
+      }
+      .table-head {
+        height: 54px;
+        font-size: 17px;
+        font-weight: 750;
+        border-bottom: 1px solid #ddd;
+      }
+      .table-row {
+        min-height: 66px;
+        border-bottom: 1px solid #e5e5e5;
+        font-size: 17px;
+      }
+      .status {
+        width: max-content;
+        padding: 6px 11px;
+        border: 1px solid #e0ad42;
+        border-radius: 5px;
+        background: #fff6d8;
+        color: #7a5b00;
+        font-weight: 700;
+      }
+      .status.ready {
+        border-color: #6dbb6d;
+        background: #eaf6ea;
+        color: #107c10;
+      }
+      .links {
+        display: flex;
+        gap: 16px;
+        color: #226fb1;
+        font-weight: 650;
+      }
+
+      .state {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #state-create {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 54px;
+        background: #f7f6fb;
+      }
+      .create-panel {
+        position: relative;
+        width: 960px;
+        height: 790px;
+        border: 1px solid #cfcfcf;
+        border-radius: 6px;
+        background: #fff;
+        box-shadow: 0 18px 48px rgba(0, 0, 0, 0.18);
+        padding: 24px 30px;
+        overflow: hidden;
+      }
+      .create-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #d8d8d8;
+      }
+      .create-panel h3 {
+        margin: 0;
+        font-size: 28px;
+      }
+      .close-x {
+        color: #666;
+        font-size: 27px;
+        line-height: 1;
+      }
+      .form-grid {
+        display: none;
+        grid-template-columns: 2.35fr 1fr;
+        gap: 16px;
+      }
+      #field-repo {
+        display: none;
+      }
+      .form-section {
+        position: relative;
+        margin-top: 13px;
+        opacity: 0.28;
+        filter: grayscale(1);
+      }
+      .form-section label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 16px;
+        font-weight: 700;
+      }
+      .required {
+        color: #c4314b;
+      }
+      .input {
+        position: relative;
+        min-height: 43px;
+        padding: 10px 13px;
+        border: 1px solid #b9b9b9;
+        border-radius: 2px;
+        background: #fff;
+        font-size: 16px;
+        color: #333;
+        overflow: hidden;
+      }
+      .input.prefilled {
+        background: #edf4fd;
+      }
+      .input.textarea {
+        min-height: 112px;
+        line-height: 1.42;
+      }
+      .input.context {
+        min-height: 120px;
+      }
+      .input.repo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .repo-chip {
+        padding: 5px 10px;
+        background: #f2f2f2;
+        color: #606060;
+      }
+      .char-count {
+        position: absolute;
+        right: 7px;
+        bottom: 5px;
+        color: #777;
+        font-size: 12px;
+      }
+      .mute-lines {
+        position: absolute;
+        left: 5px;
+        right: 5px;
+        top: 25px;
+        bottom: 3px;
+        z-index: 2;
+        border-radius: 2px;
+        background: rgba(247, 247, 247, 0.94)
+          repeating-linear-gradient(
+            to bottom,
+            transparent 0 8px,
+            #c8c8c8 8px 13px,
+            transparent 13px 23px
+          );
+      }
+      .next-copy {
+        margin: 17px 0 0;
+        font-size: 14px;
+        line-height: 1.35;
+        color: #555;
+      }
+      .panel-actions {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 15px;
+      }
+      .button.disabled {
+        border-color: #e4e4e4;
+        background: #f3f3f3;
+        color: #b5b5b5;
+      }
+      #submitBtn.enabled {
+        border-color: #0f6cbd;
+        background: #0f6cbd;
+        color: #fff;
+      }
+      .create-highlight {
+        box-shadow:
+          0 0 0 5px #d13438,
+          0 0 0 10px rgba(209, 52, 56, 0.18);
+      }
+
+      #state-progress {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(36, 36, 36, 0.38);
+      }
+      .success-modal {
+        position: relative;
+        width: 1540px;
+        height: 1000px;
+        border: 1px solid #c8c8c8;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 18px 54px rgba(0, 0, 0, 0.24);
+        padding: 38px 42px;
+      }
+      .success-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-bottom: 24px;
+        border-bottom: 1px solid #ddd;
+        font-size: 30px;
+        font-weight: 750;
+      }
+      .success-close {
+        color: #666;
+        font-size: 32px;
+        font-weight: 400;
+      }
+      .success-body {
+        height: 690px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 28px;
+      }
+      .success-check {
+        width: 130px;
+        height: 130px;
+        filter: drop-shadow(0 8px 9px rgba(0, 120, 212, 0.22));
+      }
+      .success-copy {
+        font-size: 21px;
+      }
+      .success-actions {
+        display: flex;
+        justify-content: center;
+      }
+      #viewIssueBtn {
+        padding: 13px 28px;
+      }
+      .feedback-strip {
+        position: absolute;
+        left: 42px;
+        right: 42px;
+        bottom: 28px;
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 22px;
+        border: 1px solid #b7d5ee;
+        border-radius: 10px;
+        background: #eaf4fc;
+        color: #365f7d;
+        font-size: 17px;
+      }
+
+      .issue-shell {
+        position: absolute;
+        inset: 0;
+        background: #0d1117;
+        color: #e6edf3;
+        font-family: "Segoe UI", sans-serif;
+        overflow: hidden;
+      }
+      .issue-repo-nav {
+        height: 58px;
+        display: flex;
+        align-items: end;
+        gap: 28px;
+        padding: 0 34px;
+        border-bottom: 1px solid #30363d;
+        background: #010409;
+        color: #b1bac4;
+        font-size: 15px;
+      }
+      .issue-github-mark {
+        width: 30px;
+        height: 43px;
+        display: grid;
+        place-items: center;
+        color: #f0f6fc;
+      }
+      .issue-github-mark svg {
+        width: 28px;
+        height: 28px;
+        fill: currentColor;
+      }
+      .issue-repo-nav span {
+        height: 43px;
+        display: flex;
+        align-items: center;
+        border-bottom: 3px solid transparent;
+      }
+      .issue-repo-nav .active {
+        color: #f0f6fc;
+        border-color: #f78166;
+      }
+      .issue-scroll {
+        position: absolute;
+        inset: 58px 0 0;
+        overflow: hidden;
+      }
+      .issue-scroll-content {
+        position: absolute;
+        inset: 0 0 auto;
+      }
+      .issue-request {
+        padding: 32px 110px 40px;
+      }
+      .issue-request-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 19px;
+        border-bottom: 1px solid #30363d;
+      }
+      .issue-request-title h2 {
+        flex: 1;
+        margin: 0;
+        color: #f0f6fc;
+        font-size: 31px;
+        font-weight: 500;
+      }
+      .issue-request-title .issue-number {
+        font-size: 27px;
+      }
+      .issue-new {
+        padding: 8px 14px;
+        border: 1px solid rgba(240, 246, 252, 0.1);
+        border-radius: 6px;
+        background: #238636;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .issue-request-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 330px;
+        gap: 34px;
+        margin-top: 20px;
+      }
+      .issue-author-line {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 14px;
+        color: #8b949e;
+        font-size: 14px;
+      }
+      .issue-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: conic-gradient(
+          #7fba00 0 25%,
+          #ffb900 0 50%,
+          #f25022 0 75%,
+          #00a4ef 0
+        );
+      }
+      .issue-body-card {
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        overflow: hidden;
+      }
+      .issue-body-head {
+        padding: 12px 18px;
+        border-bottom: 1px solid #30363d;
+        background: #161b22;
+        color: #8b949e;
+        font-size: 14px;
+      }
+      .issue-body {
+        padding: 18px 20px 22px;
+        font-size: 14px;
+        line-height: 1.48;
+      }
+      .issue-body h3 {
+        margin: 0 0 10px;
+        color: #f0f6fc;
+        font-size: 18px;
+      }
+      .issue-body p {
+        margin: 8px 0;
+      }
+      .issue-body ul {
+        margin: 8px 0 13px;
+        padding-left: 24px;
+      }
+      .issue-body li {
+        margin: 5px 0;
+      }
+      .issue-copy-lines {
+        display: grid;
+        gap: 8px;
+        margin: 10px 0 17px;
+      }
+      .issue-copy-lines i {
+        height: 6px;
+        border-radius: 3px;
+        background: #30363d;
+      }
+      .issue-copy-lines i:nth-child(2n) {
+        width: 89%;
+      }
+      .issue-copy-lines i:nth-child(3n) {
+        width: 72%;
+      }
+      .issue-sidebar section {
+        padding: 15px 0;
+        border-bottom: 1px solid #30363d;
+        color: #8b949e;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .issue-sidebar b {
+        display: block;
+        margin-bottom: 8px;
+        color: #c9d1d9;
+      }
+      .issue-sidebar .issue-label {
+        margin: 3px 4px 3px 0;
+      }
+      .issue-updates {
+        min-height: 965px;
+        padding: 24px 110px 34px;
+        border-top: 1px solid #30363d;
+        background: #0d1117;
+      }
+      .issue-titlebar {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding-bottom: 22px;
+        border-bottom: 1px solid #30363d;
+        font-size: 23px;
+        font-weight: 650;
+      }
+      .issue-open {
+        padding: 7px 14px;
+        border-radius: 18px;
+        background: #238636;
+        color: #fff;
+        font-size: 15px;
+      }
+      .issue-number {
+        color: #8b949e;
+        font-weight: 400;
+      }
+      .issue-meta {
+        margin-top: 14px;
+        padding: 20px 22px;
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      .issue-meta-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 18px 34px;
+      }
+      .issue-meta b {
+        display: block;
+        margin-bottom: 4px;
+        color: #f0f6fc;
+      }
+      .issue-value {
+        color: #79c0ff;
+      }
+      .issue-activity {
+        position: relative;
+        margin: 14px 0 0 54px;
+        padding: 3px 0 3px 18px;
+        border-left: 2px solid #30363d;
+        color: #8b949e;
+        font-size: 14px;
+      }
+      .issue-activity b {
+        color: #c9d1d9;
+      }
+      .issue-label {
+        display: inline-block;
+        margin-left: 8px;
+        padding: 3px 8px;
+        border: 1px solid #484f58;
+        border-radius: 12px;
+        background: #21262d;
+        color: #c9d1d9;
+        font-size: 12px;
+      }
+      .issue-event {
+        position: relative;
+        margin: 14px 0 0 54px;
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        background: #0d1117;
+        overflow: visible;
+      }
+      .issue-event::before {
+        content: "";
+        position: absolute;
+        left: -46px;
+        top: 18px;
+        width: 30px;
+        height: 30px;
+        background: conic-gradient(
+          #7fba00 0 25%,
+          #ffb900 0 50%,
+          #f25022 0 75%,
+          #00a4ef 0
+        );
+      }
+      .issue-event-head {
+        padding: 11px 16px;
+        border-bottom: 1px solid #30363d;
+        background: #161b22;
+        color: #8b949e;
+      }
+      .issue-event-head b {
+        color: #f0f6fc;
+      }
+      .issue-event-body {
+        min-height: 94px;
+        padding: 18px;
+        font-size: 16px;
+        line-height: 1.45;
+      }
+      .issue-gray-lines {
+        display: grid;
+        gap: 8px;
+        margin-top: 12px;
+      }
+      .issue-gray-lines i {
+        display: block;
+        height: 7px;
+        border-radius: 4px;
+        background: #30363d;
+      }
+      .issue-gray-lines i:nth-child(1) {
+        width: 92%;
+      }
+      .issue-gray-lines i:nth-child(2) {
+        width: 76%;
+      }
+      .issue-gray-lines i:nth-child(3) {
+        width: 84%;
+      }
+      .issue-editor {
+        margin: 16px 0 0 54px;
+      }
+      .issue-editor-title {
+        margin-bottom: 9px;
+        font-size: 17px;
+        font-weight: 700;
+      }
+      .issue-editor-box {
+        height: 150px;
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        background: #0d1117;
+      }
+      .issue-editor-tabs {
+        height: 36px;
+        display: flex;
+        align-items: center;
+        gap: 22px;
+        padding: 0 14px;
+        border-bottom: 1px solid #30363d;
+        color: #8b949e;
+        font-size: 13px;
+      }
+      .issue-editor-tabs b {
+        color: #f0f6fc;
+      }
+      .issue-editor-placeholder {
+        padding: 15px;
+        color: #6e7681;
+        font-size: 14px;
+      }
+      .issue-pr-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+        padding: 10px 13px;
+        border: 1px solid #1f6feb;
+        border-radius: 6px;
+        background: rgba(31, 111, 235, 0.1);
+        color: #58a6ff;
+        font-weight: 650;
+      }
+      #createdRow {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .pr-shell {
+        position: absolute;
+        inset: 0;
+        background: #0d1117;
+        color: #e6edf3;
+      }
+      .gh-view {
+        position: absolute;
+        inset: 0;
+      }
+      #gh-files {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .gh-top {
+        height: 68px;
+        border-bottom: 1px solid #30363d;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 30px;
+        background: #010409;
+        font-size: 18px;
+        font-weight: 650;
+      }
+      .gh-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        background: #f0f6fc;
+        color: #0d1117;
+        font-size: 20px;
+        font-weight: 900;
+      }
+      .gh-repo {
+        color: #f0f6fc;
+      }
+      .gh-nav {
+        height: 58px;
+        border-bottom: 1px solid #30363d;
+        display: flex;
+        align-items: end;
+        gap: 28px;
+        padding: 0 34px;
+        color: #b1bac4;
+      }
+      .gh-nav span {
+        height: 46px;
+        display: flex;
+        align-items: center;
+        border-bottom: 3px solid transparent;
+        font-size: 16px;
+      }
+      .gh-nav .active {
+        color: #f0f6fc;
+        border-color: #f78166;
+      }
+      .gh-page {
+        width: 1260px;
+        margin: 30px auto 0;
+      }
+      .gh-title-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .gh-title {
+        margin: 0;
+        color: #f0f6fc;
+        font-size: 32px;
+        font-weight: 500;
+      }
+      .gh-number {
+        color: #7d8590;
+        font-weight: 400;
+      }
+      .gh-open {
+        display: inline-block;
+        margin-top: 14px;
+        padding: 7px 13px;
+        border-radius: 18px;
+        background: #238636;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .gh-branch {
+        margin-left: 12px;
+        color: #8c959f;
+        font-size: 15px;
+      }
+      .gh-tabs {
+        height: 62px;
+        display: flex;
+        align-items: end;
+        gap: 8px;
+        border-bottom: 1px solid #30363d;
+        margin-top: 18px;
+      }
+      .gh-tab {
+        height: 48px;
+        padding: 0 20px;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        color: #c9d1d9;
+        font-size: 16px;
+      }
+      .gh-tab.active {
+        border: 1px solid #30363d;
+        border-bottom-color: #0d1117;
+        border-radius: 7px 7px 0 0;
+        background: #0d1117;
+        font-weight: 700;
+      }
+      .gh-layout {
+        display: grid;
+        grid-template-columns: 1fr 300px;
+        gap: 28px;
+        margin-top: 24px;
+      }
+      .gh-comment {
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        overflow: hidden;
+      }
+      .gh-comment-head {
+        padding: 15px 18px;
+        border-bottom: 1px solid #30363d;
+        background: #161b22;
+        color: #8c959f;
+        font-size: 15px;
+      }
+      .gh-comment-head b {
+        color: #e6edf3;
+      }
+      .gh-comment-body {
+        padding: 22px;
+        font-size: 16px;
+        line-height: 1.55;
+      }
+      .gh-comment-body h3 {
+        margin: 0 0 14px;
+        font-size: 18px;
+      }
+      .gh-comment-body ol {
+        margin: 10px 0 20px;
+        padding-left: 24px;
+      }
+      .gh-comment-body a,
+      .gh-link {
+        color: #58a6ff;
+      }
+      .gh-side section {
+        padding: 17px 0;
+        border-bottom: 1px solid #30363d;
+        color: #8c959f;
+        font-size: 14px;
+      }
+      .gh-side b {
+        display: block;
+        margin-bottom: 9px;
+        color: #e6edf3;
+      }
+      .gh-label {
+        display: inline-block;
+        margin: 3px;
+        padding: 5px 8px;
+        border: 1px solid #484f58;
+        border-radius: 12px;
+        color: #c9d1d9;
+        font-size: 12px;
+      }
+      .gh-review-top {
+        height: 64px;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        padding: 0 30px;
+        border-bottom: 1px solid #30363d;
+        background: #0d1117;
+      }
+      .gh-review-title {
+        flex: 1;
+        min-width: 0;
+        color: #f0f6fc;
+        font-size: 17px;
+        font-weight: 700;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .gh-checks {
+        padding: 7px 12px;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        color: #d29922;
+        font-size: 14px;
+      }
+      .submit-review {
+        padding: 9px 15px;
+        border: 1px solid rgba(240, 246, 252, 0.1);
+        border-radius: 6px;
+        background: #238636;
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+      }
+      .gh-file-layout {
+        position: absolute;
+        inset: 132px 24px 22px;
+        display: grid;
+        grid-template-columns: 230px 1fr;
+        gap: 18px;
+      }
+      .gh-files-list {
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        padding: 18px;
+        color: #8c959f;
+        font-size: 14px;
+      }
+      .gh-files-list b {
+        display: block;
+        margin-bottom: 18px;
+        color: #e6edf3;
+      }
+      .gh-file {
+        padding: 11px 0;
+        color: #58a6ff;
+      }
+      .gh-diff {
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        overflow: hidden;
+        background: #0d1117;
+      }
+      .gh-diff-head {
+        height: 52px;
+        padding: 15px 18px;
+        border-bottom: 1px solid #30363d;
+        background: #161b22;
+        font:
+          700 15px ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          monospace;
+      }
+      .diff-lines {
+        padding: 11px 0 26px;
+        background: #0f2d20;
+        font:
+          15px/1.6 ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          monospace;
+        color: #c9d1d9;
+      }
+      .diff-line {
+        display: grid;
+        grid-template-columns: 58px 58px 1fr;
+        min-height: 30px;
+        padding-right: 18px;
+      }
+      .diff-line span:first-child,
+      .diff-line span:nth-child(2) {
+        color: #7d8590;
+        text-align: right;
+        padding-right: 13px;
+        user-select: none;
+      }
+      .diff-line .code {
+        color: #aff5b4;
+      }
+      .diff-section {
+        color: #79c0ff;
+        font-weight: 700;
+      }
+
+      /* MicrosoftDocs GitHub reference styling. */
+      .pr-shell {
+        background: #fff;
+        color: #1f2328;
+      }
+      .gh-top {
+        height: 62px;
+        border-color: #d0d7de;
+        background: #f6f8fa;
+        color: #1f2328;
+      }
+      .gh-mark {
+        width: 32px;
+        height: 32px;
+        background: transparent;
+        color: #f0f6fc;
+      }
+      .gh-mark svg {
+        width: 32px;
+        height: 32px;
+        fill: currentColor;
+      }
+      .gh-repo,
+      .gh-title,
+      .gh-comment-head b,
+      .gh-side b,
+      .gh-review-title {
+        color: #1f2328;
+      }
+      .gh-nav {
+        height: 54px;
+        border-color: #d0d7de;
+        background: #f6f8fa;
+        color: #1f2328;
+      }
+      .gh-nav span {
+        height: 43px;
+        font-size: 14px;
+      }
+      .gh-nav .active {
+        color: #1f2328;
+        border-color: #fd8c73;
+      }
+      .gh-page {
+        margin-top: 24px;
+      }
+      .gh-title {
+        font-size: 30px;
+      }
+      .gh-number,
+      .gh-branch {
+        color: #656d76;
+      }
+      .gh-tabs {
+        border-color: #d0d7de;
+      }
+      .gh-tab {
+        color: #1f2328;
+      }
+      .gh-tab.active {
+        border-color: #d0d7de;
+        border-bottom-color: #fff;
+        background: #fff;
+      }
+      .gh-layout {
+        grid-template-columns: 1fr 280px;
+        gap: 24px;
+      }
+      .gh-comment {
+        position: relative;
+        overflow: visible;
+        border-color: #d0d7de;
+      }
+      .gh-comment::before {
+        content: "";
+        position: absolute;
+        left: -50px;
+        top: 0;
+        width: 32px;
+        height: 32px;
+        background: conic-gradient(
+          #7fba00 0 25%,
+          #ffb900 0 50%,
+          #f25022 0 75%,
+          #00a4ef 0
+        );
+      }
+      .gh-comment-head {
+        border-color: #d0d7de;
+        background: #f6f8fa;
+        color: #656d76;
+      }
+      .gh-comment-body a,
+      .gh-link,
+      .gh-file {
+        color: #0969da;
+      }
+      .gh-side section {
+        border-color: #d8dee4;
+        color: #656d76;
+      }
+      .gh-label {
+        border-color: #d0d7de;
+        color: #1f2328;
+      }
+
+      #gh-conversation {
+        background: #0d1117;
+        color: #e6edf3;
+        opacity: 0;
+        visibility: hidden;
+      }
+      #gh-conversation .gh-top,
+      #gh-conversation .gh-nav,
+      #gh-conversation .gh-comment-head {
+        border-color: #30363d;
+        background: #161b22;
+        color: #8c959f;
+      }
+      #gh-conversation .gh-repo,
+      #gh-conversation .gh-title,
+      #gh-conversation .gh-comment-head b,
+      #gh-conversation .gh-side b {
+        color: #f0f6fc;
+      }
+      #gh-conversation .gh-number,
+      #gh-conversation .gh-branch,
+      #gh-conversation .gh-side section {
+        color: #8c959f;
+      }
+      #gh-conversation .gh-tabs,
+      #gh-conversation .gh-comment,
+      #gh-conversation .gh-side section {
+        border-color: #30363d;
+      }
+      #gh-conversation .gh-tab {
+        color: #c9d1d9;
+      }
+      #gh-conversation .gh-tab.active {
+        border-color: #30363d;
+        border-bottom-color: #0d1117;
+        background: #0d1117;
+      }
+      #gh-conversation .gh-label {
+        border-color: #484f58;
+        color: #c9d1d9;
+      }
+      #gh-conversation .gh-comment-body a {
+        color: #58a6ff;
+      }
+      #gh-conversation {
+        overflow: hidden;
+      }
+      #gh-conversation .gh-page {
+        width: 1500px;
+        margin-top: 18px;
+        transform: scale(0.86);
+        transform-origin: top center;
+      }
+      #gh-conversation .gh-layout {
+        grid-template-columns: 1fr 300px;
+        margin-top: 16px;
+      }
+      #gh-conversation .gh-comment-body {
+        padding: 16px 20px;
+        font-size: 14px;
+        line-height: 1.42;
+      }
+      #gh-conversation .gh-comment-body ol {
+        margin: 7px 0 12px;
+      }
+      .gh-conversation-feed {
+        width: 1120px;
+        margin-top: 22px;
+        padding: 0 0 40px 58px;
+        border-left: 2px solid #30363d;
+      }
+      .gh-conversation-window {
+        height: 760px;
+        overflow: hidden;
+      }
+      .gh-conversation-content {
+        position: relative;
+      }
+      .gh-feed-row {
+        position: relative;
+        margin: 0 0 18px;
+        padding: 14px 18px;
+        border: 1px solid #30363d;
+        border-radius: 7px;
+        background: #0d1117;
+        color: #c9d1d9;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .gh-feed-row::before {
+        content: "";
+        position: absolute;
+        left: -50px;
+        top: 14px;
+        width: 32px;
+        height: 32px;
+        background: conic-gradient(#7fba00 0 25%, #ffb900 0 50%, #f25022 0 75%, #00a4ef 0);
+      }
+      .gh-feed-row b {
+        color: #f0f6fc;
+      }
+      .gh-feed-row a {
+        color: #58a6ff;
+      }
+      .gh-feed-meta {
+        margin-bottom: 8px;
+        color: #8c959f;
+      }
+      .gh-feed-status {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .gh-feed-open {
+        float: right;
+        padding: 3px 9px;
+        border-radius: 12px;
+        background: #238636;
+        color: #fff;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .gh-review-top {
+        height: 62px;
+        border-color: #d0d7de;
+        background: #f6f8fa;
+      }
+      .gh-checks {
+        border-color: #d0d7de;
+        color: #656d76;
+      }
+      .submit-review {
+        border-color: rgba(27, 31, 36, 0.15);
+        background: #1f883d;
+      }
+      .gh-file-layout {
+        inset: 130px 20px 18px;
+        grid-template-columns: 260px 1fr;
+        gap: 14px;
+      }
+      .gh-files-list {
+        border-color: #d0d7de;
+        color: #656d76;
+      }
+      .gh-files-list b {
+        color: #1f2328;
+      }
+      .gh-diff {
+        border-color: #d0d7de;
+        background: #fff;
+      }
+      .gh-diff-head {
+        border-color: #d0d7de;
+        background: #f6f8fa;
+        color: #1f2328;
+      }
+      .diff-lines {
+        position: relative;
+        padding-top: 280px;
+        background: #d8fbe1;
+        color: #1f2328;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+      .diff-line {
+        grid-template-columns: 42px 42px 1fr;
+        min-height: 26px;
+      }
+      .diff-line span:first-child,
+      .diff-line span:nth-child(2) {
+        color: #656d76;
+      }
+      .diff-line .code,
+      .diff-section {
+        color: #164f27;
+      }
+      .inline-review {
+        position: absolute;
+        z-index: 2;
+        left: 95px;
+        top: 20px;
+        width: 650px;
+        overflow: hidden;
+        border: 1px solid #d0d7de;
+        border-radius: 7px;
+        background: #fff;
+        color: #1f2328;
+        font:
+          14px/1.45 "Segoe UI",
+          sans-serif;
+        box-shadow: 0 1px 2px rgba(31, 35, 40, 0.08);
+      }
+      .inline-review-head {
+        display: flex;
+        justify-content: space-between;
+        padding: 13px 16px 6px;
+        font-weight: 650;
+      }
+      .inline-review-copy {
+        padding: 0 16px 12px;
+      }
+      .inline-review-code {
+        margin: 0 16px 12px;
+        padding: 13px;
+        border-radius: 6px;
+        background: #f6f8fa;
+        font:
+          12px ui-monospace,
+          SFMono-Regular,
+          Consolas,
+          monospace;
+      }
+      .inline-review-reply {
+        margin: 0 10px 10px;
+        padding: 9px;
+        border: 1px solid #d0d7de;
+        border-radius: 5px;
+        color: #656d76;
+      }
+      .inline-review-actions {
+        display: flex;
+        gap: 8px;
+        padding: 10px;
+        border-top: 1px solid #d0d7de;
+      }
+      .inline-review-actions span {
+        padding: 7px 11px;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: #f6f8fa;
+        font-weight: 600;
+      }
+
+      #gh-files {
+        background: #0d1117;
+        color: #e6edf3;
+      }
+      #gh-files .gh-review-top,
+      #gh-files .gh-nav,
+      #gh-files .gh-diff-head {
+        border-color: #30363d;
+        background: #161b22;
+        color: #e6edf3;
+      }
+      #gh-files .gh-review-title,
+      #gh-files .gh-files-list b {
+        color: #f0f6fc;
+      }
+      #gh-files .gh-nav {
+        color: #b1bac4;
+      }
+      #gh-files .gh-nav .active {
+        color: #f0f6fc;
+        border-color: #f78166;
+      }
+      #gh-files .gh-checks,
+      #gh-files .gh-files-list {
+        border-color: #30363d;
+        color: #8c959f;
+      }
+      #gh-files .gh-file {
+        color: #58a6ff;
+      }
+      #gh-files .gh-diff {
+        border-color: #30363d;
+        background: #0d1117;
+      }
+      #gh-files .diff-lines {
+        padding-top: 12px;
+        background: #0f2d20;
+        color: #c9d1d9;
+      }
+      #gh-files .diff-line span:first-child,
+      #gh-files .diff-line span:nth-child(2) {
+        color: #8c959f;
+      }
+      #gh-files .diff-line .code {
+        color: #aff5b4;
+      }
+      #gh-files .diff-section {
+        color: #79c0ff;
+      }
+      #gh-files .inline-review {
+        border-color: #30363d;
+        background: #0d1117;
+        color: #e6edf3;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.35);
+      }
+      #gh-files .inline-review-code,
+      #gh-files .inline-review-actions span {
+        border-color: #30363d;
+        background: #161b22;
+        color: #e6edf3;
+      }
+      #gh-files .inline-review-reply,
+      #gh-files .inline-review-actions {
+        border-color: #30363d;
+        color: #8c959f;
+      }
+
+      #state-mentor {
+        background: #1e1e1e;
+        color: #cccccc;
+        font-family: "Segoe UI", Inter, sans-serif;
+      }
+      .vs-titlebar {
+        height: 62px;
+        display: grid;
+        grid-template-columns: 310px 1fr 310px;
+        align-items: center;
+        padding: 0 18px;
+        border-bottom: 1px solid #343434;
+        background: #181818;
+        color: #bcbcbc;
+        font-size: 17px;
+      }
+      .vs-command {
+        justify-self: center;
+        width: 580px;
+        padding: 8px 18px;
+        border: 1px solid #3b3b3b;
+        border-radius: 7px;
+        background: #242424;
+        text-align: center;
+      }
+      .vs-workbench {
+        position: absolute;
+        inset: 62px 0 30px;
+        display: grid;
+        grid-template-columns: 66px 350px 1fr;
+      }
+      .vs-rail {
+        padding-top: 18px;
+        border-right: 1px solid #303030;
+        background: #181818;
+        color: #8d8d8d;
+        font-size: 27px;
+        text-align: center;
+      }
+      .vs-rail span {
+        display: block;
+        height: 58px;
+      }
+      .vs-sidebar {
+        border-right: 1px solid #303030;
+        background: #181818;
+        padding: 20px 18px;
+        overflow: hidden;
+      }
+      .vs-sidebar h3 {
+        margin: 0 0 18px;
+        color: #f1f1f1;
+        font-size: 18px;
+      }
+      .mentor-card {
+        margin-bottom: 16px;
+        padding: 16px;
+        border: 1px solid #3f3f46;
+        border-radius: 6px;
+        background: #252526;
+        font-size: 15px;
+        line-height: 1.45;
+      }
+      .mentor-card strong,
+      .mentor-tree strong {
+        display: block;
+        margin-bottom: 8px;
+        color: #ffffff;
+      }
+      .mentor-button {
+        display: inline-block;
+        margin-top: 10px;
+        padding: 8px 13px;
+        border-radius: 3px;
+        background: #0e639c;
+        color: #fff;
+        font-weight: 650;
+      }
+      .mentor-tree {
+        color: #c8c8c8;
+        font: 14px/1.9 ui-monospace, Consolas, monospace;
+      }
+      .mentor-tree .active {
+        margin: 2px -10px;
+        padding: 3px 10px;
+        background: #37373d;
+        color: #fff;
+      }
+      .vs-editor {
+        position: relative;
+        overflow: hidden;
+        background: #1e1e1e;
+      }
+      .vs-tabs {
+        height: 50px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 18px;
+        border-bottom: 1px solid #303030;
+        background: #181818;
+        color: #d7d7d7;
+      }
+      .vs-tab {
+        height: 50px;
+        padding: 15px 18px;
+        border-top: 2px solid #3794ff;
+        background: #1e1e1e;
+      }
+      .vs-action {
+        margin-left: auto;
+        padding: 8px 14px;
+        border: 0;
+        border-radius: 3px;
+        background: #0e639c;
+        color: #fff;
+        font: inherit;
+        font-weight: 650;
+      }
+      .vs-code {
+        position: absolute;
+        inset: 50px 0 0;
+        padding: 32px 48px 60px 88px;
+        font: 17px/1.65 ui-monospace, "Cascadia Code", Consolas, monospace;
+        color: #d4d4d4;
+      }
+      .vs-code-line {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        min-height: 28px;
+      }
+      .vs-code-line span:first-child {
+        color: #858585;
+        text-align: right;
+        padding-right: 18px;
+      }
+      .vs-code-line.added {
+        background: rgba(46, 160, 67, 0.2);
+        color: #b7f0c2;
+      }
+      .vs-code-line.heading {
+        color: #569cd6;
+        font-weight: 700;
+      }
+      .vs-statusbar {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 16px;
+        background: #007acc;
+        color: #fff;
+        font-size: 13px;
+      }
+      .mentor-phase {
+        position: absolute;
+        inset: 0;
+      }
+      #mentor-editor,
+      #mentor-pr-dialog,
+      #mentor-date-dialog {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .vs-welcome {
+        display: grid;
+        place-items: center;
+        height: 100%;
+        color: #d7d7d7;
+      }
+      .vs-welcome-inner {
+        width: 760px;
+      }
+      .vs-welcome h2 {
+        margin: 0 0 8px;
+        font-size: 40px;
+        font-weight: 500;
+      }
+      .vs-welcome p {
+        color: #9d9d9d;
+        font-size: 21px;
+      }
+      .vs-dialog-shade {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.68);
+      }
+      .vs-dialog {
+        width: 720px;
+        padding: 28px;
+        border: 1px solid #454545;
+        border-radius: 7px;
+        background: #252526;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55);
+      }
+      .vs-dialog h3 {
+        margin: 0 0 20px;
+        color: #fff;
+        font-size: 26px;
+      }
+      .vs-dialog label {
+        display: block;
+        margin: 15px 0 6px;
+        color: #d7d7d7;
+        font-size: 15px;
+        font-weight: 650;
+      }
+      .dialog-input {
+        min-height: 42px;
+        padding: 10px 12px;
+        border: 1px solid #555;
+        background: #1e1e1e;
+        color: #ddd;
+      }
+      .vs-dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .vs-dialog-actions button {
+        padding: 10px 17px;
+        border: 0;
+        border-radius: 3px;
+        background: #0e639c;
+        color: #fff;
+        font-weight: 700;
+      }
+      .vs-dialog-actions .secondary {
+        border: 1px solid #555;
+        background: #333;
+      }
+      #state-merge {
+        display: grid;
+        place-items: center;
+        background: #0d1117;
+        color: #e6edf3;
+      }
+      .merge-page {
+        width: 1480px;
+        min-height: 760px;
+        padding: 42px 54px;
+        border: 1px solid #30363d;
+        border-radius: 8px;
+        background: #0d1117;
+      }
+      .merge-page h2 {
+        margin: 14px 0;
+        font-size: 38px;
+      }
+      .merge-badge {
+        display: inline-block;
+        padding: 7px 14px;
+        border-radius: 20px;
+        background: #238636;
+        color: #fff;
+        font-weight: 750;
+      }
+      .merge-diff {
+        margin: 34px 0;
+        border: 1px solid #30363d;
+        border-radius: 6px;
+        overflow: hidden;
+      }
+      .merge-diff div {
+        padding: 15px 20px;
+        border-bottom: 1px solid #30363d;
+        background: #0f2d20;
+        color: #aff5b4;
+        font: 17px ui-monospace, Consolas, monospace;
+      }
+      .merge-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 24px;
+        border: 1px solid #2ea043;
+        border-radius: 7px;
+        background: #12261b;
+      }
+      .merge-box button {
+        padding: 12px 20px;
+        border: 1px solid rgba(240, 246, 252, 0.1);
+        border-radius: 6px;
+        background: #238636;
+        color: #fff;
+        font-size: 17px;
+        font-weight: 700;
+      }
+      #merge-complete {
+        opacity: 0;
+        color: #3fb950;
+        font-size: 24px;
+        font-weight: 750;
+      }
+      #state-recap {
+        display: grid;
+        place-items: center;
+        background: #fff;
+      }
+      .recap-shell {
+        width: 1500px;
+      }
+      .recap-title {
+        margin-bottom: 44px;
+        color: #242424;
+        font-size: 48px;
+        font-weight: 750;
+      }
+      .recap-steps {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 28px;
+      }
+      .recap-step {
+        min-height: 260px;
+        padding: 34px;
+        border: 2px solid #d1d1d1;
+        border-radius: 8px;
+        background: #fafafa;
+      }
+      .recap-step b {
+        display: block;
+        margin-bottom: 22px;
+        color: #226fb1;
+        font-size: 38px;
+      }
+      .recap-step p {
+        margin: 0;
+        color: #484848;
+        font-size: 25px;
+        line-height: 1.42;
+      }
+
+      /* Windows-scale white arrow cursor for the full tutorial. */
+      #pointer {
+        position: absolute;
+        left: 0;
+        top: 0;
+        z-index: 50;
+        width: 38px;
+        height: 38px;
+        transform-origin: 0 0;
+      }
+      #pointer svg {
+        position: absolute;
+        inset: 0;
+        width: 38px;
+        height: 38px;
+        overflow: visible;
+        filter: drop-shadow(1px 1px 1px rgba(0, 0, 0, 0.28));
+      }
+
+      #endcard {
+        background: #fff;
+        display: grid;
+        place-items: center;
+      }
+      .ms-lockup {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        color: #737373;
+        font-size: 78px;
+        font-weight: 650;
+      }
+      .ms-mark {
+        display: grid;
+        grid-template-columns: 42px 42px;
+        grid-template-rows: 42px 42px;
+        gap: 5px;
+      }
+      .ms-mark i:nth-child(1) {
+        background: #f25022;
+      }
+      .ms-mark i:nth-child(2) {
+        background: #7fba00;
+      }
+      .ms-mark i:nth-child(3) {
+        background: #00a4ef;
+      }
+      .ms-mark i:nth-child(4) {
+        background: #ffb900;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-vdpa" id="root" data-composition-id="main" data-start="0" data-duration="160.6" data-width="1920" data-height="1080">
+      <audio data-hf-id="hf-yi6z" id="azure-narration" src="assets/narration/content-studio-update-continuous.wav" data-start="0" data-duration="156.15" data-track-index="10" data-volume="1.1"></audio>
+      <section data-hf-id="hf-e2e2" id="intro" class="clip" data-start="0" data-duration="5" data-track-index="1">
+        <div data-hf-id="hf-zfph" class="intro-inner">
+          <div data-hf-id="hf-wg6a" class="quick-label">
+            Content Studio Quick Start
+          </div>
+          <h1 data-hf-id="hf-i19n" class="intro-title">
+            <span data-hf-id="hf-dck8" class="intro-title-line">Create an Update</span><span data-hf-id="hf-a1qm" class="intro-title-line">issue and draft</span>
+          </h1>
+          <div data-hf-id="hf-3gy5" class="intro-preview">
+            <div data-hf-id="hf-oohr" class="preview-head">
+              Welcome to Content Studio
+            </div>
+            <button data-hf-id="hf-pcreate" class="preview-create">Update</button>
+            <div data-hf-id="hf-fbou" class="preview-sub">
+              Create, manage, and collaborate on content in a modern, AI-powered
+              workspace.
+            </div>
+            <div data-hf-id="hf-72db" class="preview-controls">
+              <div data-hf-id="hf-vy0n" class="preview-pill">
+                Product: Microsoft 365 Copilot
+              </div>
+              <div data-hf-id="hf-3sti" class="preview-pill">Site: SMC</div>
+            </div>
+            <div data-hf-id="hf-64ld" class="preview-panel">
+              <div data-hf-id="hf-yeow">
+                <b data-hf-id="hf-qzh2">Accuracy score</b>
+                <div data-hf-id="hf-598p" class="preview-score">96.2%</div>
+              </div>
+              <div data-hf-id="hf-y7yw">
+                <b data-hf-id="hf-w693">Accuracy impact by article review status</b>
+                <div data-hf-id="hf-51p0" class="preview-bar"></div>
+              </div>
+              <div data-hf-id="hf-x11t">
+                <b data-hf-id="hf-0629">Active issues</b>
+                <div data-hf-id="hf-av8v" style="font-size: 34px; font-weight: 800; margin-top: 18px">
+                  38
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-p7zr" id="demo" class="clip" data-start="5" data-duration="152" data-track-index="1">
+        <div data-hf-id="hf-j2lh" id="camera" data-layout-allow-overflow="">
+          <div data-hf-id="hf-zmlb" class="app" data-layout-allow-occlusion="" data-layout-allow-overlap="">
+            <div data-hf-id="hf-0lzt" class="topbar">
+              Content Studio
+              <span data-hf-id="hf-ns93" class="preview-badge">Preview</span>
+            </div>
+            <aside data-hf-id="hf-842t" class="sidebar">
+              <div data-hf-id="hf-4x81" class="person">
+                <span data-hf-id="hf-hrjc" class="avatar">CS</span> Content
+                contributor
+              </div>
+              <div data-hf-id="hf-da3h" class="nav-item">
+                ⌂ <span data-hf-id="hf-e1du">Home</span>
+              </div>
+            </aside>
+            <main data-hf-id="hf-g3rz" class="main">
+              <div data-hf-id="hf-pkp2" class="main-head">
+                <h2 data-hf-id="hf-7a0r">Welcome to Content Studio</h2>
+                <p data-hf-id="hf-9cxw">
+                  Create, manage, and collaborate on content in a modern,
+                  AI-powered workspace.
+                </p>
+                <div data-hf-id="hf-lhc1" class="filters">
+                  <div data-hf-id="hf-6l81" class="filter">
+                    Product: <b data-hf-id="hf-y9uf">Microsoft 365 Copilot</b>⌄
+                  </div>
+                  <div data-hf-id="hf-du95" class="filter">
+                    Site: <b data-hf-id="hf-fwl6">SMC</b>⌄
+                  </div>
+                </div>
+              </div>
+              <div data-hf-id="hf-e8vj" class="workspace">
+                <div data-hf-id="hf-6uyx" class="toolbar">
+                  <div data-hf-id="hf-icue" class="tab">
+                    Issues: Update request
+                  </div>
+                  <span data-hf-id="hf-wxnf" class="toolbar-spacer"></span><button data-hf-id="hf-p6o7" class="button" id="createBtn">
+                    Create</button><button data-hf-id="hf-6070" id="updateBtn" class="button">Update</button>
+                </div>
+                <div data-hf-id="hf-npab" class="table-head">
+                  <span data-hf-id="hf-xasq">Issue title</span><span data-hf-id="hf-jlu1">Type</span><span data-hf-id="hf-1743">Status</span><span data-hf-id="hf-yby8">Actions</span>
+                </div>
+                <div data-hf-id="hf-65wb" class="table-row">
+                  <span data-hf-id="hf-vcxj">Add guidance for a new collaboration feature</span><span data-hf-id="hf-bxjw">Create request</span><span data-hf-id="hf-xdm3" class="status">Assigned</span><span data-hf-id="hf-a0pe" class="links">View issue</span>
+                </div>
+                <div data-hf-id="hf-hjtn" class="table-row">
+                  <span data-hf-id="hf-xzfm">Document setup and expected behavior</span><span data-hf-id="hf-n34k">Create request</span><span data-hf-id="hf-bcaz" class="status">Assigned</span><span data-hf-id="hf-ic7q" class="links">View issue</span>
+                </div>
+                <div data-hf-id="hf-oe8e" id="readyRow" class="table-row">
+                  <span data-hf-id="hf-hoed">Add guidance for a new AI-assisted feature</span><span data-hf-id="hf-lw7h">Create request</span><span data-hf-id="hf-gznq" class="status ready">Draft ready</span><span data-hf-id="hf-s08o" class="links"><span data-hf-id="hf-ondz">View issue</span><span data-hf-id="hf-zdei">View PR</span></span>
+                </div>
+                <div data-hf-id="hf-new1" id="createdRow" class="table-row">
+                  <span data-hf-id="hf-new2">Update inline images in Microsoft 365 Copilot</span><span data-hf-id="hf-new3">Update request</span><span data-hf-id="hf-new4" class="status ready">Published</span><span data-hf-id="hf-new5" class="links"><span data-hf-id="hf-new6">View issue</span><span data-hf-id="hf-new7">View PR</span></span>
+                </div>
+              </div>
+            </main>
+          </div>
+
+          <div data-hf-id="hf-bmok" id="access-overlay" class="access-overlay" data-layout-allow-occlusion="">
+            <div data-hf-id="hf-ac02" class="access-link" aria-label="GitHub account linked to a Content Studio contributor account">
+              <div data-hf-id="hf-ac03" class="access-identity">
+                <svg data-hf-id="hf-ac04" class="access-icon github-icon" viewBox="0 0 16 16" aria-hidden="true">
+                  <path data-hf-id="hf-6o21" d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.72.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.51-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.21-3.64-.91-3.64-4.01 0-.89.31-1.62.82-2.19-.08-.2-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.46 7.46 0 0 1 8 3.94c.68 0 1.36.09 2 .27 1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.96.08 2.16.51.57.82 1.3.82 2.19 0 3.11-1.87 3.8-3.65 4.01.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.22 0 .21.15.47.55.39A8.13 8.13 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" />
+                </svg>
+              </div>
+              <svg data-hf-id="hf-ac08" class="access-arrows" viewBox="0 0 74 30" aria-hidden="true">
+                <path data-hf-id="hf-g0ta" d="M8 10h54m0 0-7-6m7 6-7 6M66 20H12m0 0 7-6m-7 6 7 6" />
+              </svg>
+              <div data-hf-id="hf-ac09" class="access-identity">
+                <svg data-hf-id="hf-ac10" class="access-icon account-icon" viewBox="0 0 32 32" aria-hidden="true">
+                  <circle data-hf-id="hf-kf18" cx="16" cy="11" r="5" />
+                  <path data-hf-id="hf-gm0p" d="M7 27c.8-5.1 4-8 9-8s8.2 2.9 9 8" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div data-hf-id="hf-50nc" id="state-home" class="state"></div>
+          <div data-hf-id="hf-i53l" id="state-create" class="state" data-layout-allow-overlap="">
+            <div data-hf-id="hf-dslz" class="create-panel" data-layout-allow-occlusion="" data-layout-allow-overlap="">
+              <div data-hf-id="hf-91hd" class="create-title">
+                <h3 data-hf-id="hf-iwof">Create new issue: Update existing article</h3>
+                <span data-hf-id="hf-ynsd" class="close-x">×</span>
+              </div>
+              <div data-hf-id="hf-i36f" class="form-grid">
+                <div data-hf-id="hf-q5uo" id="field-product" class="form-section">
+                  <label data-hf-id="hf-pev8">Product
+                    <span data-hf-id="hf-z1q4" class="required">*</span></label>
+                  <div data-hf-id="hf-no19" class="input prefilled">
+                    Microsoft 365 Copilot
+                  </div>
+                  <i data-hf-id="hf-o6e9" class="mute-lines"></i>
+                </div>
+                <div data-hf-id="hf-4sxy" id="field-site" class="form-section">
+                  <label data-hf-id="hf-vb9y">Site
+                    <span data-hf-id="hf-8d10" class="required">*</span></label>
+                  <div data-hf-id="hf-kue9" class="input prefilled">LMC</div>
+                  <i data-hf-id="hf-vbed" class="mute-lines"></i>
+                </div>
+              </div>
+              <div data-hf-id="hf-7w7z" id="field-title" class="form-section">
+                <label data-hf-id="hf-zocx">Issue title
+                  <span data-hf-id="hf-763x" class="required">*</span></label>
+                <div data-hf-id="hf-s0lb" class="input">
+                  <span class="field-value">Update inline images in Microsoft 365 Copilot</span>
+                </div>
+                <i data-hf-id="hf-wibg" class="mute-lines"></i>
+              </div>
+              <div data-hf-id="hf-50k3" id="field-type" class="form-section">
+                <label data-hf-id="hf-8rvv">Target article URL
+                  <span data-hf-id="hf-7key" class="required">*</span></label>
+                <div data-hf-id="hf-pqai" class="input">
+                  <span class="field-value">https://learn.microsoft.com/copilot/overview</span>
+                </div>
+                <i data-hf-id="hf-w40f" class="mute-lines"></i>
+              </div>
+              <div data-hf-id="hf-54eu" id="field-about" class="form-section">
+                <label data-hf-id="hf-91ey">What should change?
+                  <span data-hf-id="hf-9jy3" class="required">*</span></label>
+                <div data-hf-id="hf-gvxj" class="input textarea">
+                  <span class="field-value">Update the Chat capabilities section to explain that Copilot can surface relevant images from files and meetings directly in responses. Clarify permissions and customer-ready behavior.</span><span data-hf-id="hf-fmo7" class="char-count">218/10000 characters</span>
+                </div>
+                <i data-hf-id="hf-xaxi" class="mute-lines"></i>
+              </div>
+              <div data-hf-id="hf-09cg" id="field-context" class="form-section">
+                <label data-hf-id="hf-s24f">Paste text from specs, docs, or any other context the agent should use</label>
+                <div data-hf-id="hf-32bd" class="input context">
+                  <span class="field-value">Include supported sources, links, metadata requirements, and the customer-readiness checklist. Keep existing structure and Microsoft voice.</span><span data-hf-id="hf-loo3" class="char-count">142/50000 characters</span>
+                </div>
+                <i data-hf-id="hf-wwmh" class="mute-lines"></i>
+              </div>
+              <div data-hf-id="hf-bbiy" id="field-github" class="form-section">
+                <label data-hf-id="hf-aqya">Your GitHub ID
+                  <span data-hf-id="hf-9y94" class="required">*</span></label>
+                <div data-hf-id="hf-kmj8" class="input"><span class="field-value">content-author</span></div>
+                <i data-hf-id="hf-y3jk" class="mute-lines"></i>
+              </div>
+              <div data-hf-id="hf-j11f" id="field-repo" class="form-section">
+                <label data-hf-id="hf-y66p">Article location in repo
+                  <span data-hf-id="hf-8rc1" class="required">*</span></label>
+                <div data-hf-id="hf-jlog" class="input repo">
+                  <span data-hf-id="hf-uv6x" class="repo-chip">microsoft-365-docs-pr/</span><span data-hf-id="hf-4pr5">copilot/</span>
+                </div>
+                <i data-hf-id="hf-xp8j" class="mute-lines"></i>
+              </div>
+              <p data-hf-id="hf-18wr" class="next-copy">
+                <b data-hf-id="hf-s67s">What happens next?</b><br data-hf-id="hf-q0ch">After you submit this issue, Content
+                Studio will get to work. You’ll receive a pull request with the
+                proposed article changes for review.
+              </p>
+              <div data-hf-id="hf-cm08" class="panel-actions">
+                <button data-hf-id="hf-mxxu" class="button disabled" id="submitBtn">
+                  Submit
+                </button>
+              </div>
+            </div>
+          </div>
+          <div data-hf-id="hf-wick" id="state-progress" class="state" data-layout-allow-occlusion="">
+            <div data-hf-id="hf-vasw" class="success-modal">
+              <div data-hf-id="hf-suc1" class="success-head">
+                <span data-hf-id="hf-suc2">Create new issue: Update existing article</span><span data-hf-id="hf-suc3" class="success-close">×</span>
+              </div>
+              <div data-hf-id="hf-suc4" class="success-body">
+                <svg data-hf-id="hf-suc5" class="success-check" viewBox="0 0 120 120" aria-hidden="true">
+                  <defs data-hf-id="hf-mh0t">
+                    <lineargradient data-hf-id="hf-b69j" id="success-gradient" x1="0" y1="1" x2="1" y2="0">
+                      <stop data-hf-id="hf-ixlq" offset="0" stop-color="#00a4ef" />
+                      <stop data-hf-id="hf-bc9x" offset=".52" stop-color="#7fba00" />
+                      <stop data-hf-id="hf-jxil" offset="1" stop-color="#b146c2" />
+                    </lineargradient>
+                  </defs>
+                  <path data-hf-id="hf-y18z" d="M22 61 48 87 98 28" fill="none" stroke="url(#success-gradient)" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div data-hf-id="hf-suc6" class="success-copy">
+                  You have successfully submitted the content update request.
+                </div>
+                <div data-hf-id="hf-suc7" class="success-actions">
+                  <button data-hf-id="hf-suc8" id="viewIssueBtn" class="button">
+                    View issue
+                  </button>
+                </div>
+              </div>
+              <div data-hf-id="hf-suc9" class="feedback-strip">
+                <span data-hf-id="hf-suca">Help us to improve Content Studio</span><span data-hf-id="hf-sucb">Send feedback &#160; ×</span>
+              </div>
+            </div>
+          </div>
+          <div data-hf-id="hf-iss0" id="state-issue" class="state">
+            <div data-hf-id="hf-iss1" class="issue-shell">
+              <div data-hf-id="hf-inav" class="issue-repo-nav">
+                <span data-hf-id="hf-igithub" class="issue-github-mark" aria-label="GitHub"><svg data-hf-id="hf-igithub-svg" viewBox="0 0 16 16" aria-hidden="true"><path data-hf-id="hf-igithub-path" d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.72.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.51-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.2-3.64-.9-3.64-4.02 0-.89.31-1.62.82-2.19-.08-.2-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.5 7.5 0 0 1 8 3.85a7.5 7.5 0 0 1 2 .27c1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.96.08 2.16.51.57.82 1.3.82 2.19 0 3.13-1.87 3.82-3.65 4.02.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.22 0 .22.15.48.55.39A8.03 8.03 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" /></svg></span><span data-hf-id="hf-inca">Code</span><span data-hf-id="hf-inis" class="active">Issues</span><span data-hf-id="hf-inpr">Pull requests</span><span data-hf-id="hf-inac">Actions</span><span data-hf-id="hf-insq">Security and quality</span><span data-hf-id="hf-inin">Insights</span><span data-hf-id="hf-inst">Settings</span>
+              </div>
+              <div data-hf-id="hf-iscroll" class="issue-scroll">
+                <div data-hf-id="hf-iscontent" id="issue-scroll-content" class="issue-scroll-content">
+                  <section data-hf-id="hf-irequest" class="issue-request">
+                    <div data-hf-id="hf-irt" class="issue-request-title">
+                      <h2 data-hf-id="hf-irh">Update inline images in Microsoft 365 Copilot <span data-hf-id="hf-irn" class="issue-number">#3514</span></h2>
+                      <button data-hf-id="hf-irb" class="issue-new">New issue</button>
+                    </div>
+                    <div data-hf-id="hf-irg" class="issue-request-grid">
+                      <main data-hf-id="hf-irm">
+                        <div data-hf-id="hf-iral" class="issue-author-line"><span data-hf-id="hf-irav" class="issue-avatar"></span><b data-hf-id="hf-irbot">content-studio-core bot</b><span data-hf-id="hf-irtm">opened 2m ago</span></div>
+                        <article data-hf-id="hf-ircard" class="issue-body-card">
+                          <div data-hf-id="hf-irhead" class="issue-body-head">content-studio-core bot opened this issue</div>
+                          <div data-hf-id="hf-irbody" class="issue-body">
+                            <h3 data-hf-id="hf-irh3">Tell us what needs to change</h3>
+                            <p data-hf-id="hf-irp1">Update the existing Microsoft 365 Copilot article to clarify inline image sources, permissions, and review guidance.</p>
+                            <b data-hf-id="hf-ircover">The update should:</b>
+                            <ul data-hf-id="hf-irul"><li data-hf-id="hf-irli1">Clarify that images may come from files and meetings.</li><li data-hf-id="hf-irli2">Explain that existing permissions continue to apply.</li><li data-hf-id="hf-irli3">Add an accuracy and customer-readiness checklist.</li><li data-hf-id="hf-irli4">Preserve the article's current structure and tone.</li></ul>
+                            <div data-hf-id="hf-irl1" class="issue-copy-lines"><i data-hf-id="hf-irla"></i><i data-hf-id="hf-irlb"></i><i data-hf-id="hf-irlc"></i><i data-hf-id="hf-irld"></i></div>
+                            <h3 data-hf-id="hf-irh4">Paste specs, docs, or any other context the agent should use</h3>
+                            <p data-hf-id="hf-irp2"><b data-hf-id="hf-irfb">Article URL:</b> learn.microsoft.com/copilot/inline-images</p>
+                            <p data-hf-id="hf-irp3"><b data-hf-id="hf-irrd">Change type:</b> Clarification and review guidance</p>
+                            <p data-hf-id="hf-irp4"><b data-hf-id="hf-irpl">Audience:</b> Microsoft 365 administrators</p>
+                            <div data-hf-id="hf-irl2" class="issue-copy-lines"><i data-hf-id="hf-irle"></i><i data-hf-id="hf-irlf"></i><i data-hf-id="hf-irlg"></i><i data-hf-id="hf-irlh"></i><i data-hf-id="hf-irli"></i></div>
+                            <b data-hf-id="hf-irsc">Security and compliance</b>
+                            <div data-hf-id="hf-irl3" class="issue-copy-lines"><i data-hf-id="hf-irlj"></i><i data-hf-id="hf-irlk"></i><i data-hf-id="hf-irlm"></i></div>
+                          </div>
+                        </article>
+                      </main>
+                      <aside data-hf-id="hf-irside" class="issue-sidebar">
+                        <section data-hf-id="hf-irs1"><b data-hf-id="hf-irsb1">Assignees</b>Peter Baumgartner (pebaum)</section>
+                        <section data-hf-id="hf-irs2"><b data-hf-id="hf-irsb2">Labels</b><span data-hf-id="hf-irsl1" class="issue-label">Action: Update</span><span data-hf-id="hf-irsl2" class="issue-label">Author: pebaum</span><span data-hf-id="hf-irsl3" class="issue-label">Content Studio Agent</span><span data-hf-id="hf-irsl4" class="issue-label">Type: Update Request</span></section>
+                        <section data-hf-id="hf-irs3"><b data-hf-id="hf-irsb3">Type</b>No type</section>
+                        <section data-hf-id="hf-irs4"><b data-hf-id="hf-irsb4">Projects</b>No projects</section>
+                        <section data-hf-id="hf-irs5"><b data-hf-id="hf-irsb5">Milestone</b>No milestone</section>
+                        <section data-hf-id="hf-irs6"><b data-hf-id="hf-irsb6">Relationships</b>None yet</section>
+                        <section data-hf-id="hf-irs7"><b data-hf-id="hf-irsb7">Development</b><span data-hf-id="hf-irsd" class="issue-value">Create a branch or link a pull request</span></section>
+                      </aside>
+                    </div>
+                  </section>
+                  <section data-hf-id="hf-iupdates" class="issue-updates">
+              <div data-hf-id="hf-iss32" class="issue-activity">
+                <b data-hf-id="hf-iss33">content-studio-core</b> assigned pebaum
+                <span data-hf-id="hf-iss34">1m ago</span>
+              </div>
+              <div data-hf-id="hf-iss35" class="issue-activity">
+                <b data-hf-id="hf-iss36">content-studio-core</b> added
+                <span data-hf-id="hf-iss37" class="issue-label">Content Studio Agent</span><span data-hf-id="hf-iss38" class="issue-label">Type: Update Request</span><span data-hf-id="hf-iss39" class="issue-label">Action: Update</span>
+              </div>
+              <div data-hf-id="hf-issk" id="issue-agent-start" class="issue-event">
+                <div data-hf-id="hf-issl" class="issue-event-head">
+                  <b data-hf-id="hf-issm">Content Studio Agent</b> commented 1
+                  minute ago
+                </div>
+                <div data-hf-id="hf-issn" class="issue-event-body">
+                  Agent has picked up this issue. Preparing an updated draft.
+                  You’ll receive updates as the changes progress.
+                  <div data-hf-id="hf-iss40" class="issue-gray-lines">
+                    <i data-hf-id="hf-iss41"></i><i data-hf-id="hf-iss42"></i>
+                  </div>
+                </div>
+              </div>
+              <div data-hf-id="hf-isso" id="issue-agent-ready" class="issue-event">
+                <div data-hf-id="hf-issp" class="issue-event-head">
+                  <b data-hf-id="hf-issq">Content Studio Agent</b> commented 1
+                  minute ago
+                </div>
+                <div data-hf-id="hf-issr" class="issue-event-body">
+                  Agent has updated the article and opened a pull request for review.
+                  <div data-hf-id="hf-iss43" class="issue-gray-lines">
+                    <i data-hf-id="hf-iss44"></i><i data-hf-id="hf-iss45"></i><i data-hf-id="hf-iss46"></i>
+                  </div>
+                  <div data-hf-id="hf-ispr" id="issue-pr-link" class="issue-pr-link">Update article: Inline images in Microsoft 365 Copilot #3515 →</div>
+                </div>
+              </div>
+              <div data-hf-id="hf-iss47" class="issue-editor">
+                <div data-hf-id="hf-iss48" class="issue-editor-title">
+                  Add a comment
+                </div>
+                <div data-hf-id="hf-iss49" class="issue-editor-box">
+                  <div data-hf-id="hf-iss50" class="issue-editor-tabs">
+                    <b data-hf-id="hf-iss51">Write</b><span data-hf-id="hf-iss52">Preview</span><span data-hf-id="hf-iss53">B &#160; I &#160; Link &#160; List</span>
+                  </div>
+                  <div data-hf-id="hf-iss54" class="issue-editor-placeholder">
+                    Use Markdown to format your comment
+                  </div>
+                </div>
+              </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div data-hf-id="hf-h9sz" id="state-pr" class="state">
+            <div data-hf-id="hf-uje7" class="pr-shell">
+              <div data-hf-id="hf-ghc1" id="gh-conversation" class="gh-view">
+                <div data-hf-id="hf-21mw" class="gh-top">
+                  <span data-hf-id="hf-ghm1" class="gh-mark" aria-label="GitHub"><svg data-hf-id="hf-z4wu" viewBox="0 0 16 16" aria-hidden="true"><path data-hf-id="hf-zbws" d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.72.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.51-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.2-3.64-.9-3.64-4.02 0-.89.31-1.62.82-2.19-.08-.2-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.5 7.5 0 0 1 8 3.85a7.5 7.5 0 0 1 2 .27c1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.96.08 2.16.51.57.82 1.3.82 2.19 0 3.13-1.87 3.82-3.65 4.02.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.22 0 .22.15.48.55.39A8.03 8.03 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" /></svg></span><span data-hf-id="hf-ghr1" class="gh-repo">MicrosoftDocs / end-user-copilot-app-pr</span>
+                </div>
+                <div data-hf-id="hf-ghn1" class="gh-nav">
+                  <span data-hf-id="hf-ghn2">Code</span><span data-hf-id="hf-ghn3">Issues</span><span data-hf-id="hf-ghn4" class="active">Pull requests</span><span data-hf-id="hf-ghn5">Actions</span><span data-hf-id="hf-ghn6">Security</span><span data-hf-id="hf-ghn7">Insights</span>
+                </div>
+                <div data-hf-id="hf-ghp1" class="gh-page">
+                  <div data-hf-id="hf-ghtr" class="gh-title-row">
+                    <h2 data-hf-id="hf-ght1" class="gh-title">
+                      Update article: Inline images in Microsoft 365 Copilot
+                      <span data-hf-id="hf-ghno" class="gh-number">#3515</span>
+                    </h2>
+                  </div>
+                  <span data-hf-id="hf-ghop" class="gh-open">Open</span><span data-hf-id="hf-ghbr" class="gh-branch">content-studio bot wants to merge 1 commit into main</span>
+                  <div data-hf-id="hf-ghtb" class="gh-tabs">
+                    <div data-hf-id="hf-ghtc" class="gh-tab active">
+                      Conversation
+                    </div>
+                    <div data-hf-id="hf-ghtm" class="gh-tab">Commits 1</div>
+                    <div data-hf-id="hf-ghck" class="gh-tab">Checks 8</div>
+                    <div data-hf-id="hf-ghtf" id="gh-tab-files" class="gh-tab">
+                      Files changed 1
+                    </div>
+                  </div>
+                  <div data-hf-id="hf-ghwin" class="gh-conversation-window">
+                    <div data-hf-id="hf-ghcontent" id="gh-conversation-content" class="gh-conversation-content">
+                  <div data-hf-id="hf-ghly" class="gh-layout">
+                    <div data-hf-id="hf-ghcm" class="gh-comment">
+                      <div data-hf-id="hf-ghch" class="gh-comment-head">
+                        <b data-hf-id="hf-ghcb">content-studio bot</b> commented
+                        2 minutes ago
+                      </div>
+                      <div data-hf-id="hf-ghbd" class="gh-comment-body">
+                        <h3 data-hf-id="hf-ghh3">
+                          Here is the article update prepared from the linked
+                          request.
+                        </h3>
+                        <b data-hf-id="hf-ghdn">What to do next</b>
+                        <ol data-hf-id="hf-ghol">
+                          <li data-hf-id="hf-ghl1">Review the proposed changes</li>
+                          <li data-hf-id="hf-ghl2">Make any edits as needed</li>
+                          <li data-hf-id="hf-ghl3">Add missing metadata</li>
+                          <li data-hf-id="hf-ghl4">
+                            Submit the review when ready
+                          </li>
+                        </ol>
+                        <b data-hf-id="hf-ghmm">Linked issue</b>
+                        <p data-hf-id="hf-ghip">
+                          <a data-hf-id="hf-ghia">Update inline images in Microsoft 365 Copilot
+                            #3514</a>
+                        </p>
+                        <p data-hf-id="hf-ghpp">
+                          The update follows Microsoft guidance and is ready for
+                          content review.
+                        </p>
+                      </div>
+                    </div>
+                    <aside data-hf-id="hf-ghsd" class="gh-side">
+                      <section data-hf-id="hf-ghs1">
+                        <b data-hf-id="hf-ghsb1">Reviewers</b>Copilot Lite
+                      </section>
+                      <section data-hf-id="hf-ghs2">
+                        <b data-hf-id="hf-ghsb2">Assignees</b>pebaum
+                      </section>
+                      <section data-hf-id="hf-ghs3">
+                        <b data-hf-id="hf-ghsb3">Labels</b><span data-hf-id="hf-ghla1" class="gh-label">Content Studio Agent</span><span data-hf-id="hf-ghla2" class="gh-label">Type: Update Request</span>
+                      </section>
+                      <section data-hf-id="hf-ghs4">
+                        <b data-hf-id="hf-ghsb4">Checks</b><span data-hf-id="hf-ghpc">8 checks pending</span>
+                      </section>
+                    </aside>
+                  </div>
+                  <div data-hf-id="hf-ghfeed" class="gh-conversation-feed">
+                    <div data-hf-id="hf-ghfr1" class="gh-feed-row">
+                      <div data-hf-id="hf-ghfm1" class="gh-feed-meta"><b data-hf-id="hf-ghfb1">docs · update_draft</b> for <a data-hf-id="hf-ghfa1">#3514 · Update inline images in Microsoft 365 Copilot</a></div>
+                      <div data-hf-id="hf-ghfs1" class="gh-feed-status"><span data-hf-id="hf-ghfst1">Automated update validation</span></div>
+                    </div>
+                    <div data-hf-id="hf-ghfr2" class="gh-feed-row">
+                      <div data-hf-id="hf-ghfm2" class="gh-feed-meta"><b data-hf-id="hf-ghfb2">content-studio bot</b> commented 2 minutes ago</div>
+                      <div data-hf-id="hf-ghft2">To edit this draft, open in <a data-hf-id="hf-ghfa2" id="content-mentor-link">Content Mentor</a>, create a pull request, and we will automatically merge it into this branch.</div>
+                    </div>
+                    <div data-hf-id="hf-ghfr3" class="gh-feed-row">
+                      <span data-hf-id="hf-ghfo3" class="gh-feed-open">Open</span>
+                      <div data-hf-id="hf-ghfm3" class="gh-feed-meta"><b data-hf-id="hf-ghfb3">content-studio bot</b> mentioned this pull request</div>
+                      <a data-hf-id="hf-ghfa3">Update inline images in Microsoft 365 Copilot #3514</a>
+                    </div>
+                    <div data-hf-id="hf-ghfr4" class="gh-feed-row">
+                      <div data-hf-id="hf-ghfm4" class="gh-feed-meta"><b data-hf-id="hf-ghfb4">learn-build-service-prod bot</b> commented 1 minute ago</div>
+                      <b data-hf-id="hf-ghft4">PoliCheck Scan Report</b>
+                      <div data-hf-id="hf-ghfc4">The following report lists policy checks for this pull request before merge.</div>
+                    </div>
+                  </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div data-hf-id="hf-ghf1" id="gh-files" class="gh-view">
+                <div data-hf-id="hf-ghrt" class="gh-review-top">
+                  <span data-hf-id="hf-ghm2" class="gh-mark" aria-label="GitHub"><svg data-hf-id="hf-9gg2" viewBox="0 0 16 16" aria-hidden="true"><path data-hf-id="hf-9lb8" d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.72.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.51-2.01.38-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.15-.68-.52-.01-.53.63-.01 1.08.59 1.23.83.72 1.23 1.87.88 2.33.67.07-.53.28-.88.51-1.08-1.78-.2-3.64-.9-3.64-4.02 0-.89.31-1.62.82-2.19-.08-.2-.36-1.04.08-2.16 0 0 .67-.22 2.2.84A7.5 7.5 0 0 1 8 3.85a7.5 7.5 0 0 1 2 .27c1.53-1.06 2.2-.84 2.2-.84.44 1.12.16 1.96.08 2.16.51.57.82 1.3.82 2.19 0 3.13-1.87 3.82-3.65 4.02.29.25.54.74.54 1.5 0 1.08-.01 1.95-.01 2.22 0 .22.15.48.55.39A8.03 8.03 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" /></svg></span><span data-hf-id="hf-ghft" class="gh-review-title">MicrosoftDocs / end-user-copilot-app-pr · Update article:
+                    Inline images in Microsoft 365 Copilot #3515</span><span data-hf-id="hf-ghcp" class="gh-checks">0 / 1 viewed</span><button data-hf-id="hf-ghsr" id="submit-review" class="submit-review">
+                    Submit review
+                  </button>
+                </div>
+                <div data-hf-id="hf-ghn8" class="gh-nav">
+                  <span data-hf-id="hf-ghn9">Conversation 4</span><span data-hf-id="hf-ghna">Commits 1</span><span data-hf-id="hf-ghnb">Checks 9</span><span data-hf-id="hf-ghnc" class="active">Files changed 1</span>
+                </div>
+                <div data-hf-id="hf-ghfl" class="gh-file-layout">
+                  <aside data-hf-id="hf-ghls" class="gh-files-list">
+                    <b data-hf-id="hf-ghfb">Filter files</b>
+                    <div data-hf-id="hf-ghfd">copilot/</div>
+                    <div data-hf-id="hf-ghff" class="gh-file">
+                      update-inline-images.md
+                    </div>
+                  </aside>
+                  <div data-hf-id="hf-ghdf" class="gh-diff">
+                    <div data-hf-id="hf-ghdh" class="gh-diff-head">
+                      copilot/update-inline-images.md
+                      <span data-hf-id="hf-ghad" style="float: right; color: #3fb950">+129</span>
+                    </div>
+                    <div data-hf-id="hf-ghdl" class="diff-lines" data-layout-allow-occlusion="">
+                      <div data-hf-id="hf-ghd1" class="diff-line">
+                        <span data-hf-id="hf-gho1">1</span><span data-hf-id="hf-ghn1a">1</span><span data-hf-id="hf-ghc1a" class="code">+ ---</span>
+                      </div>
+                      <div data-hf-id="hf-ghd2" class="diff-line">
+                        <span data-hf-id="hf-gho2">2</span><span data-hf-id="hf-ghn2a">2</span><span data-hf-id="hf-ghc2a" class="code">+ title: Inline images in Microsoft 365 Copilot</span>
+                      </div>
+                      <div data-hf-id="hf-ghd3" class="diff-line">
+                        <span data-hf-id="hf-gho3">3</span><span data-hf-id="hf-ghn3a">3</span><span data-hf-id="hf-ghc3a" class="code">+ description: Learn how Copilot surfaces relevant
+                          images.</span>
+                      </div>
+                      <div data-hf-id="hf-ghd4" class="diff-line">
+                        <span data-hf-id="hf-gho4">4</span><span data-hf-id="hf-ghn4a">4</span><span data-hf-id="hf-ghc4a" class="code">+ author: pebaum</span>
+                      </div>
+                      <div data-hf-id="hf-ghd5" class="diff-line">
+                        <span data-hf-id="hf-gho5">5</span><span data-hf-id="hf-ghn5a">5</span><span data-hf-id="hf-ghc5a" class="code">+ ---</span>
+                      </div>
+                      <div data-hf-id="hf-ghd6" class="diff-line">
+                        <span data-hf-id="hf-gho6">24</span><span data-hf-id="hf-ghn6a">24</span><span data-hf-id="hf-ghc6a" class="code diff-section">+ # Inline images in Microsoft 365 Copilot</span>
+                      </div>
+                      <div data-hf-id="hf-ghd7" class="diff-line">
+                        <span data-hf-id="hf-gho7">25</span><span data-hf-id="hf-ghn7a">25</span><span data-hf-id="hf-ghc7a" class="code">+ Microsoft 365 Copilot can surface relevant images
+                          from files and meetings.</span>
+                      </div>
+                      <div data-hf-id="hf-ghd8" class="diff-line">
+                        <span data-hf-id="hf-gho8">26</span><span data-hf-id="hf-ghn8a">26</span><span data-hf-id="hf-ghc8a" class="code">+ This helps users understand information without
+                          leaving the response.</span>
+                      </div>
+                      <div data-hf-id="hf-ghd9" class="diff-line">
+                        <span data-hf-id="hf-gho9">35</span><span data-hf-id="hf-ghn9a">35</span><span data-hf-id="hf-ghc9a" class="code diff-section">+ ## How inline images work</span>
+                      </div>
+                      <div data-hf-id="hf-ghda" class="diff-line">
+                        <span data-hf-id="hf-ghoa">36</span><span data-hf-id="hf-ghnaa">36</span><span data-hf-id="hf-ghcaa" class="code">+ Copilot finds visual content that supports the
+                          answer.</span>
+                      </div>
+                      <div data-hf-id="hf-ghdb" class="diff-line">
+                        <span data-hf-id="hf-ghob">52</span><span data-hf-id="hf-ghnab">52</span><span data-hf-id="hf-ghcab" class="code diff-section">+ ## Supported platforms</span>
+                      </div>
+                      <div data-hf-id="hf-ghdc" class="diff-line">
+                        <span data-hf-id="hf-ghoc">53</span><span data-hf-id="hf-ghnac">53</span><span data-hf-id="hf-ghcac" class="code">+ Windows and web</span>
+                      </div>
+                      <div data-hf-id="hf-ghdd" class="diff-line">
+                        <span data-hf-id="hf-ghod">67</span><span data-hf-id="hf-ghnad">67</span><span data-hf-id="hf-ghcad" class="code diff-section">+ ## Permissions, security, and compliance</span>
+                      </div>
+                      <div data-hf-id="hf-ghde" class="diff-line">
+                        <span data-hf-id="hf-ghoe">68</span><span data-hf-id="hf-ghnae">68</span><span data-hf-id="hf-ghcae" class="code">+ Existing Microsoft 365 protections continue to
+                          apply.</span>
+                      </div>
+                      <div data-hf-id="hf-ghdf1" class="diff-line"><span data-hf-id="hf-ghof1">69</span><span data-hf-id="hf-ghnf1">69</span><span data-hf-id="hf-ghcf1" class="code">+ Copilot only displays content the user already has permission to access.</span></div>
+                      <div data-hf-id="hf-ghdf2" class="diff-line"><span data-hf-id="hf-ghof2">70</span><span data-hf-id="hf-ghnf2">70</span><span data-hf-id="hf-ghcf2" class="code">+ Sensitivity labels and organizational boundaries continue to apply.</span></div>
+                      <div data-hf-id="hf-ghdf3" class="diff-line"><span data-hf-id="hf-ghof3">78</span><span data-hf-id="hf-ghnf3">78</span><span data-hf-id="hf-ghcf3" class="code diff-section">+ ## Examples</span></div>
+                      <div data-hf-id="hf-ghdf4" class="diff-line"><span data-hf-id="hf-ghof4">79</span><span data-hf-id="hf-ghnf4">79</span><span data-hf-id="hf-ghcf4" class="code">+ Ask Copilot about a presentation, diagram, chart, or recorded meeting.</span></div>
+                      <div data-hf-id="hf-ghdf5" class="diff-line"><span data-hf-id="hf-ghof5">80</span><span data-hf-id="hf-ghnf5">80</span><span data-hf-id="hf-ghcf5" class="code">+ Select an image in the response to open its source and related context.</span></div>
+                      <div data-hf-id="hf-ghdf6" class="diff-line"><span data-hf-id="hf-ghof6">91</span><span data-hf-id="hf-ghnf6">91</span><span data-hf-id="hf-ghcf6" class="code diff-section">+ ## Current limitations</span></div>
+                      <div data-hf-id="hf-ghdf7" class="diff-line"><span data-hf-id="hf-ghof7">92</span><span data-hf-id="hf-ghnf7">92</span><span data-hf-id="hf-ghcf7" class="code">+ Availability can vary as the feature rolls out gradually.</span></div>
+                      <div data-hf-id="hf-ghdf8" class="diff-line"><span data-hf-id="hf-ghof8">93</span><span data-hf-id="hf-ghnf8">93</span><span data-hf-id="hf-ghcf8" class="code">+ Some image formats or source locations might not be supported.</span></div>
+                      <div data-hf-id="hf-ghdf9" class="diff-line"><span data-hf-id="hf-ghof9">104</span><span data-hf-id="hf-ghnf9">104</span><span data-hf-id="hf-ghcf9" class="code diff-section">+ ## Troubleshooting</span></div>
+                      <div data-hf-id="hf-ghdfa" class="diff-line"><span data-hf-id="hf-ghofa">105</span><span data-hf-id="hf-ghnfa">105</span><span data-hf-id="hf-ghcfa" class="code">+ Confirm that the source contains supported visual content.</span></div>
+                      <div data-hf-id="hf-ghdfb" class="diff-line"><span data-hf-id="hf-ghofb">106</span><span data-hf-id="hf-ghnfb">106</span><span data-hf-id="hf-ghcfb" class="code">+ Check that the user can open the source file or meeting recording.</span></div>
+                      <div data-hf-id="hf-ghdfc" class="diff-line"><span data-hf-id="hf-ghofc">107</span><span data-hf-id="hf-ghnfc">107</span><span data-hf-id="hf-ghcfc" class="code">+ Try the request again with a more specific prompt when needed.</span></div>
+                      <div data-hf-id="hf-ghdfd" class="diff-line"><span data-hf-id="hf-ghofd">128</span><span data-hf-id="hf-ghnfd">128</span><span data-hf-id="hf-ghcfd" class="code">+ [!INCLUDE [content-studio-generated](../includes/content-studio-generated.md)]</span></div>
+                      <div data-hf-id="hf-ghdfe" class="diff-line"><span data-hf-id="hf-ghofe">129</span><span data-hf-id="hf-ghnfe">129</span><span data-hf-id="hf-ghcfe" class="code">+ </span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="state-mentor" class="state" data-layout-allow-overlap="" data-layout-allow-occlusion="">
+            <div class="vs-titlebar"><span>Visual Studio Code for the Web</span><span class="vs-command">content-author/microsoft-365-docs-pr</span><span style="text-align:right">Content Mentor</span></div>
+            <div class="vs-workbench">
+              <div class="vs-rail"><span>▣</span><span>⌕</span><span>⑂</span><span>◫</span><span>◉</span></div>
+              <aside class="vs-sidebar">
+                <h3>CONTENT MENTOR</h3>
+                <div class="mentor-card" id="mentor-setup-card"><strong>Get started with Content Mentor</strong>Looks like you don't have a repository open yet. Let us help you get set up for success.<span class="mentor-button">Set up and get started</span></div>
+                <div class="mentor-card"><strong>Quick actions</strong>Paste an article URL to open it for editing.<div><span class="mentor-button">Create</span> <span class="mentor-button">Open</span></div></div>
+                <div class="mentor-tree"><strong>Repository workspace</strong><div>▾ copilot</div><div class="active">update-inline-images.md</div><div>Content suggestions</div><div>Metadata</div><div>Images</div><div>Customer feedback</div><div>SEO</div></div>
+              </aside>
+              <main class="vs-editor">
+                <div id="mentor-welcome" class="mentor-phase vs-welcome"><div class="vs-welcome-inner"><h2>Visual Studio Code</h2><p>Editing evolved</p><div class="mentor-card"><strong>Content Mentor is preparing your workspace</strong>Creating a fork, pulling the Content Studio branch, and opening the draft.</div></div></div>
+                <div id="mentor-editor" class="mentor-phase"><div class="vs-tabs"><span class="vs-tab">update-inline-images.md</span><span>Preview</span><span>Open Preview to the Side</span><button id="mentor-create-pr" class="vs-action">Create PR</button></div><div class="vs-code" data-layout-allow-overlap=""><div class="vs-code-line"><span>158</span><span>## Chat capabilities</span></div><div class="vs-code-line"><span>159</span><span></span></div><div class="vs-code-line"><span>160</span><span>Microsoft 365 Copilot Chat helps you draft content and review what you missed.</span></div><div class="vs-code-line added"><span>161</span><span>Copilot can surface relevant images from files and meetings directly in responses.</span></div><div class="vs-code-line added"><span>162</span><span>Users only see content they already have permission to access.</span></div><div class="vs-code-line"><span>163</span><span></span></div><div class="vs-code-line heading"><span>164</span><span>### Review checklist</span></div><div class="vs-code-line"><span>165</span><span>- Verify links, screenshots, metadata, and customer readiness.</span></div><div class="vs-code-line added" data-layout-allow-overlap=""><span>166</span><span data-layout-allow-overlap="">- Confirm technical accuracy with a subject-matter expert.</span></div><div class="vs-code-line"><span>167</span><span></span></div><div class="vs-code-line"><span>168</span><span>Last reviewed: {{ms.date}}</span></div></div></div>
+                <div id="mentor-pr-dialog" class="mentor-phase vs-dialog-shade" data-layout-allow-occlusion="" data-layout-allow-overlap=""><div class="vs-dialog" data-layout-allow-overlap=""><h3 data-layout-allow-overlap="">Create Pull Request</h3><label>Title</label><div class="dialog-input">Update inline images in Microsoft 365 Copilot</div><label>Description</label><div class="dialog-input">Clarifies sources, permissions, and review guidance.</div><label>Source branch</label><div class="dialog-input">content-author-cs-3515</div><div class="vs-dialog-actions"><button class="secondary">Cancel</button><button id="create-pr-confirm">Create Pull Request</button></div></div></div>
+                <div id="mentor-date-dialog" class="mentor-phase vs-dialog-shade" data-layout-allow-occlusion="" data-layout-allow-overlap=""><div class="vs-dialog"><h3>Update ms.date?</h3><p>Update the review date only after a complete accuracy review. Otherwise, keep the existing date.</p><div class="vs-dialog-actions"><button id="skip-date" class="secondary">Skip</button><button>Update date</button></div></div></div>
+              </main>
+            </div>
+            <div class="vs-statusbar"><span>⑂ content-author-cs-3515</span><span>Markdown · UTF-8 · Content Mentor</span></div>
+          </div>
+          <div id="state-merge" class="state"><div class="merge-page"><span class="merge-badge">Open</span><h2>Update article: Inline images in Microsoft 365 Copilot <span style="color:#8c959f">#3515</span></h2><p style="color:#8c959f">content-studio bot wants to merge 2 commits into main</p><div class="merge-diff"><div>+ Copilot can surface relevant images from files and meetings.</div><div>+ Users only see content they already have permission to access.</div><div>+ Review links, screenshots, metadata, and customer readiness.</div></div><div class="merge-box"><div><b>All checks have passed</b><p style="margin:7px 0 0;color:#8c959f">The update is ready to publish.</p></div><button id="merge-button">Merge pull request</button><span id="merge-complete">✓ Pull request merged</span></div></div></div>
+          <div id="state-recap" class="state"><div class="recap-shell"><div class="recap-title">The update stays under your control</div><div class="recap-steps"><div class="recap-step"><b>1 · Update</b><p>Create the issue and provide clear article context.</p></div><div class="recap-step"><b>2 · Review</b><p>Check the linked draft for accuracy and completeness.</p></div><div class="recap-step"><b>3 · Publish</b><p>Edit when needed, then merge the customer-ready PR.</p></div></div></div></div>
+        </div>
+
+        <div data-hf-id="hf-ys2k" id="pointer">
+          <svg data-hf-id="hf-l0yt" id="arrow" viewBox="0 0 64 64" aria-hidden="true">
+            <path data-hf-id="hf-sr7p" d="M2 1.5V48.5L14.2 37.1L23.7 60.3L33.4 56.2L23.8 33.8H40.8Z" fill="#fff" stroke="#111" stroke-width="2.4" stroke-linejoin="round" />
+          </svg>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-q61q" id="endcard" class="clip" data-start="157" data-duration="3.6" data-track-index="1">
+        <div data-hf-id="hf-d9hf" class="ms-lockup">
+          <span data-hf-id="hf-utvh" class="ms-mark"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i><i data-hf-id="hf-ylp6"></i></span><span data-hf-id="hf-5v4j">Microsoft</span>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      document.querySelector("#gh-files .gh-files-list div").textContent =
+        "Microsoft-365-Copilot";
+      document.querySelector("#gh-files .gh-diff-head").firstChild.textContent =
+        "Microsoft-365-Copilot/update-inline-images.md ";
+
+      const tl = gsap.timeline({
+        paused: true,
+        defaults: { ease: "power2.inOut" },
+      });
+
+      const pointTo = (selector, xRatio = 0.5, yRatio = 0.5) => {
+        const rect = document.querySelector(selector).getBoundingClientRect();
+        return {
+          x: rect.left + rect.width * xRatio,
+          y: rect.top + rect.height * yRatio,
+        };
+      };
+
+      /* Previous Create-article choreography retained temporarily for visual reference.
+      tl.set("#camera", { scale: 1, x: 0, y: 0 }, 5)
+        .set(".workspace", { autoAlpha: 1 }, 5)
+        .set("#access-overlay", { autoAlpha: 0 }, 5)
+        .set("#pointer", { ...pointTo("#createBtn"), opacity: 0 }, 5)
+        .fromTo("#demo .app", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 5)
+        .to("#access-overlay", { autoAlpha: 1, duration: 0.35 }, 13.194)
+        .to("#access-overlay", { autoAlpha: 0, duration: 0.35 }, 22.3)
+        .to(
+          "#pointer",
+          {
+            ...pointTo("#createBtn"),
+            opacity: 1,
+            duration: 1.15,
+            ease: "power2.inOut",
+          },
+          23.34,
+        )
+        .to(
+          "#pointer",
+          {
+            scale: 0.88,
+            duration: 0.18,
+            yoyo: true,
+            repeat: 1,
+            ease: "power1.inOut",
+          },
+          24.78,
+        )
+        .to(".app", { autoAlpha: 0, duration: 0.3 }, 25.15)
+        .to("#state-create", { autoAlpha: 1, duration: 0.35 }, 25.2)
+        .to(
+          "#field-product, #field-site",
+          { opacity: 1, filter: "grayscale(0)", duration: 0.35 },
+          25.6,
+        )
+        .to(
+          "#field-product .mute-lines, #field-site .mute-lines",
+          { opacity: 0, duration: 0.35 },
+          25.6,
+        )
+        .to(
+          "#pointer",
+          { ...pointTo("#field-product .input", 0.72), duration: 1.1 },
+          25.8,
+        )
+        .to("#pointer", { ...pointTo("#field-title .input", 0.72), duration: 0.55 }, 26.35)
+        .to(
+          "#field-title, #field-type",
+          { opacity: 1, filter: "grayscale(0)", duration: 0.35 },
+          27,
+        )
+        .to(
+          "#field-title .mute-lines, #field-type .mute-lines",
+          { opacity: 0, duration: 0.35 },
+          27,
+        )
+        .to("#pointer", { ...pointTo("#field-about .input", 0.72), duration: 0.55 }, 32.35)
+        .to(
+          "#field-about",
+          { opacity: 1, filter: "grayscale(0)", duration: 0.35 },
+          33,
+        )
+        .to("#field-about .mute-lines", { opacity: 0, duration: 0.35 }, 33)
+        .to("#pointer", { ...pointTo("#field-context .input", 0.72), duration: 0.55 }, 37.35)
+        .to(
+          "#field-context",
+          { opacity: 1, filter: "grayscale(0)", duration: 0.35 },
+          38,
+        )
+        .to("#field-context .mute-lines", { opacity: 0, duration: 0.35 }, 38)
+        .to("#pointer", { ...pointTo("#field-github .input", 0.72), duration: 0.5 }, 41.8)
+        .to(
+          "#field-github",
+          { opacity: 1, filter: "grayscale(0)", duration: 0.35 },
+          42.35,
+        )
+        .to(
+          "#field-github .mute-lines",
+          { opacity: 0, duration: 0.35 },
+          42.35,
+        )
+        .to("#pointer", { ...pointTo("#field-repo .input", 0.72), duration: 0.5 }, 42.75)
+        .to("#field-repo", { opacity: 1, filter: "grayscale(0)", duration: 0.35 }, 43.3)
+        .to("#field-repo .mute-lines", { opacity: 0, duration: 0.35 }, 43.3)
+        .to(
+          "#submitBtn",
+          {
+            backgroundColor: "#0f6cbd",
+            borderColor: "#0f6cbd",
+            color: "#fff",
+            duration: 0.3,
+          },
+          44.4,
+        )
+        .to(
+          "#pointer",
+          { ...pointTo("#submitBtn", 0.5, 0.15), duration: 1.4 },
+          46,
+        )
+        .to(
+          "#pointer",
+          {
+            scale: 0.88,
+            duration: 0.18,
+            yoyo: true,
+            repeat: 1,
+            ease: "power1.inOut",
+          },
+          47.7,
+        )
+        .to("#state-create", { autoAlpha: 0, duration: 0.3 }, 48.2)
+        .to(".app", { autoAlpha: 1, duration: 0.3 }, 48.2)
+        .to(".workspace", { autoAlpha: 1, duration: 0.3 }, 48.2)
+        .to("#state-progress", { autoAlpha: 1, duration: 0.35 }, 48.45)
+        .to("#pointer", { ...pointTo("#viewIssueBtn"), duration: 1.1 }, 50.4)
+        .to(
+          "#pointer",
+          {
+            scale: 0.88,
+            duration: 0.18,
+            yoyo: true,
+            repeat: 1,
+            ease: "power1.inOut",
+          },
+          52.1,
+        )
+        .to("#state-progress", { autoAlpha: 0, duration: 0.3 }, 52.55)
+        .to(".app", { autoAlpha: 0, duration: 0.3 }, 52.55)
+        .to("#state-issue", { autoAlpha: 1, duration: 0.4 }, 52.8)
+        .to(
+          "#pointer",
+          { ...pointTo(".issue-body-card", 0.56, 0.24), duration: 1.2 },
+          53.2,
+        )
+        .to("#issue-scroll-content", { y: -861, duration: 1.8, ease: "power2.inOut" }, 55.8)
+        .to(
+          "#pointer",
+          { x: 1130, y: 470, duration: 1.2 },
+          58,
+        )
+        .to("#pointer", { x: 1140, y: 630, duration: 1.2 }, 61)
+        .to("#pointer", { x: 455, y: 470, duration: 0.7 }, 62.75)
+        .to("#pointer", { scale: 0.88, duration: 0.14, yoyo: true, repeat: 1, ease: "power1.inOut" }, 63.5)
+        .to("#state-issue", { autoAlpha: 0, duration: 0.1 }, 63.85)
+        .to("#state-pr", { autoAlpha: 1, duration: 0.1 }, 63.9)
+        .set("#pointer", pointTo("#state-pr .gh-title"), 64)
+        .to(
+          "#pointer",
+          {
+            ...pointTo("#gh-tab-files"),
+            duration: 1.1,
+          },
+          65.3,
+        )
+        .to("#pointer", { scale: 0.88, duration: 0.14, yoyo: true, repeat: 1, ease: "power1.inOut" }, 66.55)
+        .to("#gh-conversation", { autoAlpha: 0, duration: 0.08 }, 66.78)
+        .to("#gh-files", { autoAlpha: 1, duration: 0.08 }, 66.86)
+        .to("#pointer", { ...pointTo("#gh-files .diff-lines", 0.58, 0.55), duration: 0.8 }, 67.15)
+        .to("#state-pr", { autoAlpha: 0, duration: 0.35 }, 79.75)
+        .to(".app", { autoAlpha: 1, duration: 0.35 }, 79.75)
+        .to(".workspace", { autoAlpha: 1, duration: 0.35 }, 79.75)
+        .to(
+          "#createBtn",
+          {
+            boxShadow: "0 0 0 5px #d13438, 0 0 0 10px rgba(209,52,56,.18)",
+            duration: 0.25,
+          },
+          80.66,
+        )
+        .to("#pointer", { ...pointTo("#createBtn"), duration: 0.55 }, 80.75)
+        .to("#createBtn", { boxShadow: "none", duration: 0.25 }, 81.85)
+        .to(".app", { autoAlpha: 0, duration: 0.25 }, 81.95)
+        .to("#state-create", { autoAlpha: 1, duration: 0.25 }, 82)
+        .to(
+          "#pointer",
+          { ...pointTo("#field-context .input", 0.72), duration: 0.8 },
+          82.25,
+        )
+        .to("#state-create", { autoAlpha: 0, duration: 0.25 }, 84.4)
+        .set("#gh-conversation", { autoAlpha: 0 }, 84.4)
+        .set("#gh-files", { autoAlpha: 1 }, 84.4)
+        .to("#state-pr", { autoAlpha: 1, duration: 0.25 }, 84.5)
+        .to(
+          "#pointer",
+          { ...pointTo("#gh-files .diff-lines", 0.58, 0.62), duration: 0.9 },
+          84.65,
+        )
+        .to("#pointer", { ...pointTo("#submit-review"), duration: 0.8 }, 87.2)
+        .to(
+          "#pointer",
+          {
+            scale: 0.88,
+            duration: 0.18,
+            yoyo: true,
+            repeat: 1,
+            ease: "power1.inOut",
+          },
+          88.55,
+        )
+        .to("#state-pr", { autoAlpha: 0, duration: 0.25 }, 89.35)
+        .to(".app", { autoAlpha: 1, duration: 0.3 }, 89.55)
+        .to(".workspace", { autoAlpha: 1, duration: 0.3 }, 89.55)
+        .to("#createdRow", { autoAlpha: 1, duration: 0.35 }, 89.7)
+        .to(
+          "#pointer",
+          { ...pointTo("#createdRow", 0.86, 0.5), duration: 1.1 },
+          90,
+        )
+        .fromTo(
+          ".ms-lockup",
+          { opacity: 0, scale: 0.96 },
+          { opacity: 1, scale: 1, duration: 0.5 },
+          93.5,
+        ); */
+      tl.fromTo(".quick-label", { opacity: 0, y: -14 }, { opacity: 1, y: 0, duration: 0.45 }, 0.05)
+        .fromTo(".intro-title", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.55 }, 0.2)
+        .fromTo(".intro-preview", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: "power3.out" }, 0.35)
+        .set("#camera", { scale: 1, x: 0, y: 0 }, 5)
+        .set("#state-create, #state-progress, #state-issue, #state-pr, #state-mentor, #state-merge, #state-recap", { autoAlpha: 0 }, 5)
+        .set("#gh-conversation", { autoAlpha: 1 }, 5)
+        .set("#gh-files", { autoAlpha: 0 }, 5)
+        .set("#pointer", { ...pointTo("#updateBtn", -1.2, 1.6), opacity: 0 }, 5)
+        .fromTo("#demo .app", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 5)
+        .to("#pointer", { opacity: 1, duration: 0.2 }, 9.85)
+        .to("#pointer", { ...pointTo("#updateBtn"), duration: 0.65 }, 10.15)
+        .to("#updateBtn", { backgroundColor: "#0f6cbd", borderColor: "#0f6cbd", color: "#fff", duration: 0.2 }, 10.75)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 11.1)
+        .to(".app", { autoAlpha: 0, duration: 0.25 }, 11.45)
+        .to("#state-create", { autoAlpha: 1, duration: 0.3 }, 11.5)
+        .set("#field-title, #field-type, #field-about, #field-context, #field-github", { opacity: 1, filter: "grayscale(0)" }, 11.5)
+        .set("#state-create .mute-lines", { opacity: 0 }, 11.5)
+        .set("#state-create .field-value", { opacity: 0 }, 11.5)
+        .set("#state-create .char-count", { opacity: 0 }, 11.5)
+        .to("#pointer", { ...pointTo("#field-title .input", 0.72), duration: 0.7 }, 17.55)
+        .to("#field-title .field-value", { opacity: 1, duration: 0.22 }, 20.68)
+        .to("#pointer", { ...pointTo("#field-type .input", 0.72), duration: 0.55 }, 21.1)
+        .to("#field-type .field-value", { opacity: 1, duration: 0.22 }, 21.48)
+        .to("#pointer", { ...pointTo("#field-about .input", 0.72), duration: 0.55 }, 22.5)
+        .to("#field-about .field-value", { opacity: 1, duration: 0.22 }, 22.68)
+        .to("#field-about .char-count", { opacity: 1, duration: 0.22 }, 22.68)
+        .to("#pointer", { ...pointTo("#field-context .input", 0.72), duration: 0.55 }, 24.7)
+        .to("#field-context .field-value", { opacity: 1, duration: 0.22 }, 24.96)
+        .to("#field-context .char-count", { opacity: 1, duration: 0.22 }, 24.96)
+        .to("#pointer", { ...pointTo("#field-github .input", 0.72), duration: 0.65 }, 34.55)
+        .to("#field-github .field-value", { opacity: 1, duration: 0.22 }, 34.84)
+        .to("#submitBtn", { backgroundColor: "#0f6cbd", borderColor: "#0f6cbd", color: "#fff", duration: 0.25 }, 35.75)
+        .to("#pointer", { ...pointTo("#submitBtn"), duration: 0.55 }, 36.15)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 36.85)
+        .to("#state-create", { autoAlpha: 0, duration: 0.2 }, 37.55)
+        .to(".app", { autoAlpha: 1, duration: 0.2 }, 37.55)
+        .to("#state-progress", { autoAlpha: 1, duration: 0.25 }, 37.72)
+        .to("#pointer", { ...pointTo("#viewIssueBtn"), duration: 0.8 }, 39.2)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 40.2)
+        .to("#state-progress, .app", { autoAlpha: 0, duration: 0.25 }, 41.1)
+        .to("#state-issue", { autoAlpha: 1, duration: 0.3 }, 41.3)
+        .to("#pointer", { ...pointTo(".issue-body-card", 0.56, 0.25), duration: 0.9 }, 42)
+        .to("#issue-scroll-content", { y: -861, duration: 1.6, ease: "power2.inOut" }, 46.5)
+        .to("#pointer", { ...pointTo("#issue-pr-link"), duration: 0.9 }, 51.5)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 54.5)
+        .to("#state-issue", { autoAlpha: 0, duration: 0.2 }, 55.3)
+        .to("#state-pr", { autoAlpha: 1, duration: 0.25 }, 55.4)
+        .to("#pointer", { ...pointTo("#gh-tab-files"), duration: 0.9 }, 56)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 57)
+        .to("#gh-conversation", { autoAlpha: 0, duration: 0.12 }, 57.25)
+        .to("#gh-files", { autoAlpha: 1, duration: 0.12 }, 57.3)
+        .to("#pointer", { ...pointTo("#gh-files .diff-lines", 0.58, 0.45), duration: 0.8 }, 58)
+        .to("#gh-files", { autoAlpha: 0, duration: 0.12 }, 75.25)
+        .to("#gh-conversation", { autoAlpha: 1, duration: 0.12 }, 75.3)
+        .to("#pointer", { ...pointTo("#content-mentor-link"), duration: 0.65 }, 76.4)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 77.7)
+        .to("#state-pr", { autoAlpha: 0, duration: 0.25 }, 79.35)
+        .to("#state-mentor", { autoAlpha: 1, duration: 0.3 }, 79.6)
+        .to("#pointer", { ...pointTo("#mentor-setup-card .mentor-button"), duration: 0.9 }, 86.15)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 88.25)
+        .to("#mentor-welcome", { autoAlpha: 0, duration: 0.25 }, 97.15)
+        .to("#mentor-editor", { autoAlpha: 1, duration: 0.3 }, 97.4)
+        .to("#pointer", { ...pointTo("#mentor-editor .vs-code-line.added", 0.72, 0.5), duration: 0.65 }, 100.05)
+        .to("#pointer", { ...pointTo("#mentor-create-pr"), duration: 0.8 }, 101.55)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 102.55)
+        .to("#mentor-date-dialog", { autoAlpha: 1, duration: 0.3 }, 103)
+        .to("#pointer", { ...pointTo("#skip-date"), duration: 0.8 }, 111.45)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 112.45)
+        .to("#mentor-date-dialog", { autoAlpha: 0, duration: 0.25 }, 113)
+        .to("#mentor-pr-dialog", { autoAlpha: 1, duration: 0.25 }, 113.35)
+        .to("#pointer", { ...pointTo("#create-pr-confirm"), duration: 0.8 }, 114.25)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 115.25)
+        .to("#state-mentor", { autoAlpha: 0, duration: 0.3 }, 121.9)
+        .to("#state-merge", { autoAlpha: 1, duration: 0.3 }, 122.2)
+        .to("#pointer", { ...pointTo("#merge-button"), duration: 1 }, 126)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 127.2)
+        .to("#merge-button", { opacity: 0, duration: 0.2 }, 127.8)
+        .to("#merge-complete", { opacity: 1, duration: 0.35 }, 128)
+        .to("#state-merge", { autoAlpha: 0, duration: 0.3 }, 138.5)
+        .to("#state-recap", { autoAlpha: 1, duration: 0.3 }, 138.8)
+        .fromTo(".recap-step", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.3 }, 139.2)
+        .to("#pointer", { opacity: 0, duration: 0.2 }, 139)
+        .fromTo(".ms-lockup", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.5 }, 157.1);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
