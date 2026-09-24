@@ -1,6 +1,6 @@
 ---
 format: 1920x1080
-duration: 160s
+duration: 157s
 message: "Content Studio turns a clear update request into a draft that the contributor reviews, edits, and publishes"
 arc: Need -> Request -> Agent draft -> Review -> Edit -> Merge -> Resolve
 audience: Microsoft Learn content contributors
@@ -8,7 +8,7 @@ mode: autonomous
 music: none
 ---
 
-# Storyboard - Create an Update issue and draft
+# Storyboard - Create an update issue and draft
 
 ## Frame 1 - Quick Start intro
 - status: outline
@@ -18,7 +18,7 @@ music: none
 - on_screen: Dark-green title field, mustard `Content Studio Quick Start` label,
   white title, and a cropped preview of the Update form.
 - motion: Headline settles upward; UI crop rises from the lower edge.
-- transition: White flash into the Content Studio dashboard.
+- transition: The dashboard eases in from the right and settles left; no flash.
 
 ## Frame 2 - Start the update request
 - status: outline
@@ -29,6 +29,8 @@ music: none
 - why: Shows how a clear request gives the agent usable context.
 - motion: Slow push toward the Update control, then measured pointer moves and
   field-focus outlines with readable holds.
+- camera: Ease to 115% on the Update control from 0:08-0:11, then use the same
+  115% treatment on the request details at 0:18.
 
 ## Frame 3 - Issue and draft generation
 - status: outline
@@ -57,9 +59,16 @@ music: none
 - on_screen: Open in Content Mentor, VS Code for the Web setup, Content Mentor
   sidebar, repository fork and branch status, markdown edit, Create PR, `ms.date`
   decision, and Create Pull Request dialog.
+- reference_sequence: Start on the supplied VS Code welcome/setup screenshot,
+  follow the Content Mentor setup click and repository preparation, then move to
+  the supplied loaded Markdown editor screenshot.
 - why: Shows the complete contributor-controlled edit loop.
 - motion: Stable VS Code chrome; sidebar state changes, typed markdown insertion,
   and pointer-confirmed actions with short pauses.
+- camera: Ease to 115% on the GitHub Content Mentor action at 1:12, open VS Code
+  immediately after the click, then ease to 115% on the setup card at 1:21.
+- timing: Complete setup and move to the loaded editor around 1:29 rather than
+  waiting until 1:34.
 
 ## Frame 6 - Merge and resolve
 - status: outline

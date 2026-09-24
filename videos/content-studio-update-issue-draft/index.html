@@ -32,7 +32,6 @@
         inset: 0;
         overflow: hidden;
       }
-
       /* Reference-matched opener */
       #intro {
         background: radial-gradient(
@@ -147,7 +146,7 @@
 
       /* Continuous demo surface */
       #demo {
-        background: #fff;
+        background: #174f35;
       }
       #camera {
         position: absolute;
@@ -1787,8 +1786,13 @@
       .mentor-phase {
         position: absolute;
         inset: 0;
+        background: #1e1e1e;
       }
-      #mentor-editor,
+      #mentor-editor {
+        display: none;
+        opacity: 0;
+        visibility: hidden;
+      }
       #mentor-pr-dialog,
       #mentor-date-dialog {
         opacity: 0;
@@ -1864,6 +1868,234 @@
         border: 1px solid #555;
         background: #333;
       }
+      #state-mentor .vs-titlebar {
+        height: 44px;
+        grid-template-columns: 300px 1fr 300px;
+        padding: 0 12px;
+        background: #171717;
+        font-size: 13px;
+      }
+      #state-mentor .vs-command {
+        width: 520px;
+        padding: 5px 14px;
+        border-radius: 5px;
+      }
+      #state-mentor .vs-workbench {
+        inset: 44px 0 24px;
+        grid-template-columns: 48px 260px 1fr;
+      }
+      #state-mentor .vs-rail {
+        padding-top: 10px;
+        font-size: 21px;
+      }
+      #state-mentor .vs-rail span {
+        height: 45px;
+      }
+      #state-mentor .vs-sidebar {
+        position: relative;
+        padding: 0;
+        background: #181818;
+      }
+      .mentor-sidebar-phase {
+        position: absolute;
+        inset: 0;
+        padding: 14px 13px 20px;
+        overflow: hidden;
+      }
+      .mentor-sidebar-loading,
+      .mentor-sidebar-loaded {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .mentor-sidebar-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+        color: #e7e7e7;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .mentor-sidebar-tabs {
+        display: flex;
+        align-items: center;
+        gap: 11px;
+        margin-bottom: 12px;
+        padding-bottom: 7px;
+        border-bottom: 1px solid #303030;
+        color: #a8a8a8;
+        font-size: 11px;
+      }
+      .mentor-sidebar-tabs .active {
+        color: #f0a15b;
+        font-weight: 700;
+      }
+      #state-mentor .mentor-card {
+        margin-bottom: 10px;
+        padding: 11px;
+        font-size: 11px;
+        line-height: 1.4;
+      }
+      #state-mentor .mentor-card strong {
+        margin-bottom: 6px;
+      }
+      #state-mentor .mentor-button {
+        margin-top: 8px;
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+      .mentor-primary-button {
+        display: block;
+        width: 100%;
+        text-align: center;
+      }
+      .mentor-dismiss {
+        margin-top: 7px;
+        color: #a8a8a8;
+        text-align: center;
+      }
+      .mentor-disclaimer {
+        margin: 8px 3px 12px;
+        color: #8e8e8e;
+        font-size: 10px;
+        line-height: 1.35;
+      }
+      .mentor-section-title {
+        margin: 12px 0 7px;
+        color: #d7d7d7;
+        font-size: 11px;
+        font-weight: 700;
+      }
+      .mentor-quick-card {
+        border-color: #007acc;
+        background: #102f44;
+      }
+      .mentor-actions {
+        display: flex;
+        gap: 5px;
+        margin-top: 8px;
+      }
+      .mentor-actions span {
+        padding: 5px 9px;
+        border-radius: 3px;
+        background: #0e639c;
+        color: #fff;
+        font-size: 10px;
+      }
+      .mentor-suggestion {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-height: 31px;
+        color: #bcbcbc;
+        font-size: 11px;
+      }
+      .mentor-suggestion::before {
+        content: "◇";
+        color: #3794ff;
+      }
+      .mentor-repo-card {
+        margin: 8px 0;
+        padding: 9px;
+        border: 1px solid #303030;
+        border-radius: 4px;
+        background: #202020;
+        color: #c8c8c8;
+        font-size: 10px;
+        line-height: 1.45;
+      }
+      .mentor-repo-card .branch {
+        display: block;
+        margin-top: 5px;
+        color: #75beff;
+      }
+      .mentor-waiting {
+        margin: 8px 0;
+        color: #929292;
+        font-size: 10px;
+      }
+      .mentor-file {
+        margin: 0 -7px 8px;
+        padding: 7px;
+        border-left: 2px solid #3794ff;
+        background: #16364c;
+        color: #dcecff;
+        font-size: 10px;
+      }
+      #state-mentor .vs-welcome {
+        align-items: start;
+        justify-items: center;
+        padding-top: 165px;
+      }
+      #state-mentor .vs-welcome-inner {
+        width: 760px;
+      }
+      .welcome-columns {
+        display: grid;
+        grid-template-columns: 1fr 1.3fr;
+        gap: 90px;
+        margin-top: 24px;
+      }
+      .welcome-columns h3 {
+        margin: 0 0 12px;
+        color: #d7d7d7;
+        font-size: 14px;
+      }
+      .welcome-link {
+        display: block;
+        margin: 8px 0;
+        color: #3794ff;
+        font-size: 12px;
+      }
+      .welcome-walkthrough {
+        margin-bottom: 9px;
+        padding: 10px 12px;
+        border: 1px solid #303030;
+        background: #252526;
+        color: #cccccc;
+        font-size: 11px;
+      }
+      .mentor-toast-stack {
+        position: absolute;
+        right: 16px;
+        bottom: 16px;
+        width: 360px;
+        display: grid;
+        gap: 6px;
+        color: #a7a7a7;
+        font-size: 10px;
+        text-align: right;
+      }
+      #state-mentor .vs-tabs {
+        height: 42px;
+        padding: 0 12px;
+        font-size: 12px;
+      }
+      #state-mentor .vs-tab {
+        height: 42px;
+        padding: 12px 14px;
+      }
+      #state-mentor .vs-code {
+        inset: 42px 0 0;
+        padding: 18px 70px 45px 54px;
+        font-size: 12px;
+        line-height: 1.42;
+      }
+      #state-mentor .vs-code-line {
+        grid-template-columns: 42px 1fr;
+        min-height: 18px;
+      }
+      .vs-code-line.link {
+        color: #ce9178;
+      }
+      .vs-code-line.image {
+        color: #9cdcfe;
+      }
+      #state-mentor .vs-statusbar {
+        height: 24px;
+        padding: 0 10px;
+        font-size: 10px;
+      }
       #state-merge {
         display: grid;
         place-items: center;
@@ -1934,12 +2166,6 @@
       }
       .recap-shell {
         width: 1500px;
-      }
-      .recap-title {
-        margin-bottom: 44px;
-        color: #242424;
-        font-size: 48px;
-        font-weight: 750;
       }
       .recap-steps {
         display: grid;
@@ -2019,15 +2245,15 @@
     </style>
   </head>
   <body>
-    <div data-hf-id="hf-vdpa" id="root" data-composition-id="main" data-start="0" data-duration="160.6" data-width="1920" data-height="1080">
-      <audio data-hf-id="hf-yi6z" id="azure-narration" src="assets/narration/content-studio-update-continuous.wav" data-start="0" data-duration="156.15" data-track-index="10" data-volume="1.1"></audio>
+    <div data-hf-id="hf-vdpa" id="root" data-composition-id="main" data-start="0" data-duration="157.2" data-width="1920" data-height="1080">
+      <audio data-hf-id="hf-yi6z" id="azure-narration" src="assets/narration/content-studio-update-continuous.wav" data-start="0" data-duration="153.419" data-track-index="10" data-volume="1.1"></audio>
       <section data-hf-id="hf-e2e2" id="intro" class="clip" data-start="0" data-duration="5" data-track-index="1">
         <div data-hf-id="hf-zfph" class="intro-inner">
           <div data-hf-id="hf-wg6a" class="quick-label">
             Content Studio Quick Start
           </div>
           <h1 data-hf-id="hf-i19n" class="intro-title">
-            <span data-hf-id="hf-dck8" class="intro-title-line">Create an Update</span><span data-hf-id="hf-a1qm" class="intro-title-line">issue and draft</span>
+            <span data-hf-id="hf-dck8" class="intro-title-line">Create an update</span><span data-hf-id="hf-a1qm" class="intro-title-line">issue and draft</span>
           </h1>
           <div data-hf-id="hf-3gy5" class="intro-preview">
             <div data-hf-id="hf-oohr" class="preview-head">
@@ -2064,7 +2290,7 @@
         </div>
       </section>
 
-      <section data-hf-id="hf-p7zr" id="demo" class="clip" data-start="5" data-duration="152" data-track-index="1">
+      <section data-hf-id="hf-p7zr" id="demo" class="clip" data-start="5" data-duration="149" data-track-index="1">
         <div data-hf-id="hf-j2lh" id="camera" data-layout-allow-overflow="">
           <div data-hf-id="hf-zmlb" class="app" data-layout-allow-occlusion="" data-layout-allow-overlap="">
             <div data-hf-id="hf-0lzt" class="topbar">
@@ -2540,18 +2766,48 @@
             </div>
           </div>
           <div id="state-mentor" class="state" data-layout-allow-overlap="" data-layout-allow-occlusion="">
-            <div class="vs-titlebar"><span>Visual Studio Code for the Web</span><span class="vs-command">content-author/microsoft-365-docs-pr</span><span style="text-align:right">Content Mentor</span></div>
+            <div class="vs-titlebar"><span>Visual Studio Code</span><span class="vs-command">Search</span><span style="text-align:right">Content Mentor</span></div>
             <div class="vs-workbench">
-              <div class="vs-rail"><span>▣</span><span>⌕</span><span>⑂</span><span>◫</span><span>◉</span></div>
+              <div class="vs-rail"><span>▱</span><span>⌕</span><span>⑂</span><span>▷</span><span>◫</span><span>◉</span></div>
               <aside class="vs-sidebar">
-                <h3>CONTENT MENTOR</h3>
-                <div class="mentor-card" id="mentor-setup-card"><strong>Get started with Content Mentor</strong>Looks like you don't have a repository open yet. Let us help you get set up for success.<span class="mentor-button">Set up and get started</span></div>
-                <div class="mentor-card"><strong>Quick actions</strong>Paste an article URL to open it for editing.<div><span class="mentor-button">Create</span> <span class="mentor-button">Open</span></div></div>
-                <div class="mentor-tree"><strong>Repository workspace</strong><div>▾ copilot</div><div class="active">update-inline-images.md</div><div>Content suggestions</div><div>Metadata</div><div>Images</div><div>Customer feedback</div><div>SEO</div></div>
+                <div class="mentor-sidebar-phase mentor-sidebar-onboarding">
+                  <div class="mentor-sidebar-head"><span>Content Mentor</span><span>···</span></div>
+                  <div class="mentor-sidebar-tabs"><span class="active">Content ...</span><span>Focused</span><span>●</span><span>◌</span></div>
+                  <div class="mentor-card" id="mentor-setup-card"><strong>◉ &nbsp; Get started with Content Mentor</strong>Looks like you don't have a repository open yet. Let us help you get set up for success.<span class="mentor-button mentor-primary-button">Help me get set up</span><div class="mentor-dismiss">× &nbsp; Don't show again</div></div>
+                  <div class="mentor-disclaimer">AI-generated content may be incorrect. Please review before use.</div>
+                  <div class="mentor-section-title">Quick actions</div>
+                  <div class="mentor-card mentor-quick-card"><strong>Update existing article</strong>Open, fix, and review a Learn article from its URL.<div class="mentor-actions"><span>Create</span><span>Open</span><span>Got it</span></div></div>
+                  <div class="mentor-section-title">Content suggestions</div>
+                  <div class="mentor-suggestion">Content</div><div class="mentor-suggestion">Metadata</div><div class="mentor-suggestion">Images</div><div class="mentor-suggestion">Customer feedback</div><div class="mentor-suggestion">SEO</div><div class="mentor-suggestion">Security (SFI)</div>
+                  <div class="mentor-section-title">Content creation and updates</div>
+                  <div class="mentor-suggestion">Auto fix Markdown</div><div class="mentor-suggestion">TOC</div><div class="mentor-suggestion">Redirects</div>
+                </div>
+                <div class="mentor-sidebar-phase mentor-sidebar-loading">
+                  <div class="mentor-sidebar-head"><span>Content Mentor</span><span>···</span></div>
+                  <div class="mentor-sidebar-tabs"><span class="active">Content ...</span><span>Focused</span><span>●</span><span>◌</span></div>
+                  <div class="mentor-disclaimer">AI-generated content may be incorrect. Please review before use.</div>
+                  <div class="mentor-section-title">Repository workspace</div>
+                  <div class="mentor-repo-card"><strong>Creating your copy</strong>Forking MicrosoftDocs/microsoft-365-docs-pr and checking out the Content Studio branch.<span class="branch">content-author-cs-3515</span></div>
+                  <div class="mentor-waiting">◌ Waiting for files to become available...</div>
+                  <div class="mentor-section-title">Content suggestions</div>
+                  <div class="mentor-suggestion">Content</div><div class="mentor-suggestion">Metadata</div><div class="mentor-suggestion">Images</div><div class="mentor-suggestion">Customer feedback</div><div class="mentor-suggestion">SEO</div>
+                </div>
+                <div class="mentor-sidebar-phase mentor-sidebar-loaded">
+                  <div class="mentor-sidebar-head"><span>Content Mentor</span><span>···</span></div>
+                  <div class="mentor-sidebar-tabs"><span class="active">Content ...</span><span>Focused</span><span>●</span><span>◌</span></div>
+                  <div class="mentor-disclaimer">AI-generated content may be incorrect. Please review before use.</div>
+                  <div class="mentor-section-title">Repository workspace</div>
+                  <div class="mentor-repo-card"><strong>microsoft-365-docs-pr</strong>content-author-cs-3515<span class="branch">✓ Ready to edit</span></div>
+                  <div class="mentor-file">▣ &nbsp; microsoft-365-copilot-overview.md</div>
+                  <div class="mentor-section-title">Content suggestions</div>
+                  <div class="mentor-suggestion">Content</div><div class="mentor-suggestion">Metadata</div><div class="mentor-suggestion">Images</div><div class="mentor-suggestion">Customer feedback</div><div class="mentor-suggestion">SEO</div><div class="mentor-suggestion">Security (SFI)</div>
+                  <div class="mentor-section-title">Content creation and updates</div>
+                  <div class="mentor-suggestion">Auto fix Markdown</div><div class="mentor-suggestion">TOC</div><div class="mentor-suggestion">Redirects</div><div class="mentor-suggestion">Prompts</div>
+                </div>
               </aside>
-              <main class="vs-editor">
-                <div id="mentor-welcome" class="mentor-phase vs-welcome"><div class="vs-welcome-inner"><h2>Visual Studio Code</h2><p>Editing evolved</p><div class="mentor-card"><strong>Content Mentor is preparing your workspace</strong>Creating a fork, pulling the Content Studio branch, and opening the draft.</div></div></div>
-                <div id="mentor-editor" class="mentor-phase"><div class="vs-tabs"><span class="vs-tab">update-inline-images.md</span><span>Preview</span><span>Open Preview to the Side</span><button id="mentor-create-pr" class="vs-action">Create PR</button></div><div class="vs-code" data-layout-allow-overlap=""><div class="vs-code-line"><span>158</span><span>## Chat capabilities</span></div><div class="vs-code-line"><span>159</span><span></span></div><div class="vs-code-line"><span>160</span><span>Microsoft 365 Copilot Chat helps you draft content and review what you missed.</span></div><div class="vs-code-line added"><span>161</span><span>Copilot can surface relevant images from files and meetings directly in responses.</span></div><div class="vs-code-line added"><span>162</span><span>Users only see content they already have permission to access.</span></div><div class="vs-code-line"><span>163</span><span></span></div><div class="vs-code-line heading"><span>164</span><span>### Review checklist</span></div><div class="vs-code-line"><span>165</span><span>- Verify links, screenshots, metadata, and customer readiness.</span></div><div class="vs-code-line added" data-layout-allow-overlap=""><span>166</span><span data-layout-allow-overlap="">- Confirm technical accuracy with a subject-matter expert.</span></div><div class="vs-code-line"><span>167</span><span></span></div><div class="vs-code-line"><span>168</span><span>Last reviewed: {{ms.date}}</span></div></div></div>
+              <main class="vs-editor" data-layout-allow-overlap="">
+                <div id="mentor-welcome" class="mentor-phase vs-welcome" data-layout-allow-overlap=""><div class="vs-welcome-inner"><h2>Visual Studio Code</h2><p>Editing evolved</p><div class="welcome-columns"><div><h3>Start</h3><span class="welcome-link">New File...</span><span class="welcome-link">Open File...</span><span class="welcome-link">Open Repository...</span><span class="welcome-link">Clone Repository...</span><h3 style="margin-top:22px">Recent</h3><span class="welcome-link">microsoft-365-docs-pr</span><span class="welcome-link">More...</span></div><div><h3>Walkthroughs</h3><div class="welcome-walkthrough">▣ &nbsp; Get Started with VS Code for the Web</div><div class="welcome-walkthrough">◇ &nbsp; Learn the Fundamentals</div><div class="welcome-walkthrough">▣ &nbsp; Browse &amp; Edit Remote Repositories</div></div></div></div><div class="mentor-toast-stack"><span>◌ Setting up your copy of MicrosoftDocs/microsoft-365-docs-pr...</span><span>◌ Content Mentor is running in web mode.</span><span>Source Control: Success</span></div></div>
+                <div id="mentor-editor" class="mentor-phase" data-layout-allow-overlap=""><div class="vs-tabs"><span class="vs-tab">microsoft-365-copilot-overview.md</span><span>Preview</span><span>Open Preview to the Side</span><button id="mentor-create-pr" class="vs-action">Create PR</button></div><div class="vs-code" data-layout-allow-overlap=""><div class="vs-code-line"><span>32</span><span># Microsoft 365 Copilot overview</span></div><div class="vs-code-line"><span>33</span><span>## The generative AI era</span></div><div class="vs-code-line"><span>34</span><span></span></div><div class="vs-code-line link"><span>35</span><span>- [Microsoft 365 Copilot architecture and how it works](../copilot-architecture.md)</span></div><div class="vs-code-line link"><span>36</span><span>- [Responsible AI and privacy](../responsible-ai.md)</span></div><div class="vs-code-line link"><span>37</span><span>- [Microsoft 365 Copilot training](https://learn.microsoft.com/training/)</span></div><div class="vs-code-line"><span>38</span><span></span></div><div class="vs-code-line heading"><span>39</span><span>## Copilot works with Microsoft 365 apps and Microsoft Graph</span></div><div class="vs-code-line image"><span>40</span><span>:::image type="content" source="media/copilot-features.png":::</span></div><div class="vs-code-line"><span>41</span><span></span></div><div class="vs-code-line"><span>42</span><span>Copilot has intelligent features, functionality, and prompting that help users in the context of their work.</span></div><div class="vs-code-line"><span>43</span><span>Microsoft's AI-powered experiences work together and respect organizational data boundaries.</span></div><div class="vs-code-line"><span>44</span><span></span></div><div class="vs-code-line heading"><span>45</span><span>## Microsoft 365 apps</span></div><div class="vs-code-line"><span>46</span><span>Apps like Word, Excel, PowerPoint, Outlook, Teams, and Loop work with Copilot.</span></div><div class="vs-code-line"><span>47</span><span></span></div><div class="vs-code-line heading"><span>48</span><span>## Microsoft 365 Copilot Chat</span></div><div class="vs-code-line"><span>49</span><span>By using Microsoft 365 Copilot Chat, you can draft content, review what you missed, and get answers.</span></div><div class="vs-code-line added"><span>50</span><span>Copilot can surface relevant images from files and meetings directly in responses.</span></div><div class="vs-code-line added"><span>51</span><span>Users only see content they already have permission to access.</span></div><div class="vs-code-line"><span>52</span><span></span></div><div class="vs-code-line heading"><span>53</span><span>## Review checklist</span></div><div class="vs-code-line"><span>54</span><span>- Verify links, screenshots, metadata, and customer readiness.</span></div><div class="vs-code-line added" data-layout-allow-overlap=""><span>55</span><span data-layout-allow-overlap="">- Confirm technical accuracy with a subject-matter expert.</span></div><div class="vs-code-line"><span>56</span><span>- Confirm permissions and organizational boundaries.</span></div></div></div>
                 <div id="mentor-pr-dialog" class="mentor-phase vs-dialog-shade" data-layout-allow-occlusion="" data-layout-allow-overlap=""><div class="vs-dialog" data-layout-allow-overlap=""><h3 data-layout-allow-overlap="">Create Pull Request</h3><label>Title</label><div class="dialog-input">Update inline images in Microsoft 365 Copilot</div><label>Description</label><div class="dialog-input">Clarifies sources, permissions, and review guidance.</div><label>Source branch</label><div class="dialog-input">content-author-cs-3515</div><div class="vs-dialog-actions"><button class="secondary">Cancel</button><button id="create-pr-confirm">Create Pull Request</button></div></div></div>
                 <div id="mentor-date-dialog" class="mentor-phase vs-dialog-shade" data-layout-allow-occlusion="" data-layout-allow-overlap=""><div class="vs-dialog"><h3>Update ms.date?</h3><p>Update the review date only after a complete accuracy review. Otherwise, keep the existing date.</p><div class="vs-dialog-actions"><button id="skip-date" class="secondary">Skip</button><button>Update date</button></div></div></div>
               </main>
@@ -2559,17 +2815,16 @@
             <div class="vs-statusbar"><span>⑂ content-author-cs-3515</span><span>Markdown · UTF-8 · Content Mentor</span></div>
           </div>
           <div id="state-merge" class="state"><div class="merge-page"><span class="merge-badge">Open</span><h2>Update article: Inline images in Microsoft 365 Copilot <span style="color:#8c959f">#3515</span></h2><p style="color:#8c959f">content-studio bot wants to merge 2 commits into main</p><div class="merge-diff"><div>+ Copilot can surface relevant images from files and meetings.</div><div>+ Users only see content they already have permission to access.</div><div>+ Review links, screenshots, metadata, and customer readiness.</div></div><div class="merge-box"><div><b>All checks have passed</b><p style="margin:7px 0 0;color:#8c959f">The update is ready to publish.</p></div><button id="merge-button">Merge pull request</button><span id="merge-complete">✓ Pull request merged</span></div></div></div>
-          <div id="state-recap" class="state"><div class="recap-shell"><div class="recap-title">The update stays under your control</div><div class="recap-steps"><div class="recap-step"><b>1 · Update</b><p>Create the issue and provide clear article context.</p></div><div class="recap-step"><b>2 · Review</b><p>Check the linked draft for accuracy and completeness.</p></div><div class="recap-step"><b>3 · Publish</b><p>Edit when needed, then merge the customer-ready PR.</p></div></div></div></div>
-        </div>
-
-        <div data-hf-id="hf-ys2k" id="pointer">
-          <svg data-hf-id="hf-l0yt" id="arrow" viewBox="0 0 64 64" aria-hidden="true">
-            <path data-hf-id="hf-sr7p" d="M2 1.5V48.5L14.2 37.1L23.7 60.3L33.4 56.2L23.8 33.8H40.8Z" fill="#fff" stroke="#111" stroke-width="2.4" stroke-linejoin="round" />
-          </svg>
+          <div id="state-recap" class="state"><div class="recap-shell"><div class="recap-steps"><div class="recap-step"><b>1 · Update</b><p>Create the issue and provide clear article context.</p></div><div class="recap-step"><b>2 · Review</b><p>Check the linked draft for accuracy and completeness.</p></div><div class="recap-step"><b>3 · Publish</b><p>Edit when needed, then merge the customer-ready PR.</p></div></div></div></div>
+          <div data-hf-id="hf-ys2k" id="pointer">
+            <svg data-hf-id="hf-l0yt" id="arrow" viewBox="0 0 64 64" aria-hidden="true">
+              <path data-hf-id="hf-sr7p" d="M2 1.5V48.5L14.2 37.1L23.7 60.3L33.4 56.2L23.8 33.8H40.8Z" fill="#fff" stroke="#111" stroke-width="2.4" stroke-linejoin="round" />
+            </svg>
+          </div>
         </div>
       </section>
 
-      <section data-hf-id="hf-q61q" id="endcard" class="clip" data-start="157" data-duration="3.6" data-track-index="1">
+      <section data-hf-id="hf-q61q" id="endcard" class="clip" data-start="154" data-duration="3.2" data-track-index="1">
         <div data-hf-id="hf-d9hf" class="ms-lockup">
           <span data-hf-id="hf-utvh" class="ms-mark"><i data-hf-id="hf-wt6k"></i><i data-hf-id="hf-zeb8"></i><i data-hf-id="hf-y7e5"></i><i data-hf-id="hf-ylp6"></i></span><span data-hf-id="hf-5v4j">Microsoft</span>
         </div>
@@ -2588,12 +2843,46 @@
       });
 
       const pointTo = (selector, xRatio = 0.5, yRatio = 0.5) => {
-        const rect = document.querySelector(selector).getBoundingClientRect();
         return {
-          x: rect.left + rect.width * xRatio,
-          y: rect.top + rect.height * yRatio,
+          x: () => {
+            const camera = document.querySelector("#camera");
+            const rect = document.querySelector(selector).getBoundingClientRect();
+            const currentScale = parseFloat(gsap.getProperty(camera, "scale")) || 1;
+            const currentX = parseFloat(gsap.getProperty(camera, "x")) || 0;
+            return (rect.left - currentX + rect.width * xRatio) / currentScale;
+          },
+          y: () => {
+            const camera = document.querySelector("#camera");
+            const rect = document.querySelector(selector).getBoundingClientRect();
+            const currentScale = parseFloat(gsap.getProperty(camera, "scale")) || 1;
+            const currentY = parseFloat(gsap.getProperty(camera, "y")) || 0;
+            return (rect.top - currentY + rect.height * yRatio) / currentScale;
+          },
         };
       };
+      const zoomTo = (selector, scale = 1.15, xRatio = 0.5, yRatio = 0.5) => ({
+        scale,
+        x: () => {
+          const camera = document.querySelector("#camera");
+          const rect = document.querySelector(selector).getBoundingClientRect();
+          const currentScale = Number(gsap.getProperty(camera, "scale")) || 1;
+          const currentX = Number(gsap.getProperty(camera, "x")) || 0;
+          const localX =
+            (rect.left - currentX + rect.width * xRatio) / currentScale;
+          const desiredX = 960 - localX * scale;
+          return Math.min(0, Math.max(1920 * (1 - scale), desiredX));
+        },
+        y: () => {
+          const camera = document.querySelector("#camera");
+          const rect = document.querySelector(selector).getBoundingClientRect();
+          const currentScale = Number(gsap.getProperty(camera, "scale")) || 1;
+          const currentY = Number(gsap.getProperty(camera, "y")) || 0;
+          const localY =
+            (rect.top - currentY + rect.height * yRatio) / currentScale;
+          const desiredY = 540 - localY * scale;
+          return Math.min(0, Math.max(1080 * (1 - scale), desiredY));
+        },
+      });
 
       /* Previous Create-article choreography retained temporarily for visual reference.
       tl.set("#camera", { scale: 1, x: 0, y: 0 }, 5)
@@ -2814,21 +3103,26 @@
         .fromTo(".intro-title", { opacity: 0, y: 22 }, { opacity: 1, y: 0, duration: 0.55 }, 0.2)
         .fromTo(".intro-preview", { y: 90, opacity: 0 }, { y: 0, opacity: 1, duration: 0.75, ease: "power3.out" }, 0.35)
         .set("#camera", { scale: 1, x: 0, y: 0 }, 5)
-        .set("#state-create, #state-progress, #state-issue, #state-pr, #state-mentor, #state-merge, #state-recap", { autoAlpha: 0 }, 5)
+        .set("#state-create, #state-progress, #state-issue, #state-pr, #state-mentor, #state-merge, #state-recap", { autoAlpha: 0, x: 0 }, 5)
+        .set(".mentor-sidebar-onboarding", { autoAlpha: 1 }, 5)
+        .set(".mentor-sidebar-loading, .mentor-sidebar-loaded", { autoAlpha: 0 }, 5)
         .set("#gh-conversation", { autoAlpha: 1 }, 5)
         .set("#gh-files", { autoAlpha: 0 }, 5)
-        .set("#pointer", { ...pointTo("#updateBtn", -1.2, 1.6), opacity: 0 }, 5)
-        .fromTo("#demo .app", { opacity: 0 }, { opacity: 1, duration: 0.35 }, 5)
-        .to("#pointer", { opacity: 1, duration: 0.2 }, 9.85)
-        .to("#pointer", { ...pointTo("#updateBtn"), duration: 0.65 }, 10.15)
+        .set("#pointer", { x: 1450, y: 620, opacity: 0 }, 5)
+        .fromTo("#demo .app", { autoAlpha: 1, x: 1920 }, { autoAlpha: 1, x: 0, duration: 0.65, ease: "power2.inOut" }, 5)
+        .to("#camera", { ...zoomTo("#updateBtn"), duration: 0.8, ease: "power2.inOut" }, 8)
+        .to("#pointer", { opacity: 1, duration: 0.8, ease: "power2.inOut" }, 8)
+        .to("#pointer", { ...pointTo("#updateBtn"), duration: 1.4, ease: "power2.inOut" }, 8.5)
         .to("#updateBtn", { backgroundColor: "#0f6cbd", borderColor: "#0f6cbd", color: "#fff", duration: 0.2 }, 10.75)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 11.1)
-        .to(".app", { autoAlpha: 0, duration: 0.25 }, 11.45)
-        .to("#state-create", { autoAlpha: 1, duration: 0.3 }, 11.5)
-        .set("#field-title, #field-type, #field-about, #field-context, #field-github", { opacity: 1, filter: "grayscale(0)" }, 11.5)
-        .set("#state-create .mute-lines", { opacity: 0 }, 11.5)
-        .set("#state-create .field-value", { opacity: 0 }, 11.5)
-        .set("#state-create .char-count", { opacity: 0 }, 11.5)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 10.82)
+        .to("#camera", { scale: 1, x: 0, y: 0, duration: 0.85, ease: "power2.inOut" }, 11.2)
+        .set(".app", { autoAlpha: 0 }, 12.1)
+        .set("#state-create", { autoAlpha: 1 }, 12.1)
+        .set("#field-title, #field-type, #field-about, #field-context, #field-github", { opacity: 1, filter: "grayscale(0)" }, 12.15)
+        .set("#state-create .mute-lines", { opacity: 0 }, 12.15)
+        .set("#state-create .field-value", { opacity: 0 }, 12.15)
+        .set("#state-create .char-count", { opacity: 0 }, 12.15)
+        .to("#camera", { ...zoomTo("#field-about", 1.15, 0.5, 0.45), duration: 0.8, ease: "power2.inOut" }, 18)
         .to("#pointer", { ...pointTo("#field-title .input", 0.72), duration: 0.7 }, 17.55)
         .to("#field-title .field-value", { opacity: 1, duration: 0.22 }, 20.68)
         .to("#pointer", { ...pointTo("#field-type .input", 0.72), duration: 0.55 }, 21.1)
@@ -2839,60 +3133,73 @@
         .to("#pointer", { ...pointTo("#field-context .input", 0.72), duration: 0.55 }, 24.7)
         .to("#field-context .field-value", { opacity: 1, duration: 0.22 }, 24.96)
         .to("#field-context .char-count", { opacity: 1, duration: 0.22 }, 24.96)
-        .to("#pointer", { ...pointTo("#field-github .input", 0.72), duration: 0.65 }, 34.55)
-        .to("#field-github .field-value", { opacity: 1, duration: 0.22 }, 34.84)
-        .to("#submitBtn", { backgroundColor: "#0f6cbd", borderColor: "#0f6cbd", color: "#fff", duration: 0.25 }, 35.75)
-        .to("#pointer", { ...pointTo("#submitBtn"), duration: 0.55 }, 36.15)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 36.85)
-        .to("#state-create", { autoAlpha: 0, duration: 0.2 }, 37.55)
-        .to(".app", { autoAlpha: 1, duration: 0.2 }, 37.55)
-        .to("#state-progress", { autoAlpha: 1, duration: 0.25 }, 37.72)
-        .to("#pointer", { ...pointTo("#viewIssueBtn"), duration: 0.8 }, 39.2)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 40.2)
-        .to("#state-progress, .app", { autoAlpha: 0, duration: 0.25 }, 41.1)
-        .to("#state-issue", { autoAlpha: 1, duration: 0.3 }, 41.3)
-        .to("#pointer", { ...pointTo(".issue-body-card", 0.56, 0.25), duration: 0.9 }, 42)
-        .to("#issue-scroll-content", { y: -861, duration: 1.6, ease: "power2.inOut" }, 46.5)
-        .to("#pointer", { ...pointTo("#issue-pr-link"), duration: 0.9 }, 51.5)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 54.5)
-        .to("#state-issue", { autoAlpha: 0, duration: 0.2 }, 55.3)
-        .to("#state-pr", { autoAlpha: 1, duration: 0.25 }, 55.4)
-        .to("#pointer", { ...pointTo("#gh-tab-files"), duration: 0.9 }, 56)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 57)
-        .to("#gh-conversation", { autoAlpha: 0, duration: 0.12 }, 57.25)
-        .to("#gh-files", { autoAlpha: 1, duration: 0.12 }, 57.3)
-        .to("#pointer", { ...pointTo("#gh-files .diff-lines", 0.58, 0.45), duration: 0.8 }, 58)
-        .to("#gh-files", { autoAlpha: 0, duration: 0.12 }, 75.25)
-        .to("#gh-conversation", { autoAlpha: 1, duration: 0.12 }, 75.3)
-        .to("#pointer", { ...pointTo("#content-mentor-link"), duration: 0.65 }, 76.4)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 77.7)
-        .to("#state-pr", { autoAlpha: 0, duration: 0.25 }, 79.35)
-        .to("#state-mentor", { autoAlpha: 1, duration: 0.3 }, 79.6)
-        .to("#pointer", { ...pointTo("#mentor-setup-card .mentor-button"), duration: 0.9 }, 86.15)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 88.25)
-        .to("#mentor-welcome", { autoAlpha: 0, duration: 0.25 }, 97.15)
-        .to("#mentor-editor", { autoAlpha: 1, duration: 0.3 }, 97.4)
-        .to("#pointer", { ...pointTo("#mentor-editor .vs-code-line.added", 0.72, 0.5), duration: 0.65 }, 100.05)
-        .to("#pointer", { ...pointTo("#mentor-create-pr"), duration: 0.8 }, 101.55)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 102.55)
-        .to("#mentor-date-dialog", { autoAlpha: 1, duration: 0.3 }, 103)
-        .to("#pointer", { ...pointTo("#skip-date"), duration: 0.8 }, 111.45)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 112.45)
-        .to("#mentor-date-dialog", { autoAlpha: 0, duration: 0.25 }, 113)
-        .to("#mentor-pr-dialog", { autoAlpha: 1, duration: 0.25 }, 113.35)
-        .to("#pointer", { ...pointTo("#create-pr-confirm"), duration: 0.8 }, 114.25)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 115.25)
-        .to("#state-mentor", { autoAlpha: 0, duration: 0.3 }, 121.9)
-        .to("#state-merge", { autoAlpha: 1, duration: 0.3 }, 122.2)
-        .to("#pointer", { ...pointTo("#merge-button"), duration: 1 }, 126)
-        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 127.2)
-        .to("#merge-button", { opacity: 0, duration: 0.2 }, 127.8)
-        .to("#merge-complete", { opacity: 1, duration: 0.35 }, 128)
-        .to("#state-merge", { autoAlpha: 0, duration: 0.3 }, 138.5)
-        .to("#state-recap", { autoAlpha: 1, duration: 0.3 }, 138.8)
-        .fromTo(".recap-step", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.55, stagger: 0.3 }, 139.2)
-        .to("#pointer", { opacity: 0, duration: 0.2 }, 139)
-        .fromTo(".ms-lockup", { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.5 }, 157.1);
+        .to("#pointer", { ...pointTo("#field-github .input", 0.72), duration: 0.65 }, 33.8)
+        .to("#field-github .field-value", { opacity: 1, duration: 0.22 }, 34.45)
+        .to("#submitBtn", { backgroundColor: "#0f6cbd", borderColor: "#0f6cbd", color: "#fff", duration: 0.25 }, 34.55)
+        .to("#pointer", { ...pointTo("#submitBtn"), duration: 0.8 }, 34.55)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 35.45)
+        .to("#camera", { scale: 1, x: 0, y: 0, duration: 0.4, ease: "power2.inOut" }, 35.8)
+        .set("#state-create", { autoAlpha: 0 }, 36.25)
+        .set(".app, #state-progress", { autoAlpha: 1 }, 36.25)
+        .to("#pointer", { ...pointTo("#viewIssueBtn"), duration: 0.8 }, 37.6)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 38.6)
+        .set("#state-progress, .app", { autoAlpha: 0 }, 39.5)
+        .set("#state-issue", { autoAlpha: 1 }, 39.5)
+        .to("#pointer", { ...pointTo(".issue-body-card", 0.56, 0.25), duration: 0.9 }, 40.4)
+        .to("#issue-scroll-content", { y: -861, duration: 1.6, ease: "power2.inOut" }, 44.9)
+        .to("#pointer", { x: 420, y: 474, duration: 0.9 }, 49.9)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 52.9)
+        .set("#state-issue", { autoAlpha: 0 }, 53.7)
+        .set("#state-pr", { autoAlpha: 1 }, 53.7)
+        .to("#pointer", { ...pointTo("#gh-tab-files"), duration: 0.9 }, 58.75)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 59.75)
+        .set("#gh-conversation", { autoAlpha: 0 }, 60)
+        .set("#gh-files", { autoAlpha: 1 }, 60)
+        .to("#pointer", { ...pointTo("#gh-files .diff-lines", 0.58, 0.45), duration: 0.8 }, 60.75)
+        .set("#gh-files", { autoAlpha: 0 }, 72.5)
+        .set("#gh-conversation", { autoAlpha: 1 }, 72.5)
+        .to("#camera", { ...zoomTo("#content-mentor-link"), duration: 0.8, ease: "power2.inOut" }, 72)
+        .to("#pointer", { ...pointTo("#content-mentor-link"), duration: 0.65 }, 73.2)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 74.5)
+        .set("#camera", { scale: 1, x: 0, y: 0 }, 74.85)
+        .set("#state-pr", { autoAlpha: 0 }, 74.85)
+        .set("#state-mentor", { autoAlpha: 1 }, 74.85)
+        .to("#camera", { ...zoomTo("#mentor-setup-card", 1.15, 0.5, 0.35), duration: 0.8, ease: "power2.inOut" }, 81)
+        .to("#pointer", { ...pointTo("#mentor-setup-card .mentor-button"), duration: 0.9 }, 82.95)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 85.05)
+        .set(".mentor-sidebar-onboarding", { autoAlpha: 0 }, 85.45)
+        .set(".mentor-sidebar-loading", { autoAlpha: 1 }, 85.45)
+        .to("#camera", { scale: 1, x: 0, y: 0, duration: 0.45, ease: "power2.inOut" }, 85.45)
+        .to("#mentor-welcome", { x: -120, duration: 0.45, ease: "power2.inOut" }, 89)
+        .set("#mentor-editor", { display: "block" }, 89)
+        .fromTo("#mentor-editor", { autoAlpha: 1, x: 120 }, { autoAlpha: 1, x: 0, duration: 0.45, ease: "power2.inOut" }, 89)
+        .set(".mentor-sidebar-loading", { autoAlpha: 0 }, 89)
+        .set(".mentor-sidebar-loaded", { autoAlpha: 1 }, 89)
+        .set("#mentor-welcome", { autoAlpha: 0 }, 89.45)
+        .to("#pointer", { ...pointTo("#mentor-editor .vs-code-line.added", 0.72, 0.5), duration: 0.35 }, 96.9)
+        .to("#pointer", { ...pointTo("#mentor-create-pr"), duration: 0.8 }, 98.55)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 99.5)
+        .set("#mentor-editor", { display: "none" }, 99.85)
+        .to("#mentor-date-dialog", { autoAlpha: 1, duration: 0.3 }, 99.85)
+        .to("#pointer", { ...pointTo("#skip-date"), duration: 0.8 }, 108.25)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 109.15)
+        .set("#mentor-date-dialog", { autoAlpha: 0 }, 109.55)
+        .set("#mentor-pr-dialog", { autoAlpha: 1 }, 109.55)
+        .to("#pointer", { ...pointTo("#create-pr-confirm"), duration: 0.8 }, 111.25)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 112.2)
+        .set("#state-mentor", { autoAlpha: 0 }, 117.8)
+        .set("#state-merge", { autoAlpha: 1 }, 117.8)
+        .to("#pointer", { ...pointTo("#merge-button"), duration: 1 }, 121.35)
+        .to("#pointer", { scale: 0.86, duration: 0.16, yoyo: true, repeat: 1 }, 122.5)
+        .to("#merge-button", { opacity: 0, duration: 0.2 }, 123.1)
+        .to("#merge-complete", { opacity: 1, duration: 0.35 }, 123.3)
+        .to("#state-merge", { x: -120, duration: 0.65, ease: "power2.inOut" }, 134.7)
+        .fromTo("#state-recap", { autoAlpha: 1, x: 1920 }, { autoAlpha: 1, x: 0, duration: 0.65, ease: "power2.inOut" }, 134.7)
+        .set("#state-merge", { autoAlpha: 0 }, 135.35)
+        .to("#pointer", { opacity: 0, duration: 0.2 }, 135.2)
+        .set("#demo", { backgroundColor: "#fff" }, 153.55)
+        .to("#state-recap", { x: -1920, duration: 0.5, ease: "power2.inOut" }, 153.55)
+        .fromTo(".ms-lockup", { opacity: 0, x: 120 }, { opacity: 1, x: 0, duration: 0.5, ease: "power2.inOut" }, 154.1);
       window.__timelines["main"] = tl;
       tl.seek(0);
     </script>

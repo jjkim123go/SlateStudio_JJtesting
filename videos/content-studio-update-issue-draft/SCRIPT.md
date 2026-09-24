@@ -1,6 +1,6 @@
-# SCRIPT - Create an Update issue and draft
+# SCRIPT - Create an update issue and draft
 
-**Voice:** Azure AI Speech `en-US-Ava:DragonHDLatestNeural`; calm Microsoft instructional narrator; neutral North American English
+**Voice:** Azure AI Speech `en-US-Ava:DragonHDLatestNeural` at `-20%` rate and `0.2` temperature; calm Microsoft instructional narrator matching the approved previous video
 **Editorial rule:** Preserve the approved wording below and generate one continuous narration file.
 
 ---
@@ -35,7 +35,7 @@ Content Mentor creates a fork, pulls in the Content Studio branch, and opens the
 
 ## Line 8
 
-Update ms.date only if you’ve completed a full accuracy review of the article; otherwise, select Skip. Then select Create Pull Request. Content Studio merges your edits back into the original PR.
+Update M S dot date only if you’ve completed a full accuracy review of the article; otherwise, select Skip. Then select Create Pull Request. Content Studio merges your edits back into the original PR.
 
 ## Line 9
 

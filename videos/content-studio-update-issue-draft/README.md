@@ -1,4 +1,4 @@
-# Content Studio: Create an Update Issue and Draft
+# Content Studio: Create an update issue and draft
 
 HyperFrames walkthrough for the Microsoft Content Studio article-update flow.
 
@@ -40,5 +40,5 @@ For the managed render path used for the reviewed master:
 npm run render:cloud
 ```
 
-The composition is 1920x1080 at 30 fps with a 160.6-second runtime. The project
+The composition is 1920x1080 at 30 fps with a 157.2-second runtime. The project
 pins HyperFrames `0.8.43` through its npm scripts.
