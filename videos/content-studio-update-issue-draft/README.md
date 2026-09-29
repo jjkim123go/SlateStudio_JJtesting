@@ -6,8 +6,10 @@ HyperFrames walkthrough for the Microsoft Content Studio article-update flow.
 
 - Final deterministic composition and project configuration.
 - Approved script, brief, storyboard, frame direction, and art direction.
-- Azure Speech narration using `en-US-Ava:DragonHDLatestNeural`.
-- Azure word-boundary timings used to synchronize the UI actions.
+- Cue-matched Azure Speech narration using
+  `en-US-Ava:DragonHDLatestNeural`.
+- Azure word-boundary timings and the original ten narration-section start cues
+  used to synchronize the UI actions.
 
 The source meeting recording is documented in `BRIEF.md` but is not a render
 dependency and is not committed because it contains meeting participants and
@@ -41,4 +43,4 @@ npm run render:cloud
 ```
 
 The composition is 1920x1080 at 30 fps with a 157.2-second runtime. The project
-pins HyperFrames `0.8.43` through its npm scripts.
+pins HyperFrames `0.8.62` through its npm scripts.

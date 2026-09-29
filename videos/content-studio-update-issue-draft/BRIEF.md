@@ -35,9 +35,10 @@ Code for the Web, and merges the final update.
   oversized white pointer/hand, action-centered zooms, and calm visual holds.
 - Reconstruct Content Studio, GitHub, and VS Code for the Web as deterministic UI;
   remove meeting participants, media-player controls, browser clutter, and PII.
-- Use one continuous Azure Speech narration with the previous video's
-  `en-US-Ava:DragonHDLatestNeural` voice at `-20%` rate and `0.2` temperature
-  for a calmer, less expressive instructional delivery.
+- Use Azure Speech `en-US-Ava:DragonHDLatestNeural` at `-8%` rate and `0.35`
+  temperature for a composed instructional delivery with more pace and energy
+  than the original take. Preserve each approved narration-section start cue so
+  the voice remains synchronized with the existing video choreography.
 - Play the approved narration at `1.1` gain for a restrained instructional mix.
 - Synchronize visible actions to the captured Azure word-boundary timings; use
   the recording's actual UI sequence rather than the unsynchronized note times.
@@ -67,6 +68,6 @@ the user-supplied script, supplied recording, and approved previous video.
   data are replaced with synthetic demo content.
 - The 323-word script drives the runtime. The final composition is 157.2 seconds
   and the approved Azure Speech narration is 153.419 seconds.
-- The approved clean opening is retained through 00:09.000 to avoid a
-  Dragon HD regeneration artifact; the corrected "M S dot date" take continues
-  from the next sentence without changing the established cue timing.
+- The replacement Ava narration is synthesized per script line and assembled at
+  the original ten line-start cues. Short holds between lines preserve the
+  established visual timing while the spoken phrases carry more energy.

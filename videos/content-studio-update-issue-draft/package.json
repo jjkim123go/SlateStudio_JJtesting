@@ -3,10 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "npx --yes hyperframes@0.8.43 preview",
-    "check": "npx --yes hyperframes@0.8.43 check",
-    "render": "npx --yes hyperframes@0.8.43 render",
-    "render:cloud": "npx --yes hyperframes@0.8.43 cloud render . --quality standard --resolution 1080p --fps 30 --format mp4 --output %USERPROFILE%/Downloads/content-studio-update-issue-draft-final.mp4",
-    "publish": "npx --yes hyperframes@0.8.43 publish"
+    "dev": "npx --yes hyperframes@0.8.62 preview",
+    "check": "npx --yes hyperframes@0.8.62 check",
+    "render": "npx --yes hyperframes@0.8.62 render",
+    "render:cloud": "npx --yes hyperframes@0.8.62 cloud render . --quality standard --resolution 1080p --fps 30 --format mp4 --output %USERPROFILE%/Downloads/content-studio-update-issue-draft-final.mp4",
+    "publish": "npx --yes hyperframes@0.8.62 publish"
   }
 }

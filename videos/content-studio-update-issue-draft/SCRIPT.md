@@ -1,6 +1,6 @@
 # SCRIPT - Create an update issue and draft
 
-**Voice:** Azure AI Speech `en-US-Ava:DragonHDLatestNeural` at `-20%` rate and `0.2` temperature; calm Microsoft instructional narrator matching the approved previous video
+**Voice:** Azure AI Speech `en-US-Ava:DragonHDLatestNeural` at `-8%` rate and `0.35` temperature; composed instructional delivery with more pace and energy than the original take. Each line retains its approved original start cue so the more animated articulation stays synchronized with the video.
 **Editorial rule:** Preserve the approved wording below and generate one continuous narration file.
 
 ---
